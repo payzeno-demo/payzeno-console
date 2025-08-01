@@ -1,0 +1,15 @@
+{
+  "printWidth": 100,
+  "singleQuote": true,
+  "semi": true,
+  "trailingComma": "all",
+  "arrowParens": "always",
+  "jsxSingleQuote": false,
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": ["*.md", "*.yml", "*.yaml"],
+      "options": { "printWidth": 90, "proseWrap": "preserve" }
+    }
+  ]
+}

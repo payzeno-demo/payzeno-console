@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <title>Payzeno Console</title>
+    <meta name="description" content="Payzeno merchant console" />
+
+    <!--
+      No third-party script tags. The vault iframe is the only cross-origin surface and it is
+      mounted by <TokenizedCardInput /> with an explicit allow-list, not from here. ADR 0003.
+    -->
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="robots" content="noindex, nofollow" />
+
+    <link rel="preconnect" href="/v1" />
+  </head>
+  <body>
+    <!-- AppShell renders the skip link and the landmark roles; #root is deliberately bare. -->
+    <div id="root"></div>
+    <noscript>The Payzeno console requires JavaScript.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,61 @@
+# payzeno-console — owned by the Web team.
+# One approval required (conventions.reviews_required.default). Last matching rule wins.
+
+*                                       @tflexbox @rrefactor
+
+# --- tooling / build ---------------------------------------------------------
+/package.json                           @tflexbox @rrefactor
+/pnpm-lock.yaml                         @tflexbox
+/vite.config.ts                         @tflexbox
+/vitest.config.ts                       @tflexbox
+/tsconfig*.json                         @tflexbox
+/.eslintrc.cjs                          @tflexbox
+/Dockerfile                             @tflexbox @apager
+/docker/                                @tflexbox @apager
+/docker-compose.override.yml            @tflexbox @apager
+/.github/                               @tflexbox @apager
+
+# --- the composition root and the design system: Tal --------------------------
+/src/main.tsx                           @tflexbox
+/src/App.tsx                            @tflexbox
+/src/router.tsx                         @tflexbox
+/src/routes.ts                          @tflexbox
+/src/app/                               @tflexbox
+/src/components/                        @tflexbox
+/src/components/ui/tokens.ts            @tflexbox
+/src/components/charts/                 @rrefactor
+
+# --- transport is Tal, resources and keys are Roni ----------------------------
+/src/api/                               @tflexbox
+/src/api/client.ts                      @tflexbox
+/src/api/transport.ts                   @tflexbox
+/src/api/http/                          @tflexbox
+/src/api/ws/                            @tflexbox
+/src/api/endpoints/                     @rrefactor
+/src/api/queryKeys.ts                   @rrefactor
+/src/api/errors.ts                      @tflexbox @rrefactor
+/src/api/mock/                          @rrefactor
+# Pre-ADR-0004 debt. Frozen: changes here need both of us to agree it was unavoidable.
+/src/api/legacy/                        @tflexbox @rrefactor
+
+# --- features are Roni's; Tal reviews the presentational half ------------------
+/src/features/                          @rrefactor
+/src/features/**/components/            @rrefactor @tflexbox
+/src/hooks/                             @rrefactor
+/src/lib/                               @rrefactor
+/src/types/                             @rrefactor
+
+# --- PCI scope: nothing here merges without the CTO (ADR 0003) ----------------
+/src/config/                            @tflexbox @dhotfix
+/src/config/telemetry.config.ts         @dhotfix
+/src/lib/telemetry.ts                   @dhotfix
+/src/components/form/TokenizedCardInput.tsx           @dhotfix @tflexbox
+/src/api/http/response-parser.ts                      @dhotfix @tflexbox
+/src/features/settings/components/AddBankAccountDialog.tsx  @dhotfix @rrefactor
+/docs/adr/0003-no-card-data-in-the-console.md         @dhotfix
+
+# --- docs ---------------------------------------------------------------------
+/docs/adr/                              @tflexbox
+/docs/runbooks/                         @tflexbox @apager
+/README.md                              @tflexbox
+/CONTRIBUTING.md                        @tflexbox

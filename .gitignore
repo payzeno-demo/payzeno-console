@@ -1,0 +1,41 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+dist-ssr/
+*.local
+
+# test / coverage
+coverage/
+.vitest-cache/
+*.lcov
+
+# env — .env.example is committed, nothing else is
+.env
+.env.*
+!.env.example
+
+# editors
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+
+# os
+.DS_Store
+Thumbs.db
+
+# logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# vite / ts
+.vite/
+*.tsbuildinfo
+
+# sentry
+.sentryclirc
