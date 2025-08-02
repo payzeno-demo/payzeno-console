@@ -1,0 +1,7 @@
+/**
+ * The application chrome: environment banner, top bar, side nav, content column.
+ *
+ * This is the file that mounts `<NotificationBell />`, which is the **one** declared
+ * `components → features` import in the repo (interfaces.md §4.1 puts the bell in the shell,
+ * and `features/notifications` has no page of its own to put it on). The eslint-disable below
+ * is the whole exception; there is exactly one other, in `components/data/ExportCsvButton.tsx`,
