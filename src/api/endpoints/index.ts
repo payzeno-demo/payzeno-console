@@ -41,3 +41,5 @@ export interface EndpointRegistry {
 }
 
 export { BankAccountsEndpoint } from './bank-accounts.endpoint';
+export { PaymentIntentsEndpoint } from './payment-intents.endpoint';
+export { RefundsEndpoint } from './refunds.endpoint';
