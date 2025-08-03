@@ -3,3 +3,12 @@
  * which makes this the highest in-degree module in the repo (~40 importers).
  *
  * Rule: a key is always an array whose first element is the resource name, so
+ * `queryClient.invalidateQueries({ queryKey: queryKeys.settlements.all })` invalidates the
+ * whole family. Never build a key inline in a feature.
+ */
+import type {
+  ChargeListQuery,
+  CurrencyCode,
+  ListQuery,
+  PaymentIntentListQuery,
+  ReportingWindow,
