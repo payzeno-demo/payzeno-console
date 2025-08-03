@@ -18,3 +18,10 @@ export class ChargesEndpoint extends ResourceEndpoint<Charge, ChargeListQuery> {
   constructor(client: HttpTransport) {
     super(client);
   }
+
+  ledger(chargeId: string): Promise<ChargeLedgerResponse> {
+    return this.client.get<ChargeLedgerResponse>(this.resourcePath(chargeId, 'ledger'));
+  }
+
+  /**
+   * Every charge in one settlement batch. Convenience over `list()` — arc PERF narrowed the

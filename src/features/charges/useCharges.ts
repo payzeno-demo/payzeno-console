@@ -13,3 +13,11 @@ import type { Charge, ChargeListQuery } from '@payzeno/contracts';
 import { useEndpoints } from '@app/ApiContext';
 import type { ChargeRow } from '@types/view-models';
 
+import { chargesListQuery } from './charges.queries';
+
+export interface UseChargesResult {
+  rows: ChargeRow[];
+  nextCursor: string | null;
+  hasMore: boolean;
+  isLoading: boolean;
+  isFetching: boolean;

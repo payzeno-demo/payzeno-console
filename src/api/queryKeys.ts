@@ -12,3 +12,8 @@ import type {
   ListQuery,
   PaymentIntentListQuery,
   ReportingWindow,
+  TimeseriesInterval,
+} from '@payzeno/contracts';
+
+/** Anything a list route accepts. Stringified into the key so filters bust the cache. */
+export type AnyListQuery = ListQuery & Record<string, unknown>;
