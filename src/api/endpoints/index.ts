@@ -40,7 +40,9 @@ export interface EndpointRegistry {
   webhookEndpoints: WebhookEndpointsEndpoint;
 }
 
+export { BalanceEndpoint } from './balance.endpoint';
 export { BankAccountsEndpoint } from './bank-accounts.endpoint';
 export { ChargesEndpoint } from './charges.endpoint';
+export { DisputesEndpoint } from './disputes.endpoint';
 export { PaymentIntentsEndpoint } from './payment-intents.endpoint';
 export { RefundsEndpoint } from './refunds.endpoint';

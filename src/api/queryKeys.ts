@@ -8,3 +8,17 @@
  */
 import type {
   ChargeListQuery,
+  CurrencyCode,
+  ListQuery,
+  PaymentIntentListQuery,
+  ReportingWindow,
+  TimeseriesInterval,
+} from '@payzeno/contracts';
+
+/** Anything a list route accepts. Stringified into the key so filters bust the cache. */
+export type AnyListQuery = ListQuery & Record<string, unknown>;
+
+function normalize(q?: AnyListQuery): Record<string, unknown> {
+  if (!q) return {};
+  const entries = Object.entries(q)
+    .filter(([, v]) => v !== undefined && v !== null && v !== '')
