@@ -22,3 +22,8 @@ function normalize(q?: AnyListQuery): Record<string, unknown> {
   if (!q) return {};
   const entries = Object.entries(q)
     .filter(([, v]) => v !== undefined && v !== null && v !== '')
+    .sort(([a], [b]) => a.localeCompare(b));
+  return Object.fromEntries(entries);
+}
+
+export const queryKeys = {
