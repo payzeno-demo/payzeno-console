@@ -19,6 +19,8 @@ export abstract class ResourceEndpoint<TResource, TListQuery extends ListQuery =
   /** Version-free, leading slash: `/settlements`. `VITE_PAYZENO_API_URL` carries `/v1`. */
   protected abstract readonly basePath: string;
 
+  protected constructor(protected readonly client: HttpTransport) {}
+
   protected toParams(q?: TListQuery): QueryParams {
     return listQueryToParams(q as (ListQuery & Record<string, unknown>) | undefined);
   }
