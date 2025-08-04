@@ -6,3 +6,26 @@
  * unless the merchant explicitly asks for a narrower filter.
  */
 import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
+
+import type { Charge, ChargeListQuery } from '@payzeno/contracts';
+
+import { useEndpoints } from '@app/ApiContext';
+import type { ChargeRow } from '@types/view-models';
+
+import { chargesListQuery } from './charges.queries';
+
+export interface UseChargesResult {
+  rows: ChargeRow[];
+  nextCursor: string | null;
+  hasMore: boolean;
+  isLoading: boolean;
+  isFetching: boolean;
+  error: Error | null;
+}
+
+function toRow(charge: Charge): ChargeRow {
+  const refundableMinor = charge.captured_amount_minor - charge.refunded_amount_minor;
+  return {
+    ...charge,
+    _selected: false,

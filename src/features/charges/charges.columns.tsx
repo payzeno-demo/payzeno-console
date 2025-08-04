@@ -12,3 +12,10 @@ import { StatusPill } from '@components/data/StatusPill';
 import { ROUTES } from '@/routes';
 import type { ChargeRow } from '@types/view-models';
 
+/** Plain-English decline reasons. Merchants forward these to their customers verbatim. */
+export function explainDecline(code: DeclineCode): string {
+  switch (code) {
+    case 'do_not_honor':
+      return 'The issuer declined without a reason.';
+    case 'insufficient_funds':
+      return 'Not enough funds on the card.';

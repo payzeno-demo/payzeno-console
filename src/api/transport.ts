@@ -13,3 +13,11 @@ import type { ListQuery, Paginated } from '@payzeno/contracts';
 export type QueryParams = Record<string, string | number | boolean | undefined>;
 
 export type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE';
+
+export interface RequestSpec<TBody = unknown> {
+  method: HttpMethod;
+  /** Path relative to the versioned base URL, e.g. `/settlements/sb_123/items`. */
+  path: string;
+  query?: QueryParams;
+  body?: TBody;
+  headers?: Record<string, string>;
