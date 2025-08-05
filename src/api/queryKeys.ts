@@ -27,3 +27,8 @@ function normalize(q?: AnyListQuery): Record<string, unknown> {
 }
 
 export const queryKeys = {
+  session: {
+    all: ['session'] as const,
+    me: () => ['session', 'me'] as const,
+  },
+
