@@ -32,3 +32,8 @@ export const queryKeys = {
     me: () => ['session', 'me'] as const,
   },
 
+  paymentIntents: {
+    all: ['payment_intents'] as const,
+    list: (q?: PaymentIntentListQuery) => ['payment_intents', 'list', normalize(q)] as const,
+    detail: (id: string) => ['payment_intents', 'detail', id] as const,
+  },

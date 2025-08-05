@@ -19,11 +19,56 @@ import { HttpResponse, http } from 'msw';
 describe('the request', () => {
   it('asks for the default page size', async () => {
     const recorder = recordRequests();
+    const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._refundableMinor).toBe(10_000);
+  });
+
+  it('is zero for a fully refunded charge', async () => {
+    server.use(
+      http.get(url('/charges'), () =>
+        HttpResponse.json(
+          makePage([
+            makeCharge({ captured_amount_minor: 12_500, refunded_amount_minor: 12_500 }),
+          ]),
+        ),
+      ),
+    );
+
     const captured = result.current.rows.find((row) => row.status === 'captured');
     expect(captured?._isRefundable).toBe(true);
   });
 
   it('is true for a settled charge too — settlement does not close the refund window', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    const settled = result.current.rows.find((row) => row.status === 'settled');
+    expect(settled?._isRefundable).toBe(true);
+  });
+
+  it('is false for an authorized charge — that takes a void, not a refund', async () => {
+    server.use(
+      http.get(url('/charges'), () =>
+        HttpResponse.json(
+          makePage([
+            makeCharge({
+              status: 'authorized',
+              captured_amount_minor: 0,
+              refunded_amount_minor: 0,
+            }),
+          ]),
+        ),
+      ),
+    );
+
     const { result } = renderHookWithProviders(() => useCharges());
 
     await waitFor(() => {
