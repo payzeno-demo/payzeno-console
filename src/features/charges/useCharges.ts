@@ -29,3 +29,11 @@ function toRow(charge: Charge): ChargeRow {
   return {
     ...charge,
     _selected: false,
+    _refundableMinor: refundableMinor,
+    // Only a captured charge can be refunded. An `authorized` one takes a cancel, which
+    // voids the authorisation — a void is not a refund (domain-model.md §4).
+    _isRefundable:
+      (charge.status === 'captured' || charge.status === 'settled') && refundableMinor > 0,
+  };
+}
+
