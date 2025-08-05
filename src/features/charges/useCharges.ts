@@ -37,3 +37,10 @@ function toRow(charge: Charge): ChargeRow {
   };
 }
 
+export function useCharges(q?: ChargeListQuery): UseChargesResult {
+  const endpoints = useEndpoints();
+  const query = useQuery(chargesListQuery(endpoints, q));
+
+  const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
+
+  return {
