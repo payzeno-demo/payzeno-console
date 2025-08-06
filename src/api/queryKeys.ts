@@ -37,3 +37,7 @@ export const queryKeys = {
     list: (q?: PaymentIntentListQuery) => ['payment_intents', 'list', normalize(q)] as const,
     detail: (id: string) => ['payment_intents', 'detail', id] as const,
   },
+
+  charges: {
+    all: ['charges'] as const,
+    list: (q?: ChargeListQuery) => ['charges', 'list', normalize(q)] as const,
