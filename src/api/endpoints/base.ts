@@ -21,6 +21,10 @@ export abstract class ResourceEndpoint<TResource, TListQuery extends ListQuery =
 
   protected constructor(protected readonly client: HttpTransport) {}
 
+  get(id: string): Promise<TResource> {
+    return this.client.get<TResource>(this.resourcePath(id));
+  }
+
   /** `/settlements/sb_123` — every subclass builds sub-resource paths from this. */
   protected resourcePath(id: string, ...suffix: string[]): string {
     const tail = suffix.length > 0 ? `/${suffix.join('/')}` : '';

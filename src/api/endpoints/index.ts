@@ -40,6 +40,25 @@ export interface EndpointRegistry {
   webhookEndpoints: WebhookEndpointsEndpoint;
 }
 
+export function createEndpoints(client: HttpTransport): EndpointRegistry {
+  return {
+    paymentIntents: new PaymentIntentsEndpoint(client),
+    charges: new ChargesEndpoint(client),
+    refunds: new RefundsEndpoint(client),
+    disputes: new DisputesEndpoint(client),
+    payouts: new PayoutsEndpoint(client),
+    settlements: new SettlementsEndpoint(client),
+    invoices: new InvoicesEndpoint(client),
+    webhookEvents: new WebhookEventsEndpoint(client),
+    apiKeys: new ApiKeysEndpoint(client),
+    bankAccounts: new BankAccountsEndpoint(client),
+    auth: new AuthEndpoint(client),
+    balance: new BalanceEndpoint(client),
+    reporting: new ReportingEndpoint(client),
+    webhookEndpoints: new WebhookEndpointsEndpoint(client),
+  };
+}
+
 export { BalanceEndpoint } from './balance.endpoint';
 export { BankAccountsEndpoint } from './bank-accounts.endpoint';
 export { ChargesEndpoint } from './charges.endpoint';
@@ -47,3 +66,4 @@ export { DisputesEndpoint } from './disputes.endpoint';
 export { PaymentIntentsEndpoint } from './payment-intents.endpoint';
 export { RefundsEndpoint } from './refunds.endpoint';
 export { ReportingEndpoint } from './reporting.endpoint';
+export { ResourceEndpoint } from './base';

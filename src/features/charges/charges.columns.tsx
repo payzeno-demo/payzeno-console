@@ -19,3 +19,10 @@ export function explainDecline(code: DeclineCode): string {
       return 'The issuer declined without a reason.';
     case 'insufficient_funds':
       return 'Not enough funds on the card.';
+    case 'lost_card':
+    case 'stolen_card':
+      return 'The card was reported lost or stolen.';
+    case 'expired_card':
+      return 'The card has expired.';
+    case 'incorrect_cvc':
+      return 'The security code did not match.';
