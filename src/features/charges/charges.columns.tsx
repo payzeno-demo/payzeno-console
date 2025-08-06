@@ -26,3 +26,9 @@ export function explainDecline(code: DeclineCode): string {
       return 'The card has expired.';
     case 'incorrect_cvc':
       return 'The security code did not match.';
+    case 'processing_error':
+      return 'The card network had a processing error.';
+    case 'issuer_unavailable':
+      return 'The issuing bank could not be reached.';
+    case 'velocity_exceeded':
+      return 'Too many attempts on this card.';

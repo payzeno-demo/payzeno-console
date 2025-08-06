@@ -21,6 +21,10 @@ export abstract class ResourceEndpoint<TResource, TListQuery extends ListQuery =
 
   protected constructor(protected readonly client: HttpTransport) {}
 
+  list(q?: TListQuery): Promise<Paginated<TResource>> {
+    return this.client.get<Paginated<TResource>>(this.basePath, this.toParams(q));
+  }
+
   get(id: string): Promise<TResource> {
     return this.client.get<TResource>(this.resourcePath(id));
   }

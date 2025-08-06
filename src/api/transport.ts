@@ -21,3 +21,10 @@ export interface RequestSpec<TBody = unknown> {
   query?: QueryParams;
   body?: TBody;
   headers?: Record<string, string>;
+  /** Overrides `READ_TIMEOUT_MS`. Settlement item lists pass `LONG_READ_TIMEOUT_MS`. */
+  timeoutMs?: number;
+  /** Required on POST/PATCH/DELETE. Minted once per mutation *attempt*. */
+  idempotencyKey?: string;
+  /** Opt out of transport-level retry for a call the caller knows is not safe to repeat. */
+  noRetry?: boolean;
+}
