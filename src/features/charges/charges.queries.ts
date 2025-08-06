@@ -19,3 +19,7 @@ import { DEFAULT_PAGE_SIZE } from '@config/constants';
  * common case matches that index instead of asking for something clever.
  */
 export function chargesListQuery(e: EndpointRegistry, q?: ChargeListQuery) {
+  const query: ChargeListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
+  return queryOptions<Paginated<Charge>>({
+    queryKey: queryKeys.charges.list(query),
+    queryFn: () => e.charges.list(query),
