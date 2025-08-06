@@ -17,3 +17,27 @@ import type {
 
 /** Anything a list route accepts. Stringified into the key so filters bust the cache. */
 export type AnyListQuery = ListQuery & Record<string, unknown>;
+
+function normalize(q?: AnyListQuery): Record<string, unknown> {
+  if (!q) return {};
+  const entries = Object.entries(q)
+    .filter(([, v]) => v !== undefined && v !== null && v !== '')
+    .sort(([a], [b]) => a.localeCompare(b));
+  return Object.fromEntries(entries);
+}
+
+export const queryKeys = {
+  session: {
+    all: ['session'] as const,
+    me: () => ['session', 'me'] as const,
+  },
+
+  paymentIntents: {
+    all: ['payment_intents'] as const,
+    list: (q?: PaymentIntentListQuery) => ['payment_intents', 'list', normalize(q)] as const,
+    detail: (id: string) => ['payment_intents', 'detail', id] as const,
+  },
+
+  charges: {
+    all: ['charges'] as const,
+    list: (q?: ChargeListQuery) => ['charges', 'list', normalize(q)] as const,

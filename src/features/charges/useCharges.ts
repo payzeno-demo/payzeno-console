@@ -21,3 +21,34 @@ export interface UseChargesResult {
   hasMore: boolean;
   isLoading: boolean;
   isFetching: boolean;
+  error: Error | null;
+}
+
+function toRow(charge: Charge): ChargeRow {
+  const refundableMinor = charge.captured_amount_minor - charge.refunded_amount_minor;
+  return {
+    ...charge,
+    _selected: false,
+    _refundableMinor: refundableMinor,
+    // Only a captured charge can be refunded. An `authorized` one takes a cancel, which
+    // voids the authorisation — a void is not a refund (domain-model.md §4).
+    _isRefundable:
+      (charge.status === 'captured' || charge.status === 'settled') && refundableMinor > 0,
+  };
+}
+
+export function useCharges(q?: ChargeListQuery): UseChargesResult {
+  const endpoints = useEndpoints();
+  const query = useQuery(chargesListQuery(endpoints, q));
+
+  const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
+
+  return {
+    rows,
+    nextCursor: query.data?.next_cursor ?? null,
+    hasMore: query.data?.has_more ?? false,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    error: (query.error as Error | null) ?? null,
+  };
+}
