@@ -1,0 +1,7 @@
+/**
+ * `useCreateApiKey()` — `POST /v1/api-keys`.
+ *
+ * The plaintext secret comes back once and only once. It lives in this hook's state, is
+ * handed straight to `<SecretRevealOnce />`, and is dropped by `clearSecret()` when that
+ * component unmounts. It is never written into the query cache, never logged, and never sent
+ * to telemetry — `trackEvent` below carries the mode and the scope count and nothing else.
