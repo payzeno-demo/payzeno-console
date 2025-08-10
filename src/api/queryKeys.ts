@@ -41,3 +41,13 @@ export const queryKeys = {
   charges: {
     all: ['charges'] as const,
     list: (q?: ChargeListQuery) => ['charges', 'list', normalize(q)] as const,
+    detail: (id: string) => ['charges', 'detail', id] as const,
+    ledger: (id: string) => ['charges', 'ledger', id] as const,
+  },
+
+  refunds: {
+    all: ['refunds'] as const,
+    list: (q?: AnyListQuery) => ['refunds', 'list', normalize(q)] as const,
+    detail: (id: string) => ['refunds', 'detail', id] as const,
+  },
+

@@ -32,3 +32,17 @@ export function explainDecline(code: DeclineCode): string {
       return 'The issuing bank could not be reached.';
     case 'velocity_exceeded':
       return 'Too many attempts on this card.';
+    case 'fraud_suspected':
+      return 'The issuer flagged the transaction as fraud.';
+    default:
+      return 'The payment was declined.';
+  }
+}
+
+const SETTLED_STATUSES: ReadonlySet<ChargeStatus> = new Set(['settled']);
+
+export function isSettled(status: ChargeStatus): boolean {
+  return SETTLED_STATUSES.has(status);
+}
+
+export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
