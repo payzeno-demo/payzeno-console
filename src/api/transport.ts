@@ -28,3 +28,11 @@ export interface RequestSpec<TBody = unknown> {
   /** Opt out of transport-level retry for a call the caller knows is not safe to repeat. */
   noRetry?: boolean;
 }
+
+export interface HttpTransport {
+  request<TRes, TBody = unknown>(spec: RequestSpec<TBody>): Promise<TRes>;
+  get<TRes>(path: string, query?: QueryParams): Promise<TRes>;
+  post<TRes, TBody>(path: string, body: TBody, idempotencyKey: string): Promise<TRes>;
+  patch<TRes, TBody>(path: string, body: TBody, idempotencyKey: string): Promise<TRes>;
+  delete(path: string, idempotencyKey: string): Promise<void>;
+}

@@ -46,3 +46,10 @@ export function isSettled(status: ChargeStatus): boolean {
 }
 
 export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
+  {
+    id: 'id',
+    header: 'Charge',
+    cell: (row) => (
+      <Link to={ROUTES.charges.detail(row.id)}>
+        <IdCell value={row.id} />
+      </Link>

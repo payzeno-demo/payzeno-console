@@ -66,4 +66,5 @@ export { DisputesEndpoint } from './disputes.endpoint';
 export { PaymentIntentsEndpoint } from './payment-intents.endpoint';
 export { RefundsEndpoint } from './refunds.endpoint';
 export { ReportingEndpoint } from './reporting.endpoint';
+export { WebhookEventsEndpoint } from './webhook-events.endpoint';
 export { ResourceEndpoint } from './base';
