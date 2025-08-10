@@ -36,3 +36,10 @@ export interface HttpTransport {
   patch<TRes, TBody>(path: string, body: TBody, idempotencyKey: string): Promise<TRes>;
   delete(path: string, idempotencyKey: string): Promise<void>;
 }
+
+export interface ApiClientOptions {
+  baseUrl: string;
+  connectTimeoutMs: number;
+  readTimeoutMs: number;
+  retries: number;
+  /** Status codes the transport may retry on an idempotent verb. */

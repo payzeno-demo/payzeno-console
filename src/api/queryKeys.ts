@@ -65,3 +65,8 @@ export const queryKeys = {
   payouts: {
     all: ['payouts'] as const,
     list: (q?: AnyListQuery) => ['payouts', 'list', normalize(q)] as const,
+    detail: (id: string) => ['payouts', 'detail', id] as const,
+  },
+
+  settlements: {
+    all: ['settlements'] as const,

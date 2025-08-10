@@ -25,3 +25,10 @@ export interface UseChargeResult {
 }
 
 export function useCharge(chargeId: string): UseChargeResult {
+  const endpoints = useEndpoints();
+  const query = useQuery({ ...chargeQuery(endpoints, chargeId), enabled: chargeId.length > 0 });
+
+  const isMissing = query.error instanceof NotFoundApiError;
+  const charge = query.data;
+
+  return {
