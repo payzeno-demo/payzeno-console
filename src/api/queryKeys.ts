@@ -56,3 +56,8 @@ export const queryKeys = {
     list: (q?: AnyListQuery) => ['disputes', 'list', normalize(q)] as const,
     detail: (id: string) => ['disputes', 'detail', id] as const,
   },
+
+  balance: {
+    all: ['balance'] as const,
+    current: (currency: CurrencyCode) => ['balance', 'current', currency] as const,
+  },
