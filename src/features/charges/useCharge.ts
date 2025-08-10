@@ -11,3 +11,24 @@ import type { CardSummary, Charge } from '@payzeno/contracts';
 
 import { NotFoundApiError } from '@api/errors';
 import { useEndpoints } from '@app/ApiContext';
+
+import { chargeQuery } from './charges.queries';
+
+export interface UseChargeResult {
+  charge: Charge | undefined;
+  card: CardSummary | undefined;
+  refundableMinor: number;
+  isLoading: boolean;
+  isMissing: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
+
+export function useCharge(chargeId: string): UseChargeResult {
+  const endpoints = useEndpoints();
+  const query = useQuery({ ...chargeQuery(endpoints, chargeId), enabled: chargeId.length > 0 });
+
+  const isMissing = query.error instanceof NotFoundApiError;
+  const charge = query.data;
+
+  return {

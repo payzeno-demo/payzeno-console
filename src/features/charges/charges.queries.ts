@@ -23,3 +23,11 @@ export function chargesListQuery(e: EndpointRegistry, q?: ChargeListQuery) {
   return queryOptions<Paginated<Charge>>({
     queryKey: queryKeys.charges.list(query),
     queryFn: () => e.charges.list(query),
+    staleTime: 20_000,
+  });
+}
+
+export function chargeQuery(e: EndpointRegistry, chargeId: string) {
+  return queryOptions<Charge>({
+    queryKey: queryKeys.charges.detail(chargeId),
+    queryFn: () => e.charges.get(chargeId),

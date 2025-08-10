@@ -41,3 +41,32 @@ export const queryKeys = {
   charges: {
     all: ['charges'] as const,
     list: (q?: ChargeListQuery) => ['charges', 'list', normalize(q)] as const,
+    detail: (id: string) => ['charges', 'detail', id] as const,
+    ledger: (id: string) => ['charges', 'ledger', id] as const,
+  },
+
+  refunds: {
+    all: ['refunds'] as const,
+    list: (q?: AnyListQuery) => ['refunds', 'list', normalize(q)] as const,
+    detail: (id: string) => ['refunds', 'detail', id] as const,
+  },
+
+  disputes: {
+    all: ['disputes'] as const,
+    list: (q?: AnyListQuery) => ['disputes', 'list', normalize(q)] as const,
+    detail: (id: string) => ['disputes', 'detail', id] as const,
+  },
+
+  balance: {
+    all: ['balance'] as const,
+    current: (currency: CurrencyCode) => ['balance', 'current', currency] as const,
+  },
+
+  payouts: {
+    all: ['payouts'] as const,
+    list: (q?: AnyListQuery) => ['payouts', 'list', normalize(q)] as const,
+    detail: (id: string) => ['payouts', 'detail', id] as const,
+  },
+
+  settlements: {
+    all: ['settlements'] as const,
