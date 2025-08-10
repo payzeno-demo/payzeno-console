@@ -61,3 +61,7 @@ export const queryKeys = {
     all: ['balance'] as const,
     current: (currency: CurrencyCode) => ['balance', 'current', currency] as const,
   },
+
+  payouts: {
+    all: ['payouts'] as const,
+    list: (q?: AnyListQuery) => ['payouts', 'list', normalize(q)] as const,
