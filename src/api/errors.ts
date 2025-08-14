@@ -3,3 +3,7 @@
  *
  * `ConsoleApiError extends PayzenoError` from `@payzeno/contracts`, which is what makes the
  * inheritance chain cross a repo boundary. Every subclass below exists even when it is
+ * constructed in exactly one place.
+ *
+ * Construction site: `src/api/http/error-mapper.ts`, and nowhere else.
+ * Render site: `src/components/feedback/ErrorBoundary.tsx`, and nowhere else.
