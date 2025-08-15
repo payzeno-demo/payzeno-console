@@ -32,3 +32,9 @@ export function useCharge(chargeId: string): UseChargeResult {
   const charge = query.data;
 
   return {
+    charge,
+    card: charge?.card,
+    refundableMinor: charge
+      ? Math.max(0, charge.captured_amount_minor - charge.refunded_amount_minor)
+      : 0,
+    isLoading: query.isLoading,

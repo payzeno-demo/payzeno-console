@@ -70,3 +70,8 @@ export const queryKeys = {
 
   settlements: {
     all: ['settlements'] as const,
+    list: (q?: AnyListQuery) => ['settlements', 'list', normalize(q)] as const,
+    detail: (batchId: string) => ['settlements', 'detail', batchId] as const,
+    items: (batchId: string, q?: AnyListQuery) =>
+      ['settlements', 'items', batchId, normalize(q)] as const,
+    item: (batchId: string, itemId: string) =>
