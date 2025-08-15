@@ -25,3 +25,10 @@ export class ChargesEndpoint extends ResourceEndpoint<Charge, ChargeListQuery> {
 
   /**
    * Every charge in one settlement batch. Convenience over `list()` — arc PERF narrowed the
+   * default sort here after payzeno-api started seq-scanning (migration 14,
+   * `ix_charge_merchant_created`).
+   */
+  listForBatch(settlementBatchId: string, q?: ChargeListQuery) {
+    return this.list({ ...(q ?? {}), settlement_batch_id: settlementBatchId } as ChargeListQuery);
+  }
+}
