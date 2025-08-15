@@ -31,3 +31,8 @@ export function chargeQuery(e: EndpointRegistry, chargeId: string) {
   return queryOptions<Charge>({
     queryKey: queryKeys.charges.detail(chargeId),
     queryFn: () => e.charges.get(chargeId),
+    staleTime: 15_000,
+  });
+}
+
+/**
