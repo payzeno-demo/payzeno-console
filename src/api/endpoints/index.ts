@@ -63,6 +63,7 @@ export { BalanceEndpoint } from './balance.endpoint';
 export { BankAccountsEndpoint } from './bank-accounts.endpoint';
 export { ChargesEndpoint } from './charges.endpoint';
 export { DisputesEndpoint } from './disputes.endpoint';
+export { InvoicesEndpoint } from './invoices.endpoint';
 export { PaymentIntentsEndpoint } from './payment-intents.endpoint';
 export { PayoutsEndpoint } from './payouts.endpoint';
 export { RefundsEndpoint } from './refunds.endpoint';

@@ -46,4 +46,16 @@ export function usePayouts(q?: PayoutListQuery): UsePayoutsResult {
 
   // See `useRefunds` — the cursor is an input to the request that produces the page.
   const latest = useRef<Paginated<Payout> | undefined>(undefined);
+  const pagination = usePagination<Payout>(latest.current, q?.limit);
+
+  const rows = useMemo<PayoutRow[]>(
+    () =>
+      (query.data?.data ?? []).map((payout) => ({
+        ...payout,
+        _selected: false,
+        _bankLabel: bankLabel(accountsById.get(payout.bank_account_id)),
+      })),
+    [query.data, accountsById],
+  );
+
 }

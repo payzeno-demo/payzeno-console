@@ -28,6 +28,25 @@ export interface PayoutListQuery extends ListQuery {
 export class PayoutsEndpoint extends ResourceEndpoint<Payout, PayoutListQuery> {
   protected readonly basePath = '/payouts';
 
+  constructor(client: HttpTransport) {
+    super(client);
+  }
+
+  create(
+    req: CreatePayoutRequest,
+    idempotencyKey: string = newIdempotencyKey(),
+  ): Promise<PayoutResponse> {
+    return this.client.post<PayoutResponse, CreatePayoutRequest>(
+      this.basePath,
+      req,
+      idempotencyKey,
+    );
+  }
+
+  /**
+   * Only a `scheduled` payout can be cancelled; once it is `in_transit` the rail has it and
+   * payzeno-api answers `409 invalid_state`.
+   */
   listFailed(currency?: CurrencyCode) {
     return this.list({ status: 'failed', currency, limit: 20 });
   }
