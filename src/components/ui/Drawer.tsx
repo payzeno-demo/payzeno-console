@@ -39,3 +39,44 @@ export function Drawer({
   className,
 }: DrawerProps) {
   return (
+    <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
+      <RadixDialog.Portal>
+        <RadixDialog.Overlay
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: color.overlay,
+            zIndex: zIndex.drawer,
+          }}
+        />
+        <RadixDialog.Content
+          className={cn(pz('drawer'), className)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: `min(${width}, 100vw)`,
+            display: 'flex',
+            flexDirection: 'column',
+            background: color.surface,
+            borderLeft: `1px solid ${color.border}`,
+            boxShadow: shadow.lg,
+            zIndex: zIndex.drawer,
+            transition: `transform ${duration.normal} ease-out`,
+          }}
+        >
+          <header
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              gap: space[3],
+              padding: space[5],
+              borderBottom: `1px solid ${color.border}`,
+            }}
+          >
+            <div>
+              <RadixDialog.Title
+                style={{
+                  margin: 0,

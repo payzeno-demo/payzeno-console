@@ -32,3 +32,7 @@ export interface DialogProps {
   className?: string;
 }
 
+/** Cancel/confirm footer, since eleven dialogs render exactly this. */
+export function DialogActions({ children }: { children: ReactNode }) {
+  return <>{children}</>;
+}

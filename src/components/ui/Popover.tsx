@@ -30,6 +30,50 @@ export interface PopoverProps {
   className?: string;
 }
 
+export function Popover({
+  trigger,
+  children,
+  open,
+  onOpenChange,
+  align = 'start',
+  side = 'bottom',
+  label,
+  width = '280px',
+  className,
+}: PopoverProps) {
+  return (
+    <RadixPopover.Root open={open} onOpenChange={onOpenChange}>
+      <RadixPopover.Trigger asChild>{trigger}</RadixPopover.Trigger>
+      <RadixPopover.Portal>
+        <RadixPopover.Content
+          align={align}
+          side={side}
+          sideOffset={6}
+          aria-label={label}
+          className={cn(pz('popover'), className)}
+          style={{
+            width,
+            maxHeight: '70vh',
+            overflowY: 'auto',
+            padding: space[3],
+            fontFamily: font.family,
+            fontSize: font.size.md,
+            color: color.textPrimary,
+            background: color.surface,
+            border: `1px solid ${color.border}`,
+            borderRadius: radius.md,
+            boxShadow: shadow.md,
+            zIndex: zIndex.popover,
+          }}
+        >
+          {children}
+          <RadixPopover.Arrow style={{ fill: color.surface }} />
+        </RadixPopover.Content>
+      </RadixPopover.Portal>
+    </RadixPopover.Root>
+  );
+}
+
 /** Close button for use inside popover content. */
 export function PopoverClose({ children }: { children: ReactNode }) {
   return <RadixPopover.Close asChild>{children}</RadixPopover.Close>;
