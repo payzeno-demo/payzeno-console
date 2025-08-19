@@ -25,3 +25,55 @@ export interface TooltipProps {
   className?: string;
 }
 
+export function Tooltip({
+  children,
+  content,
+  side = 'top',
+  disabled = false,
+  delayMs = 300,
+  className,
+}: TooltipProps) {
+  if (disabled || content === '' || content === null || content === undefined) {
+    return <>{children}</>;
+  }
+
+  return (
+    <RadixTooltip.Root delayDuration={delayMs}>
+      <RadixTooltip.Trigger asChild>{children}</RadixTooltip.Trigger>
+      <RadixTooltip.Portal>
+        <RadixTooltip.Content
+          side={side}
+          sideOffset={6}
+          className={cn(pz('tooltip'), className)}
+          style={{
+            maxWidth: '260px',
+            padding: `${space[2]} ${space[3]}`,
+            fontFamily: font.family,
+            fontSize: font.size.sm,
+            lineHeight: font.lineHeight.normal,
+            color: color.textInverse,
+            background: color.surfaceInverse,
+            borderRadius: radius.md,
+            boxShadow: shadow.md,
+            zIndex: zIndex.popover,
+          }}
+        >
+          {content}
+          <RadixTooltip.Arrow style={{ fill: color.surfaceInverse }} />
+        </RadixTooltip.Content>
+      </RadixTooltip.Portal>
+    </RadixTooltip.Root>
+  );
+}
+
+/**
+ * The single provider mount. `<AppProviders>` renders this; nothing else should.
+ * `skipDelayDuration` keeps a row of icon buttons from re-delaying on every hop.
+ */
+export function TooltipProvider({ children }: { children: ReactNode }) {
+  return (
+    <RadixTooltip.Provider delayDuration={300} skipDelayDuration={200}>
+      {children}
+    </RadixTooltip.Provider>
+  );
+}

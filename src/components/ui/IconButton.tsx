@@ -17,6 +17,44 @@ import { Tooltip } from './Tooltip';
 import { color, radius, space } from './tokens';
 
 export type IconButtonSize = 'sm' | 'md';
+export type IconButtonVariant = 'ghost' | 'outline' | 'danger';
+
+/**
+ * Built-in glyphs, so a caller that just wants "the bell" does not have to import an icon.
+ * Deliberately text glyphs: this repo ships no icon font and no SVG sprite (PAY-1655).
+ */
+export const ICON_GLYPHS = {
+  bell: '🔔',
+  copy: '⧉',
+  close: '✕',
+  chevronDown: '⌄',
+  chevronRight: '›',
+  external: '↗',
+  refresh: '⟳',
+  search: '⌕',
+  menu: '☰',
+  check: '✓',
+} as const;
+
+export type IconName = keyof typeof ICON_GLYPHS;
+
+export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+  /**
+   * The accessible name. Required in practice — when it is omitted the caller must pass
+   * `aria-label` instead, and one of the two always wins.
+   */
+  label?: string;
+  icon?: ReactNode;
+  /** Built-in glyph, used when `icon` and `children` are both absent. */
+  name?: IconName;
+  size?: IconButtonSize;
+  variant?: IconButtonVariant;
+  /** For toggle buttons: renders `aria-pressed`. */
+  pressed?: boolean;
+  hideTooltip?: boolean;
+  className?: string;
+}
+
 const SIZE_PX: Record<IconButtonSize, string> = { sm: '28px', md: '34px' };
 
 function variantStyle(variant: IconButtonVariant): React.CSSProperties {
@@ -30,3 +68,60 @@ function variantStyle(variant: IconButtonVariant): React.CSSProperties {
   }
 }
 
+export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
+  {
+    label,
+    icon,
+    name,
+    size = 'md',
+    variant = 'ghost',
+    pressed,
+    hideTooltip = false,
+    disabled,
+    type = 'button',
+    className,
+    style,
+    children,
+    ...rest
+  },
+  ref,
+) {
+  // One of `label` / `aria-label` must be present. `<IconButton>` exists precisely so that
+  // this cannot be forgotten silently, so an unnamed one is named after its glyph rather than
+  // announced as "button".
+  const accessibleName = label ?? rest['aria-label'] ?? name ?? 'button';
+  const glyph = icon ?? children ?? (name ? ICON_GLYPHS[name] : null);
+
+  const button = (
+    <button
+      {...rest}
+      ref={ref}
+      type={type}
+      disabled={disabled}
+      aria-label={accessibleName}
+      aria-pressed={pressed}
+      className={cn(pz('icon-button'), pz('icon-button', undefined, variant), className)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: SIZE_PX[size],
+        height: SIZE_PX[size],
+        padding: space[1],
+        borderRadius: radius.md,
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1,
+        ...variantStyle(variant),
+        ...style,
+      }}
+    >
+      <span aria-hidden="true" style={{ display: 'inline-flex' }}>
+        {glyph}
+      </span>
+    </button>
+  );
+
+  if (hideTooltip) return button;
+
+  return <Tooltip content={accessibleName}>{button}</Tooltip>;
+});

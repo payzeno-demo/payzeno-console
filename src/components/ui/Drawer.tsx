@@ -39,3 +39,85 @@ export function Drawer({
   className,
 }: DrawerProps) {
   return (
+    <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
+      <RadixDialog.Portal>
+        <RadixDialog.Overlay
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: color.overlay,
+            zIndex: zIndex.drawer,
+          }}
+        />
+        <RadixDialog.Content
+          className={cn(pz('drawer'), className)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            right: 0,
+            bottom: 0,
+            width: `min(${width}, 100vw)`,
+            display: 'flex',
+            flexDirection: 'column',
+            background: color.surface,
+            borderLeft: `1px solid ${color.border}`,
+            boxShadow: shadow.lg,
+            zIndex: zIndex.drawer,
+            transition: `transform ${duration.normal} ease-out`,
+          }}
+        >
+          <header
+            style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              justifyContent: 'space-between',
+              gap: space[3],
+              padding: space[5],
+              borderBottom: `1px solid ${color.border}`,
+            }}
+          >
+            <div>
+              <RadixDialog.Title
+                style={{
+                  margin: 0,
+                  fontFamily: font.family,
+                  fontSize: font.size.lg,
+                  fontWeight: font.weight.semibold,
+                  color: color.textPrimary,
+                }}
+              >
+                {title}
+              </RadixDialog.Title>
+              {description ? (
+                <RadixDialog.Description
+                  style={{ margin: `${space[1]} 0 0`, fontSize: font.size.sm, color: color.textSecondary }}
+                >
+                  {description}
+                </RadixDialog.Description>
+              ) : null}
+            </div>
+            <RadixDialog.Close asChild>
+              <IconButton label="Close panel" icon="✕" size="sm" />
+            </RadixDialog.Close>
+          </header>
+
+          <div style={{ flex: 1, overflowY: 'auto', padding: space[5] }}>{children}</div>
+
+          {footer ? (
+            <footer
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: space[2],
+                padding: space[5],
+                borderTop: `1px solid ${color.border}`,
+              }}
+            >
+              {footer}
+            </footer>
+          ) : null}
+        </RadixDialog.Content>
+      </RadixDialog.Portal>
+    </RadixDialog.Root>
+  );
+}

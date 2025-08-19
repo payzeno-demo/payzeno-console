@@ -26,6 +26,15 @@ export interface MenuItem {
   destructive?: boolean;
 }
 
+export interface DropdownMenuProps {
+  trigger: ReactNode;
+  items: ReadonlyArray<MenuItem>;
+  /** Accessible name of the menu itself. */
+  label: string;
+  align?: 'start' | 'end';
+  className?: string;
+}
+
 export function DropdownMenu({ trigger, items, label, align = 'end', className }: DropdownMenuProps) {
   const benign = items.filter((item) => !item.destructive);
   const destructive = items.filter((item) => item.destructive);
