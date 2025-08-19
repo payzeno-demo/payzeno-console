@@ -80,3 +80,44 @@ export function Drawer({
               <RadixDialog.Title
                 style={{
                   margin: 0,
+                  fontFamily: font.family,
+                  fontSize: font.size.lg,
+                  fontWeight: font.weight.semibold,
+                  color: color.textPrimary,
+                }}
+              >
+                {title}
+              </RadixDialog.Title>
+              {description ? (
+                <RadixDialog.Description
+                  style={{ margin: `${space[1]} 0 0`, fontSize: font.size.sm, color: color.textSecondary }}
+                >
+                  {description}
+                </RadixDialog.Description>
+              ) : null}
+            </div>
+            <RadixDialog.Close asChild>
+              <IconButton label="Close panel" icon="✕" size="sm" />
+            </RadixDialog.Close>
+          </header>
+
+          <div style={{ flex: 1, overflowY: 'auto', padding: space[5] }}>{children}</div>
+
+          {footer ? (
+            <footer
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                gap: space[2],
+                padding: space[5],
+                borderTop: `1px solid ${color.border}`,
+              }}
+            >
+              {footer}
+            </footer>
+          ) : null}
+        </RadixDialog.Content>
+      </RadixDialog.Portal>
+    </RadixDialog.Root>
+  );
+}
