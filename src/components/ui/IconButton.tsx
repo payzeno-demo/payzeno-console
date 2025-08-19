@@ -23,6 +23,21 @@ export type IconButtonVariant = 'ghost' | 'outline' | 'danger';
  * Built-in glyphs, so a caller that just wants "the bell" does not have to import an icon.
  * Deliberately text glyphs: this repo ships no icon font and no SVG sprite (PAY-1655).
  */
+export const ICON_GLYPHS = {
+  bell: '🔔',
+  copy: '⧉',
+  close: '✕',
+  chevronDown: '⌄',
+  chevronRight: '›',
+  external: '↗',
+  refresh: '⟳',
+  search: '⌕',
+  menu: '☰',
+  check: '✓',
+} as const;
+
+export type IconName = keyof typeof ICON_GLYPHS;
+
 export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
   /**
    * The accessible name. Required in practice — when it is omitted the caller must pass

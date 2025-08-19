@@ -70,3 +70,10 @@ export function Tooltip({
  * The single provider mount. `<AppProviders>` renders this; nothing else should.
  * `skipDelayDuration` keeps a row of icon buttons from re-delaying on every hop.
  */
+export function TooltipProvider({ children }: { children: ReactNode }) {
+  return (
+    <RadixTooltip.Provider delayDuration={300} skipDelayDuration={200}>
+      {children}
+    </RadixTooltip.Provider>
+  );
+}

@@ -32,6 +32,8 @@ export interface DialogProps {
   className?: string;
 }
 
+const WIDTHS: Record<DialogSize, string> = { sm: '400px', md: '520px', lg: '760px' };
+
 /** Cancel/confirm footer, since eleven dialogs render exactly this. */
 export function DialogActions({ children }: { children: ReactNode }) {
   return <>{children}</>;
