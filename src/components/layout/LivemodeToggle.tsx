@@ -19,3 +19,24 @@ import { trackEvent } from '@lib/telemetry';
 import { Switch } from '../ui/Switch';
 import { color, font, radius, space, visuallyHidden } from '../ui/tokens';
 
+export interface LivemodeToggleProps {
+  livemode: boolean;
+  onChange: (next: boolean) => void;
+  /** Merchants that have never taken a live payment cannot leave test mode. */
+  canGoLive?: boolean;
+}
+
+export function LivemodeToggle({ livemode, onChange, canGoLive = true }: LivemodeToggleProps) {
+  const queryClient = useQueryClient();
+
+  const flip = useCallback(
+    (next: boolean) => {
+      onChange(next);
+      trackEvent('livemode.toggle', { livemode: next });
+      // Everything the API scoped by mode is now wrong. Not a refetch — a reset, so no stale
+      // rows are shown while the new ones load.
+      void queryClient.resetQueries();
+    },
+    [onChange, queryClient],
+  );
+

@@ -17,3 +17,13 @@ export interface WebhookEventListQuery extends ListQuery {
 
 /**
  * `GET /v1/webhook_events`, `GET /v1/webhook_events/:eventId`,
+ * `POST /v1/webhook_events/:eventId/redeliver` (api-surface.md §9).
+ *
+ * Rows are produced by payzeno-api's `WebhookFanoutConsumer`, deduped on
+ * `(endpoint_id, source_event_id)` — the bus is at-least-once, so a redelivered
+ * `payout.failed` must not send the merchant a second webhook.
+ */
+export class WebhookEventsEndpoint extends ResourceEndpoint<WebhookEvent, WebhookEventListQuery> {
+  protected readonly basePath = '/webhook_events';
+
+  constructor(client: HttpTransport) {
