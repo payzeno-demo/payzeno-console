@@ -25,6 +25,16 @@ import { fieldErrorId, fieldId } from '@lib/ids';
 
 type EvidenceField = keyof DisputeEvidence;
 
+const LABELS: Readonly<Record<EvidenceField, string>> = {
+  product_description: 'What was sold',
+  customer_name: 'Customer name',
+  customer_email: 'Customer email',
+  shipping_tracking_number: 'Tracking number',
+  receipt_file_id: 'Receipt file id',
+  service_documentation_file_id: 'Service documentation file id',
+  uncategorized_text: 'Anything else',
+};
+
 const MULTILINE: ReadonlySet<EvidenceField> = new Set([
   'product_description',
   'uncategorized_text',
