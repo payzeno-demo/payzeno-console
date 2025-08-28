@@ -25,6 +25,11 @@ import { fieldErrorId, fieldId } from '@lib/ids';
 
 type EvidenceField = keyof DisputeEvidence;
 
+const MULTILINE: ReadonlySet<EvidenceField> = new Set([
+  'product_description',
+  'uncategorized_text',
+]);
+
 export function completeness(
   evidence: DisputeEvidence,
   fields: ReadonlyArray<EvidenceField>,

@@ -6,3 +6,10 @@
  * session can never call is a trap for whoever wires the next button.
  */
 import { queryOptions } from '@tanstack/react-query';
+
+import type {
+  Dispute,
+  Paginated,
+  SubmitDisputeEvidenceRequest,
+} from '@payzeno/contracts';
+
