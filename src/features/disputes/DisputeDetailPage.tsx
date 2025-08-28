@@ -36,4 +36,25 @@ export function DisputeDetailPage() {
   useDocumentTitle(disputeId ? `Dispute ${disputeId}` : 'Dispute');
 
   const evidenceV2 = useFlag('dispute_evidence_v2');
+  const { dispute, hoursRemaining, windowClosed, canSubmitEvidence, liabilityShifted, isLoading, isMissing, error } =
+    useDispute(disputeId);
+  const {
+    submitEvidence,
+    isPending,
+    isSubmitted,
+    windowClosed: closedOnSubmit,
+    errorMessage,
+    fieldErrors,
+  } = useSubmitEvidence();
+
+  if (isMissing) {
+    return <NotFound title="No such dispute" body="It may belong to another account." />;
+  }
+  if (error) {
+    return <ErrorState error={error} title="We could not load this dispute" />;
+  }
+  if (isLoading || !dispute) {
+    return <LoadingPage label="Loading dispute" />;
+  }
+
 }

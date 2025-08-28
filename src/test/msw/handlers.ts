@@ -22,3 +22,28 @@ import type { Paginated } from '@payzeno/contracts';
 
 import {
   makeApiKey,
+  makeBalance,
+  makeBankAccount,
+  makeCharge,
+  makeDashboardSummary,
+  makeDispute,
+  makeInvoice,
+  makePage,
+  makePaymentIntent,
+  makePayout,
+  makeReconciliationItem,
+  makeRefund,
+  makeSession,
+  makeSettlementBatch,
+  makeWebhookEndpoint,
+  makeWebhookEvent,
+} from '../factories';
+
+/** Matches `src/test/setup.ts::TEST_ENV.VITE_PAYZENO_API_URL`. */
+export const API_BASE = 'http://localhost/v1';
+
+/** Absolute URL for a route path, so handlers and assertions never drift. */
+export function url(path: string): string {
+  return `${API_BASE}${path}`;
+}
+

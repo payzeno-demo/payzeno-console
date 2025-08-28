@@ -16,3 +16,21 @@ import { MoneyCell } from '@components/data/MoneyCell';
 import { StatusPill } from '@components/data/StatusPill';
 import { humanise } from '@lib/format';
 import { ROUTES } from '@/routes';
+import type { DisputeRow } from '@/types/view-models';
+
+/** Statuses where the merchant still has something to do. Everything else is history. */
+export const ACTIONABLE_STATUSES: ReadonlySet<DisputeStatus> = new Set([
+  'needs_response',
+  'warning_needs_response',
+]);
+
+export function reasonLabel(reason: DisputeReason): string {
+  return reason === 'general' ? 'Other' : humanise(reason);
+}
+
+/** `36.4` → `36h left`; negative → `closed`; null → em dash. */
+export function formatRemaining(hours: number | null): string {
+  if (hours === null) return '—';
+  if (hours <= 0) return 'closed';
+  if (hours < 48) return `${Math.floor(hours)}h left`;
+  return `${Math.floor(hours / 24)}d left`;

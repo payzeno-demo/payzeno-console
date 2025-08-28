@@ -40,6 +40,8 @@ export interface UseSubmitEvidenceResult {
 
 export function useSubmitEvidence(): UseSubmitEvidenceResult {
   const endpoints = useEndpoints();
+  const toast = useToast();
+
   const submitEvidence = useCallback(
     ({ disputeId, evidence, submit }: SubmitEvidenceArgs) => {
       mutation.mutate({ disputeId, request: { evidence, submit } });

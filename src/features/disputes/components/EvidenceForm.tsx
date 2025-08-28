@@ -15,3 +15,20 @@ import type { FormEvent } from 'react';
 import type { DisputeEvidence } from '@payzeno/contracts';
 
 import { InlineError } from '@components/feedback/InlineError';
+import { Button } from '@components/ui/Button';
+import { Input } from '@components/ui/Input';
+import { Label } from '@components/ui/Label';
+import { Textarea } from '@components/ui/Textarea';
+import { fieldErrorId, fieldId } from '@lib/ids';
+
+export interface EvidenceFormProps {
+  disputeId: string;
+  initialEvidence: DisputeEvidence;
+  disabled: boolean;
+  isPending: boolean;
+  isSubmitted: boolean;
+  errorMessage: string | null;
+  fieldErrors: Record<string, string>;
+  onSave: (evidence: DisputeEvidence, submit: boolean) => void;
+}
+
