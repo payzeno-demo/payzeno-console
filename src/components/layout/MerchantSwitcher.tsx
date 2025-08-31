@@ -49,6 +49,9 @@ export function filterMerchants(
 }
 
 export function MerchantSwitcher({ current, available = [], onSwitch }: MerchantSwitcherProps) {
+  const [query, setQuery] = useState('');
+  const debounced = useDebouncedValue(query);
+
   const single = available.length <= 1;
 
   if (single) {
