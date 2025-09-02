@@ -35,3 +35,46 @@ export interface CardProps {
   className?: string;
 }
 
+/** Metric tile: a big number with a caption. The reporting summary is four of these. */
+export function StatCard({
+  label,
+  value,
+  hint,
+  tone = 'neutral',
+}: {
+  label: string;
+  value: ReactNode;
+  hint?: ReactNode;
+  tone?: 'neutral' | 'danger';
+}) {
+  return (
+    <div
+      className={pz('card', 'stat')}
+      style={{
+        padding: space[5],
+        background: color.surface,
+        border: `1px solid ${tone === 'danger' ? color.danger : color.border}`,
+        borderRadius: radius.lg,
+      }}
+    >
+      <p style={{ margin: 0, fontSize: font.size.sm, color: color.textSecondary }}>{label}</p>
+      <p
+        style={{
+          margin: `${space[2]} 0 0`,
+          fontFamily: font.familyMono,
+          fontSize: font.size.xxl,
+          fontWeight: font.weight.semibold,
+          color: tone === 'danger' ? color.danger : color.textPrimary,
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {value}
+      </p>
+      {hint ? (
+        <p style={{ margin: `${space[1]} 0 0`, fontSize: font.size.sm, color: color.textMuted }}>
+          {hint}
+        </p>
+      ) : null}
+    </div>
+  );
+}

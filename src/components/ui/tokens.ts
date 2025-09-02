@@ -48,3 +48,13 @@ export const color = {
   neutral: '#4b5563',
   neutralSubtle: '#eef0f4',
 } as const;
+
+export type ColorToken = keyof typeof color;
+
+/** 4px base scale. `space[3]` is 12px. */
+export const space = {
+  0: '0',
+  1: '4px',
+  2: '8px',
+  3: '12px',
+  4: '16px',
