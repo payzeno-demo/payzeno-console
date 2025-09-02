@@ -28,3 +28,13 @@ export const color = {
   textPrimary: '#111827',
   textSecondary: '#4b5563',
   textMuted: '#6b7280',
+  textInverse: '#f9fafb',
+  textLink: '#2f4bc4',
+
+  // brand
+  brand: '#3b5bdb',
+  brandHover: '#314dbb',
+  brandSubtle: '#e8ecfb',
+
+  // status tones
+  success: '#137547',
