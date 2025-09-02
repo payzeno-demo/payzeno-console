@@ -10,3 +10,9 @@
 import type {
   ChargeStatus,
   DisputeStatus,
+  InvoiceStatus,
+  PaymentIntentStatus,
+  PayoutStatus,
+  ReconciliationItemStatus,
+  RefundStatus,
+  SettlementBatchStatus,

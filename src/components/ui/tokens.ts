@@ -18,3 +18,13 @@ export const color = {
   surfaceSunken: '#eef0f4',
   surfaceInverse: '#111827',
   overlay: 'rgba(17, 24, 39, 0.48)',
+
+  // borders
+  border: '#e2e5ea',
+  borderStrong: '#c8cdd6',
+  borderFocus: '#3b5bdb',
+
+  // text
+  textPrimary: '#111827',
+  textSecondary: '#4b5563',
+  textMuted: '#6b7280',
