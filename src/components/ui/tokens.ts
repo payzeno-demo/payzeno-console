@@ -38,3 +38,13 @@ export const color = {
 
   // status tones
   success: '#137547',
+  successSubtle: '#e3f4ea',
+  warning: '#8a5a00',
+  warningSubtle: '#fdf1dd',
+  danger: '#b42318',
+  dangerSubtle: '#fdeceb',
+  info: '#0b6a8f',
+  infoSubtle: '#e2f2f8',
+  neutral: '#4b5563',
+  neutralSubtle: '#eef0f4',
+} as const;

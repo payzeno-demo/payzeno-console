@@ -11,3 +11,9 @@
 import type { ReactNode } from 'react';
 
 import { cn, pz } from '@lib/cn';
+
+import { font, radius, space, toneStyle, visuallyHidden } from './tokens';
+import type { Tone } from './tokens';
+
+export type BadgeSize = 'sm' | 'md';
+
