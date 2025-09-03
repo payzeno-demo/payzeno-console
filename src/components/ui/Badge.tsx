@@ -17,3 +17,9 @@ import type { Tone } from './tokens';
 
 export type BadgeSize = 'sm' | 'md';
 
+/**
+ * `critical` is an alias for `danger`, kept because the notification code models severity as
+ * `critical | warning | info` (`features/notifications/notification.types.ts`) and translating
+ * at every call site was worse than accepting both here.
+ */
+export type BadgeTone = Tone | 'critical';

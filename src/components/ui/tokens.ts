@@ -68,3 +68,13 @@ export const space = {
 
 export type SpaceStep = keyof typeof space;
 
+export const radius = {
+  none: '0',
+  sm: '4px',
+  md: '6px',
+  lg: '10px',
+  pill: '999px',
+} as const;
+
+export const font = {
+  family:
