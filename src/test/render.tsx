@@ -17,3 +17,13 @@
  * ### Why the stack is composed here rather than through `<AppProvidersWithoutRouter>`
  *
  * `QueryProvider` takes a `client` prop; `AppProviders` does not forward one, because
+ * production has no reason to inject a cache. Tests do: `createQueryClient()`'s production
+ * retry policy repeats an `UpstreamUnavailableApiError` three times with a 1s/2s/4s backoff,
+ * which turns a one-line 502 assertion into a seven-second test. So the order below is
+ * duplicated from `AppProviders.tsx` on purpose, and it must be kept in step with it —
+ * the same wart `AppProviders` records as TODO(rrefactor) PAY-2011. The retry policy itself is
+ * covered directly against `shouldRetry` / `retryDelayFor`, so nothing goes untested.
+ */
+import { QueryClient } from '@tanstack/react-query';
+import { render, renderHook } from '@testing-library/react';
+import type {
