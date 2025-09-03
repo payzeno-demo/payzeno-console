@@ -23,3 +23,9 @@ import { labelise } from '@lib/format';
 
 import { Badge } from '../ui/Badge';
 import type { Tone } from '../ui/tokens';
+
+/**
+ * One table, every status union the console renders. Anything unmapped falls through to
+ * `neutral` rather than throwing — a new status shipped by the API should look boring, not
+ * crash the page.
+ */
