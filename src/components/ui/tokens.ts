@@ -78,3 +78,13 @@ export const radius = {
 
 export const font = {
   family:
+    "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  /** Amounts, ids and anything columnar. Tabular figures keep the decimal points aligned. */
+  familyMono: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+  size: {
+    xs: '11px',
+    sm: '12px',
+    md: '14px',
+    lg: '16px',
+    xl: '20px',
+    xxl: '28px',
