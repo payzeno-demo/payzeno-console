@@ -6,3 +6,11 @@
  *
  *  - a real `<caption>` — required prop, no default;
  *  - `aria-sort` on the sorted header and nowhere else;
+ *  - `aria-busy` while loading, with skeleton rows that are `aria-hidden`;
+ *  - a row that is clickable is a `<button>` inside the first cell, not an `onClick` on
+ *    `<tr>` — a div with a click handler is not reachable by keyboard, and rrefactor's first
+ *    version of this file shipped exactly that (PAY-1712).
+ *
+ * Row virtualisation was added in PAY-1996, reverted in PAY-2001 when it broke the settlement
+ * item table's sticky header, and re-added behind `VIRTUALISATION_THRESHOLD`.
+ */

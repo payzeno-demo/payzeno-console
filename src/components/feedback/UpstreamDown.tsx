@@ -21,3 +21,27 @@ export interface UpstreamDownProps {
   onRetry: () => void;
   /** Seconds before the automatic retry. Set to 0 to disable it. */
   autoRetryAfter?: number;
+  requestId?: string;
+  /** Which upstream, when we know: "the ledger", "Worldflow". */
+  upstream?: string;
+}
+
+export function UpstreamDown({
+  onRetry,
+  autoRetryAfter = 10,
+  requestId,
+  upstream,
+}: UpstreamDownProps) {
+  const [remaining, setRemaining] = useState(autoRetryAfter);
+  const [retrying, setRetrying] = useState(false);
+
+  useEffect(() => {
+    if (autoRetryAfter <= 0) return undefined;
+
+    const timer = setInterval(() => {
+      setRemaining((current) => (current <= 1 ? 0 : current - 1));
+    }, 1_000);
+
+    return () => clearInterval(timer);
+  }, [autoRetryAfter]);
+

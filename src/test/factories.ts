@@ -66,3 +66,45 @@ export function makeSession(overrides: Partial<SessionResponse> = {}): SessionRe
   };
 }
 
+export function makeCharge(overrides: Partial<Charge> = {}): Charge {
+  return {
+    id: 'ch_01HW0RTCHARGE00000001',
+    object: 'charge',
+    merchant_id: MERCHANT_ID,
+    payment_intent_id: 'pi_01HW0RTPAYMENTINTENT0001',
+    amount_minor: 12_500,
+    captured_amount_minor: 12_500,
+    refunded_amount_minor: 0,
+    currency: 'GBP',
+    status: 'captured',
+    card: {
+      brand: 'visa',
+      last_four: '4242',
+      exp_month: 11,
+      exp_year: 2029,
+      country: 'GB',
+      funding: 'credit',
+    },
+    acquirer: 'worldflow',
+    network_transaction_id: 'ntx_88123',
+    processor_reference: 'wf_ref_88123',
+    authorization_code: 'A1B2C3',
+    capture_method: 'manual',
+    three_d_secure: null,
+    sca_exemption: null,
+    risk_score: 12,
+    failure_code: null,
+    failure_message: null,
+    settlement_batch_id: 'sb_01HW0RTBATCH000000001',
+    livemode: true,
+    metadata: {},
+    authorized_at: '2026-03-14T08:00:04.000Z',
+    captured_at: '2026-03-14T08:02:00.000Z',
+    settled_at: null,
+    authorization_expires_at: '2026-03-21T08:00:04.000Z',
+    created_at: '2026-03-14T08:00:00.000Z',
+    updated_at: NOW,
+    ...overrides,
+  } as Charge;
+}
+

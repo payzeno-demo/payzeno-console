@@ -7,3 +7,11 @@
  * (permission, upstream, everything else). Anything richer belongs in the boundary.
  *
  * a11y: `role="status"` rather than `role="alert"`, because a failed section is not an
+ * interruption — the user is still on the page and the rest of it still works.
+ */
+import type { ReactNode } from 'react';
+
+import {
+  ConsoleApiError,
+  ForbiddenError,
+  UpstreamUnavailableApiError,
