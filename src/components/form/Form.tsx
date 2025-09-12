@@ -19,3 +19,13 @@ import { pz } from '@lib/cn';
 
 import { color, font, radius, space } from '../ui/tokens';
 
+import { hasErrors } from './field-errors';
+import type { FormErrors } from './field-errors';
+
+export interface FormProps {
+  id: string;
+  /** Accessible name. Rendered as the legend when `heading` is true. */
+  label: string;
+  onSubmit: () => void | Promise<void>;
+  children: ReactNode;
+  /** Buttons. Rendered inside the form so Enter submits. */

@@ -49,3 +49,20 @@ export function EvidenceForm({
   const set = <TKey extends keyof DisputeEvidence>(key: TKey, value: DisputeEvidence[TKey]) => {
     setEvidence((current) => ({ ...current, [key]: value }));
   };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (disabled || isPending) return;
+    onSave(evidence, true);
+  };
+
+  const errorFor = (field: string) => fieldErrors[`evidence.${field}`];
+
+  return (
+    <form onSubmit={handleSubmit} noValidate aria-labelledby={`${FORM}-heading`}>
+      <h2 id={`${FORM}-heading`}>Evidence for {disputeId}</h2>
+
+      {errorMessage ? (
+        <p role="alert" data-testid="evidence-error">
+          {errorMessage}
+        </p>
