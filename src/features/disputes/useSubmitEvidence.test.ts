@@ -48,6 +48,19 @@ describe('saving a draft', () => {
     });
 
     await waitFor(() => {
+      expect(box.seen).not.toBeNull();
+    });
+    expect(box.seen).toMatchObject({ submit: true });
+  });
+
+  it('marks the dispute submitted, which is what locks the form', async () => {
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
+    });
+
+    await waitFor(() => {
       expect(result.current.isSubmitted).toBe(true);
     });
   });
@@ -80,6 +93,45 @@ describe('the closed-window branch', () => {
         'Too late.',
       ),
     );
+
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
+    });
+
+    await waitFor(() => {
+      expect(result.current.windowClosed).toBe(true);
+    });
+
+    expect(result.current.errorMessage).toBe(
+      'The response window closed before this reached the network.',
+    );
+    expect(result.current.fieldErrors).toEqual({});
+  });
+
+  it('refetches the dispute, so the page shows the state the network left it in', async () => {
+    server.use(
+      errorHandler('post', '/disputes/:disputeId/evidence', 422, 'dispute_window_closed', 'Late'),
+    );
+
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
+    });
+
+    await waitFor(() => {
+      expect(result.current.fieldErrors).toEqual({
+        'evidence.customer_email': 'Not a valid email address.',
+      });
+    });
+    expect(result.current.errorMessage).toBe('Some of the evidence fields need attention.');
+    expect(result.current.windowClosed).toBe(false);
+  });
+
+  it('names the permission on a 403', async () => {
+    server.use(errorHandler('post', '/disputes/:disputeId/evidence', 403, 'permission_denied'));
 
   });
 });

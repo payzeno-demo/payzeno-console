@@ -42,6 +42,7 @@ export function useSubmitEvidence(): UseSubmitEvidenceResult {
   const endpoints = useEndpoints();
   const toast = useToast();
 
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const submitEvidence = useCallback(
     ({ disputeId, evidence, submit }: SubmitEvidenceArgs) => {
