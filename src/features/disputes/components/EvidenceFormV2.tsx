@@ -40,6 +40,8 @@ const MULTILINE: ReadonlySet<EvidenceField> = new Set([
   'uncategorized_text',
 ]);
 
+const FORM = 'evidence-v2';
+
 export function completeness(
   evidence: DisputeEvidence,
   fields: ReadonlyArray<EvidenceField>,
