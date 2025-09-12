@@ -38,3 +38,16 @@ export interface FormFieldProps {
   error?: string;
   required?: boolean;
   /** Note next to the label: "optional", "staff only". */
+  labelHint?: string;
+}
+
+export function hintIdFor(id: string): string {
+  return `${id}-hint`;
+}
+
+export { errorIdFor };
+
+/** Join the ids that actually exist, in reading order: hint first, then error. */
+export function describedByFor(id: string, hasHint: boolean, hasError: boolean): string | undefined {
+  const ids: string[] = [];
+  if (hasHint) ids.push(hintIdFor(id));

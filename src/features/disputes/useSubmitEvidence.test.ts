@@ -115,6 +115,25 @@ describe('the closed-window branch', () => {
       errorHandler('post', '/disputes/:disputeId/evidence', 422, 'dispute_window_closed', 'Late'),
     );
 
+    const { result, queryClient } = renderHookWithProviders(() => useSubmitEvidence());
+    queryClient.setQueryData(queryKeys.disputes.detail(DISPUTE_ID), { id: DISPUTE_ID });
+
+    act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
+    });
+
+    await waitFor(() => {
+      expect(
+        queryClient.getQueryState(queryKeys.disputes.detail(DISPUTE_ID))?.isInvalidated,
+      ).toBe(true);
+    });
+  });
+
+  it('leaves isSubmitted false — nothing reached the network', async () => {
+    server.use(
+      errorHandler('post', '/disputes/:disputeId/evidence', 422, 'dispute_window_closed', 'Late'),
+    );
+
     const { result } = renderHookWithProviders(() => useSubmitEvidence());
 
     act(() => {
@@ -133,5 +152,14 @@ describe('the closed-window branch', () => {
   it('names the permission on a 403', async () => {
     server.use(errorHandler('post', '/disputes/:disputeId/evidence', 403, 'permission_denied'));
 
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBe('Evidence already submitted.');
+    });
   });
 });
