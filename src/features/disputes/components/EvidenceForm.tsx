@@ -32,3 +32,20 @@ export interface EvidenceFormProps {
   onSave: (evidence: DisputeEvidence, submit: boolean) => void;
 }
 
+const FORM = 'evidence';
+
+export function EvidenceForm({
+  disputeId,
+  initialEvidence,
+  disabled,
+  isPending,
+  isSubmitted,
+  errorMessage,
+  fieldErrors,
+  onSave,
+}: EvidenceFormProps) {
+  const [evidence, setEvidence] = useState<DisputeEvidence>(initialEvidence);
+
+  const set = <TKey extends keyof DisputeEvidence>(key: TKey, value: DisputeEvidence[TKey]) => {
+    setEvidence((current) => ({ ...current, [key]: value }));
+  };

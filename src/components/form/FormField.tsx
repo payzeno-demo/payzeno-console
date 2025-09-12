@@ -11,3 +11,16 @@
  */
 import type { ReactNode } from 'react';
 
+import { pz } from '@lib/cn';
+
+import { InlineError } from '../feedback/InlineError';
+import { Label } from '../ui/Label';
+import { color, font, space } from '../ui/tokens';
+// One `errorIdFor` for the whole form layer. `useZodForm` derives `aria-describedby` from the
+// same function, so a field wired by hand and a field wired by the hook agree on the id —
+// they did not for two releases, and the error text was announced by neither (PAY-1698).
+import { errorIdFor } from './field-errors';
+
+export interface FieldWiring {
+  id: string;
+  'aria-describedby': string | undefined;

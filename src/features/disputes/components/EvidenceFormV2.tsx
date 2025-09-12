@@ -49,3 +49,15 @@ export function completeness(
   return filled.length / fields.length;
 }
 
+export interface EvidenceFormV2Props {
+  disputeId: string;
+  reason: DisputeReason;
+  initialEvidence: DisputeEvidence;
+  disabled: boolean;
+  isPending: boolean;
+  isSubmitted: boolean;
+  errorMessage: string | null;
+  fieldErrors: Record<string, string>;
+  onSave: (evidence: DisputeEvidence, submit: boolean) => void;
+}
+
