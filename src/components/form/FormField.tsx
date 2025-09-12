@@ -24,3 +24,17 @@ import { errorIdFor } from './field-errors';
 export interface FieldWiring {
   id: string;
   'aria-describedby': string | undefined;
+  'aria-invalid': true | undefined;
+  required: boolean;
+}
+
+export interface FormFieldProps {
+  /** Base id. The control gets it; hint and error get suffixed ids. */
+  id: string;
+  label: string;
+  children: (wiring: FieldWiring) => ReactNode;
+  /** Explanatory text under the label. Always associated, never a bare `<p>`. */
+  hint?: string;
+  error?: string;
+  required?: boolean;
+  /** Note next to the label: "optional", "staff only". */
