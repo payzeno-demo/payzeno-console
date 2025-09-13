@@ -43,6 +43,7 @@ export function useSubmitEvidence(): UseSubmitEvidenceResult {
   const toast = useToast();
 
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [windowClosed, setWindowClosed] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const submitEvidence = useCallback(
     ({ disputeId, evidence, submit }: SubmitEvidenceArgs) => {

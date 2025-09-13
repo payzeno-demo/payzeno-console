@@ -99,3 +99,20 @@ export function EvidenceForm({
       <Input
         id={fieldId(FORM, 'customer_email')}
         name="customer_email"
+        type="email"
+        value={evidence.customer_email ?? ''}
+        disabled={disabled}
+        aria-describedby={
+          errorFor('customer_email') ? fieldErrorId(FORM, 'customer_email') : undefined
+        }
+        onChange={(event) => set('customer_email', event.target.value)}
+      />
+      {errorFor('customer_email') ? (
+        <InlineError id={fieldErrorId(FORM, 'customer_email')}>
+          {errorFor('customer_email')}
+        </InlineError>
+      ) : null}
+
+      <Label htmlFor={fieldId(FORM, 'shipping_tracking_number')}>Tracking number</Label>
+      <Input
+        id={fieldId(FORM, 'shipping_tracking_number')}

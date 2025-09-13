@@ -64,3 +64,17 @@ export function FormField({
   required = false,
   labelHint,
 }: FormFieldProps) {
+  const hasHint = Boolean(hint);
+  const hasError = Boolean(error);
+
+  const wiring: FieldWiring = {
+    id,
+    'aria-describedby': describedByFor(id, hasHint, hasError),
+    'aria-invalid': hasError ? true : undefined,
+    required,
+  };
+
+  return (
+    <div className={pz('form-field')} style={{ display: 'grid', gap: space[1] }}>
+      <Label htmlFor={id} required={required} hint={labelHint}>
+        {label}
