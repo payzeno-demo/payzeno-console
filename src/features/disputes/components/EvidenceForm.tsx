@@ -66,3 +66,19 @@ export function EvidenceForm({
         <p role="alert" data-testid="evidence-error">
           {errorMessage}
         </p>
+      ) : null}
+
+      <Label htmlFor={fieldId(FORM, 'product_description')}>What was sold</Label>
+      <Textarea
+        id={fieldId(FORM, 'product_description')}
+        name="product_description"
+        rows={3}
+        value={evidence.product_description ?? ''}
+        disabled={disabled}
+        aria-describedby={
+          errorFor('product_description') ? fieldErrorId(FORM, 'product_description') : undefined
+        }
+        onChange={(event) => set('product_description', event.target.value)}
+      />
+      {errorFor('product_description') ? (
+        <InlineError id={fieldErrorId(FORM, 'product_description')}>

@@ -44,6 +44,23 @@ describe('saving a draft', () => {
     const { result } = renderHookWithProviders(() => useSubmitEvidence());
 
     act(() => {
+      result.current.submitEvidence({
+        disputeId: DISPUTE_ID,
+        evidence: EVIDENCE,
+        submit: false,
+      });
+    });
+
+    await waitFor(() => {
+      expect(box.seen).not.toBeNull();
+    });
+    expect(box.seen).toEqual({ evidence: EVIDENCE, submit: false });
+  });
+
+  it('does not mark the dispute as submitted', async () => {
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
       result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
     });
 
@@ -141,6 +158,36 @@ describe('the closed-window branch', () => {
     });
 
     await waitFor(() => {
+      expect(result.current.windowClosed).toBe(true);
+    });
+    expect(result.current.isSubmitted).toBe(false);
+  });
+});
+
+describe('the other failure branches', () => {
+  it('maps ordinary 422 field errors onto the form', async () => {
+    server.use(
+      errorHandler(
+        'post',
+        '/disputes/:disputeId/evidence',
+        422,
+        'validation_failed',
+        'Check the evidence.',
+        {
+          field_errors: [
+            { path: 'evidence.customer_email', message: 'Not a valid email address.' },
+          ],
+        },
+      ),
+    );
+
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
+    });
+
+    await waitFor(() => {
       expect(result.current.fieldErrors).toEqual({
         'evidence.customer_email': 'Not a valid email address.',
       });
@@ -151,6 +198,30 @@ describe('the closed-window branch', () => {
 
   it('names the permission on a 403', async () => {
     server.use(errorHandler('post', '/disputes/:disputeId/evidence', 403, 'permission_denied'));
+
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBe(
+        'Responding to a dispute needs the disputes:write permission.',
+      );
+    });
+  });
+
+  it('shows the server message for any other ConsoleApiError', async () => {
+    server.use(
+      errorHandler(
+        'post',
+        '/disputes/:disputeId/evidence',
+        409,
+        'conflict',
+        'Evidence already submitted.',
+      ),
+    );
 
     const { result } = renderHookWithProviders(() => useSubmitEvidence());
 
