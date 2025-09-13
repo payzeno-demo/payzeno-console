@@ -51,3 +51,16 @@ export { errorIdFor };
 export function describedByFor(id: string, hasHint: boolean, hasError: boolean): string | undefined {
   const ids: string[] = [];
   if (hasHint) ids.push(hintIdFor(id));
+  if (hasError) ids.push(errorIdFor(id));
+  return ids.length > 0 ? ids.join(' ') : undefined;
+}
+
+export function FormField({
+  id,
+  label,
+  children,
+  hint,
+  error,
+  required = false,
+  labelHint,
+}: FormFieldProps) {
