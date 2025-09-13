@@ -78,3 +78,16 @@ export function FormField({
     <div className={pz('form-field')} style={{ display: 'grid', gap: space[1] }}>
       <Label htmlFor={id} required={required} hint={labelHint}>
         {label}
+      </Label>
+
+      {hasHint ? (
+        <p
+          id={hintIdFor(id)}
+          style={{
+            margin: 0,
+            fontFamily: font.family,
+            fontSize: font.size.sm,
+            color: color.textSecondary,
+          }}
+        >
+          {hint}
