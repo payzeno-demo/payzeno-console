@@ -29,3 +29,14 @@ export interface FormProps {
   onSubmit: () => void | Promise<void>;
   children: ReactNode;
   /** Buttons. Rendered inside the form so Enter submits. */
+  actions?: ReactNode;
+  errors?: FormErrors;
+  /** Render `label` as a visible `<h2>` rather than only as the accessible name. */
+  heading?: boolean;
+  className?: string;
+}
+
+export function Form({
+  id,
+  label,
+  onSubmit,

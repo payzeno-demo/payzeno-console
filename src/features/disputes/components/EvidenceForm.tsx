@@ -82,3 +82,20 @@ export function EvidenceForm({
       />
       {errorFor('product_description') ? (
         <InlineError id={fieldErrorId(FORM, 'product_description')}>
+          {errorFor('product_description')}
+        </InlineError>
+      ) : null}
+
+      <Label htmlFor={fieldId(FORM, 'customer_name')}>Customer name</Label>
+      <Input
+        id={fieldId(FORM, 'customer_name')}
+        name="customer_name"
+        value={evidence.customer_name ?? ''}
+        disabled={disabled}
+        onChange={(event) => set('customer_name', event.target.value)}
+      />
+
+      <Label htmlFor={fieldId(FORM, 'customer_email')}>Customer email</Label>
+      <Input
+        id={fieldId(FORM, 'customer_email')}
+        name="customer_email"
