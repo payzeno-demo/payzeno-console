@@ -17,3 +17,13 @@
  * `vite.config.ts`, so the eager import does not drag 250kB into the entry bundle.
  */
 import { Suspense, lazy } from 'react';
+import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+
+import { RequireRole } from '@app/RequireRole';
+import { RequireNoSession, RequireSession } from '@app/RequireSession';
+import { LoadingPage } from '@components/feedback/LoadingPage';
+import { NotFound } from '@components/feedback/NotFound';
+import { QueryErrorBoundary } from '@components/feedback/ErrorBoundary';
+import { useFlag } from '@lib/flags';
+
+import { ROUTES, ROUTE_PATTERNS, featureOf } from '@/routes';
