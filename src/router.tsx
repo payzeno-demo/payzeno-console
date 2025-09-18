@@ -27,3 +27,22 @@ import { QueryErrorBoundary } from '@components/feedback/ErrorBoundary';
 import { useFlag } from '@lib/flags';
 
 import { ROUTES, ROUTE_PATTERNS, featureOf } from '@/routes';
+import type { Permission } from '@/types/nav';
+
+// Eager: the landing route.
+import { ReportingPage } from '@features/reporting/ReportingPage';
+
+const LoginPage = lazy(() =>
+  import('@features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
+);
+const BalancePage = lazy(() =>
+  import('@features/balance/BalancePage').then((m) => ({ default: m.BalancePage })),
+);
+const PaymentsPage = lazy(() =>
+  import('@features/payments/PaymentsPage').then((m) => ({ default: m.PaymentsPage })),
+);
+const PaymentIntentDetailPage = lazy(() =>
+  import('@features/payments/PaymentIntentDetailPage').then((m) => ({
+    default: m.PaymentIntentDetailPage,
+  })),
+);

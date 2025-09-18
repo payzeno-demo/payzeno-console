@@ -6,3 +6,6 @@
  * `rrefactor` does not do small diffs.
  */
 import { queryOptions } from '@tanstack/react-query';
+
+import type {
+  MerchantSettlementBatch,
