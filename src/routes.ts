@@ -11,3 +11,9 @@
  * ("route helpers") renders the real table at paths built from `ROUTES` — so a builder that
  * stops matching its pattern fails there rather than in production.
  *
+ * Owner: tflexbox. Touched by nearly every feature PR, which is why it is deliberately boring —
+ * no dynamic segments beyond a single id, no query-string construction (that is
+ * `useQueryParamState`), no conditional paths.
+ */
+
+/** Percent-encode an id before it goes into a path segment. */

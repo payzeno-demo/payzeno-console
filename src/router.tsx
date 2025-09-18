@@ -46,3 +46,12 @@ const PaymentIntentDetailPage = lazy(() =>
     default: m.PaymentIntentDetailPage,
   })),
 );
+const ChargesPage = lazy(() =>
+  import('@features/charges/ChargesPage').then((m) => ({ default: m.ChargesPage })),
+);
+const ChargeDetailPage = lazy(() =>
+  import('@features/charges/ChargeDetailPage').then((m) => ({ default: m.ChargeDetailPage })),
+);
+const RefundsPage = lazy(() =>
+  import('@features/refunds/RefundsPage').then((m) => ({ default: m.RefundsPage })),
+);

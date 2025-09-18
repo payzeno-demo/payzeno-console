@@ -7,3 +7,8 @@
  *
  * Construction site: `src/api/http/error-mapper.ts`, and nowhere else.
  * Render site: `src/components/feedback/ErrorBoundary.tsx`, and nowhere else.
+ */
+import type { ApiError, ErrorCode, FieldError } from '@payzeno/contracts';
+import { PayzenoError } from '@payzeno/contracts/errors';
+
+export interface ConsoleApiErrorInit {
