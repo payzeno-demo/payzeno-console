@@ -17,3 +17,41 @@
  * `vite.config.ts`, so the eager import does not drag 250kB into the entry bundle.
  */
 import { Suspense, lazy } from 'react';
+import { Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom';
+
+import { RequireRole } from '@app/RequireRole';
+import { RequireNoSession, RequireSession } from '@app/RequireSession';
+import { LoadingPage } from '@components/feedback/LoadingPage';
+import { NotFound } from '@components/feedback/NotFound';
+import { QueryErrorBoundary } from '@components/feedback/ErrorBoundary';
+import { useFlag } from '@lib/flags';
+
+import { ROUTES, ROUTE_PATTERNS, featureOf } from '@/routes';
+import type { Permission } from '@/types/nav';
+
+// Eager: the landing route.
+import { ReportingPage } from '@features/reporting/ReportingPage';
+
+const LoginPage = lazy(() =>
+  import('@features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
+);
+const BalancePage = lazy(() =>
+  import('@features/balance/BalancePage').then((m) => ({ default: m.BalancePage })),
+);
+const PaymentsPage = lazy(() =>
+  import('@features/payments/PaymentsPage').then((m) => ({ default: m.PaymentsPage })),
+);
+const PaymentIntentDetailPage = lazy(() =>
+  import('@features/payments/PaymentIntentDetailPage').then((m) => ({
+    default: m.PaymentIntentDetailPage,
+  })),
+);
+const ChargesPage = lazy(() =>
+  import('@features/charges/ChargesPage').then((m) => ({ default: m.ChargesPage })),
+);
+const ChargeDetailPage = lazy(() =>
+  import('@features/charges/ChargeDetailPage').then((m) => ({ default: m.ChargeDetailPage })),
+);
+const RefundsPage = lazy(() =>
+  import('@features/refunds/RefundsPage').then((m) => ({ default: m.RefundsPage })),
+);
