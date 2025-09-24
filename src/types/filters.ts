@@ -15,3 +15,7 @@ import type {
   PaymentIntentListQuery,
   PayoutStatus,
   ReconciliationItemStatus,
+  RefundStatus,
+  SettlementBatchStatus,
+} from '@payzeno/contracts';
+
