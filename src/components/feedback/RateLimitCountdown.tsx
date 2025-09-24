@@ -7,3 +7,12 @@
  *
  * a11y: the number ticks in an `aria-hidden` span; the live region only fires at the start and
  * at zero. A per-second live update is unusable with a screen reader on.
+ */
+import { useEffect, useRef, useState } from 'react';
+
+import { pz } from '@lib/cn';
+
+import { Button } from '../ui/Button';
+import { color, font, radius, space, visuallyHidden } from '../ui/tokens';
+
+export interface RateLimitCountdownProps {

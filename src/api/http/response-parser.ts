@@ -4,3 +4,9 @@
  *
  * arc PCI: there was a `console.debug('response body', text)` here. `dhotfix` removed it in
  * review with "we do not log response bodies, ever — a charge carries a card object and an
+ * invoice carries a bank name". Do not add one back. See docs/adr/0003-no-card-data-in-the-console.md.
+ */
+import type { ApiError } from '@payzeno/contracts';
+
+import { isApiErrorBody } from '../errors';
+

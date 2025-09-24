@@ -12,3 +12,7 @@ import type { ApiError, ErrorCode, FieldError } from '@payzeno/contracts';
 import { PayzenoError } from '@payzeno/contracts/errors';
 
 export interface ConsoleApiErrorInit {
+  status: number;
+  code: ErrorCode;
+  message: string;
+  requestId: string;
