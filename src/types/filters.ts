@@ -6,3 +6,7 @@
  * are pure UI. That is why there is no serialisation layer between `<FilterBar />` and the
  * query string.
  */
+import type {
+  ChargeListQuery,
+  CurrencyCode,
+  DisputeReason,

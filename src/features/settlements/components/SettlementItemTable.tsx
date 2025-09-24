@@ -4,3 +4,6 @@
  *
  * The status filter is a segmented control over the statuses finance actually filters on;
  * `settling` is deliberately in the list because during an incident that is the one people
+ * want to watch.
+ */
+import type { ReconciliationItemStatus } from '@payzeno/contracts';
