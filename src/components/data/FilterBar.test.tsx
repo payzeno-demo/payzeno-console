@@ -22,4 +22,23 @@ describe('the region', () => {
     expect(screen.getByRole('search', { name: 'Settlement filters' })).toBeInTheDocument();
   });
 
+  it('offers "Clear all" only when there is something to clear', () => {
+    const onClear = vi.fn();
+    const { rerender } = renderBare(
+      <FilterBar label="Charge filters" activeCount={0} onClear={onClear}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.queryByRole('button', { name: 'Clear all' })).not.toBeInTheDocument();
+
+    rerender(
+      <FilterBar label="Charge filters" activeCount={2} onClear={onClear}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Clear all' })).toBeInTheDocument();
+  });
+
 });
