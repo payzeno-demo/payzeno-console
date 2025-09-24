@@ -52,6 +52,15 @@ export interface ErrorFallbackProps {
  * the same branching, and two copies of this ladder is how the 429 branch went missing for a
  * month (PAY-1854).
  */
+interface ErrorMessageProps {
+  title: string;
+  body: string;
+  details?: ReadonlyArray<string>;
+  requestId?: string;
+  actionLabel?: string;
+  onAction?: () => void;
+}
+
 interface ErrorBoundaryState {
   error: unknown;
 }

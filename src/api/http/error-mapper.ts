@@ -6,3 +6,10 @@
  * friends) which the console can reach via `POST /v1/refunds` against a re-presented card.
  */
 import type { ErrorCode } from '@payzeno/contracts';
+
+import {
+  BadRequestApiError,
+  ConflictApiError,
+  ConsoleApiError,
+  ForbiddenError,
+  NotFoundApiError,

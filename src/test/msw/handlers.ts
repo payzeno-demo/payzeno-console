@@ -47,3 +47,27 @@ export function url(path: string): string {
   return `${API_BASE}${path}`;
 }
 
+/** Every path any handler below is registered on. `routes.contract.test.ts` reads this. */
+export const HANDLED_PATHS: ReadonlyArray<string> = [
+  '/auth/me',
+  '/auth/login',
+  '/auth/logout',
+  '/payment_intents',
+  '/payment_intents/:paymentIntentId',
+  '/payment_intents/:paymentIntentId/capture',
+  '/payment_intents/:paymentIntentId/cancel',
+  '/charges',
+  '/charges/:chargeId',
+  '/charges/:chargeId/ledger',
+  '/refunds',
+  '/disputes',
+  '/disputes/:disputeId',
+  '/disputes/:disputeId/evidence',
+  '/balance',
+  '/payouts',
+  '/payouts/:payoutId',
+  '/payouts/:payoutId/cancel',
+  '/settlements',
+  '/settlements/:batchId',
+  '/settlements/:batchId/items',
+  '/settlements/:batchId/items/:itemId/retry',
