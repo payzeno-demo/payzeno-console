@@ -7,3 +7,5 @@
  * want to watch.
  */
 import type { ReconciliationItemStatus } from '@payzeno/contracts';
+
+import { DataTable } from '@components/data/DataTable';

@@ -22,6 +22,16 @@ describe('the region', () => {
     expect(screen.getByRole('search', { name: 'Settlement filters' })).toBeInTheDocument();
   });
 
+  it('says nothing when no filter is applied', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={0}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.queryByText(/filter/i)).not.toBeInTheDocument();
+  });
+
   it('offers "Clear all" only when there is something to clear', () => {
     const onClear = vi.fn();
     const { rerender } = renderBare(
