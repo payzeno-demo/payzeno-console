@@ -14,3 +14,8 @@ import type { ReactNode } from 'react';
 import { pz } from '@lib/cn';
 import { pluralise } from '@lib/format';
 
+import { Button } from '../ui/Button';
+import { color, font, radius, space } from '../ui/tokens';
+
+export interface FilterBarProps {
+  /** Accessible name for the region — "Charge filters". Required. */

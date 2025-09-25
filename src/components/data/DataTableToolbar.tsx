@@ -13,3 +13,10 @@
  * The second is the older one: `children` land in the actions slot and `label` names the
  * region verbatim. TODO(rrefactor): converge on the first — PAY-1968.
  */
+import type { ReactNode } from 'react';
+
+import { pz } from '@lib/cn';
+import { pluralise } from '@lib/format';
+
+import { Button } from '../ui/Button';
+import { color, font, radius, space } from '../ui/tokens';

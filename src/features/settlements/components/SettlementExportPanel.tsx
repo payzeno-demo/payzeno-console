@@ -19,3 +19,13 @@ import { Card } from '@components/ui/Card';
 import { Checkbox } from '@components/ui/Checkbox';
 import { downloadBlob } from '@lib/download';
 import { toCsv } from '@lib/csv';
+import type { SettlementItemRow } from '@types/view-models';
+
+export interface SettlementExportPanelProps {
+  batchId: string;
+  currency: CurrencyCode;
+  rows: ReadonlyArray<SettlementItemRow>;
+}
+
+interface ExportOptions {
+  includeFees: boolean;
