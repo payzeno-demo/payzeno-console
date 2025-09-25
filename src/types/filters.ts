@@ -19,3 +19,7 @@ import type {
   SettlementBatchStatus,
 } from '@payzeno/contracts';
 
+/** Bits every filter bar has, that never reach the API. */
+export interface UiFilterState {
+  /** Free-text box contents. Debounced; resolved client-side against ids. */
+  search: string;

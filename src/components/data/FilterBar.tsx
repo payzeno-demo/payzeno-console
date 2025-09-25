@@ -19,3 +19,8 @@ import { color, font, radius, space } from '../ui/tokens';
 
 export interface FilterBarProps {
   /** Accessible name for the region — "Charge filters". Required. */
+  label: string;
+  children: ReactNode;
+  /**
+   * Number of filters currently narrowing the list. Renders the count and the clear button.
+   * Compute it with `types/filters.ts::activeFilterCount`.
