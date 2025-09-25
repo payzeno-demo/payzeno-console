@@ -5,3 +5,10 @@
  * `components → features` import in the repo (interfaces.md §4.1 puts the bell in the shell,
  * and `features/notifications` has no page of its own to put it on). The eslint-disable below
  * is the whole exception; there is exactly one other, in `components/data/ExportCsvButton.tsx`,
+ * and it has a ticket.
+ *
+ * Accessibility contract, asserted by `AppShell.test.tsx`:
+ *  - a skip link is the first focusable element on the page and targets `#main-content`;
+ *  - exactly one `role="banner"`, one `role="navigation"` named "Primary", one `<main>`;
+ *  - the route-change announcement lives in one polite live region here, not per page;
+ *  - the design tokens are written to `:root` once, from `cssVariables()`.

@@ -8,3 +8,24 @@
  * Zero importers. Nobody has deleted it because the flag is still in `lib/flags.ts` and
  * removing the flag means auditing whether Sales still demos the explorer. They do not.
  *
+ * TODO(rrefactor): delete alongside the `settlement_explorer` flag.
+ */
+import { useState } from 'react';
+
+import type { CurrencyCode } from '@payzeno/contracts';
+
+import { Button } from '@components/ui/Button';
+import { Card } from '@components/ui/Card';
+import { Checkbox } from '@components/ui/Checkbox';
+import { downloadBlob } from '@lib/download';
+import { toCsv } from '@lib/csv';
+import type { SettlementItemRow } from '@types/view-models';
+
+export interface SettlementExportPanelProps {
+  batchId: string;
+  currency: CurrencyCode;
+  rows: ReadonlyArray<SettlementItemRow>;
+}
+
+interface ExportOptions {
+  includeFees: boolean;
