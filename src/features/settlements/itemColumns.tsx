@@ -17,3 +17,8 @@ import { MoneyCell } from '@components/data/MoneyCell';
 import { StatusPill } from '@components/data/StatusPill';
 import type { SettlementItemRow } from '@types/view-models';
 
+import { DuplicateBadge } from './components/DuplicateBadge';
+import { RetryItemButton } from './components/RetryItemButton';
+
+/** Lines that are not a sale never match a charge; `orphaned` on one of these is expected. */
+const NON_SALE_LINE_TYPES: ReadonlySet<ReconciliationLineType> = new Set([

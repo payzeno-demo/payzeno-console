@@ -23,3 +23,7 @@ import type {
 export interface UiFilterState {
   /** Free-text box contents. Debounced; resolved client-side against ids. */
   search: string;
+}
+
+export interface PaymentFilters extends PaymentIntentListQuery, UiFilterState {}
+

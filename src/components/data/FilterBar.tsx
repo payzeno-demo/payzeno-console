@@ -24,3 +24,8 @@ export interface FilterBarProps {
   /**
    * Number of filters currently narrowing the list. Renders the count and the clear button.
    * Compute it with `types/filters.ts::activeFilterCount`.
+   */
+  activeCount?: number;
+  /** Reset every filter. Omit to hide the clear button entirely. */
+  onClear?: () => void;
+  /** Right-hand slot — a saved-view picker, a date range, an export button. */
