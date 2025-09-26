@@ -45,3 +45,11 @@ function sortSpecFor<TRow>(
     direction,
     value: (row) => (column.exportValue ? column.exportValue(row) : null),
   };
+}
+
+export function DataTable<TRow extends { id: string }>({
+  columns,
+  rows,
+  isLoading,
+  emptyState,
+  onRowClick,

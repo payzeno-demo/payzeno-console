@@ -37,3 +37,11 @@ export function RowSkeleton({ columnCount, rowCount }: RowSkeletonProps) {
         <tr
           key={`skeleton-${rowIndex}`}
           aria-hidden="true"
+          className={pz('data-table', 'skeleton-row')}
+          style={{ borderBottom: `1px solid ${color.border}` }}
+        >
+          {columns.map((columnIndex) => (
+            <td
+              key={`skeleton-${rowIndex}-${columnIndex}`}
+              style={{ padding: `${space[3]} ${space[4]}` }}
+            >
