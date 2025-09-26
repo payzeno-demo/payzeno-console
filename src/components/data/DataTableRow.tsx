@@ -24,3 +24,10 @@ export interface DataTableRowProps<TRow> {
 /** True when the event started inside something that handles its own clicks. */
 function fromInteractiveChild(event: MouseEvent<HTMLTableRowElement>): boolean {
   const target = event.target as HTMLElement | null;
+  return Boolean(target?.closest('button, a, input, select, textarea, [role="menu"]'));
+}
+
+export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowProps<TRow>) {
+  const clickable = Boolean(onRowClick);
+
+  return (

@@ -98,3 +98,13 @@ export const font = {
     tight: 1.25,
     normal: 1.5,
   },
+} as const;
+
+export const shadow = {
+  none: 'none',
+  sm: '0 1px 2px rgba(17, 24, 39, 0.06)',
+  md: '0 4px 12px rgba(17, 24, 39, 0.10)',
+  lg: '0 12px 32px rgba(17, 24, 39, 0.16)',
+  /** Focus ring. 3px at 40% is the smallest that stays visible at 200% zoom. */
+  focus: `0 0 0 3px ${color.brandSubtle}`,
+} as const;

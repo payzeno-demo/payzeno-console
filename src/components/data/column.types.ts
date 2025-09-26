@@ -8,3 +8,9 @@
  * `caption` is **required**. It is the table's accessible name and there is no default that
  * would be honest.
  */
+import type { ReactNode } from 'react';
+
+export interface ColumnDef<TRow> {
+  id: string;
+  header: string;
+  cell: (row: TRow) => ReactNode;
