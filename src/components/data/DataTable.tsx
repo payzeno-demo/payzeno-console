@@ -30,3 +30,10 @@ import { RowSkeleton } from './RowSkeleton';
 import { defaultRowKey } from './column.types';
 import type { ColumnDef, DataTableProps } from './column.types';
 
+export type { ColumnDef, DataTableProps } from './column.types';
+
+/**
+ * Sort rows by a column, using its `exportValue` as the sort key when it has one — that
+ * function already knows how to reduce a cell to a comparable primitive.
+ */
+function sortSpecFor<TRow>(

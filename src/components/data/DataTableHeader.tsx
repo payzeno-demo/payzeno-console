@@ -11,3 +11,9 @@ import { color, font, space } from '../ui/tokens';
 
 import type { ColumnDef } from './column.types';
 
+export interface DataTableHeaderProps<TRow> {
+  columns: ReadonlyArray<ColumnDef<TRow>>;
+  sortedColumnId: string | null;
+  ariaSortFor: (columnId: string) => 'ascending' | 'descending' | 'none';
+  onSort: (columnId: string) => void;
+}
