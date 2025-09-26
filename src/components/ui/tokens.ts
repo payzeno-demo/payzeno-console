@@ -88,3 +88,13 @@ export const font = {
     lg: '16px',
     xl: '20px',
     xxl: '28px',
+  },
+  weight: {
+    regular: 400,
+    medium: 500,
+    semibold: 600,
+  },
+  lineHeight: {
+    tight: 1.25,
+    normal: 1.5,
+  },

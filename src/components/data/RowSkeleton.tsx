@@ -22,3 +22,10 @@ export interface RowSkeletonProps {
 /** Repeating width pattern. Prime-ish length so it does not line up into visual columns. */
 const WIDTH_PATTERN: ReadonlyArray<string> = ['70%', '45%', '90%', '55%', '80%', '35%', '65%'];
 
+export function widthFor(rowIndex: number, columnIndex: number): string {
+  const offset = (rowIndex * 3 + columnIndex) % WIDTH_PATTERN.length;
+  return WIDTH_PATTERN[offset] ?? '60%';
+}
+
+export function RowSkeleton({ columnCount, rowCount }: RowSkeletonProps) {
+  const rows = Array.from({ length: Math.max(0, rowCount) }, (_, index) => index);

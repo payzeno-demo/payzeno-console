@@ -17,3 +17,10 @@ export interface DataTableHeaderProps<TRow> {
   ariaSortFor: (columnId: string) => 'ascending' | 'descending' | 'none';
   onSort: (columnId: string) => void;
 }
+
+export function DataTableHeader<TRow>({
+  columns,
+  sortedColumnId,
+  ariaSortFor,
+  onSort,
+}: DataTableHeaderProps<TRow>) {
