@@ -29,3 +29,11 @@ export function widthFor(rowIndex: number, columnIndex: number): string {
 
 export function RowSkeleton({ columnCount, rowCount }: RowSkeletonProps) {
   const rows = Array.from({ length: Math.max(0, rowCount) }, (_, index) => index);
+  const columns = Array.from({ length: Math.max(1, columnCount) }, (_, index) => index);
+
+  return (
+    <>
+      {rows.map((rowIndex) => (
+        <tr
+          key={`skeleton-${rowIndex}`}
+          aria-hidden="true"

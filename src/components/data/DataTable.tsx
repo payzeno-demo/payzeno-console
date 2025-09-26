@@ -37,3 +37,11 @@ export type { ColumnDef, DataTableProps } from './column.types';
  * function already knows how to reduce a cell to a comparable primitive.
  */
 function sortSpecFor<TRow>(
+  column: ColumnDef<TRow>,
+  direction: SortDirection,
+): SortSpec<TRow> {
+  return {
+    id: column.id,
+    direction,
+    value: (row) => (column.exportValue ? column.exportValue(row) : null),
+  };
