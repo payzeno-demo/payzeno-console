@@ -11,3 +11,10 @@ import type { MouseEvent } from 'react';
 
 import { pz } from '@lib/cn';
 
+import { color, font, space } from '../ui/tokens';
+
+import type { ColumnDef } from './column.types';
+
+export interface DataTableRowProps<TRow> {
+  row: TRow;
+  columns: ReadonlyArray<ColumnDef<TRow>>;

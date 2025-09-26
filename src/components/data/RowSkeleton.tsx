@@ -14,3 +14,11 @@ import { pz } from '@lib/cn';
 import { Skeleton } from '../ui/Skeleton';
 import { color, space } from '../ui/tokens';
 
+export interface RowSkeletonProps {
+  columnCount: number;
+  rowCount: number;
+}
+
+/** Repeating width pattern. Prime-ish length so it does not line up into visual columns. */
+const WIDTH_PATTERN: ReadonlyArray<string> = ['70%', '45%', '90%', '55%', '80%', '35%', '65%'];
+
