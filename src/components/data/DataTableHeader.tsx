@@ -24,3 +24,9 @@ export function DataTableHeader<TRow>({
   ariaSortFor,
   onSort,
 }: DataTableHeaderProps<TRow>) {
+  return (
+    <thead className={pz('data-table', 'head')}>
+      <tr>
+        {columns.map((column) => {
+          const sortState = ariaSortFor(column.id);
+          const isSorted = sortedColumnId === column.id;

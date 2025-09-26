@@ -53,3 +53,11 @@ export function DataTable<TRow extends { id: string }>({
   isLoading,
   emptyState,
   onRowClick,
+  caption,
+}: DataTableProps<TRow>) {
+  const [sort, setSort] = useState<{ columnId: string; direction: SortDirection } | null>(null);
+
+  const sorted = useMemo(() => {
+    if (!sort) return rows;
+    const column = columns.find((candidate) => candidate.id === sort.columnId);
+    if (!column) return rows;

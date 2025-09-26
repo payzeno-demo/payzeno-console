@@ -14,3 +14,8 @@ export interface ColumnDef<TRow> {
   id: string;
   header: string;
   cell: (row: TRow) => ReactNode;
+  align?: 'start' | 'end';
+  width?: string;
+  sortable?: boolean;
+  /** Plain-text value for CSV export. Required when `cell` returns anything but a string. */
+  exportValue?: (row: TRow) => string;

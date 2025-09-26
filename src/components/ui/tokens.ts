@@ -108,3 +108,14 @@ export const shadow = {
   /** Focus ring. 3px at 40% is the smallest that stays visible at 200% zoom. */
   focus: `0 0 0 3px ${color.brandSubtle}`,
 } as const;
+
+export const zIndex = {
+  base: 0,
+  sticky: 10,
+  banner: 20,
+  drawer: 30,
+  dialog: 40,
+  popover: 50,
+  toast: 60,
+} as const;
+
