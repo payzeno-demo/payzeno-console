@@ -45,3 +45,11 @@ export function RowSkeleton({ columnCount, rowCount }: RowSkeletonProps) {
               key={`skeleton-${rowIndex}-${columnIndex}`}
               style={{ padding: `${space[3]} ${space[4]}` }}
             >
+              <Skeleton width={widthFor(rowIndex, columnIndex)} height="12px" />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  );
+}
