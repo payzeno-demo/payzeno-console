@@ -37,3 +37,12 @@ import type { UserEvent } from '@testing-library/user-event';
 import type { ReactElement, ReactNode } from 'react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
+import { ApiClient } from '@api/client';
+import { createEndpoints } from '@api/endpoints/index';
+import type { EndpointRegistry } from '@api/endpoints/index';
+import type { HttpTransport } from '@api/transport';
+import { AuthProvider } from '@app/AuthProvider';
+import { FlagsProvider } from '@app/FlagsProvider';
+import { NotificationProvider } from '@app/NotificationProvider';
+import { QueryProvider } from '@app/QueryProvider';
+import { ToastProvider } from '@app/ToastProvider';

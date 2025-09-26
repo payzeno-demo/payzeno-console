@@ -12,3 +12,10 @@
  *  - exactly one `role="banner"`, one `role="navigation"` named "Primary", one `<main>`;
  *  - the route-change announcement lives in one polite live region here, not per page;
  *  - the design tokens are written to `:root` once, from `cssVariables()`.
+ *
+ * Session data comes from props when the caller has it and from `SessionContext` otherwise, so
+ * the shell can be rendered in a test without standing up every provider.
+ */
+import { useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
