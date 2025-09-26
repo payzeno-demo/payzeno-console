@@ -18,3 +18,9 @@ import type { ColumnDef } from './column.types';
 export interface DataTableRowProps<TRow> {
   row: TRow;
   columns: ReadonlyArray<ColumnDef<TRow>>;
+  onRowClick?: (row: TRow) => void;
+}
+
+/** True when the event started inside something that handles its own clicks. */
+function fromInteractiveChild(event: MouseEvent<HTMLTableRowElement>): boolean {
+  const target = event.target as HTMLElement | null;

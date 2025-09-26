@@ -69,6 +69,12 @@ describe('accessibility contract', () => {
     expect(table).toBeInTheDocument();
   });
 
+  it('reports the total row count on the table, not the rendered count', () => {
+    renderTable();
+
+    expect(screen.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  });
+
   it('exposes aria-sort only on sortable columns', () => {
     renderTable();
 
@@ -79,6 +85,42 @@ describe('accessibility contract', () => {
     expect(screen.getByRole('columnheader', { name: /actions/i })).not.toHaveAttribute(
       'aria-sort',
     );
+  });
+
+  it('marks itself busy while loading', () => {
+    renderTable({ isLoading: true });
+
+    expect(screen.getByRole('table')).toHaveAttribute('aria-busy', 'true');
+  });
+});
+
+describe('rows', () => {
+  it('keys rows by id, so a re-render with reordered rows does not remount cells', () => {
+    const { rerender } = renderTable();
+    const before = screen.getByTestId('amount-row_2');
+
+    rerender(
+      <DataTable<Row>
+        caption="Test rows, newest first"
+        columns={columns}
+        rows={[...rows].reverse()}
+        isLoading={false}
+        emptyState={<p>Nothing to show</p>}
+      />,
+    );
+
+    expect(screen.getByTestId('amount-row_2')).toBe(before);
+  });
+});
+
+describe('loading and empty states', () => {
+  it('renders skeleton rows instead of data while loading', () => {
+    renderTable({ isLoading: true, rows: [] });
+
+    // The skeletons are aria-hidden, so they add no rows to the accessibility tree.
+    const table = screen.getByRole('table');
+    expect(within(table).queryAllByRole('row')).toHaveLength(1);
+    expect(table.querySelectorAll('tbody tr')).toHaveLength(SKELETON_ROW_COUNT);
   });
 
   it('makes the first cell a real button so the row is keyboard reachable', async () => {
