@@ -123,6 +123,38 @@ describe('loading and empty states', () => {
     expect(table.querySelectorAll('tbody tr')).toHaveLength(SKELETON_ROW_COUNT);
   });
 
+  it('toggles to descending on the second click of the same header', async () => {
+    const { user } = renderTable();
+    const header = screen.getByRole('button', { name: /name/i });
+
+    await user.click(header);
+    await user.click(header);
+
+    const cells = screen.getAllByRole('cell').filter((cell) => cell.cellIndex === 0);
+    expect(cells.map((cell) => cell.textContent)).toEqual(['Charlie', 'Bravo', 'Alpha']);
+    expect(screen.getByRole('columnheader', { name: /name/i })).toHaveAttribute(
+      'aria-sort',
+      'descending',
+    );
+  });
+
+  it('offers no sort control on a column that did not ask for one', () => {
+    renderTable();
+
+    expect(screen.queryByRole('button', { name: /^actions/i })).not.toBeInTheDocument();
+  });
+});
+
+describe('row interaction', () => {
+  it('does not fire onRowClick when an interactive child was the target', async () => {
+    const onRowClick = vi.fn();
+    const { user } = renderTable({ onRowClick });
+
+    await user.click(screen.getByRole('button', { name: 'Open Alpha' }));
+
+    expect(onRowClick).not.toHaveBeenCalled();
+  });
+
   it('makes the first cell a real button so the row is keyboard reachable', async () => {
     const onRowClick = vi.fn();
     const { user } = renderTable({ onRowClick });
@@ -135,6 +167,12 @@ describe('loading and empty states', () => {
 });
 
 describe('windowing above the virtualisation threshold', () => {
+  const many: Row[] = Array.from({ length: VIRTUALISATION_THRESHOLD + 25 }, (_, index) => ({
+    id: `row_${index}`,
+    name: `Name ${index}`,
+    amount: index,
+  }));
+
   it('says so in the caption, so the count on screen is not a lie', () => {
     renderTable({ rows: many });
 

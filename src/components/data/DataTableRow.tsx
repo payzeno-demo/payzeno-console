@@ -31,3 +31,9 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
   const clickable = Boolean(onRowClick);
 
   return (
+    <tr
+      className={pz('data-table', 'row')}
+      onClick={(event) => {
+        if (!onRowClick || fromInteractiveChild(event)) return;
+        onRowClick(row);
+      }}
