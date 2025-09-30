@@ -31,3 +31,10 @@ export interface InlineErrorProps {
 export function InlineError({ id, children, severity = 'alert', tone = 'danger' }: InlineErrorProps) {
   return (
     <p
+      id={id}
+      role={severity}
+      className={pz('inline-error', undefined, tone)}
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: space[1],
