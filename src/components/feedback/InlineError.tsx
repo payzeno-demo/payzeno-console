@@ -38,3 +38,10 @@ export function InlineError({ id, children, severity = 'alert', tone = 'danger' 
         display: 'flex',
         alignItems: 'flex-start',
         gap: space[1],
+        margin: `${space[1]} 0 0`,
+        fontFamily: font.family,
+        fontSize: font.size.sm,
+        lineHeight: font.lineHeight.normal,
+        color: tone === 'danger' ? color.danger : color.warning,
+      }}
+    >

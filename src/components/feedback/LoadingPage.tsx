@@ -14,3 +14,36 @@ import { useEffect, useState } from 'react';
 import { pz } from '@lib/cn';
 
 import { Skeleton } from '../ui/Skeleton';
+import { Spinner } from '../ui/Spinner';
+import { color, font, space, visuallyHidden } from '../ui/tokens';
+
+export interface LoadingPageProps {
+  /** Announced to assistive technology: "Loading settlement batch". */
+  label: string;
+  /** `skeleton` mimics a detail page; `spinner` is for anything with no predictable shape. */
+  variant?: 'skeleton' | 'spinner';
+  /** Milliseconds before anything is painted. Stops the sub-100ms flash. */
+  delayMs?: number;
+}
+
+export function LoadingPage({ label, variant = 'skeleton', delayMs = 200 }: LoadingPageProps) {
+  const [visible, setVisible] = useState(delayMs === 0);
+
+  useEffect(() => {
+    if (delayMs === 0) return undefined;
+    const timer = setTimeout(() => setVisible(true), delayMs);
+    return () => clearTimeout(timer);
+  }, [delayMs]);
+
+  return (
+    <div role="status" aria-busy="true" className={pz('loading-page')} style={{ padding: space[6] }}>
+      <span style={visuallyHidden as React.CSSProperties}>{label}</span>
+
+      {!visible ? null : variant === 'spinner' ? (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: space[3],
+            fontFamily: font.family,
+            fontSize: font.size.md,
