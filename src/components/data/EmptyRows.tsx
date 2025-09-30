@@ -23,3 +23,11 @@ import { pz } from '@lib/cn';
 import { color, font, space } from '../ui/tokens';
 
 export interface EmptyRowsProps {
+  /** Shape 1: the number of columns to span. Omit for shape 2. */
+  columnCount?: number;
+  /** Shape 2: the headline. */
+  title?: string;
+  /** Shape 2: one sentence explaining what would make rows appear. */
+  body?: string;
+  /** Shape 2: a call to action — "Create your first payout". */
+  action?: ReactNode;

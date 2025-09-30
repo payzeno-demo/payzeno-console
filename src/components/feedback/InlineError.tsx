@@ -25,3 +25,9 @@ export interface InlineErrorProps {
   /** `alert` interrupts, `status` waits for a pause. Live validation should use `status`. */
   severity?: 'alert' | 'status';
   /** Renders the warning tone instead of danger — for "this will be delayed", not "this failed". */
+  tone?: 'danger' | 'warning';
+}
+
+export function InlineError({ id, children, severity = 'alert', tone = 'danger' }: InlineErrorProps) {
+  return (
+    <p

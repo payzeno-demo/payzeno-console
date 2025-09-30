@@ -24,3 +24,12 @@ import { Button } from '../ui/Button';
 import { color, font, radius, space } from '../ui/tokens';
 
 export interface ErrorStateProps {
+  error: unknown;
+  /** Headline. Say what failed, in the merchant's words: "We could not load your payouts". */
+  title: string;
+  /** Retry handler. Omitted for failures a retry cannot fix (403). */
+  onRetry?: () => void;
+  /** Extra action — "Contact support", "Go back". */
+  action?: ReactNode;
+}
+
