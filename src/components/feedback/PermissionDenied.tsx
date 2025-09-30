@@ -25,3 +25,70 @@ export interface PermissionDeniedProps {
   onBack?: () => void;
 }
 
+export function PermissionDenied({ permission, action, requestId, onBack }: PermissionDeniedProps) {
+  const what = action ?? (permission ? describePermission(permission) : 'view this');
+
+  return (
+    <section
+      aria-labelledby="permission-denied-heading"
+      className={pz('permission-denied')}
+      style={{
+        display: 'grid',
+        gap: space[3],
+        maxWidth: '60ch',
+        padding: space[6],
+        fontFamily: font.family,
+        color: color.textPrimary,
+        background: color.warningSubtle,
+        border: `1px solid ${color.warning}`,
+        borderRadius: radius.lg,
+      }}
+    >
+      <h2
+        id="permission-denied-heading"
+        style={{ margin: 0, fontSize: font.size.lg, fontWeight: font.weight.semibold }}
+      >
+        You do not have access to this
+      </h2>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>
+        Your role does not include permission to {what}. An account owner or admin can change
+        that from Settings → Team.
+      </p>
+
+      {permission ? (
+        <p
+          style={{
+            margin: 0,
+            fontFamily: font.familyMono,
+            fontSize: font.size.sm,
+            color: color.textMuted,
+          }}
+        >
+          Required permission: {permission}
+        </p>
+      ) : null}
+
+      {requestId ? (
+        <p
+          style={{
+            margin: 0,
+            fontFamily: font.familyMono,
+            fontSize: font.size.sm,
+            color: color.textMuted,
+          }}
+        >
+          Reference {requestId}
+        </p>
+      ) : null}
+
+      {onBack ? (
+        <div>
+          <Button size="sm" variant="secondary" onClick={onBack}>
+            Go back
+          </Button>
+        </div>
+      ) : null}
+    </section>
+  );
+}

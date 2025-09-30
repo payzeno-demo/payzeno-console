@@ -18,3 +18,30 @@ import { pz } from '@lib/cn';
 
 import { color, font, space } from '../ui/tokens';
 
+export interface InlineErrorProps {
+  /** Required. Must match the control's `aria-describedby`. */
+  id: string;
+  children: ReactNode;
+  /** `alert` interrupts, `status` waits for a pause. Live validation should use `status`. */
+  severity?: 'alert' | 'status';
+  /** Renders the warning tone instead of danger — for "this will be delayed", not "this failed". */
+  tone?: 'danger' | 'warning';
+}
+
+export function InlineError({ id, children, severity = 'alert', tone = 'danger' }: InlineErrorProps) {
+  return (
+    <p
+      id={id}
+      role={severity}
+      className={pz('inline-error', undefined, tone)}
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: space[1],
+        margin: `${space[1]} 0 0`,
+        fontFamily: font.family,
+        fontSize: font.size.sm,
+        lineHeight: font.lineHeight.normal,
+        color: tone === 'danger' ? color.danger : color.warning,
+      }}
+    >
