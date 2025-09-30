@@ -69,3 +69,11 @@ export function DataTable<TRow extends { id: string }>({
   const windowed = sorted.length > VIRTUALISATION_THRESHOLD;
   const visible = windowed ? sorted.slice(0, VIRTUALISATION_THRESHOLD) : sorted;
 
+  const activeSort: SortSpec<unknown> | null = sort
+    ? { id: sort.columnId, direction: sort.direction, value: () => null }
+    : null;
+
+  function onSort(columnId: string): void {
+    setSort((current) =>
+      current?.columnId === columnId
+        ? { columnId, direction: toggleDirection(current.direction) }

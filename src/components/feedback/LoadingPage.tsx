@@ -47,3 +47,19 @@ export function LoadingPage({ label, variant = 'skeleton', delayMs = 200 }: Load
             gap: space[3],
             fontFamily: font.family,
             fontSize: font.size.md,
+            color: color.textSecondary,
+          }}
+        >
+          <Spinner size="md" label="" />
+          <span aria-hidden="true">{label}…</span>
+        </div>
+      ) : (
+        <div aria-hidden="true" style={{ display: 'grid', gap: space[4], maxWidth: '900px' }}>
+          {/* page title */}
+          <Skeleton width="320px" height="28px" />
+          {/* subtitle */}
+          <Skeleton width="480px" height="14px" />
+
+          {/* the card grid a detail page usually opens with */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: space[4] }}>
+            <Skeleton height="88px" />
