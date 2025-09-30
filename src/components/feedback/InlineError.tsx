@@ -18,3 +18,10 @@ import { pz } from '@lib/cn';
 
 import { color, font, space } from '../ui/tokens';
 
+export interface InlineErrorProps {
+  /** Required. Must match the control's `aria-describedby`. */
+  id: string;
+  children: ReactNode;
+  /** `alert` interrupts, `status` waits for a pause. Live validation should use `status`. */
+  severity?: 'alert' | 'status';
+  /** Renders the warning tone instead of danger — for "this will be delayed", not "this failed". */

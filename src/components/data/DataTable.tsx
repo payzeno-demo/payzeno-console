@@ -61,3 +61,11 @@ export function DataTable<TRow extends { id: string }>({
     if (!sort) return rows;
     const column = columns.find((candidate) => candidate.id === sort.columnId);
     if (!column) return rows;
+    return sortRows(rows, sortSpecFor(column, sort.direction));
+  }, [rows, columns, sort]);
+
+  // Above the threshold we render a capped window. The full row count stays in the caption so
+  // the user is not misled about how much data is behind the scroll.
+  const windowed = sorted.length > VIRTUALISATION_THRESHOLD;
+  const visible = windowed ? sorted.slice(0, VIRTUALISATION_THRESHOLD) : sorted;
+

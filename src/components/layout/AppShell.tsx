@@ -19,3 +19,10 @@
 import { useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
+
+import type { Merchant, User } from '@payzeno/contracts';
+
+import { useSessionContext } from '@app/SessionContext';
+// eslint-disable-next-line no-restricted-imports -- interfaces.md §4.1: the bell lives in the shell
+import { NotificationBell } from '@features/notifications/NotificationBell';
+import { pz } from '@lib/cn';
