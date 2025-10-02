@@ -14,3 +14,11 @@ import { isFirstPage, nextPage, previousPage } from '@/types/table';
 import type { PageState } from '@/types/table';
 
 export interface Pagination {
+  state: PageState;
+  /** The slice of `ListQuery` this state contributes. Spread into the feature's query. */
+  query: Pick<ListQuery, 'limit' | 'cursor'>;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  /** Page index, 1-based. Display only — the API has no concept of it. */
+  pageNumber: number;
+  goNext: () => void;

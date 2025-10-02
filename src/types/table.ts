@@ -17,11 +17,19 @@ export interface PageState {
   history: ReadonlyArray<string | null>;
 }
 
+export interface SelectionState {
+  /** Row ids. Kept as a Set because settlement batches routinely hold thousands of items. */
+  ids: ReadonlySet<string>;
+  allOnPage: boolean;
+}
+
 export interface TableState {
   page: PageState;
   sort: SortState | null;
   selection: SelectionState;
 }
+
+export const EMPTY_SELECTION: SelectionState = { ids: new Set<string>(), allOnPage: false };
 
 /** Step back. Returns the same state when there is nowhere to go. */
 export function previousPage(state: PageState): PageState {

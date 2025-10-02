@@ -7,3 +7,8 @@
  */
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+
+export interface QueryParamOptions<T> {
+  /** Parse the raw string. Return `null` for "not present / not valid". */
+  parse: (raw: string) => T | null;
+  /** Serialise back. Return `null` to remove the parameter entirely. */

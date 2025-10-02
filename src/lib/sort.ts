@@ -33,3 +33,14 @@ export function multiSort<TRow>(
   });
 }
 
+export function sortByRank<TRow>(
+  rows: ReadonlyArray<TRow>,
+  key: (row: TRow) => string,
+  ranking: ReadonlyArray<string>,
+): TRow[] {
+  const rank = new Map(ranking.map((value, index) => [value, index]));
+  return [...rows].sort(
+    (a, b) => (rank.get(key(a)) ?? ranking.length) - (rank.get(key(b)) ?? ranking.length),
+  );
+}
+
