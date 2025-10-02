@@ -22,3 +22,11 @@ export interface Pagination {
   /** Page index, 1-based. Display only — the API has no concept of it. */
   pageNumber: number;
   goNext: () => void;
+  goBack: () => void;
+  setLimit: (limit: number) => void;
+  /** Back to page one. Called whenever a filter changes. */
+  reset: () => void;
+}
+
+/**
+ * @param response the current page, so the hook knows whether a next cursor exists. Pass
