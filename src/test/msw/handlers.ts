@@ -71,3 +71,51 @@ export const HANDLED_PATHS: ReadonlyArray<string> = [
   '/settlements/:batchId',
   '/settlements/:batchId/items',
   '/settlements/:batchId/items/:itemId/retry',
+  '/invoices',
+  '/invoices/:invoiceId',
+  '/api-keys',
+  '/api-keys/:apiKeyId',
+  '/webhook_events',
+  '/webhook_events/:eventId',
+  '/webhook_endpoints',
+  '/reporting/summary',
+  '/reporting/volume',
+  '/reporting/balance-history',
+  '/bank-accounts',
+  '/bank-accounts/:bankAccountId',
+];
+
+const requestIdHeaders = { 'X-Request-Id': 'req_msw_0000000000000001' };
+
+function ok<T>(body: T, status = 200): HttpResponse {
+  return HttpResponse.json(body as Record<string, unknown>, {
+    status,
+    headers: requestIdHeaders,
+  });
+}
+
+function timeseries(points: number) {
+  return Array.from({ length: points }, (_, index) => ({
+    bucket_start: `2026-03-${String(8 + index).padStart(2, '0')}T00:00:00.000Z`,
+    amount_minor: 120_000 + index * 4_500,
+    count: 40 + index,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// §3 auth
+// ---------------------------------------------------------------------------
+
+const authHandlers = [
+  http.get(url('/auth/me'), () => ok(makeSession())),
+
+  http.post(url('/auth/login'), async ({ request }) => {
+    const body = (await request.json()) as { email?: string };
+    return ok({
+      object: 'login',
+      user: makeSession().user,
+      merchant: makeSession().merchant,
+      _echo_email: body.email,
+    });
+  }),
+

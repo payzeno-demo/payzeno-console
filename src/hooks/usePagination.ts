@@ -6,3 +6,44 @@
  * `types/table.ts::previousPage`.
  */
 import { useCallback, useMemo, useState } from 'react';
+
+import type { ListQuery, Paginated } from '@payzeno/contracts';
+
+import { DEFAULT_PAGE_SIZE } from '@config/constants';
+import { isFirstPage, nextPage, previousPage } from '@/types/table';
+import type { PageState } from '@/types/table';
+
+export interface Pagination {
+  state: PageState;
+  /** The slice of `ListQuery` this state contributes. Spread into the feature's query. */
+  query: Pick<ListQuery, 'limit' | 'cursor'>;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  /** Page index, 1-based. Display only — the API has no concept of it. */
+  pageNumber: number;
+  goNext: () => void;
+  goBack: () => void;
+  setLimit: (limit: number) => void;
+  /** Back to page one. Called whenever a filter changes. */
+  reset: () => void;
+}
+
+/**
+ * @param response the current page, so the hook knows whether a next cursor exists. Pass
+ * `undefined` while the query is pending — the forward control disables itself.
+ */
+export function usePagination<T>(
+  response: Paginated<T> | undefined,
+  initialLimit: number = DEFAULT_PAGE_SIZE,
+): Pagination {
+  const [state, setState] = useState<PageState>({
+    limit: initialLimit,
+    cursor: null,
+    history: [],
+  });
+
+  const goNext = useCallback(() => {
+    const cursor = response?.next_cursor ?? null;
+    if (!cursor) return;
+    setState((current) => nextPage(current, cursor));
+  }, [response?.next_cursor]);

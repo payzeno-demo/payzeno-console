@@ -12,3 +12,33 @@ import { PAGE_SIZE_OPTIONS } from '@config/constants';
 import { pz } from '@lib/cn';
 import { pluralise } from '@lib/format';
 
+import { Button } from '../ui/Button';
+import { Select } from '../ui/Select';
+import { color, font, space } from '../ui/tokens';
+
+/**
+ * Full shape drives everything (page size selector, "previous", the row count). The reduced
+ * shape — `hasMore` / `onNext` / `onReset` / `isBusy` — is what the feature tables that still
+ * hold their own cursor in URL state pass. TODO(rrefactor): move them all onto
+ * `usePagination()` and delete the aliases. PAY-1968.
+ */
+export interface DataTablePaginationProps {
+  pageNumber?: number;
+  pageSize?: number;
+  /** Rows on the current page, for the "showing N" label. */
+  rowsOnPage?: number;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
+  isFetching?: boolean;
+  onPrevious?: () => void;
+  onNext: () => void;
+  onPageSizeChange?: (size: number) => void;
+  /** Resource name for the label — "charges", "settlement items". */
+  resourceLabel?: string;
+
+  /** Reduced shape: the API said there is another cursor. */
+  hasMore?: boolean;
+  /** Reduced shape: back to page one (the only "previous" a raw cursor can express). */
+  onReset?: () => void;
+  /** Reduced shape alias for `isFetching`. */
+  isBusy?: boolean;

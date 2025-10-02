@@ -19,3 +19,36 @@ function compareValues(a: string | number | null, b: string | number | null): nu
   return String(a).localeCompare(String(b), 'en', { numeric: true, sensitivity: 'base' });
 }
 
+export function multiSort<TRow>(
+  rows: ReadonlyArray<TRow>,
+  specs: ReadonlyArray<SortSpec<TRow>>,
+): TRow[] {
+  return [...rows].sort((a, b) => {
+    for (const spec of specs) {
+      const factor = spec.direction === 'asc' ? 1 : -1;
+      const result = compareValues(spec.value(a), spec.value(b)) * factor;
+      if (result !== 0) return result;
+    }
+    return 0;
+  });
+}
+
+export function sortByRank<TRow>(
+  rows: ReadonlyArray<TRow>,
+  key: (row: TRow) => string,
+  ranking: ReadonlyArray<string>,
+): TRow[] {
+  const rank = new Map(ranking.map((value, index) => [value, index]));
+  return [...rows].sort(
+    (a, b) => (rank.get(key(a)) ?? ranking.length) - (rank.get(key(b)) ?? ranking.length),
+  );
+}
+
+/** `aria-sort` value for a header cell. Screen readers announce the sort state from this. */
+export function ariaSort(
+  columnId: string,
+  active: SortSpec<unknown> | null,
+): 'ascending' | 'descending' | 'none' {
+  if (!active || active.id !== columnId) return 'none';
+  return active.direction === 'asc' ? 'ascending' : 'descending';
+}
