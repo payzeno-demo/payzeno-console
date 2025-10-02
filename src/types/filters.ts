@@ -27,3 +27,7 @@ export interface UiFilterState {
 
 export interface PaymentFilters extends PaymentIntentListQuery, UiFilterState {}
 
+export interface ChargeFilters extends ChargeListQuery, UiFilterState {
+  currency?: CurrencyCode;
+}
+

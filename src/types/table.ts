@@ -17,6 +17,12 @@ export interface PageState {
   history: ReadonlyArray<string | null>;
 }
 
+export interface TableState {
+  page: PageState;
+  sort: SortState | null;
+  selection: SelectionState;
+}
+
 /** Step back. Returns the same state when there is nowhere to go. */
 export function previousPage(state: PageState): PageState {
   if (state.history.length === 0) return state;
@@ -34,3 +40,11 @@ export function isFirstPage(state: PageState): boolean {
  * A paginated response plus the flags the table renders around it. Every list hook returns
  * this shape so `<DataTable />` never has to care which resource it is showing.
  */
+export interface TablePage<TRow> {
+  rows: ReadonlyArray<TRow>;
+  hasMore: boolean;
+  nextCursor: string | null;
+  isLoading: boolean;
+  isFetching: boolean;
+}
+

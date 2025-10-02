@@ -19,3 +19,17 @@ function compareValues(a: string | number | null, b: string | number | null): nu
   return String(a).localeCompare(String(b), 'en', { numeric: true, sensitivity: 'base' });
 }
 
+export function multiSort<TRow>(
+  rows: ReadonlyArray<TRow>,
+  specs: ReadonlyArray<SortSpec<TRow>>,
+): TRow[] {
+  return [...rows].sort((a, b) => {
+    for (const spec of specs) {
+      const factor = spec.direction === 'asc' ? 1 : -1;
+      const result = compareValues(spec.value(a), spec.value(b)) * factor;
+      if (result !== 0) return result;
+    }
+    return 0;
+  });
+}
+

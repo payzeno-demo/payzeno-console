@@ -6,3 +6,11 @@
  * `types/table.ts::previousPage`.
  */
 import { useCallback, useMemo, useState } from 'react';
+
+import type { ListQuery, Paginated } from '@payzeno/contracts';
+
+import { DEFAULT_PAGE_SIZE } from '@config/constants';
+import { isFirstPage, nextPage, previousPage } from '@/types/table';
+import type { PageState } from '@/types/table';
+
+export interface Pagination {

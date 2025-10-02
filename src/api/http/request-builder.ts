@@ -8,3 +8,13 @@ import type { QueryParams, RequestSpec } from '../transport';
 
 import { withCsrf } from './csrf';
 import { buildHeaders } from './headers';
+
+export interface BuiltRequest {
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+  body: string | undefined;
+  timeoutMs: number | undefined;
+}
+
+/**
