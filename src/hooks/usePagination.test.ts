@@ -35,6 +35,12 @@ describe('the initial state', () => {
     expect(result.current.canGoForward).toBe(false);
   });
 
+  it('can go forward once a response carries a cursor', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
+
+    expect(result.current.canGoForward).toBe(true);
+  });
+
   it('cannot go forward when has_more is true but the cursor is missing', () => {
     const { result } = renderHookWithProviders(() => usePagination<Row>(page(true, null)));
 
@@ -43,6 +49,32 @@ describe('the initial state', () => {
 });
 
 describe('going forward', () => {
+  it('returns to the previous cursor', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
+
+    act(() => {
+      result.current.goNext();
+    });
+    act(() => {
+      result.current.goBack();
+    });
+
+    expect(result.current.pageNumber).toBe(1);
+    expect(result.current.query.cursor).toBeUndefined();
+  });
+
+  it('is a no-op on the first page', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
+
+    act(() => {
+      result.current.goBack();
+    });
+
+    expect(result.current.pageNumber).toBe(1);
+  });
+});
+
+describe('changing the page size', () => {
   it('throws the cursor history away — old cursors encode the old size', () => {
     const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
 
@@ -62,4 +94,17 @@ describe('going forward', () => {
 });
 
 describe('reset', () => {
+  it('returns to the first page while keeping the page size', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(page(true), 50));
+
+    act(() => {
+      result.current.goNext();
+    });
+    act(() => {
+      result.current.reset();
+    });
+
+    expect(result.current.pageNumber).toBe(1);
+    expect(result.current.query).toEqual({ limit: 50 });
+  });
 });

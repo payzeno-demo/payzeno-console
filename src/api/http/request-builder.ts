@@ -48,3 +48,13 @@ export function joinPath(baseUrl: string, path: string): string {
 /** Percent-encodes a path segment. Ids are opaque and could in principle carry a slash. */
 export function pathSegment(value: string): string {
   return encodeURIComponent(value);
+}
+
+export function buildRequest<TBody>(spec: RequestSpec<TBody>): BuiltRequest {
+  const hasBody = spec.body !== undefined && spec.method !== 'GET';
+
+  let headers = buildHeaders({
+    hasBody,
+    idempotencyKey: spec.idempotencyKey,
+    extra: spec.headers,
+  });

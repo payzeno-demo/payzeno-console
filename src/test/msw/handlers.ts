@@ -95,3 +95,27 @@ function ok<T>(body: T, status = 200): HttpResponse {
 }
 
 function timeseries(points: number) {
+  return Array.from({ length: points }, (_, index) => ({
+    bucket_start: `2026-03-${String(8 + index).padStart(2, '0')}T00:00:00.000Z`,
+    amount_minor: 120_000 + index * 4_500,
+    count: 40 + index,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// §3 auth
+// ---------------------------------------------------------------------------
+
+const authHandlers = [
+  http.get(url('/auth/me'), () => ok(makeSession())),
+
+  http.post(url('/auth/login'), async ({ request }) => {
+    const body = (await request.json()) as { email?: string };
+    return ok({
+      object: 'login',
+      user: makeSession().user,
+      merchant: makeSession().merchant,
+      _echo_email: body.email,
+    });
+  }),
+
