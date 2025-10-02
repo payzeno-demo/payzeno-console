@@ -30,3 +30,11 @@ export interface Pagination {
 
 /**
  * @param response the current page, so the hook knows whether a next cursor exists. Pass
+ * `undefined` while the query is pending — the forward control disables itself.
+ */
+export function usePagination<T>(
+  response: Paginated<T> | undefined,
+  initialLimit: number = DEFAULT_PAGE_SIZE,
+): Pagination {
+  const [state, setState] = useState<PageState>({
+    limit: initialLimit,
