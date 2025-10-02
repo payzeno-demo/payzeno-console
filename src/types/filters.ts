@@ -31,3 +31,7 @@ export interface ChargeFilters extends ChargeListQuery, UiFilterState {
   currency?: CurrencyCode;
 }
 
+export interface RefundFilters extends ListQuery, UiFilterState {
+  status?: RefundStatus;
+}
+

@@ -38,3 +38,12 @@ export function usePagination<T>(
 ): Pagination {
   const [state, setState] = useState<PageState>({
     limit: initialLimit,
+    cursor: null,
+    history: [],
+  });
+
+  const goNext = useCallback(() => {
+    const cursor = response?.next_cursor ?? null;
+    if (!cursor) return;
+    setState((current) => nextPage(current, cursor));
+  }, [response?.next_cursor]);

@@ -38,3 +38,13 @@ export function serialiseQuery(query?: QueryParams): string {
 /**
  * Joins the versioned base URL with a route path. `VITE_PAYZENO_API_URL` already carries the
  * `/v1` segment (`http://localhost/v1`), so endpoint `basePath` values are version-free.
+ */
+export function joinPath(baseUrl: string, path: string): string {
+  const base = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  const suffix = path.startsWith('/') ? path : `/${path}`;
+  return `${base}${suffix}`;
+}
+
+/** Percent-encodes a path segment. Ids are opaque and could in principle carry a slash. */
+export function pathSegment(value: string): string {
+  return encodeURIComponent(value);
