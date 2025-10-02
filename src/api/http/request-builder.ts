@@ -28,3 +28,13 @@ export function serialiseQuery(query?: QueryParams): string {
   for (const [key, value] of Object.entries(query)) {
     if (value === undefined || value === null) continue;
     if (typeof value === 'string' && value.length === 0) continue;
+    search.append(key, String(value));
+  }
+
+  const serialised = search.toString();
+  return serialised.length > 0 ? `?${serialised}` : '';
+}
+
+/**
+ * Joins the versioned base URL with a route path. `VITE_PAYZENO_API_URL` already carries the
+ * `/v1` segment (`http://localhost/v1`), so endpoint `basePath` values are version-free.

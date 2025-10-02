@@ -44,3 +44,11 @@ export function sortByRank<TRow>(
   );
 }
 
+/** `aria-sort` value for a header cell. Screen readers announce the sort state from this. */
+export function ariaSort(
+  columnId: string,
+  active: SortSpec<unknown> | null,
+): 'ascending' | 'descending' | 'none' {
+  if (!active || active.id !== columnId) return 'none';
+  return active.direction === 'asc' ? 'ascending' : 'descending';
+}
