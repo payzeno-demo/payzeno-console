@@ -27,3 +27,18 @@ export interface DataTablePaginationProps {
   pageSize?: number;
   /** Rows on the current page, for the "showing N" label. */
   rowsOnPage?: number;
+  canGoBack?: boolean;
+  canGoForward?: boolean;
+  isFetching?: boolean;
+  onPrevious?: () => void;
+  onNext: () => void;
+  onPageSizeChange?: (size: number) => void;
+  /** Resource name for the label — "charges", "settlement items". */
+  resourceLabel?: string;
+
+  /** Reduced shape: the API said there is another cursor. */
+  hasMore?: boolean;
+  /** Reduced shape: back to page one (the only "previous" a raw cursor can express). */
+  onReset?: () => void;
+  /** Reduced shape alias for `isFetching`. */
+  isBusy?: boolean;
