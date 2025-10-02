@@ -18,3 +18,13 @@ export interface BuiltRequest {
 }
 
 /**
+ * Serialises query params. Undefined and empty-string values are dropped — an absent filter
+ * must not become `?status=` and make payzeno-api's ValidationPipe reject the whole read.
+ */
+export function serialiseQuery(query?: QueryParams): string {
+  if (!query) return '';
+
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined || value === null) continue;
+    if (typeof value === 'string' && value.length === 0) continue;
