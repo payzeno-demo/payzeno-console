@@ -75,3 +75,8 @@ export const queryKeys = {
     items: (batchId: string, q?: AnyListQuery) =>
       ['settlements', 'items', batchId, normalize(q)] as const,
     item: (batchId: string, itemId: string) =>
+      ['settlements', 'items', batchId, 'item', itemId] as const,
+  },
+
+  invoices: {
+    all: ['invoices'] as const,
