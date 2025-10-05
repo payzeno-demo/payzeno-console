@@ -20,5 +20,11 @@ export const SURFACED_NOTIFICATION_TYPES = [
   'dispute.opened',
 ] as const satisfies ReadonlyArray<PublicEventType>;
 
+/** A notification plus the console's own local read state. Never sent to the server. */
+export interface NotificationEntry extends ConsoleNotification {
+  read: boolean;
+  receivedAt: number;
+}
+
 export type NotificationSeverity = 'critical' | 'warning' | 'info';
 
