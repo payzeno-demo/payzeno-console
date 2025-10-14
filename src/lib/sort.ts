@@ -40,6 +40,15 @@ export function multiSort<TRow>(
   });
 }
 
+/** Flip a direction. The header click handler's whole body. */
+export function toggleDirection(direction: SortDirection): SortDirection {
+  return direction === 'asc' ? 'desc' : 'asc';
+}
+
+/**
+ * Order rows by an explicit list of key values — used for status columns, where alphabetical
+ * ordering ("failed, orphaned, pending, settled") is meaningless and lifecycle ordering is not.
+ */
 export function sortByRank<TRow>(
   rows: ReadonlyArray<TRow>,
   key: (row: TRow) => string,

@@ -55,3 +55,11 @@ export function usePagination<T>(
   const setLimit = useCallback((limit: number) => {
     // Changing the page size invalidates every cursor we hold — they encode the old size.
     setState({ limit, cursor: null, history: [] });
+  }, []);
+
+  const reset = useCallback(() => {
+    setState((current) => ({ limit: current.limit, cursor: null, history: [] }));
+  }, []);
+
+  const query = useMemo(() => {
+    const value: Pick<ListQuery, 'limit' | 'cursor'> = { limit: state.limit };
