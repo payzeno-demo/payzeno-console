@@ -26,6 +26,19 @@ function compareValues(a: string | number | null, b: string | number | null): nu
   return String(a).localeCompare(String(b), 'en', { numeric: true, sensitivity: 'base' });
 }
 
+/** Stable single-key sort. Returns a new array; never mutates the input. */
+export function sortRows<TRow>(rows: ReadonlyArray<TRow>, spec: SortSpec<TRow>): TRow[] {
+  const factor = spec.direction === 'asc' ? 1 : -1;
+  return [...rows].sort((a, b) => compareValues(spec.value(a), spec.value(b)) * factor);
+}
+
+/**
+ * Multi-key sort, first spec wins ties last.
+ *
+ * Exported and never imported. It was written for a "sort by status then amount" design that
+ * shipped as two separate columns instead; `DataTable` does its own single-key sorting.
+ * TODO(rrefactor): delete once nothing in the settlements branch references it. PAY-1972.
+ */
 export function multiSort<TRow>(
   rows: ReadonlyArray<TRow>,
   specs: ReadonlyArray<SortSpec<TRow>>,

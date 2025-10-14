@@ -63,3 +63,11 @@ export function usePagination<T>(
 
   const query = useMemo(() => {
     const value: Pick<ListQuery, 'limit' | 'cursor'> = { limit: state.limit };
+    if (state.cursor) value.cursor = state.cursor;
+    return value;
+  }, [state.limit, state.cursor]);
+
+  return {
+    state,
+    query,
+    canGoBack: !isFirstPage(state),
