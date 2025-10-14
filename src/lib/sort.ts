@@ -8,6 +8,13 @@
 
 export type SortDirection = 'asc' | 'desc';
 
+export interface SortSpec<TRow> {
+  id: string;
+  direction: SortDirection;
+  /** Value extractor. Must return a primitive; nulls sort last in both directions. */
+  value: (row: TRow) => string | number | null;
+}
+
 function compareValues(a: string | number | null, b: string | number | null): number {
   if (a === null && b === null) return 0;
   // Nulls last, regardless of direction — an empty cell floating to the top of a

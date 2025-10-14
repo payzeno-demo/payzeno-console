@@ -16,3 +16,8 @@ export interface QueryParamOptions<T> {
   /** Used when the parameter is absent or unparseable. */
   fallback: T;
   /** Replace rather than push, so filter fiddling does not fill the back button. */
+  replace?: boolean;
+}
+
+/**
+ * One typed query parameter, read and written through the router.

@@ -56,3 +56,17 @@ export function DataTablePagination({
   onPageSizeChange,
   resourceLabel = 'rows',
   hasMore,
+  onReset,
+  isBusy,
+}: DataTablePaginationProps) {
+  const forward = canGoForward ?? hasMore ?? false;
+  const back = canGoBack ?? (onReset !== undefined && pageNumber > 1);
+  const busy = isFetching ?? isBusy ?? false;
+  const goBack = onPrevious ?? onReset ?? (() => undefined);
+  const changePageSize = onPageSizeChange ?? (() => undefined);
+
+  return (
+    <nav
+      aria-label={`${resourceLabel} pagination`}
+      className={pz('pagination')}
+      style={{
