@@ -70,3 +70,18 @@ export function DataTablePagination({
       aria-label={`${resourceLabel} pagination`}
       className={pz('pagination')}
       style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: space[4],
+        padding: `${space[3]} ${space[1]}`,
+        fontFamily: font.family,
+        fontSize: font.size.sm,
+        color: color.textSecondary,
+      }}
+    >
+      {onPageSizeChange ? (
+        <div style={{ display: 'flex', alignItems: 'center', gap: space[2] }}>
+          <label htmlFor="page-size" style={{ color: color.textSecondary }}>
+            Rows per page
+          </label>

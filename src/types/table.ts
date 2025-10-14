@@ -90,3 +90,25 @@ export interface TablePage<TRow> {
   isFetching: boolean;
 }
 
+/** Adapt a contracts `Paginated<T>` into a `TablePage`, applying a row mapper. */
+export function toTablePage<TResource, TRow>(
+  response: Paginated<TResource> | undefined,
+  mapRow: (resource: TResource) => TRow,
+  flags: { isLoading: boolean; isFetching: boolean },
+): TablePage<TRow> {
+  return {
+    rows: response ? response.data.map(mapRow) : [],
+    hasMore: response?.has_more ?? false,
+    nextCursor: response?.next_cursor ?? null,
+    isLoading: flags.isLoading,
+    isFetching: flags.isFetching,
+  };
+}
+
+/** Toggle one row id in a selection. */
+export function toggleSelected(selection: SelectionState, id: string): SelectionState {
+  const ids = new Set(selection.ids);
+  if (ids.has(id)) ids.delete(id);
+  else ids.add(id);
+  return { ids, allOnPage: false };
+}
