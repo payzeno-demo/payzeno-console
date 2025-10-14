@@ -35,3 +35,8 @@ export interface RefundFilters extends ListQuery, UiFilterState {
   status?: RefundStatus;
 }
 
+export interface DisputeFilters extends ListQuery, UiFilterState {
+  status?: DisputeStatus;
+  reason?: DisputeReason;
+  /** UI-only shortcut for "evidence due in the next 72 hours". */
+  dueSoon?: boolean;

@@ -119,3 +119,28 @@ const authHandlers = [
     });
   }),
 
+  http.post(url('/auth/logout'), () => new HttpResponse(null, { status: 204 })),
+];
+
+// ---------------------------------------------------------------------------
+// §5 payment intents
+// ---------------------------------------------------------------------------
+
+const paymentIntentHandlers = [
+  http.get(url('/payment_intents'), () =>
+    ok(
+      makePage([
+        makePaymentIntent(),
+        makePaymentIntent({
+          id: 'pi_01HW0RTPAYMENTINTENT0002',
+          status: 'succeeded',
+          capture_method: 'automatic',
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/payment_intents/:paymentIntentId'), ({ params }) =>
+    ok(makePaymentIntent({ id: String(params.paymentIntentId) })),
+  ),
+

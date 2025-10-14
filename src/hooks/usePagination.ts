@@ -47,3 +47,27 @@ export function usePagination<T>(
     if (!cursor) return;
     setState((current) => nextPage(current, cursor));
   }, [response?.next_cursor]);
+
+  const goBack = useCallback(() => {
+    setState((current) => previousPage(current));
+  }, []);
+
+  const setLimit = useCallback((limit: number) => {
+    // Changing the page size invalidates every cursor we hold — they encode the old size.
+    setState({ limit, cursor: null, history: [] });
+  }, []);
+
+  const reset = useCallback(() => {
+    setState((current) => ({ limit: current.limit, cursor: null, history: [] }));
+  }, []);
+
+  const query = useMemo(() => {
+    const value: Pick<ListQuery, 'limit' | 'cursor'> = { limit: state.limit };
+    if (state.cursor) value.cursor = state.cursor;
+    return value;
+  }, [state.limit, state.cursor]);
+
+  return {
+    state,
+    query,
+    canGoBack: !isFirstPage(state),

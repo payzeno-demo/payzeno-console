@@ -43,3 +43,11 @@ export interface ApiClientOptions {
   readTimeoutMs: number;
   retries: number;
   /** Status codes the transport may retry on an idempotent verb. */
+  retryOn: ReadonlyArray<number>;
+  apiVersion: string;
+  userAgent: string;
+}
+
+/**
+ * Every list route in api-surface.md returns `Paginated<T>` with an opaque cursor. This alias
+ * exists so endpoint classes never have to spell the generic twice.

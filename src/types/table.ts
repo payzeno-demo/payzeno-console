@@ -17,6 +17,11 @@ export interface PageState {
   history: ReadonlyArray<string | null>;
 }
 
+export interface SortState {
+  columnId: string;
+  direction: SortDirection;
+}
+
 export interface SelectionState {
   /** Row ids. Kept as a Set because settlement batches routinely hold thousands of items. */
   ids: ReadonlySet<string>;
@@ -30,6 +35,35 @@ export interface TableState {
 }
 
 export const EMPTY_SELECTION: SelectionState = { ids: new Set<string>(), allOnPage: false };
+
+export function initialTableState(limit: number): TableState {
+  return {
+    page: { limit, cursor: null, history: [] },
+    sort: null,
+    selection: EMPTY_SELECTION,
+  };
+}
+
+/**
+ * Project table state onto the list query the endpoint takes.
+ *
+ * `ListQuery` is the frozen contract shape — this is where console-local state stops and the
+ * wire format starts.
+ */
+export function toListQuery(state: TableState): ListQuery {
+  const query: ListQuery = { limit: state.page.limit };
+  if (state.page.cursor) query.cursor = state.page.cursor;
+  return query;
+}
+
+/** Advance to the next page, remembering where we were. */
+export function nextPage(state: PageState, nextCursor: string | null): PageState {
+  return {
+    limit: state.limit,
+    cursor: nextCursor,
+    history: [...state.history, state.cursor],
+  };
+}
 
 /** Step back. Returns the same state when there is nowhere to go. */
 export function previousPage(state: PageState): PageState {

@@ -42,3 +42,31 @@ export interface DataTablePaginationProps {
   onReset?: () => void;
   /** Reduced shape alias for `isFetching`. */
   isBusy?: boolean;
+}
+
+export function DataTablePagination({
+  pageNumber = 1,
+  pageSize = PAGE_SIZE_OPTIONS[0] ?? 25,
+  rowsOnPage = 0,
+  canGoBack,
+  canGoForward,
+  isFetching,
+  onPrevious,
+  onNext,
+  onPageSizeChange,
+  resourceLabel = 'rows',
+  hasMore,
+  onReset,
+  isBusy,
+}: DataTablePaginationProps) {
+  const forward = canGoForward ?? hasMore ?? false;
+  const back = canGoBack ?? (onReset !== undefined && pageNumber > 1);
+  const busy = isFetching ?? isBusy ?? false;
+  const goBack = onPrevious ?? onReset ?? (() => undefined);
+  const changePageSize = onPageSizeChange ?? (() => undefined);
+
+  return (
+    <nav
+      aria-label={`${resourceLabel} pagination`}
+      className={pz('pagination')}
+      style={{

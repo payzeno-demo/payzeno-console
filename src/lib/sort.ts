@@ -8,6 +8,13 @@
 
 export type SortDirection = 'asc' | 'desc';
 
+export interface SortSpec<TRow> {
+  id: string;
+  direction: SortDirection;
+  /** Value extractor. Must return a primitive; nulls sort last in both directions. */
+  value: (row: TRow) => string | number | null;
+}
+
 function compareValues(a: string | number | null, b: string | number | null): number {
   if (a === null && b === null) return 0;
   // Nulls last, regardless of direction — an empty cell floating to the top of a
@@ -19,6 +26,19 @@ function compareValues(a: string | number | null, b: string | number | null): nu
   return String(a).localeCompare(String(b), 'en', { numeric: true, sensitivity: 'base' });
 }
 
+/** Stable single-key sort. Returns a new array; never mutates the input. */
+export function sortRows<TRow>(rows: ReadonlyArray<TRow>, spec: SortSpec<TRow>): TRow[] {
+  const factor = spec.direction === 'asc' ? 1 : -1;
+  return [...rows].sort((a, b) => compareValues(spec.value(a), spec.value(b)) * factor);
+}
+
+/**
+ * Multi-key sort, first spec wins ties last.
+ *
+ * Exported and never imported. It was written for a "sort by status then amount" design that
+ * shipped as two separate columns instead; `DataTable` does its own single-key sorting.
+ * TODO(rrefactor): delete once nothing in the settlements branch references it. PAY-1972.
+ */
 export function multiSort<TRow>(
   rows: ReadonlyArray<TRow>,
   specs: ReadonlyArray<SortSpec<TRow>>,
@@ -33,6 +53,15 @@ export function multiSort<TRow>(
   });
 }
 
+/** Flip a direction. The header click handler's whole body. */
+export function toggleDirection(direction: SortDirection): SortDirection {
+  return direction === 'asc' ? 'desc' : 'asc';
+}
+
+/**
+ * Order rows by an explicit list of key values — used for status columns, where alphabetical
+ * ordering ("failed, orphaned, pending, settled") is meaningless and lifecycle ordering is not.
+ */
 export function sortByRank<TRow>(
   rows: ReadonlyArray<TRow>,
   key: (row: TRow) => string,

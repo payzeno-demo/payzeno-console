@@ -58,3 +58,13 @@ export function buildRequest<TBody>(spec: RequestSpec<TBody>): BuiltRequest {
     idempotencyKey: spec.idempotencyKey,
     extra: spec.headers,
   });
+  headers = withCsrf(headers, spec.method);
+
+  return {
+    url: joinPath(runtime.apiBaseUrl, spec.path) + serialiseQuery(spec.query),
+    method: spec.method,
+    headers,
+    body: hasBody ? JSON.stringify(spec.body) : undefined,
+    timeoutMs: spec.timeoutMs,
+  };
+}
