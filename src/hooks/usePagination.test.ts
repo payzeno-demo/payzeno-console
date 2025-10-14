@@ -29,6 +29,12 @@ describe('the initial state', () => {
     expect(result.current.canGoBack).toBe(false);
   });
 
+  it('honours an initial limit', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(undefined, 50));
+
+    expect(result.current.query.limit).toBe(50);
+  });
+
   it('cannot go forward until a response says there is more', () => {
     const { result } = renderHookWithProviders(() => usePagination<Row>(page(false)));
 
@@ -49,6 +55,31 @@ describe('the initial state', () => {
 });
 
 describe('going forward', () => {
+  it('puts the cursor on the query and advances the page number', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
+
+    act(() => {
+      result.current.goNext();
+    });
+
+    expect(result.current.query.cursor).toBe('cur_2');
+    expect(result.current.pageNumber).toBe(2);
+    expect(result.current.canGoBack).toBe(true);
+  });
+
+  it('does nothing when there is no cursor to advance to', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(page(false)));
+
+    act(() => {
+      result.current.goNext();
+    });
+
+    expect(result.current.pageNumber).toBe(1);
+    expect(result.current.query.cursor).toBeUndefined();
+  });
+});
+
+describe('going back', () => {
   it('returns to the previous cursor', () => {
     const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
 
@@ -75,6 +106,16 @@ describe('going forward', () => {
 });
 
 describe('changing the page size', () => {
+  it('applies the new limit', () => {
+    const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
+
+    act(() => {
+      result.current.setLimit(100);
+    });
+
+    expect(result.current.query.limit).toBe(100);
+  });
+
   it('throws the cursor history away — old cursors encode the old size', () => {
     const { result } = renderHookWithProviders(() => usePagination<Row>(page(true)));
 

@@ -47,3 +47,11 @@ export function usePagination<T>(
     if (!cursor) return;
     setState((current) => nextPage(current, cursor));
   }, [response?.next_cursor]);
+
+  const goBack = useCallback(() => {
+    setState((current) => previousPage(current));
+  }, []);
+
+  const setLimit = useCallback((limit: number) => {
+    // Changing the page size invalidates every cursor we hold — they encode the old size.
+    setState({ limit, cursor: null, history: [] });

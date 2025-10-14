@@ -42,3 +42,17 @@ export interface DataTablePaginationProps {
   onReset?: () => void;
   /** Reduced shape alias for `isFetching`. */
   isBusy?: boolean;
+}
+
+export function DataTablePagination({
+  pageNumber = 1,
+  pageSize = PAGE_SIZE_OPTIONS[0] ?? 25,
+  rowsOnPage = 0,
+  canGoBack,
+  canGoForward,
+  isFetching,
+  onPrevious,
+  onNext,
+  onPageSizeChange,
+  resourceLabel = 'rows',
+  hasMore,
