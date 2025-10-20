@@ -29,3 +29,9 @@ import type { Tone } from '../ui/tokens';
  * `neutral` rather than throwing — a new status shipped by the API should look boring, not
  * crash the page.
  */
+const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
+  // payment intent
+  requires_payment_method: 'neutral',
+  requires_confirmation: 'neutral',
+  processing: 'info',
+  requires_action: 'warning',
