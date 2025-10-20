@@ -19,3 +19,8 @@ export interface ColumnDef<TRow> {
   sortable?: boolean;
   /** Plain-text value for CSV export. Required when `cell` returns anything but a string. */
   exportValue?: (row: TRow) => string;
+}
+
+export interface DataTableProps<TRow> {
+  columns: ReadonlyArray<ColumnDef<TRow>>;
+  rows: ReadonlyArray<TRow>;
