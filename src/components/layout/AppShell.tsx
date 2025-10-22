@@ -33,3 +33,10 @@ import { color, cssVariables, font, layout, space, visuallyHidden } from '../ui/
 
 import { EnvironmentBanner } from './EnvironmentBanner';
 import { SideNav } from './SideNav';
+import { TopBar } from './TopBar';
+
+export interface AppShellProps {
+  children: ReactNode;
+  /** Overrides for the session-derived values. Tests pass these; the app does not. */
+  user?: User;
+  merchant?: Merchant;

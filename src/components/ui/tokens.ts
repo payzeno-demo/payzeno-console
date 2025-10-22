@@ -119,3 +119,13 @@ export const zIndex = {
   toast: 60,
 } as const;
 
+export const duration = {
+  fast: '120ms',
+  normal: '200ms',
+  slow: '320ms',
+} as const;
+
+/** Layout constants the shell depends on. */
+export const layout = {
+  sideNavWidth: '240px',
+  topBarHeight: '56px',

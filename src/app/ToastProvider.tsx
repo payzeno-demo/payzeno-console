@@ -17,3 +17,12 @@ import type { ReactNode } from 'react';
 
 import { TOAST_DURATION_MS } from '@config/constants';
 import { newRequestId } from '@lib/ids';
+
+import { Toaster } from '@components/ui/Toaster';
+import type { ToastSpec, ToastTone } from '@components/ui/Toast';
+
+export interface ToastOptions {
+  description?: string;
+  /** A single action — "View settlement", "Undo". */
+  action?: { label: string; onSelect: () => void };
+  /** Override the tone's default duration. `null` keeps it up until dismissed. */
