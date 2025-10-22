@@ -20,3 +20,11 @@ import { truncateId } from '@lib/format';
 import { IconButton } from '../ui/IconButton';
 import { color, font, space, visuallyHidden } from '../ui/tokens';
 
+export interface IdCellProps {
+  value: string | null | undefined;
+  /** Characters kept at the start. Settlement ids need more than charge ids do. */
+  head?: number;
+  /** Characters kept at the end. */
+  tail?: number;
+  /** Hide the copy affordance — detail pages that already show the id in full. */
+  copyable?: boolean;

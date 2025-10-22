@@ -41,3 +41,9 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
 
   // charge
   pending: 'neutral',
+  authorized: 'info',
+  captured: 'info',
+  settled: 'success',
+  failed: 'danger',
+  voided: 'neutral',
+  expired: 'neutral',

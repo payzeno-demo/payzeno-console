@@ -14,3 +14,9 @@ import { pz } from '@lib/cn';
 import { Badge } from '../ui/Badge';
 import type { Tone } from '../ui/tokens';
 
+export interface AcquirerCellProps {
+  acquirer: Acquirer | null | undefined;
+  /** Render just the text, no badge. Used inside already-dense settlement item rows. */
+  plain?: boolean;
+}
+
