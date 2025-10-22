@@ -35,3 +35,21 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   requires_confirmation: 'neutral',
   processing: 'info',
   requires_action: 'warning',
+  requires_capture: 'warning',
+  succeeded: 'success',
+  canceled: 'neutral',
+
+  // charge
+  pending: 'neutral',
+  authorized: 'info',
+  captured: 'info',
+  settled: 'success',
+  failed: 'danger',
+  voided: 'neutral',
+  expired: 'neutral',
+  reversed: 'warning',
+
+  // refund
+  // (pending / succeeded / failed / canceled covered above)
+
+  // dispute
