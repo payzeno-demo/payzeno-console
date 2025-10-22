@@ -129,3 +129,13 @@ export const duration = {
 export const layout = {
   sideNavWidth: '240px',
   topBarHeight: '56px',
+  contentMaxWidth: '1280px',
+  bannerHeight: '32px',
+} as const;
+
+export const tokens = {
+  color,
+  space,
+  radius,
+  font,
+  shadow,
