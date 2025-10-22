@@ -12,3 +12,11 @@ import { paymentIntentColumns } from '../payments.columns';
 
 export interface PaymentIntentTableProps {
   rows: ReadonlyArray<PaymentIntentRow>;
+  isLoading: boolean;
+  hasMore: boolean;
+  nextCursor: string | null;
+  onCursorChange: (cursor: string | null) => void;
+}
+
+export function PaymentIntentTable({
+  rows,

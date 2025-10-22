@@ -35,3 +35,9 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   requires_confirmation: 'neutral',
   processing: 'info',
   requires_action: 'warning',
+  requires_capture: 'warning',
+  succeeded: 'success',
+  canceled: 'neutral',
+
+  // charge
+  pending: 'neutral',

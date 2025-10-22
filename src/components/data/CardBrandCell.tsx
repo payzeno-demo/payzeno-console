@@ -12,3 +12,10 @@
  * cards apart.
  */
 import type { CardBrand, CardFunding } from '@payzeno/contracts';
+
+import { pz } from '@lib/cn';
+import { maskLastFour } from '@lib/format';
+
+import { color, font, space } from '../ui/tokens';
+
+export interface CardBrandCellProps {
