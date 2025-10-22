@@ -9,3 +9,15 @@
  * read.
  */
 import * as RadixToast from '@radix-ui/react-toast';
+import type { ReactNode } from 'react';
+
+import { cn, pz } from '@lib/cn';
+
+import { color, font, radius, shadow, space, toneStyle } from './tokens';
+import type { Tone } from './tokens';
+
+export type ToastTone = Extract<Tone, 'success' | 'danger' | 'info' | 'warning'>;
+
+export interface ToastSpec {
+  id: string;
+  title: string;
