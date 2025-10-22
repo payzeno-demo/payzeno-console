@@ -47,3 +47,9 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   failed: 'danger',
   voided: 'neutral',
   expired: 'neutral',
+  reversed: 'warning',
+
+  // refund
+  // (pending / succeeded / failed / canceled covered above)
+
+  // dispute

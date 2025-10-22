@@ -20,3 +20,8 @@ export interface AcquirerCellProps {
   plain?: boolean;
 }
 
+const ACQUIRER_LABELS: Readonly<Record<Acquirer, string>> = {
+  worldflow: 'Worldflow',
+  nordpay: 'Nordpay',
+};
+
