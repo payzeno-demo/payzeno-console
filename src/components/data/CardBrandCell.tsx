@@ -19,3 +19,10 @@ import { maskLastFour } from '@lib/format';
 import { color, font, space } from '../ui/tokens';
 
 export interface CardBrandCellProps {
+  brand: CardBrand;
+  lastFour: string;
+  /** Rendered as a muted suffix — "debit", "prepaid". Interchange differs wildly by funding. */
+  funding?: CardFunding;
+  /** Issuer country, ISO-3166-1 alpha-2. Shown as a muted suffix on the charge detail page. */
+  country?: string | null;
+}
