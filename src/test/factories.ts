@@ -66,6 +66,11 @@ export function makeSession(overrides: Partial<SessionResponse> = {}): SessionRe
   };
 }
 
+/** The session shape the providers actually hold — `SessionResponse` plus the console's bits. */
+export function makeConsoleSession(overrides: Partial<SessionResponse> = {}): ConsoleSession {
+  return toConsoleSession(makeSession(overrides));
+}
+
 export function makePaymentIntent(overrides: Partial<PaymentIntent> = {}): PaymentIntent {
   return {
     id: 'pi_01HW0RTPAYMENTINTENT0001',
@@ -149,6 +154,15 @@ export function makeRefund(overrides: Partial<Refund> = {}): Refund {
     created_at: '2026-03-14T09:00:00.000Z',
     succeeded_at: NOW,
     ...overrides,
+  };
+}
+
+/** Wrap rows in the envelope every list route returns. */
+export function makePage<T>(rows: ReadonlyArray<T>, hasMore = false): Paginated<T> {
+  return {
+    data: [...rows],
+    next_cursor: hasMore ? 'cur_next_page_opaque' : null,
+    has_more: hasMore,
   };
 }
 

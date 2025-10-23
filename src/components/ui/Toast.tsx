@@ -9,3 +9,26 @@
  * read.
  */
 import * as RadixToast from '@radix-ui/react-toast';
+import type { ReactNode } from 'react';
+
+import { cn, pz } from '@lib/cn';
+
+import { color, font, radius, shadow, space, toneStyle } from './tokens';
+import type { Tone } from './tokens';
+
+export type ToastTone = Extract<Tone, 'success' | 'danger' | 'info' | 'warning'>;
+
+export interface ToastSpec {
+  id: string;
+  title: string;
+  description?: string;
+  tone: ToastTone;
+  /** Milliseconds. `null` means it stays until dismissed — the default for `danger`. */
+  durationMs: number | null;
+  /** Optional single action, e.g. "View settlement". */
+  action?: { label: string; onSelect: () => void };
+}
+
+export interface ToastProps {
+  spec: ToastSpec;
+  onOpenChange: (open: boolean) => void;

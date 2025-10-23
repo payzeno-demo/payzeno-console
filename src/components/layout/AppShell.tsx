@@ -26,3 +26,17 @@ import { useSessionContext } from '@app/SessionContext';
 // eslint-disable-next-line no-restricted-imports -- interfaces.md §4.1: the bell lives in the shell
 import { NotificationBell } from '@features/notifications/NotificationBell';
 import { pz } from '@lib/cn';
+
+import { SKELETON_KEYFRAMES } from '../ui/Skeleton';
+import { SPINNER_KEYFRAMES } from '../ui/Spinner';
+import { color, cssVariables, font, layout, space, visuallyHidden } from '../ui/tokens';
+
+import { EnvironmentBanner } from './EnvironmentBanner';
+import { SideNav } from './SideNav';
+import { TopBar } from './TopBar';
+
+export interface AppShellProps {
+  children: ReactNode;
+  /** Overrides for the session-derived values. Tests pass these; the app does not. */
+  user?: User;
+  merchant?: Merchant;
