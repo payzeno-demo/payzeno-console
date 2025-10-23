@@ -27,6 +27,38 @@ describe('before a session exists', () => {
 });
 
 describe('with a session', () => {
+  it('renders the primary navigation', () => {
+    renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+    );
+
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
+  });
+
+  it('takes the user and merchant from the session when none are passed', () => {
+    renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+      { session: makeConsoleSession() },
+    );
+
+    expect(screen.getByText(/Northwind/)).toBeInTheDocument();
+  });
+
+  it('announces a feature route by name', () => {
+    renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+      { route: '/settlements' },
+    );
+
+    expect(screen.getByRole('status')).toHaveTextContent('Navigated to settlements');
+  });
+
   it('publishes the token custom properties onto the document root', () => {
     renderWithProviders(
       <AppShell>

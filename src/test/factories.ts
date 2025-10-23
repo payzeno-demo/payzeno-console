@@ -66,6 +66,11 @@ export function makeSession(overrides: Partial<SessionResponse> = {}): SessionRe
   };
 }
 
+/** The session shape the providers actually hold — `SessionResponse` plus the console's bits. */
+export function makeConsoleSession(overrides: Partial<SessionResponse> = {}): ConsoleSession {
+  return toConsoleSession(makeSession(overrides));
+}
+
 export function makePaymentIntent(overrides: Partial<PaymentIntent> = {}): PaymentIntent {
   return {
     id: 'pi_01HW0RTPAYMENTINTENT0001',
@@ -131,5 +136,33 @@ export function makeCharge(overrides: Partial<Charge> = {}): Charge {
     updated_at: NOW,
     ...overrides,
   } as Charge;
+}
+
+export function makeRefund(overrides: Partial<Refund> = {}): Refund {
+  return {
+    id: 're_01HW0RTREFUND00000001',
+    object: 'refund',
+    merchant_id: MERCHANT_ID,
+    charge_id: 'ch_01HW0RTCHARGE00000001',
+    amount_minor: 2_500,
+    currency: 'GBP',
+    status: 'succeeded',
+    reason: 'requested_by_customer',
+    failure_reason: null,
+    processor_reference: 'wf_ref_refund_1',
+    metadata: {},
+    created_at: '2026-03-14T09:00:00.000Z',
+    succeeded_at: NOW,
+    ...overrides,
+  };
+}
+
+/** Wrap rows in the envelope every list route returns. */
+export function makePage<T>(rows: ReadonlyArray<T>, hasMore = false): Paginated<T> {
+  return {
+    data: [...rows],
+    next_cursor: hasMore ? 'cur_next_page_opaque' : null,
+    has_more: hasMore,
+  };
 }
 

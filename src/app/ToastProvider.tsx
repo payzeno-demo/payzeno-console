@@ -26,3 +26,13 @@ export interface ToastOptions {
   /** A single action — "View settlement", "Undo". */
   action?: { label: string; onSelect: () => void };
   /** Override the tone's default duration. `null` keeps it up until dismissed. */
+  durationMs?: number | null;
+}
+
+export interface ToastApi {
+  success: (title: string, options?: ToastOptions) => void;
+  error: (title: string, options?: ToastOptions) => void;
+  info: (title: string, options?: ToastOptions) => void;
+  warning: (title: string, options?: ToastOptions) => void;
+  dismiss: (id: string) => void;
+  clear: () => void;
