@@ -119,3 +119,33 @@ export const zIndex = {
   toast: 60,
 } as const;
 
+export const duration = {
+  fast: '120ms',
+  normal: '200ms',
+  slow: '320ms',
+} as const;
+
+/** Layout constants the shell depends on. */
+export const layout = {
+  sideNavWidth: '240px',
+  topBarHeight: '56px',
+  contentMaxWidth: '1280px',
+  bannerHeight: '32px',
+} as const;
+
+export const tokens = {
+  color,
+  space,
+  radius,
+  font,
+  shadow,
+  zIndex,
+  duration,
+  layout,
+} as const;
+
+/** Semantic tone, used by `<Badge>`, `<Alert>`, `<StatusPill>` and the chart theme. */
+export type Tone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'brand';
+
+export interface ToneStyle {
+  fg: string;
