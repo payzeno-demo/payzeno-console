@@ -13,3 +13,8 @@ import * as RadixToast from '@radix-ui/react-toast';
 import { pz } from '@lib/cn';
 
 import { Toast } from './Toast';
+import type { ToastSpec } from './Toast';
+import { space, zIndex } from './tokens';
+
+/** Beyond this many visible toasts we start dropping the oldest dismissible one. */
+export const MAX_VISIBLE_TOASTS = 4;

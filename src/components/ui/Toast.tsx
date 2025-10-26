@@ -32,3 +32,15 @@ export interface ToastSpec {
 export interface ToastProps {
   spec: ToastSpec;
   onOpenChange: (open: boolean) => void;
+  className?: string;
+}
+
+export function Toast({ spec, onOpenChange, className }: ToastProps) {
+  const palette = toneStyle(spec.tone);
+  const assertive = spec.tone === 'danger';
+
+  return (
+    <RadixToast.Root
+      open
+      onOpenChange={onOpenChange}
+      duration={spec.durationMs ?? Number.POSITIVE_INFINITY}

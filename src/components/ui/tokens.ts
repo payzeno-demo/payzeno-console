@@ -139,3 +139,13 @@ export const tokens = {
   radius,
   font,
   shadow,
+  zIndex,
+  duration,
+  layout,
+} as const;
+
+/** Semantic tone, used by `<Badge>`, `<Alert>`, `<StatusPill>` and the chart theme. */
+export type Tone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'brand';
+
+export interface ToneStyle {
+  fg: string;
