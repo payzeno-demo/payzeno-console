@@ -9,3 +9,24 @@
 import { ACQUIRERS } from '@payzeno/contracts';
 import type { Acquirer } from '@payzeno/contracts';
 
+import { pz } from '@lib/cn';
+
+import { Badge } from '../ui/Badge';
+import type { Tone } from '../ui/tokens';
+
+export interface AcquirerCellProps {
+  acquirer: Acquirer | null | undefined;
+  /** Render just the text, no badge. Used inside already-dense settlement item rows. */
+  plain?: boolean;
+}
+
+const ACQUIRER_LABELS: Readonly<Record<Acquirer, string>> = {
+  worldflow: 'Worldflow',
+  nordpay: 'Nordpay',
+};
+
+/**
+ * Two different neutral-ish tones. Neither is `danger` — an acquirer is not an error state,
+ * however much the on-call rota disagrees.
+ */
+const ACQUIRER_TONES: Readonly<Record<Acquirer, Tone>> = {

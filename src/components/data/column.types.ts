@@ -24,3 +24,13 @@ export interface ColumnDef<TRow> {
 export interface DataTableProps<TRow> {
   columns: ReadonlyArray<ColumnDef<TRow>>;
   rows: ReadonlyArray<TRow>;
+  isLoading: boolean;
+  emptyState: ReactNode;
+  onRowClick?: (row: TRow) => void;
+  /** a11y: required. Tal rejects PRs without it. */
+  caption: string;
+}
+
+/** Stable row identity. Every payzeno resource has `id`; this is the escape hatch for the rest. */
+export type RowKey<TRow> = (row: TRow) => string;
+

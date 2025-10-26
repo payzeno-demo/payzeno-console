@@ -12,3 +12,24 @@
  * cards apart.
  */
 import type { CardBrand, CardFunding } from '@payzeno/contracts';
+
+import { pz } from '@lib/cn';
+import { maskLastFour } from '@lib/format';
+
+import { color, font, space } from '../ui/tokens';
+
+export interface CardBrandCellProps {
+  brand: CardBrand;
+  lastFour: string;
+  /** Rendered as a muted suffix — "debit", "prepaid". Interchange differs wildly by funding. */
+  funding?: CardFunding;
+  /** Issuer country, ISO-3166-1 alpha-2. Shown as a muted suffix on the charge detail page. */
+  country?: string | null;
+}
+
+/** Display names. `mastercard` is one word and lowercase in their own brand guide; we title it. */
+const BRAND_LABELS: Readonly<Record<CardBrand, string>> = {
+  visa: 'Visa',
+  mastercard: 'Mastercard',
+  amex: 'American Express',
+  discover: 'Discover',

@@ -13,3 +13,25 @@
  *    for every copy is noise;
  *  - `<code>` carries the mono font from tokens, not a hardcoded family.
  */
+import { useCopyToClipboard } from '@hooks/useCopyToClipboard';
+import { pz } from '@lib/cn';
+import { truncateId } from '@lib/format';
+
+import { IconButton } from '../ui/IconButton';
+import { color, font, space, visuallyHidden } from '../ui/tokens';
+
+export interface IdCellProps {
+  value: string | null | undefined;
+  /** Characters kept at the start. Settlement ids need more than charge ids do. */
+  head?: number;
+  /** Characters kept at the end. */
+  tail?: number;
+  /** Hide the copy affordance — detail pages that already show the id in full. */
+  copyable?: boolean;
+  /** What the id identifies, for the copy button's label: "charge", "settlement batch". */
+  resourceLabel?: string;
+}
+
+export function IdCell({
+  value,
+  head = 8,
