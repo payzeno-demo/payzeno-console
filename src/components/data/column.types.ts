@@ -29,3 +29,8 @@ export interface DataTableProps<TRow> {
   onRowClick?: (row: TRow) => void;
   /** a11y: required. Tal rejects PRs without it. */
   caption: string;
+}
+
+/** Stable row identity. Every payzeno resource has `id`; this is the escape hatch for the rest. */
+export type RowKey<TRow> = (row: TRow) => string;
+

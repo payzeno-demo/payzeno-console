@@ -53,3 +53,16 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   // (pending / succeeded / failed / canceled covered above)
 
   // dispute
+  needs_response: 'danger',
+  under_review: 'warning',
+  won: 'success',
+  lost: 'danger',
+  warning_needs_response: 'warning',
+  warning_closed: 'neutral',
+
+  // payout
+  scheduled: 'neutral',
+  in_transit: 'info',
+  paid: 'success',
+  returned: 'danger',
+

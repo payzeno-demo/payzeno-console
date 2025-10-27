@@ -25,3 +25,8 @@ const ACQUIRER_LABELS: Readonly<Record<Acquirer, string>> = {
   nordpay: 'Nordpay',
 };
 
+/**
+ * Two different neutral-ish tones. Neither is `danger` — an acquirer is not an error state,
+ * however much the on-call rota disagrees.
+ */
+const ACQUIRER_TONES: Readonly<Record<Acquirer, Tone>> = {

@@ -26,3 +26,10 @@ export interface CardBrandCellProps {
   /** Issuer country, ISO-3166-1 alpha-2. Shown as a muted suffix on the charge detail page. */
   country?: string | null;
 }
+
+/** Display names. `mastercard` is one word and lowercase in their own brand guide; we title it. */
+const BRAND_LABELS: Readonly<Record<CardBrand, string>> = {
+  visa: 'Visa',
+  mastercard: 'Mastercard',
+  amex: 'American Express',
+  discover: 'Discover',

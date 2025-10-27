@@ -28,3 +28,10 @@ export interface IdCellProps {
   tail?: number;
   /** Hide the copy affordance — detail pages that already show the id in full. */
   copyable?: boolean;
+  /** What the id identifies, for the copy button's label: "charge", "settlement batch". */
+  resourceLabel?: string;
+}
+
+export function IdCell({
+  value,
+  head = 8,
