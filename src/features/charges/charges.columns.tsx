@@ -53,3 +53,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
       <Link to={ROUTES.charges.detail(row.id)}>
         <IdCell value={row.id} />
       </Link>
+    ),
+    exportValue: (row) => row.id,
+    width: '18rem',
+  },
+  {
+    id: 'amount_minor',
+    header: 'Amount',

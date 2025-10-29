@@ -2,3 +2,8 @@
  * View models.
  *
  * The rule (interfaces.md §4.1): this directory may **extend** a `@payzeno/contracts` type; it
+ * may never redeclare one. If you find yourself writing `interface Charge { id: string; … }`
+ * here, stop — the field you want already exists upstream, or it belongs on the API.
+ *
+ * Everything below is "the contract type, plus what the table needs to render it".
+ */
