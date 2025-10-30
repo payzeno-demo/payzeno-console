@@ -33,3 +33,10 @@ const BRAND_LABELS: Readonly<Record<CardBrand, string>> = {
   mastercard: 'Mastercard',
   amex: 'American Express',
   discover: 'Discover',
+};
+
+/**
+ * A monochrome glyph per brand. Deliberately not the network logos: shipping the real marks
+ * means a licensing review, and legal said no twice (PAY-1490).
+ */
+const BRAND_GLYPHS: Readonly<Record<CardBrand, string>> = {

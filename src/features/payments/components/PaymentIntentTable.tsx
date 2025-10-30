@@ -20,3 +20,10 @@ export interface PaymentIntentTableProps {
 
 export function PaymentIntentTable({
   rows,
+  isLoading,
+  hasMore,
+  nextCursor,
+  onCursorChange,
+}: PaymentIntentTableProps) {
+  const navigate = useNavigate();
+
