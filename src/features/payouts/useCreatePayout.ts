@@ -39,3 +39,13 @@ export interface CreatePayoutArgs {
   currency: CurrencyCode;
   /** Omit for "everything available". */
   amountMinor?: MinorUnits;
+  bankAccountId?: string;
+  method?: PayoutMethod;
+  statementDescriptor?: string;
+}
+
+export interface UseCreatePayoutResult {
+  createPayout: (args: CreatePayoutArgs) => void;
+  isPending: boolean;
+  errorMessage: string | null;
+  fieldErrors: Record<string, string>;

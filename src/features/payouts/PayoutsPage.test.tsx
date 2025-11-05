@@ -25,6 +25,34 @@ describe('the page', () => {
     ).toBeInTheDocument();
   });
 
+  it('sets the document title', async () => {
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    await waitFor(() => {
+      expect(document.title).toContain('Payouts');
+    });
+  });
+
+  it('renders a labelled filter region', async () => {
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    expect(await screen.findByRole('search', { name: 'Payout filters' })).toBeInTheDocument();
+  });
+
+  it('reads the status filter out of the URL', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<PayoutsPage />, { route: '/payouts?status=failed' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('status=failed'))).toBe(
+        true,
+      );
+    });
+    recorder.stop();
+  });
+});
+
+describe('the table', () => {
   it('is absent when every payout is healthy', async () => {
     server.use(
       http.get(url('/payouts'), () =>

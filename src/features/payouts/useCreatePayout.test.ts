@@ -57,6 +57,32 @@ describe('creating a payout', () => {
   });
 
   it('exposes the created payout', async () => {
+    const { result, queryClient } = renderHookWithProviders(() => useCreatePayout());
+
+    queryClient.setQueryData(queryKeys.payouts.list({ limit: 25 }), {
+      data: [],
+      next_cursor: null,
+      has_more: false,
+    });
+    queryClient.setQueryData(queryKeys.balance.current('GBP'), { available_minor: 1 });
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP' });
+    });
+
+    await waitFor(() => {
+      expect(
+        queryClient.getQueryState(queryKeys.payouts.list({ limit: 25 }))?.isInvalidated,
+      ).toBe(true);
+    });
+    expect(queryClient.getQueryState(queryKeys.balance.current('GBP'))?.isInvalidated).toBe(true);
+  });
+});
+
+describe('the failure branches', () => {
+  it('explains payout_blocked in terms of the balance', async () => {
+    server.use(errorHandler('post', '/payouts', 409, 'payout_blocked', 'Blocked.'));
+
     const { result } = renderHookWithProviders(() => useCreatePayout());
 
     act(() => {
@@ -77,5 +103,22 @@ describe('creating a payout', () => {
       }),
     );
 
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP' });
+    });
+    await waitFor(() => {
+      expect(result.current.errorMessage).not.toBeNull();
+    });
+
+    server.resetHandlers();
+    act(() => {
+      result.current.createPayout({ currency: 'GBP' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBeNull();
+    });
   });
 });
