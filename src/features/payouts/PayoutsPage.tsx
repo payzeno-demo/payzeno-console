@@ -28,3 +28,13 @@ import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { useEnumParam, useStringParam } from '@hooks/useQueryParamState';
 import { usePermissions } from '@hooks/usePermissions';
 import { humanise, pluralise } from '@lib/format';
+import { useBalance } from '@features/balance/useBalance';
+
+import { CreatePayoutDialog } from './components/CreatePayoutDialog';
+import { PayoutTable } from './components/PayoutTable';
+import { payoutColumns } from './payouts.columns';
+import { usePayouts } from './usePayouts';
+
+export function PayoutsPage() {
+  useDocumentTitle('Payouts');
+

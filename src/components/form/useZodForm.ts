@@ -67,6 +67,25 @@ export function useZodForm<TValues extends Record<string, string>>(
     [schema, values],
   );
 
+  const fieldProps = useCallback(
+    (name: keyof TValues & string, hintId?: string): FieldProps => ({
+      id: `${formId}-${name}`,
+      name,
+      value: values[name] ?? '',
+      onChange: (event) => setValue(name, event.target.value),
+      onBlur: () => validateField(name),
+      'aria-invalid': errors.fields[name] !== undefined ? true : undefined,
+      'aria-describedby': describedBy(name, errors, hintId),
+    }),
+    [errors, formId, setValue, validateField, values],
+  );
+
+  const reset = useCallback(() => {
+    setValues(initialValues);
+    setErrors(NO_ERRORS);
+  }, [initialValues]);
+
+  return { values, errors, isSubmitting, setValue, fieldProps, submit, reset, applyServerError };
 }
 
 export { errorIdFor };
