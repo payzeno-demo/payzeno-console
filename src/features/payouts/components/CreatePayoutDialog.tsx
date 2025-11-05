@@ -44,4 +44,6 @@ export function CreatePayoutDialog({
   const [method, setMethod] = useState<PayoutMethod>('standard_ach');
 
   const tooLarge = amountMinor > availableMinor;
+  const amountError = fieldErrors.amount_minor ?? (tooLarge ? 'More than is available.' : null);
+
 }
