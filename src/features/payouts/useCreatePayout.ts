@@ -8,3 +8,13 @@
  *                              being fussy.
  *   403                      — `payouts:write` is admin-only.
  *
+ * Each gets its own sentence, because "Something went wrong" on a payout form generates a
+ * support ticket every single time.
+ */
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
+
+import type {
+  CreatePayoutRequest,
+  CurrencyCode,
+  MinorUnits,
