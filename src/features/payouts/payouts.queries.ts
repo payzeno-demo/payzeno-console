@@ -20,3 +20,9 @@ export function payoutsListQuery(e: EndpointRegistry, q?: PayoutListQuery) {
   return queryOptions<Paginated<Payout>>({
     queryKey: queryKeys.payouts.list(query),
     queryFn: () => e.payouts.list(query),
+    staleTime: 30_000,
+  });
+}
+
+export function payoutQuery(e: EndpointRegistry, payoutId: string) {
+  return queryOptions<Payout>({
