@@ -49,3 +49,13 @@ export interface UseCreatePayoutResult {
   isPending: boolean;
   errorMessage: string | null;
   fieldErrors: Record<string, string>;
+  /** Set on success so the dialog can close and the page can link to the new payout. */
+  createdPayout: Payout | null;
+}
+
+export function useCreatePayout(): UseCreatePayoutResult {
+  const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);

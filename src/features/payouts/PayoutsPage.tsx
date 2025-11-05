@@ -48,3 +48,13 @@ export function PayoutsPage() {
   const { rows, failedCount, pagination, isLoading, isFetching, error } = usePayouts({
     currency: currency as CurrencyCode,
     ...(status ? { status } : {}),
+  });
+  const { balance } = useBalance(currency as CurrencyCode);
+
+  // The live half of the alert: unread `payout.failed` pushes that arrived while this tab was
+  // open. `markRead` is deliberately not called here — the bell owns read state.
+  const { entries } = useNotifications();
+  const liveFailures = useMemo(
+    () => entries.filter((entry) => entry.type === 'payout.failed' && !entry.read),
+    [entries],
+  );
