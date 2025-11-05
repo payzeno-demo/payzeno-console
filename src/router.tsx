@@ -55,3 +55,13 @@ const ChargeDetailPage = lazy(() =>
 const RefundsPage = lazy(() =>
   import('@features/refunds/RefundsPage').then((m) => ({ default: m.RefundsPage })),
 );
+const DisputesPage = lazy(() =>
+  import('@features/disputes/DisputesPage').then((m) => ({ default: m.DisputesPage })),
+);
+const DisputeDetailPage = lazy(() =>
+  import('@features/disputes/DisputeDetailPage').then((m) => ({ default: m.DisputeDetailPage })),
+);
+const PayoutsPage = lazy(() =>
+  import('@features/payouts/PayoutsPage').then((m) => ({ default: m.PayoutsPage })),
+);
+const PayoutDetailPage = lazy(() =>

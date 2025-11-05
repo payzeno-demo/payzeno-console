@@ -16,3 +16,8 @@ export interface ConsoleApiErrorInit {
   code: ErrorCode;
   message: string;
   requestId: string;
+  fieldErrors?: FieldError[];
+  retryAfterSeconds?: number;
+  details?: Record<string, unknown>;
+}
+
