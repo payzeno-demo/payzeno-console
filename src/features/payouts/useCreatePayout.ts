@@ -29,3 +29,13 @@ import {
   ValidationApiError,
 } from '@api/errors';
 import { queryKeys } from '@api/queryKeys';
+import { useEndpoints } from '@app/ApiContext';
+import { useToast } from '@app/ToastProvider';
+import { trackEvent } from '@lib/telemetry';
+
+import { createPayoutMutation } from './payouts.queries';
+
+export interface CreatePayoutArgs {
+  currency: CurrencyCode;
+  /** Omit for "everything available". */
+  amountMinor?: MinorUnits;
