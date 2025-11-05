@@ -46,3 +46,13 @@ import { FlagsProvider } from '@app/FlagsProvider';
 import { NotificationProvider } from '@app/NotificationProvider';
 import { QueryProvider } from '@app/QueryProvider';
 import { ToastProvider } from '@app/ToastProvider';
+import { TransportProvider } from '@app/TransportProvider';
+import { TooltipProvider } from '@components/ui/Tooltip';
+import type { FlagName } from '@lib/flags';
+import type { ConsoleSession } from '@/types/session';
+
+import { makeConsoleSession } from './factories';
+
+export interface ProviderOptions {
+  /** Initial URL. Use the real path — `ROUTES.settlements.detail(id)` — not a template. */
+  route?: string;

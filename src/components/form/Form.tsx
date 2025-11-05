@@ -50,3 +50,24 @@ export function Form({
   const showSummary = errors !== undefined && errors.formLevel.length > 0;
 
   useEffect(() => {
+    if (showSummary) summaryRef.current?.focus();
+  }, [showSummary]);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    void onSubmit();
+  }
+
+  return (
+    <form
+      id={id}
+      noValidate
+      aria-label={heading ? undefined : label}
+      aria-labelledby={heading ? `${id}-heading` : undefined}
+      onSubmit={handleSubmit}
+      className={pz('form') + (className ? ` ${className}` : '')}
+      style={{
+        display: 'grid',
+        gap: space[4],
+        fontFamily: font.family,
+        color: color.textPrimary,

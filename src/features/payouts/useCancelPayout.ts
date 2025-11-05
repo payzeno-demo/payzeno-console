@@ -29,6 +29,11 @@ export interface UseCancelPayoutResult {
 
 export function useCancelPayout(): UseCancelPayoutResult {
   const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const invalidate = useCallback(
     async (payoutId: string) => {
       await Promise.all([

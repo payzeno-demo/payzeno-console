@@ -8,3 +8,65 @@
  *                              being fussy.
  *   403                      — `payouts:write` is admin-only.
  *
+ * Each gets its own sentence, because "Something went wrong" on a payout form generates a
+ * support ticket every single time.
+ */
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
+
+import type {
+  CreatePayoutRequest,
+  CurrencyCode,
+  MinorUnits,
+  Payout,
+  PayoutMethod,
+} from '@payzeno/contracts';
+
+import {
+  ConflictApiError,
+  ConsoleApiError,
+  ForbiddenError,
+  ValidationApiError,
+} from '@api/errors';
+import { queryKeys } from '@api/queryKeys';
+import { useEndpoints } from '@app/ApiContext';
+import { useToast } from '@app/ToastProvider';
+import { trackEvent } from '@lib/telemetry';
+
+import { createPayoutMutation } from './payouts.queries';
+
+export interface CreatePayoutArgs {
+  currency: CurrencyCode;
+  /** Omit for "everything available". */
+  amountMinor?: MinorUnits;
+  bankAccountId?: string;
+  method?: PayoutMethod;
+  statementDescriptor?: string;
+}
+
+export interface UseCreatePayoutResult {
+  createPayout: (args: CreatePayoutArgs) => void;
+  isPending: boolean;
+  errorMessage: string | null;
+  fieldErrors: Record<string, string>;
+  /** Set on success so the dialog can close and the page can link to the new payout. */
+  createdPayout: Payout | null;
+}
+
+export function useCreatePayout(): UseCreatePayoutResult {
+  const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [createdPayout, setCreatedPayout] = useState<Payout | null>(null);
+
+  const mutation = useMutation({
+    ...createPayoutMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (payout: Payout) => {
+      setCreatedPayout(payout);

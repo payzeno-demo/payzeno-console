@@ -49,6 +49,15 @@ export function useZodForm<TValues extends Record<string, string>>(
   formId: string,
 ): ZodForm<TValues> {
   const [values, setValues] = useState<TValues>(initialValues);
+  const setValue = useCallback((name: keyof TValues & string, value: string) => {
+    setValues((current) => ({ ...current, [name]: value }));
+    setErrors((current) => {
+      if (current.fields[name] === undefined) return current;
+      const { [name]: _removed, ...rest } = current.fields;
+      return { ...current, fields: rest };
+    });
+  }, []);
+
   /** Validate a single field on blur, by parsing the whole object and picking its issues. */
   const validateField = useCallback(
     (name: string) => {
@@ -67,6 +76,25 @@ export function useZodForm<TValues extends Record<string, string>>(
     [schema, values],
   );
 
+  const fieldProps = useCallback(
+    (name: keyof TValues & string, hintId?: string): FieldProps => ({
+      id: `${formId}-${name}`,
+      name,
+      value: values[name] ?? '',
+      onChange: (event) => setValue(name, event.target.value),
+      onBlur: () => validateField(name),
+      'aria-invalid': errors.fields[name] !== undefined ? true : undefined,
+      'aria-describedby': describedBy(name, errors, hintId),
+    }),
+    [errors, formId, setValue, validateField, values],
+  );
+
+  const reset = useCallback(() => {
+    setValues(initialValues);
+    setErrors(NO_ERRORS);
+  }, [initialValues]);
+
+  return { values, errors, isSubmitting, setValue, fieldProps, submit, reset, applyServerError };
 }
 
 export { errorIdFor };
