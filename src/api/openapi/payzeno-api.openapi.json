@@ -1,0 +1,936 @@
+{
+  "components": {
+    "schemas": {
+      "ApiError": {
+        "properties": {
+          "error": {
+            "properties": {
+              "code": {
+                "description": "api-surface.md \u00a71.4 vocabulary",
+                "type": "string"
+              },
+              "details": {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              "field_errors": {
+                "items": {
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "field": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "field",
+                    "code",
+                    "message"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "message": {
+                "type": "string"
+              },
+              "request_id": {
+                "type": "string"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/Charge"
+            },
+            "type": "array"
+          },
+          "has_more": {
+            "type": "array"
+          },
+          "has_more": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "total_count": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "total_count": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "data",
+          "has_more"
+        ],
+        "title": "Paginated<BankAccount>",
+        "type": "object"
+      },
+      "PaginatedMerchantSettlementBatch": {
+        "properties": {
+          "data": {
+            "items": {
+              "$ref": "#/components/schemas/MerchantSettlementBatch"
+            },
+            "type": "boolean"
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "total_count": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "total_count": {
+            "items": {
+              "$ref": "#/components/schemas/Refund"
+            },
+            "type": "array"
+          },
+          "has_more": {
+            "public": []
+          }
+        ],
+        "summary": "Liveness probe",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/readyz": {
+      "get": {
+        "operationId": "getReadiness",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReadinessResponse"
+                }
+              }
+            },
+            "description": "",
+            "description": "authentication_required"
+          },
+          "403": {
+            "session": []
+          }
+        ],
+        "summary": "List API keys",
+        "tags": [
+          "developers"
+        ]
+      },
+      "post": {
+        "operationId": "createApiKey",
+        "parameters": [
+          {
+            "required": false,
+            "description": "created"
+          },
+          "400": {
+            "description": "authentication_required"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "ak_\u2026",
+            "in": "path",
+            "description": "not_found"
+          },
+          "429": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "rate_limited"
+          }
+        },
+        "security": [
+          {
+            "description": "rate_limited"
+          }
+        },
+        "security": [
+          {
+            "description": "",
+            "in": "query",
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "Required on every public POST/PATCH/DELETE (api-surface.md \u00a71.3).",
+            "in": "header",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "description": "permission_denied"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "rate_limited"
+          }
+        },
+        "security": [
+          {
+            "description": "ba_\u2026",
+            "schema": {
+              "maxLength": 255,
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-Payzeno-CSRF",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "permission_denied"
+          },
+          "404": {
+            "name": "created_to",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "",
+            "description": "",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "schema": {
+              "enum": [
+                "created_at",
+                "-created_at"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "session": []
+          }
+        ],
+        "summary": "List charges",
+        "tags": [
+          "charges"
+        ]
+      }
+    },
+    "/v1/charges/{chargeId}": {
+      "get": {
+        "operationId": "getCharge",
+        "parameters": [
+          {
+            "description": "charge"
+          },
+          "401": {
+            "session": []
+          }
+        ],
+        "summary": "Read a charge",
+        "tags": [
+          "charges"
+        ]
+      }
+    },
+    "/v1/charges/{chargeId}/ledger": {
+      "get": {
+        "operationId": "getChargeLedger",
+        "parameters": [
+          {
+            "name": "chargeId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChargeLedgerResponse"
+                }
+              }
+            },
+            "description": "not_found"
+          },
+          "429": {
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisputeListResponse"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "dp_\u2026",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "not_found"
+          },
+          "429": {
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "Required on every public POST/PATCH/DELETE (api-surface.md \u00a71.3).",
+            "name": "Idempotency-Key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "schema": {
+              "$ref": "#/components/schemas/InvoiceStatus"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "page"
+          },
+          "401": {
+            "name": "invoiceId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "not_found"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "inv_\u2026",
+            "description": "Double-submit of the non-HttpOnly pz_csrf cookie. Required for session-authed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "rate_limited"
+          },
+          "502": {
+            "description": "processor_unavailable"
+          }
+        },
+        "security": [
+          {
+            "description": "merchant"
+          },
+          "401": {
+            "session": []
+          }
+        ],
+        "summary": "Read a merchant",
+        "tags": [
+          "merchants"
+        ]
+      },
+      "patch": {
+        "operationId": "updateMerchant",
+        "parameters": [
+          {
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Merchant"
+                }
+              }
+            },
+            "description": "merchant"
+          },
+          "401": {
+            "description": "not_found"
+          },
+          "422": {
+            "description": "validation_failed"
+          },
+          "429": {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "",
+            "description": "team"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "in": "path",
+            "description": "authentication_required"
+          },
+          "403": {
+            "description": "permission_denied"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "opaque forward cursor from Paginated.next_cursor",
+            "name": "cursor",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "in": "query",
+            "name": "customer_id",
+            "description": "authentication_required"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "session": []
+          }
+        ],
+        "summary": "List payment intents",
+        "tags": [
+          "payments"
+        ]
+      },
+      "post": {
+        "operationId": "createPaymentIntent",
+        "parameters": [
+          {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentIntentResponse"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "rate_limited"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentIntentResponse"
+                }
+              }
+            },
+            "description": "authentication_required"
+          },
+          "403": {
+            "name": "X-Payzeno-CSRF",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "conflict"
+          },
+          "429": {
+            "session": []
+          }
+        ],
+        "summary": "Void the authorisation",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/v1/payment_intents/{paymentIntentId}/capture": {
+      "post": {
+        "operationId": "capturePaymentIntent",
+        "parameters": [
+          {
+            "in": "path",
+            "description": "Double-submit of the non-HttpOnly pz_csrf cookie. Required for session-authed mutations.",
+            "description": "conflict"
+          },
+          "422": {
+            "in": "header",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "apikey": []
+          },
+          {
+            "in": "query",
+            "in": "query",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "required": false,
+            "apikey": []
+          },
+          {
+            "session": []
+          }
+        ],
+        "summary": "List payouts",
+        "tags": [
+          "payouts"
+        ]
+      },
+      "post": {
+        "operationId": "createPayout",
+        "parameters": [
+          {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePayoutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutResponse"
+                }
+              }
+            },
+            "description": "rate_limited"
+          },
+          "502": {
+            "session": []
+          }
+        ],
+        "summary": "Pay out available balance",
+        "tags": [
+          "payouts"
+        ]
+      }
+    },
+    "/v1/payouts/{payoutId}": {
+      "get": {
+        "operationId": "getPayout",
+        "parameters": [
+          {
+            "description": "authentication_required"
+          },
+          "403": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "name": "charge_id",
+            "description": "authentication_required"
+          },
+          "403": {
+            "required": true,
+            "description": "authentication_required"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "refund"
+          },
+          "401": {
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "name": "currency",
+            "description": "",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/CurrencyCode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "series"
+          },
+          "401": {
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "description": "",
+            "name": "created_to",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "required": false,
+            "in": "query",
+            "description": "page"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "not_found"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "required": false,
+            "description": "page"
+          },
+          "401": {
+            "description": "permission_denied"
+          },
+          "404": {
+            "name": "itemId",
+            "required": true,
+            "description": "authentication_required"
+          },
+          "403": {
+            "description": "not_found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "authentication_required"
+          },
+          "403": {
+            "required": true,
+            "description": "created"
+          },
+          "400": {
+            "description": "permission_denied"
+          },
+          "422": {
+            "description": "we_\u2026",
+            "description": "Required on every public POST/PATCH/DELETE (api-surface.md \u00a71.3).",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            },
+            "description": "rate_limited"
+          }
+        },
+        "security": [
+          {
+            "description": "evt_\u2026",
+            "name": "Idempotency-Key"
+          }
+        ],
+        "summary": "WebSocket upgrade \u2014 NotificationsGateway",
+        "tags": [
+          "notifications"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "docker-compose, through payzeno-nginx",
+      "url": "http://localhost"
+    },
+    {
+      "description": "production",
+      "url": "https://api.payzeno.com"
+    }
+  ],
+  "tags": [
+    {
+      "description": "health and static metadata",
+      "name": "meta"
+    },
+    {
+      "description": "dashboard session",
+      "name": "auth"
+    },
+    {
+      "description": "merchant profile and team",
+      "name": "merchants"
+    },
+    {
+      "description": "API keys and webhooks",
+      "name": "developers"
+    },
+    {
+      "description": "bank accounts",
+      "name": "settings"
+    },
+    {
+      "description": "payment intents",
+      "name": "payments"
+    },
+    {
+      "description": "charges and their ledger view",
+      "name": "charges"
+    },
+    {
+      "description": "refunds",
+      "name": "refunds"
+    },
+    {
+      "description": "disputes and evidence",
+      "name": "disputes"
+    },
+    {
+      "description": "balance read-through",
+      "name": "balance"
+    },
+    {
+      "description": "payouts",
+      "name": "payouts"
+    },
+    {
+      "description": "settlement batches and reconciliation items",
+      "name": "settlements"
+    },
+    {
+      "description": "dashboard aggregates",
+      "name": "reporting"
+    },
+    {
+      "description": "legacy billing invoices",
+      "name": "invoices"
+    },
+    {
+      "description": "console WebSocket relay",
+      "name": "notifications"
+    }
+  ]
+}
