@@ -61,3 +61,13 @@ export function Form({
   return (
     <form
       id={id}
+      noValidate
+      aria-label={heading ? undefined : label}
+      aria-labelledby={heading ? `${id}-heading` : undefined}
+      onSubmit={handleSubmit}
+      className={pz('form') + (className ? ` ${className}` : '')}
+      style={{
+        display: 'grid',
+        gap: space[4],
+        fontFamily: font.family,
+        color: color.textPrimary,

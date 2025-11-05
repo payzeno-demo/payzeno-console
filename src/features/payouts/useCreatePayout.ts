@@ -59,3 +59,14 @@ export function useCreatePayout(): UseCreatePayoutResult {
   const toast = useToast();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [createdPayout, setCreatedPayout] = useState<Payout | null>(null);
+
+  const mutation = useMutation({
+    ...createPayoutMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (payout: Payout) => {
+      setCreatedPayout(payout);
