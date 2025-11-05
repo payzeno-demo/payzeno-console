@@ -50,3 +50,14 @@ export function Form({
   const showSummary = errors !== undefined && errors.formLevel.length > 0;
 
   useEffect(() => {
+    if (showSummary) summaryRef.current?.focus();
+  }, [showSummary]);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    void onSubmit();
+  }
+
+  return (
+    <form
+      id={id}

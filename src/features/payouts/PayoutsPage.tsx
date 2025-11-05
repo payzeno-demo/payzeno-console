@@ -38,3 +38,13 @@ import { usePayouts } from './usePayouts';
 export function PayoutsPage() {
   useDocumentTitle('Payouts');
 
+  const merchant = useCurrentMerchant();
+  const { can, readOnly } = usePermissions();
+  const [createOpen, setCreateOpen] = useState(false);
+
+  const [currency, setCurrency] = useStringParam('currency', merchant.default_currency);
+  const [status, setStatus] = useEnumParam<PayoutStatus>('status', PAYOUT_STATUSES);
+
+  const { rows, failedCount, pagination, isLoading, isFetching, error } = usePayouts({
+    currency: currency as CurrencyCode,
+    ...(status ? { status } : {}),

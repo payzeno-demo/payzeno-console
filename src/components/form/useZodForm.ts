@@ -49,6 +49,15 @@ export function useZodForm<TValues extends Record<string, string>>(
   formId: string,
 ): ZodForm<TValues> {
   const [values, setValues] = useState<TValues>(initialValues);
+  const setValue = useCallback((name: keyof TValues & string, value: string) => {
+    setValues((current) => ({ ...current, [name]: value }));
+    setErrors((current) => {
+      if (current.fields[name] === undefined) return current;
+      const { [name]: _removed, ...rest } = current.fields;
+      return { ...current, fields: rest };
+    });
+  }, []);
+
   /** Validate a single field on blur, by parsing the whole object and picking its issues. */
   const validateField = useCallback(
     (name: string) => {
