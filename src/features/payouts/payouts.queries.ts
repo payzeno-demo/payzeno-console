@@ -32,3 +32,8 @@ export function payoutQuery(e: EndpointRegistry, payoutId: string) {
     staleTime: 15_000,
   });
 }
+
+/** The failed-payout bucket the `payout.failed` notification links to. */
+export function failedPayoutsQuery(e: EndpointRegistry, currency?: PayoutListQuery['currency']) {
+  return queryOptions<Paginated<Payout>>({
+    queryKey: queryKeys.payouts.list({ status: 'failed', currency, limit: 20 }),
