@@ -40,6 +40,7 @@ export function CreatePayoutDialog({
   availableMinor,
 }: CreatePayoutDialogProps) {
   const { accounts, isLoading: accountsLoading } = useBankAccounts();
+  const { formatMinor } = useMoneyFormat();
   const [method, setMethod] = useState<PayoutMethod>('standard_ach');
 
   const tooLarge = amountMinor > availableMinor;

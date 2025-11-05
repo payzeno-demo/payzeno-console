@@ -15,3 +15,8 @@ import type { PayoutListQuery } from '@api/endpoints/payouts.endpoint';
 import { queryKeys } from '@api/queryKeys';
 import { DEFAULT_PAGE_SIZE } from '@config/constants';
 
+export function payoutsListQuery(e: EndpointRegistry, q?: PayoutListQuery) {
+  const query: PayoutListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
+  return queryOptions<Paginated<Payout>>({
+    queryKey: queryKeys.payouts.list(query),
+    queryFn: () => e.payouts.list(query),
