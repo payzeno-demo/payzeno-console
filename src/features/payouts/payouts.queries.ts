@@ -26,3 +26,9 @@ export function payoutsListQuery(e: EndpointRegistry, q?: PayoutListQuery) {
 
 export function payoutQuery(e: EndpointRegistry, payoutId: string) {
   return queryOptions<Payout>({
+    queryKey: queryKeys.payouts.detail(payoutId),
+    queryFn: () => e.payouts.get(payoutId),
+    enabled: payoutId.length > 0,
+    staleTime: 15_000,
+  });
+}
