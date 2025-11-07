@@ -65,3 +65,12 @@ const PayoutsPage = lazy(() =>
   import('@features/payouts/PayoutsPage').then((m) => ({ default: m.PayoutsPage })),
 );
 const PayoutDetailPage = lazy(() =>
+  import('@features/payouts/PayoutDetailPage').then((m) => ({ default: m.PayoutDetailPage })),
+);
+const SettlementsPage = lazy(() =>
+  import('@features/settlements/SettlementsPage').then((m) => ({ default: m.SettlementsPage })),
+);
+const SettlementDetailPage = lazy(() =>
+  import('@features/settlements/SettlementDetailPage').then((m) => ({
+    default: m.SettlementDetailPage,
+  })),
