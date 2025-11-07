@@ -55,3 +55,32 @@ const ChargeDetailPage = lazy(() =>
 const RefundsPage = lazy(() =>
   import('@features/refunds/RefundsPage').then((m) => ({ default: m.RefundsPage })),
 );
+const DisputesPage = lazy(() =>
+  import('@features/disputes/DisputesPage').then((m) => ({ default: m.DisputesPage })),
+);
+const DisputeDetailPage = lazy(() =>
+  import('@features/disputes/DisputeDetailPage').then((m) => ({ default: m.DisputeDetailPage })),
+);
+const PayoutsPage = lazy(() =>
+  import('@features/payouts/PayoutsPage').then((m) => ({ default: m.PayoutsPage })),
+);
+const PayoutDetailPage = lazy(() =>
+  import('@features/payouts/PayoutDetailPage').then((m) => ({ default: m.PayoutDetailPage })),
+);
+const SettlementsPage = lazy(() =>
+  import('@features/settlements/SettlementsPage').then((m) => ({ default: m.SettlementsPage })),
+);
+const SettlementDetailPage = lazy(() =>
+  import('@features/settlements/SettlementDetailPage').then((m) => ({
+    default: m.SettlementDetailPage,
+  })),
+);
+const InvoicesPage = lazy(() =>
+  import('@features/invoices/InvoicesPage').then((m) => ({ default: m.InvoicesPage })),
+);
+const InvoiceDetailPage = lazy(() =>
+  import('@features/invoices/InvoiceDetailPage').then((m) => ({ default: m.InvoiceDetailPage })),
+);
+const DevelopersPage = lazy(() =>
+  import('@features/developers/DevelopersPage').then((m) => ({ default: m.DevelopersPage })),
+);

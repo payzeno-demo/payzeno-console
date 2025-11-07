@@ -17,3 +17,10 @@
  */
 
 /** Percent-encode an id before it goes into a path segment. */
+function seg(id: string): string {
+  return encodeURIComponent(id);
+}
+
+export const ROUTES = {
+  root: '/',
+

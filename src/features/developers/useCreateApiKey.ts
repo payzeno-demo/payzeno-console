@@ -5,3 +5,9 @@
  * handed straight to `<SecretRevealOnce />`, and is dropped by `clearSecret()` when that
  * component unmounts. It is never written into the query cache, never logged, and never sent
  * to telemetry — `trackEvent` below carries the mode and the scope count and nothing else.
+ *
+ * dhotfix reviews this file. Adding the secret to any object that leaves this module is a
+ * review rejection.
+ */
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
