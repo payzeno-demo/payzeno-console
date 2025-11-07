@@ -74,3 +74,13 @@ const SettlementDetailPage = lazy(() =>
   import('@features/settlements/SettlementDetailPage').then((m) => ({
     default: m.SettlementDetailPage,
   })),
+);
+const InvoicesPage = lazy(() =>
+  import('@features/invoices/InvoicesPage').then((m) => ({ default: m.InvoicesPage })),
+);
+const InvoiceDetailPage = lazy(() =>
+  import('@features/invoices/InvoiceDetailPage').then((m) => ({ default: m.InvoiceDetailPage })),
+);
+const DevelopersPage = lazy(() =>
+  import('@features/developers/DevelopersPage').then((m) => ({ default: m.DevelopersPage })),
+);
