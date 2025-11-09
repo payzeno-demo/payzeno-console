@@ -24,3 +24,8 @@ export interface ToasterProps {
   onDismiss: (id: string) => void;
 }
 
+/**
+ * Trim the queue to `MAX_VISIBLE_TOASTS`, preferring to keep errors.
+ * Exported so `ToastProvider` can apply it at push time and the test can assert it directly.
+ */
+export function trimToasts(
