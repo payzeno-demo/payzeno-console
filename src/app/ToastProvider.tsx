@@ -45,3 +45,12 @@ ToastContext.displayName = 'ToastContext';
 /** Errors persist; everything else times out. */
 export function defaultDurationFor(tone: ToastTone): number | null {
   return tone === 'danger' ? null : TOAST_DURATION_MS;
+}
+
+export function ToastProvider({ children }: { children: ReactNode }) {
+  const [toasts, setToasts] = useState<ToastSpec[]>([]);
+
+  const dismiss = useCallback((id: string) => {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  }, []);
+

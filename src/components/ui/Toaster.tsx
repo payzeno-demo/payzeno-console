@@ -18,3 +18,9 @@ import { space, zIndex } from './tokens';
 
 /** Beyond this many visible toasts we start dropping the oldest dismissible one. */
 export const MAX_VISIBLE_TOASTS = 4;
+
+export interface ToasterProps {
+  toasts: ReadonlyArray<ToastSpec>;
+  onDismiss: (id: string) => void;
+}
+
