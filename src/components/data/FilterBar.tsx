@@ -29,3 +29,8 @@ export interface FilterBarProps {
   /** Reset every filter. Omit to hide the clear button entirely. */
   onClear?: () => void;
   /** Right-hand slot — a saved-view picker, a date range, an export button. */
+  trailing?: ReactNode;
+  className?: string;
+}
+
+export function FilterBar({

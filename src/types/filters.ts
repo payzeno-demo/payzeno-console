@@ -40,3 +40,7 @@ export interface DisputeFilters extends ListQuery, UiFilterState {
   reason?: DisputeReason;
   /** UI-only shortcut for "evidence due in the next 72 hours". */
   dueSoon?: boolean;
+}
+
+export interface PayoutFilters extends ListQuery, UiFilterState {
+  status?: PayoutStatus;

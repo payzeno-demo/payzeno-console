@@ -12,6 +12,11 @@ import { format, formatDistanceToNowStrict, isValid, parseISO, subDays } from 'd
 import type { IsoDate, IsoTimestamp } from '@payzeno/contracts';
 
 export const DATE_FORMAT = 'd MMM yyyy';
+/** Machine-readable value for a `<time dateTime>` attribute. a11y: screen readers read this. */
+export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string | undefined {
+  return parseTimestamp(value)?.toISOString();
+}
+
 /** True when `value` falls inside `range`, inclusive on both ends. */
 export function isWithin(value: IsoTimestamp, range: DateRange): boolean {
   const parsed = parseTimestamp(value);
