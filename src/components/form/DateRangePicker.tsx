@@ -23,3 +23,16 @@ import type { DateRange } from '@lib/date';
 
 import { Input } from '../ui/Input';
 import { color, font, radius, space } from '../ui/tokens';
+
+export interface DateRangePickerProps {
+  /** Current range. `null` means unfiltered. */
+  value: DateRange | null;
+  onChange: (next: DateRange | null) => void;
+  label?: string;
+  /** Disallow ranges longer than this. Reporting caps at 90 days. */
+  maxDays?: number;
+}
+
+export interface RangePreset {
+  id: string;
+  label: string;

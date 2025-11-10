@@ -71,3 +71,14 @@ export function Form({
         gap: space[4],
         fontFamily: font.family,
         color: color.textPrimary,
+      }}
+    >
+      {heading ? (
+        <h2
+          id={`${id}-heading`}
+          style={{ margin: 0, fontSize: font.size.xl, fontWeight: font.weight.semibold }}
+        >
+          {label}
+        </h2>
+      ) : null}
+
