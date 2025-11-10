@@ -18,3 +18,24 @@ import { space, zIndex } from './tokens';
 
 /** Beyond this many visible toasts we start dropping the oldest dismissible one. */
 export const MAX_VISIBLE_TOASTS = 4;
+
+export interface ToasterProps {
+  toasts: ReadonlyArray<ToastSpec>;
+  onDismiss: (id: string) => void;
+}
+
+/**
+ * Trim the queue to `MAX_VISIBLE_TOASTS`, preferring to keep errors.
+ * Exported so `ToastProvider` can apply it at push time and the test can assert it directly.
+ */
+export function trimToasts(
+  toasts: ReadonlyArray<ToastSpec>,
+  max: number = MAX_VISIBLE_TOASTS,
+): ToastSpec[] {
+  if (toasts.length <= max) return [...toasts];
+
+  const errors = toasts.filter((toast) => toast.tone === 'danger');
+  const others = toasts.filter((toast) => toast.tone !== 'danger');
+
+  const keptOthers = others.slice(Math.max(0, others.length - Math.max(0, max - errors.length)));
+  const kept = [...errors.slice(Math.max(0, errors.length - max)), ...keptOthers];

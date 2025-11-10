@@ -45,3 +45,22 @@ ToastContext.displayName = 'ToastContext';
 /** Errors persist; everything else times out. */
 export function defaultDurationFor(tone: ToastTone): number | null {
   return tone === 'danger' ? null : TOAST_DURATION_MS;
+}
+
+export function ToastProvider({ children }: { children: ReactNode }) {
+  const [toasts, setToasts] = useState<ToastSpec[]>([]);
+
+  const dismiss = useCallback((id: string) => {
+    setToasts((current) => current.filter((toast) => toast.id !== id));
+  }, []);
+
+  const clear = useCallback(() => setToasts([]), []);
+
+  const push = useCallback((tone: ToastTone, title: string, options: ToastOptions = {}) => {
+    const spec: ToastSpec = {
+      id: newRequestId(),
+      title,
+      tone,
+      durationMs: options.durationMs === undefined ? defaultDurationFor(tone) : options.durationMs,
+    };
+    if (options.description !== undefined) spec.description = options.description;

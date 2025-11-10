@@ -44,3 +44,25 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
       open
       onOpenChange={onOpenChange}
       duration={spec.durationMs ?? Number.POSITIVE_INFINITY}
+      type={assertive ? 'foreground' : 'background'}
+      className={cn(pz('toast'), pz('toast', undefined, spec.tone), className)}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr auto',
+        alignItems: 'start',
+        gap: space[3],
+        width: '360px',
+        padding: space[4],
+        fontFamily: font.family,
+        background: color.surface,
+        // The tone is carried by a 3px left rule, not by the whole background: a fully
+        // tinted toast fails contrast against its own body text at these tints.
+        borderLeft: `3px solid ${palette.fg}`,
+        border: `1px solid ${color.border}`,
+        borderRadius: radius.md,
+        boxShadow: shadow.md,
+      }}
+    >
+      <div>
+        <RadixToast.Title
+          style={{
