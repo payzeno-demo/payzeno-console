@@ -55,3 +55,14 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
         padding: space[4],
         fontFamily: font.family,
         background: color.surface,
+        // The tone is carried by a 3px left rule, not by the whole background: a fully
+        // tinted toast fails contrast against its own body text at these tints.
+        borderLeft: `3px solid ${palette.fg}`,
+        border: `1px solid ${color.border}`,
+        borderRadius: radius.md,
+        boxShadow: shadow.md,
+      }}
+    >
+      <div>
+        <RadixToast.Title
+          style={{

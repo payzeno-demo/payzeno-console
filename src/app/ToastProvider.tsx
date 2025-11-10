@@ -54,3 +54,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((current) => current.filter((toast) => toast.id !== id));
   }, []);
 
+  const clear = useCallback(() => setToasts([]), []);
+
+  const push = useCallback((tone: ToastTone, title: string, options: ToastOptions = {}) => {
+    const spec: ToastSpec = {
+      id: newRequestId(),
+      title,
+      tone,
+      durationMs: options.durationMs === undefined ? defaultDurationFor(tone) : options.durationMs,
+    };
+    if (options.description !== undefined) spec.description = options.description;

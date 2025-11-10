@@ -34,3 +34,8 @@ export function trimToasts(
 ): ToastSpec[] {
   if (toasts.length <= max) return [...toasts];
 
+  const errors = toasts.filter((toast) => toast.tone === 'danger');
+  const others = toasts.filter((toast) => toast.tone !== 'danger');
+
+  const keptOthers = others.slice(Math.max(0, others.length - Math.max(0, max - errors.length)));
+  const kept = [...errors.slice(Math.max(0, errors.length - max)), ...keptOthers];
