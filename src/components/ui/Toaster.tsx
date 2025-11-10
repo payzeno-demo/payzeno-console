@@ -29,3 +29,8 @@ export interface ToasterProps {
  * Exported so `ToastProvider` can apply it at push time and the test can assert it directly.
  */
 export function trimToasts(
+  toasts: ReadonlyArray<ToastSpec>,
+  max: number = MAX_VISIBLE_TOASTS,
+): ToastSpec[] {
+  if (toasts.length <= max) return [...toasts];
+

@@ -24,3 +24,11 @@ function resolveAlertTone(tone: AlertTone): Extract<Tone, 'info' | 'warning' | '
 
 export interface AlertProps {
   tone: AlertTone;
+  /** Override the severity-derived role. Only ever to soften, never to shout. */
+  role?: 'alert' | 'status';
+  title: string;
+  children?: ReactNode;
+  /** A single call to action — "Add a bank account", "Retry". */
+  action?: ReactNode;
+  /** Renders a dismiss button. Omit for alerts describing a persistent condition. */
+  onDismiss?: () => void;
