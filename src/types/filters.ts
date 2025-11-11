@@ -44,3 +44,7 @@ export interface DisputeFilters extends ListQuery, UiFilterState {
 
 export interface PayoutFilters extends ListQuery, UiFilterState {
   status?: PayoutStatus;
+  currency?: CurrencyCode;
+}
+
+export interface SettlementFilters extends ListQuery, UiFilterState {
