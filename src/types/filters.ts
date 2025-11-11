@@ -52,3 +52,7 @@ export interface SettlementFilters extends ListQuery, UiFilterState {
   currency?: CurrencyCode;
 }
 
+export interface SettlementItemFilters extends ListQuery {
+  status?: ReconciliationItemStatus;
+  /** arc INC — "show me only the items the duplicate sweep flagged". */
+  duplicatesOnly?: boolean;
