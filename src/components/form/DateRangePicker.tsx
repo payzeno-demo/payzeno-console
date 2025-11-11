@@ -61,3 +61,16 @@ export function endOfLocalDay(isoDate: string): IsoTimestamp {
   return new Date(year, month - 1, day, 23, 59, 59, 999).toISOString();
 }
 
+/** RFC 3339 instant → the `<input type="date">` value for the same local day. */
+export function toDateInputValue(instant: IsoTimestamp | undefined): string {
+  if (!instant) return '';
+  const parsed = new Date(instant);
+  if (Number.isNaN(parsed.getTime())) return '';
+  const month = String(parsed.getMonth() + 1).padStart(2, '0');
+  const day = String(parsed.getDate()).padStart(2, '0');
+  return `${parsed.getFullYear()}-${month}-${day}`;
+}
+
+export function rangeLengthDays(range: DateRange): number {
+  const from = new Date(range.from).getTime();
+  const to = new Date(range.to).getTime();

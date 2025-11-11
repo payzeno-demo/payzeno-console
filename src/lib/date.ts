@@ -26,6 +26,18 @@ export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string |
   return parseTimestamp(value)?.toISOString();
 }
 
+/** The three windows the reporting page offers, expressed as concrete ranges. */
+export function windowToRange(window: '24h' | '7d' | '30d', now: Date = new Date()): DateRange {
+  switch (window) {
+    case '24h':
+      return lastNDays(1, now);
+    case '7d':
+      return lastNDays(7, now);
+    case '30d':
+      return lastNDays(30, now);
+  }
+}
+
 /** True when `value` falls inside `range`, inclusive on both ends. */
 export function isWithin(value: IsoTimestamp, range: DateRange): boolean {
   const parsed = parseTimestamp(value);
