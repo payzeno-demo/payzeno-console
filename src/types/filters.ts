@@ -48,3 +48,7 @@ export interface PayoutFilters extends ListQuery, UiFilterState {
 }
 
 export interface SettlementFilters extends ListQuery, UiFilterState {
+  status?: SettlementBatchStatus;
+  currency?: CurrencyCode;
+}
+

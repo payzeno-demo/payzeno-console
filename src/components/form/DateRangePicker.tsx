@@ -49,3 +49,15 @@ export const RANGE_PRESETS: ReadonlyArray<RangePreset> = [
 
 /** `2026-03-14` → the RFC 3339 instant at the start of that local day. */
 export function startOfLocalDay(isoDate: string): IsoTimestamp {
+  const [year, month, day] = isoDate.split('-').map((part) => Number.parseInt(part, 10));
+  if (!year || !month || !day) return new Date().toISOString();
+  return new Date(year, month - 1, day, 0, 0, 0, 0).toISOString();
+}
+
+/** `2026-03-14` → the RFC 3339 instant at the last millisecond of that local day. */
+export function endOfLocalDay(isoDate: string): IsoTimestamp {
+  const [year, month, day] = isoDate.split('-').map((part) => Number.parseInt(part, 10));
+  if (!year || !month || !day) return new Date().toISOString();
+  return new Date(year, month - 1, day, 23, 59, 59, 999).toISOString();
+}
+

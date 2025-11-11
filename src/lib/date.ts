@@ -12,6 +12,15 @@ import { format, formatDistanceToNowStrict, isValid, parseISO, subDays } from 'd
 import type { IsoDate, IsoTimestamp } from '@payzeno/contracts';
 
 export const DATE_FORMAT = 'd MMM yyyy';
+/** `2026-03-14T09:21:07.412Z` → `14 Mar 2026, 09:21`. */
+export function formatTimestamp(
+  value: IsoTimestamp | null | undefined,
+  pattern: string = DATETIME_FORMAT,
+): string {
+  const parsed = parseTimestamp(value);
+  return parsed ? format(parsed, pattern) : '—';
+}
+
 /** Machine-readable value for a `<time dateTime>` attribute. a11y: screen readers read this. */
 export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string | undefined {
   return parseTimestamp(value)?.toISOString();
