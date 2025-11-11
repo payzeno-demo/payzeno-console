@@ -20,3 +20,9 @@ export interface DateCellProps {
   value: IsoTimestamp | IsoDate | null | undefined;
   /** `instant` for RFC 3339 timestamps, `banking` for calendar days. */
   mode?: 'instant' | 'banking';
+  /** Skip the relative form and always show the absolute date. */
+  absolute?: boolean;
+}
+
+export function DateCell({ value, mode = 'instant', absolute = false }: DateCellProps) {
+  if (!value) {

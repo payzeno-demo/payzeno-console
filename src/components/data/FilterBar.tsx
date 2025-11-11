@@ -34,3 +34,8 @@ export interface FilterBarProps {
 }
 
 export function FilterBar({
+  label,
+  children,
+  activeCount = 0,
+  onClear,
+  trailing,

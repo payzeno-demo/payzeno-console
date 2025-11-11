@@ -36,3 +36,16 @@ export interface DateRangePickerProps {
 export interface RangePreset {
   id: string;
   label: string;
+  days: number | null;
+}
+
+export const RANGE_PRESETS: ReadonlyArray<RangePreset> = [
+  { id: 'all', label: 'All time', days: null },
+  { id: '24h', label: 'Last 24 hours', days: 1 },
+  { id: '7d', label: 'Last 7 days', days: 7 },
+  { id: '30d', label: 'Last 30 days', days: 30 },
+  { id: '90d', label: 'Last 90 days', days: 90 },
+];
+
+/** `2026-03-14` → the RFC 3339 instant at the start of that local day. */
+export function startOfLocalDay(isoDate: string): IsoTimestamp {
