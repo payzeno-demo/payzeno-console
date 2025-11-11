@@ -21,6 +21,14 @@ export function formatTimestamp(
   return parsed ? format(parsed, pattern) : '—';
 }
 
+export function formatBankingDate(value: IsoDate | null | undefined): string {
+  if (!value) return '—';
+  const [year, month, day] = value.split('-');
+  if (!year || !month || !day) return value;
+  const asUtc = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  return isValid(asUtc) ? format(asUtc, DATE_FORMAT) : value;
+}
+
 /** Machine-readable value for a `<time dateTime>` attribute. a11y: screen readers read this. */
 export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string | undefined {
   return parseTimestamp(value)?.toISOString();

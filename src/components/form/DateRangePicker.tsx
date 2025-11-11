@@ -87,3 +87,15 @@ export function DateRangePicker({
   const [tooLong, setTooLong] = useState(false);
 
   function applyPreset(preset: RangePreset): void {
+    setTooLong(false);
+    onChange(preset.days === null ? null : lastNDays(preset.days));
+  }
+
+  function applyBound(which: 'from' | 'to', isoDate: string): void {
+    if (isoDate === '') {
+      onChange(null);
+      return;
+    }
+
+    const next: DateRange =
+      which === 'from'
