@@ -26,3 +26,9 @@ export interface DateCellProps {
 
 export function DateCell({ value, mode = 'instant', absolute = false }: DateCellProps) {
   if (!value) {
+    return <span style={{ color: color.textMuted }}>—</span>;
+  }
+
+  if (mode === 'banking') {
+    return (
+      <time

@@ -74,3 +74,16 @@ export function toDateInputValue(instant: IsoTimestamp | undefined): string {
 export function rangeLengthDays(range: DateRange): number {
   const from = new Date(range.from).getTime();
   const to = new Date(range.to).getTime();
+  return Math.max(0, Math.ceil((to - from) / 86_400_000));
+}
+
+export function DateRangePicker({
+  value,
+  onChange,
+  label = 'Created',
+  maxDays = 90,
+}: DateRangePickerProps) {
+  const groupId = useId();
+  const [tooLong, setTooLong] = useState(false);
+
+  function applyPreset(preset: RangePreset): void {

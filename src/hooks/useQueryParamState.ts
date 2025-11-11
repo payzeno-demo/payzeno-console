@@ -21,3 +21,7 @@ export interface QueryParamOptions<T> {
 
 /**
  * One typed query parameter, read and written through the router.
+ *
+ * @returns `[value, setValue]`, where setting to the fallback removes the parameter so the URL
+ * stays clean.
+ */
