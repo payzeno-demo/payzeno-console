@@ -103,3 +103,13 @@ export function Form({
           <ul style={{ margin: `${space[2]} 0 0`, paddingInlineStart: space[5] }}>
             {errors?.formLevel.map((message) => (
               <li key={message}>{message}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <div style={{ display: 'grid', gap: space[4] }}>{children}</div>
+
+      {actions ? (
+        <div style={{ display: 'flex', gap: space[2], justifyContent: 'flex-end' }}>{actions}</div>
+      ) : null}

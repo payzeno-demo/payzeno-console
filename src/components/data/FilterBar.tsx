@@ -45,3 +45,8 @@ export function FilterBar({
 
   return (
     <section
+      role="search"
+      aria-label={label}
+      className={pz('filter-bar') + (className ? ` ${className}` : '')}
+      style={{
+        display: 'flex',

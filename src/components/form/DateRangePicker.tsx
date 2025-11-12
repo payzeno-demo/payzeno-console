@@ -150,3 +150,16 @@ export function DateRangePicker({
               <input
                 type="radio"
                 name={`${groupId}-preset`}
+                checked={selected}
+                onChange={() => applyPreset(preset)}
+                style={{ position: 'absolute', opacity: 0, width: 1, height: 1 }}
+              />
+              {preset.label}
+            </label>
+          );
+        })}
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: space[2] }}>
+        <Input
+          id={`${groupId}-from`}

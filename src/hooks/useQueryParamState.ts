@@ -34,3 +34,8 @@ export function useQueryParamState<T>(
 
   const raw = params.get(key);
 
+  const value = useMemo(() => {
+    if (raw === null) return fallback;
+    const parsed = parse(raw);
+    return parsed === null ? fallback : parsed;
+  }, [raw, parse, fallback]);
