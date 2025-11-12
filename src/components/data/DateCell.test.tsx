@@ -56,6 +56,40 @@ describe('instant mode', () => {
 });
 
 describe('banking mode', () => {
+  it('renders the calendar day exactly as the acquirer file names it', () => {
+    renderBare(<DateCell value={BANKING_DAY} mode="banking" />);
+
+    expect(screen.getByText('14 Mar 2026')).toBeInTheDocument();
+    expect(screen.getByText('14 Mar 2026')).toBe(screen.getByText(formatBankingDate(BANKING_DAY)));
+  });
+
+  it('does not shift the day for a viewer behind UTC — the PAY-1904 regression', () => {
+    // A local-midnight parse of `2026-03-01` renders 28 Feb anywhere west of Greenwich.
+    renderBare(<DateCell value="2026-03-01" mode="banking" />);
+
+    expect(screen.getByText('1 Mar 2026')).toBeInTheDocument();
+    expect(screen.queryByText(/Feb/)).not.toBeInTheDocument();
+  });
+
+  it('renders no tooltip in banking mode — there is no time of day to reveal', () => {
+    const { container } = renderBare(<DateCell value={BANKING_DAY} mode="banking" />);
+
+    expect(container.querySelector('time')).not.toHaveAttribute('data-state');
+  });
+});
+
+describe('missing values', () => {
+  it.each([null, undefined, ''])('renders an em dash for %p', (value) => {
+    renderBare(<DateCell value={value as null} />);
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
+  it('exports the raw ISO value so a spreadsheet can sort it', () => {
+    expect(dateExportValue(INSTANT)).toBe(INSTANT);
+    expect(dateExportValue(BANKING_DAY)).toBe(BANKING_DAY);
+  });
+
   it('exports an empty cell rather than a dash for a missing value', () => {
     expect(dateExportValue(null)).toBe('');
     expect(dateExportValue(undefined)).toBe('');

@@ -137,3 +137,16 @@ export function DateRangePicker({
           return (
             <label
               key={preset.id}
+              style={{
+                padding: `${space[1]} ${space[3]}`,
+                fontSize: font.size.sm,
+                color: selected ? color.textInverse : color.textSecondary,
+                background: selected ? color.brand : color.surface,
+                border: `1px solid ${selected ? color.brand : color.border}`,
+                borderRadius: radius.pill,
+                cursor: 'pointer',
+              }}
+            >
+              <input
+                type="radio"
+                name={`${groupId}-preset`}
