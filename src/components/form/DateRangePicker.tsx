@@ -99,3 +99,16 @@ export function DateRangePicker({
 
     const next: DateRange =
       which === 'from'
+        ? { from: startOfLocalDay(isoDate), to: value?.to ?? endOfLocalDay(isoDate) }
+        : { from: value?.from ?? startOfLocalDay(isoDate), to: endOfLocalDay(isoDate) };
+
+    if (rangeLengthDays(next) > maxDays) {
+      setTooLong(true);
+      return;
+    }
+
+    setTooLong(false);
+    onChange(next);
+  }
+
+  return (

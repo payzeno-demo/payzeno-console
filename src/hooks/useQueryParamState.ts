@@ -25,3 +25,8 @@ export interface QueryParamOptions<T> {
  * @returns `[value, setValue]`, where setting to the fallback removes the parameter so the URL
  * stays clean.
  */
+export function useQueryParamState<T>(
+  key: string,
+  options: QueryParamOptions<T>,
+): [T, (next: T) => void] {
+  const [params, setParams] = useSearchParams();

@@ -39,3 +39,9 @@ export function FilterBar({
   activeCount = 0,
   onClear,
   trailing,
+  className,
+}: FilterBarProps) {
+  const hasActive = activeCount > 0;
+
+  return (
+    <section

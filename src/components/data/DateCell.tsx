@@ -32,3 +32,8 @@ export function DateCell({ value, mode = 'instant', absolute = false }: DateCell
   if (mode === 'banking') {
     return (
       <time
+        dateTime={value}
+        className={pz('date-cell')}
+        style={{ fontFamily: font.family, whiteSpace: 'nowrap' }}
+      >
+        {formatBankingDate(value)}
