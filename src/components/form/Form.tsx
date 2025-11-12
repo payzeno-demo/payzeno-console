@@ -82,3 +82,13 @@ export function Form({
         </h2>
       ) : null}
 
+      {showSummary ? (
+        <div
+          ref={summaryRef}
+          role="alert"
+          tabIndex={-1}
+          className={pz('form', 'summary')}
+          style={{
+            padding: space[3],
+            color: color.danger,
+            background: color.dangerSubtle,

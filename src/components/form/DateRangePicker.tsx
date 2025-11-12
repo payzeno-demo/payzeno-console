@@ -125,3 +125,15 @@ export function DateRangePicker({
     >
       <legend style={{ padding: 0, fontSize: font.size.sm, fontWeight: font.weight.medium, color: color.textSecondary }}>
         {label}
+      </legend>
+
+      <div role="radiogroup" aria-label={`${label} preset`} style={{ display: 'flex', gap: space[1] }}>
+        {RANGE_PRESETS.map((preset) => {
+          const selected =
+            preset.days === null
+              ? value === null
+              : value !== null && rangeLengthDays(value) === preset.days;
+
+          return (
+            <label
+              key={preset.id}

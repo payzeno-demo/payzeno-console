@@ -30,3 +30,7 @@ export function useQueryParamState<T>(
   options: QueryParamOptions<T>,
 ): [T, (next: T) => void] {
   const [params, setParams] = useSearchParams();
+  const { parse, serialise, fallback, replace = true } = options;
+
+  const raw = params.get(key);
+
