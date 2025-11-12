@@ -15,3 +15,36 @@ import { formatBankingDate, formatPreciseTimestamp, formatSmart, toDateTimeAttr 
 
 import { Tooltip } from '../ui/Tooltip';
 import { color, font } from '../ui/tokens';
+
+export interface DateCellProps {
+  value: IsoTimestamp | IsoDate | null | undefined;
+  /** `instant` for RFC 3339 timestamps, `banking` for calendar days. */
+  mode?: 'instant' | 'banking';
+  /** Skip the relative form and always show the absolute date. */
+  absolute?: boolean;
+}
+
+export function DateCell({ value, mode = 'instant', absolute = false }: DateCellProps) {
+  if (!value) {
+    return <span style={{ color: color.textMuted }}>—</span>;
+  }
+
+  if (mode === 'banking') {
+    return (
+      <time
+        dateTime={value}
+        className={pz('date-cell')}
+        style={{ fontFamily: font.family, whiteSpace: 'nowrap' }}
+      >
+        {formatBankingDate(value)}
+      </time>
+    );
+  }
+
+  const label = absolute ? formatPreciseTimestamp(value) : formatSmart(value);
+
+  return (
+    <Tooltip content={formatPreciseTimestamp(value)}>
+      <time
+        dateTime={toDateTimeAttr(value)}
+        className={pz('date-cell')}

@@ -12,6 +12,56 @@ import { format, formatDistanceToNowStrict, isValid, parseISO, subDays } from 'd
 import type { IsoDate, IsoTimestamp } from '@payzeno/contracts';
 
 export const DATE_FORMAT = 'd MMM yyyy';
+/** `2026-03-14T09:21:07.412Z` → `14 Mar 2026, 09:21`. */
+export function formatTimestamp(
+  value: IsoTimestamp | null | undefined,
+  pattern: string = DATETIME_FORMAT,
+): string {
+  const parsed = parseTimestamp(value);
+  return parsed ? format(parsed, pattern) : '—';
+}
+
+export function formatBankingDate(value: IsoDate | null | undefined): string {
+  if (!value) return '—';
+  const [year, month, day] = value.split('-');
+  if (!year || !month || !day) return value;
+  const asUtc = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  return isValid(asUtc) ? format(asUtc, DATE_FORMAT) : value;
+}
+
+/** `3 hours ago`, `2 days ago`. Empty input renders an em dash, never "Invalid Date ago". */
+export function formatRelative(value: IsoTimestamp | null | undefined): string {
+  const parsed = parseTimestamp(value);
+  if (!parsed) return '—';
+  return `${formatDistanceToNowStrict(parsed)} ago`;
+}
+
+/**
+ * Alias kept for `features/notifications/NotificationList.tsx`, which was written against the
+ * longer name. TODO(rrefactor): rename the call site, drop this — PAY-1934.
+ */
+/** Machine-readable value for a `<time dateTime>` attribute. a11y: screen readers read this. */
+export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string | undefined {
+  return parseTimestamp(value)?.toISOString();
+}
+
+export interface DateRange {
+  from: IsoTimestamp;
+  to: IsoTimestamp;
+}
+
+/** The three windows the reporting page offers, expressed as concrete ranges. */
+export function windowToRange(window: '24h' | '7d' | '30d', now: Date = new Date()): DateRange {
+  switch (window) {
+    case '24h':
+      return lastNDays(1, now);
+    case '7d':
+      return lastNDays(7, now);
+    case '30d':
+      return lastNDays(30, now);
+  }
+}
+
 /** True when `value` falls inside `range`, inclusive on both ends. */
 export function isWithin(value: IsoTimestamp, range: DateRange): boolean {
   const parsed = parseTimestamp(value);

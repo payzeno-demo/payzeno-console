@@ -40,3 +40,23 @@ export interface DisputeFilters extends ListQuery, UiFilterState {
   reason?: DisputeReason;
   /** UI-only shortcut for "evidence due in the next 72 hours". */
   dueSoon?: boolean;
+}
+
+export interface PayoutFilters extends ListQuery, UiFilterState {
+  status?: PayoutStatus;
+  currency?: CurrencyCode;
+}
+
+export interface SettlementFilters extends ListQuery, UiFilterState {
+  status?: SettlementBatchStatus;
+  currency?: CurrencyCode;
+}
+
+export interface SettlementItemFilters extends ListQuery {
+  status?: ReconciliationItemStatus;
+  /** arc INC — "show me only the items the duplicate sweep flagged". */
+  duplicatesOnly?: boolean;
+}
+
+/** Keys that are UI-only and must be stripped before the object becomes a request. */
+const UI_ONLY_KEYS: ReadonlyArray<string> = ['search', 'dueSoon', 'duplicatesOnly'];

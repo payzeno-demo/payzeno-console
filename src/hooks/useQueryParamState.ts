@@ -21,3 +21,21 @@ export interface QueryParamOptions<T> {
 
 /**
  * One typed query parameter, read and written through the router.
+ *
+ * @returns `[value, setValue]`, where setting to the fallback removes the parameter so the URL
+ * stays clean.
+ */
+export function useQueryParamState<T>(
+  key: string,
+  options: QueryParamOptions<T>,
+): [T, (next: T) => void] {
+  const [params, setParams] = useSearchParams();
+  const { parse, serialise, fallback, replace = true } = options;
+
+  const raw = params.get(key);
+
+  const value = useMemo(() => {
+    if (raw === null) return fallback;
+    const parsed = parse(raw);
+    return parsed === null ? fallback : parsed;
+  }, [raw, parse, fallback]);

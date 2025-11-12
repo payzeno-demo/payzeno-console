@@ -21,3 +21,7 @@ export interface ConsoleApiErrorInit {
   details?: Record<string, unknown>;
 }
 
+export class ConsoleApiError extends PayzenoError {
+  readonly code: ErrorCode;
+  readonly httpStatus: number;
+  readonly status: number;

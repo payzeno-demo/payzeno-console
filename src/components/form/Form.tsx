@@ -71,3 +71,45 @@ export function Form({
         gap: space[4],
         fontFamily: font.family,
         color: color.textPrimary,
+      }}
+    >
+      {heading ? (
+        <h2
+          id={`${id}-heading`}
+          style={{ margin: 0, fontSize: font.size.xl, fontWeight: font.weight.semibold }}
+        >
+          {label}
+        </h2>
+      ) : null}
+
+      {showSummary ? (
+        <div
+          ref={summaryRef}
+          role="alert"
+          tabIndex={-1}
+          className={pz('form', 'summary')}
+          style={{
+            padding: space[3],
+            color: color.danger,
+            background: color.dangerSubtle,
+            border: `1px solid ${color.danger}`,
+            borderRadius: radius.md,
+            outline: 'none',
+          }}
+        >
+          <p style={{ margin: 0, fontWeight: font.weight.medium }}>
+            We could not save this. Please check the following:
+          </p>
+          <ul style={{ margin: `${space[2]} 0 0`, paddingInlineStart: space[5] }}>
+            {errors?.formLevel.map((message) => (
+              <li key={message}>{message}</li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+
+      <div style={{ display: 'grid', gap: space[4] }}>{children}</div>
+
+      {actions ? (
+        <div style={{ display: 'flex', gap: space[2], justifyContent: 'flex-end' }}>{actions}</div>
+      ) : null}
