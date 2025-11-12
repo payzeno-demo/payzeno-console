@@ -92,3 +92,14 @@ export function Form({
             padding: space[3],
             color: color.danger,
             background: color.dangerSubtle,
+            border: `1px solid ${color.danger}`,
+            borderRadius: radius.md,
+            outline: 'none',
+          }}
+        >
+          <p style={{ margin: 0, fontWeight: font.weight.medium }}>
+            We could not save this. Please check the following:
+          </p>
+          <ul style={{ margin: `${space[2]} 0 0`, paddingInlineStart: space[5] }}>
+            {errors?.formLevel.map((message) => (
+              <li key={message}>{message}</li>

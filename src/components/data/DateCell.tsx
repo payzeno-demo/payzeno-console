@@ -37,3 +37,9 @@ export function DateCell({ value, mode = 'instant', absolute = false }: DateCell
         style={{ fontFamily: font.family, whiteSpace: 'nowrap' }}
       >
         {formatBankingDate(value)}
+      </time>
+    );
+  }
+
+  const label = absolute ? formatPreciseTimestamp(value) : formatSmart(value);
+

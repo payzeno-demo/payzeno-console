@@ -29,6 +29,17 @@ export function formatBankingDate(value: IsoDate | null | undefined): string {
   return isValid(asUtc) ? format(asUtc, DATE_FORMAT) : value;
 }
 
+/** `3 hours ago`, `2 days ago`. Empty input renders an em dash, never "Invalid Date ago". */
+export function formatRelative(value: IsoTimestamp | null | undefined): string {
+  const parsed = parseTimestamp(value);
+  if (!parsed) return '—';
+  return `${formatDistanceToNowStrict(parsed)} ago`;
+}
+
+/**
+ * Alias kept for `features/notifications/NotificationList.tsx`, which was written against the
+ * longer name. TODO(rrefactor): rename the call site, drop this — PAY-1934.
+ */
 /** Machine-readable value for a `<time dateTime>` attribute. a11y: screen readers read this. */
 export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string | undefined {
   return parseTimestamp(value)?.toISOString();
