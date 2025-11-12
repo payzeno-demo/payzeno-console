@@ -34,6 +34,11 @@ export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string |
   return parseTimestamp(value)?.toISOString();
 }
 
+export interface DateRange {
+  from: IsoTimestamp;
+  to: IsoTimestamp;
+}
+
 /** The three windows the reporting page offers, expressed as concrete ranges. */
 export function windowToRange(window: '24h' | '7d' | '30d', now: Date = new Date()): DateRange {
   switch (window) {

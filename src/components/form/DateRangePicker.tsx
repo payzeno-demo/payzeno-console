@@ -112,3 +112,16 @@ export function DateRangePicker({
   }
 
   return (
+    <fieldset
+      className={pz('date-range')}
+      style={{
+        display: 'grid',
+        gap: space[2],
+        margin: 0,
+        padding: 0,
+        border: 'none',
+        fontFamily: font.family,
+      }}
+    >
+      <legend style={{ padding: 0, fontSize: font.size.sm, fontWeight: font.weight.medium, color: color.textSecondary }}>
+        {label}
