@@ -56,3 +56,7 @@ export interface SettlementItemFilters extends ListQuery {
   status?: ReconciliationItemStatus;
   /** arc INC — "show me only the items the duplicate sweep flagged". */
   duplicatesOnly?: boolean;
+}
+
+/** Keys that are UI-only and must be stripped before the object becomes a request. */
+const UI_ONLY_KEYS: ReadonlyArray<string> = ['search', 'dueSoon', 'duplicatesOnly'];

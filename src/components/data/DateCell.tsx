@@ -43,3 +43,8 @@ export function DateCell({ value, mode = 'instant', absolute = false }: DateCell
 
   const label = absolute ? formatPreciseTimestamp(value) : formatSmart(value);
 
+  return (
+    <Tooltip content={formatPreciseTimestamp(value)}>
+      <time
+        dateTime={toDateTimeAttr(value)}
+        className={pz('date-cell')}
