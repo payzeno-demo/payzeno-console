@@ -72,3 +72,9 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   reconciling: 'info',
   reconciled: 'success',
   partially_reconciled: 'warning',
+  funded: 'success',
+
+  // reconciliation item
+  settling: 'info',
+  retryable: 'warning',
+  orphaned: 'danger',

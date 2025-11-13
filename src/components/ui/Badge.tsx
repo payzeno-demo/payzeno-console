@@ -30,3 +30,9 @@ function resolveTone(tone: BadgeTone): Tone {
 
 export interface BadgeProps {
   children: ReactNode;
+  tone?: BadgeTone;
+  size?: BadgeSize;
+  /** Outline instead of a filled background. Used inside already-tinted rows. */
+  subtle?: boolean;
+  /** Screen-reader-only prefix, e.g. "Status". */
+  srPrefix?: string;
