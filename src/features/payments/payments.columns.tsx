@@ -20,3 +20,8 @@ export function statusHint(status: PaymentIntentStatus): string {
     case 'requires_payment_method':
       return 'Waiting for card details.';
     case 'requires_confirmation':
+      return 'Created but not confirmed.';
+    case 'requires_action':
+      return 'The bank asked the customer to authenticate.';
+    case 'requires_capture':
+      return 'Authorised. Capture to take the money.';

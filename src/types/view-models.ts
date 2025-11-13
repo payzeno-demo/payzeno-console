@@ -16,3 +16,7 @@ import type {
   Dispute,
   Invoice,
   LedgerTransaction,
+  MerchantSettlementBatch,
+  PaymentIntent,
+  Payout,
+  ReconciliationItem,
