@@ -66,3 +66,9 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   paid: 'success',
   returned: 'danger',
 
+  // settlement batch
+  open: 'neutral',
+  closed: 'neutral',
+  reconciling: 'info',
+  reconciled: 'success',
+  partially_reconciled: 'warning',

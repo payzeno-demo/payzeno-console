@@ -56,3 +56,13 @@ import { makeConsoleSession } from './factories';
 export interface ProviderOptions {
   /** Initial URL. Use the real path — `ROUTES.settlements.detail(id)` — not a template. */
   route?: string;
+  /**
+   * Register the tree under a route pattern so `useParams()` resolves. Without it a detail
+   * page renders with `params.batchId === undefined` and asserts nothing interesting.
+   */
+  path?: string;
+  /** Swap the transport. Omit for the real `ApiClient` against MSW. */
+  transport?: HttpTransport;
+  /**
+   * Seed the session synchronously. Defaults to the owner session from `factories.ts`; pass
+   * `null` to render the signed-out tree.

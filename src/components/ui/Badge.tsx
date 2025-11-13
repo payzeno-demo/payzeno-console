@@ -23,3 +23,10 @@ export type BadgeSize = 'sm' | 'md';
  * at every call site was worse than accepting both here.
  */
 export type BadgeTone = Tone | 'critical';
+
+function resolveTone(tone: BadgeTone): Tone {
+  return tone === 'critical' ? 'danger' : tone;
+}
+
+export interface BadgeProps {
+  children: ReactNode;

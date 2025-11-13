@@ -14,3 +14,20 @@
 import { pz } from '@lib/cn';
 
 import { runtimeConfig } from '@config/runtime';
+
+import { color, font, layout, space } from '../ui/tokens';
+import type { Tone } from '../ui/tokens';
+
+export interface EnvironmentBannerProps {
+  /** Override for tests and for the login page, which renders it before providers exist. */
+  environment?: string;
+  buildSha?: string;
+}
+
+/** Louder as you get closer to production data. `local` is calm; `staging` is not. */
+export function toneForEnvironment(environment: string): Tone {
+  switch (environment) {
+    case 'local':
+      return 'neutral';
+    case 'qa':
+      return 'info';
