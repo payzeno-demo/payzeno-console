@@ -149,3 +149,13 @@ export type Tone = 'neutral' | 'success' | 'warning' | 'danger' | 'info' | 'bran
 
 export interface ToneStyle {
   fg: string;
+  bg: string;
+  border: string;
+}
+
+const TONE_STYLES: Readonly<Record<Tone, ToneStyle>> = {
+  neutral: { fg: color.neutral, bg: color.neutralSubtle, border: color.border },
+  success: { fg: color.success, bg: color.successSubtle, border: color.success },
+  warning: { fg: color.warning, bg: color.warningSubtle, border: color.warning },
+  danger: { fg: color.danger, bg: color.dangerSubtle, border: color.danger },
+  info: { fg: color.info, bg: color.infoSubtle, border: color.info },
