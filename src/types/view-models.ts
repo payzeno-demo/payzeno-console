@@ -11,3 +11,8 @@ import type {
   ApiKey,
   Balance,
   BalanceBucket,
+  BankAccount,
+  Charge,
+  Dispute,
+  Invoice,
+  LedgerTransaction,

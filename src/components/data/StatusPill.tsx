@@ -84,3 +84,9 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   // webhook event
   delivering: 'info',
   delivered: 'success',
+  dead: 'danger',
+
+  // invoice
+  draft: 'neutral',
+  uncollectible: 'danger',
+  void: 'neutral',
