@@ -60,3 +60,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
   {
     id: 'amount_minor',
     header: 'Amount',
+    align: 'end',
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),
+    sortable: true,
+  },
+  {
+    id: 'refunded_amount_minor',

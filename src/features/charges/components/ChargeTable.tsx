@@ -10,3 +10,14 @@ import type { ChargeRow } from '@types/view-models';
 
 import { chargeColumns } from '../charges.columns';
 
+export interface ChargeTableProps {
+  rows: ReadonlyArray<ChargeRow>;
+  isLoading: boolean;
+  hasMore: boolean;
+  nextCursor: string | null;
+  onCursorChange: (cursor: string | null) => void;
+}
+
+export function ChargeTable({
+  rows,
+  isLoading,
