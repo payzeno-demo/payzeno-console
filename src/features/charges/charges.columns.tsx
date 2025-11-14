@@ -88,3 +88,9 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
     header: 'Acquirer',
     cell: (row) => <AcquirerCell acquirer={row.acquirer} />,
     exportValue: (row) => row.acquirer,
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <StatusPill
