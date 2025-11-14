@@ -47,3 +47,10 @@ export interface AppShellProps {
   badges?: Partial<Record<'disputes' | 'webhooks', number>>;
 }
 
+/**
+ * Write the design tokens onto `:root` as custom properties, once. Keeping them in CSS as well
+ * as in TS is what lets the print stylesheet and the (still hypothetical) dark theme override a
+ * colour without every component re-rendering.
+ */
+function useDesignTokens(): void {
+  useEffect(() => {

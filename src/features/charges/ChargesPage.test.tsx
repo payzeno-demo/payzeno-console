@@ -26,6 +26,14 @@ describe('the page', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders a labelled filter region', async () => {
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    expect(await screen.findByRole('search', { name: 'Charge filters' })).toBeInTheDocument();
+  });
+});
+
+describe('the request it sends', () => {
   it('renders each charge status', async () => {
     renderWithProviders(<ChargesPage />, { route: '/charges' });
 
@@ -46,4 +54,23 @@ describe('the page', () => {
 });
 
 describe('a declined charge', () => {
+  it('is listed with its failure status', async () => {
+    server.use(
+      http.get(url('/charges'), () =>
+        HttpResponse.json(
+          makePage([
+            makeCharge({
+              status: 'failed',
+              failure_code: 'insufficient_funds',
+              captured_amount_minor: 0,
+            }),
+          ]),
+        ),
+      ),
+    );
+
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    expect(await screen.findByText('Failed')).toBeInTheDocument();
+  });
 });

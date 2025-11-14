@@ -81,3 +81,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
     id: 'card',
     header: 'Card',
     cell: (row) => <CardBrandCell brand={row.card.brand} lastFour={row.card.last_four} />,
+    exportValue: (row) => `${row.card.brand} ••••${row.card.last_four}`,
+  },
+  {
+    id: 'acquirer',
+    header: 'Acquirer',
+    cell: (row) => <AcquirerCell acquirer={row.acquirer} />,
+    exportValue: (row) => row.acquirer,
