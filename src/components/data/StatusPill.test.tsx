@@ -70,6 +70,12 @@ describe('toneForStatus', () => {
     expect(toneForStatus('void')).toBe('neutral');
   });
 
+  it('falls back to neutral for a status nobody has mapped yet', () => {
+    expect(toneForStatus('a_status_from_the_future')).toBe('neutral');
+  });
+});
+
+describe('rendering', () => {
   it('renders a small pill when asked, without changing the text', () => {
     renderBare(<StatusPill status="pending" size="sm" />);
 

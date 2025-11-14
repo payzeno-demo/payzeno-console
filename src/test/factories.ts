@@ -37,6 +37,31 @@ import type { ConsoleNotification } from '@features/notifications/notification.t
 
 /** Fixed instant every timestamp below is derived from: 2026-03-14T09:21:07.412Z. */
 export const NOW = '2026-03-14T09:21:07.412Z';
+export function makeMerchant(overrides: Partial<Merchant> = {}): Merchant {
+  return {
+    id: MERCHANT_ID,
+    object: 'merchant',
+    legal_name: 'Northwind Trading Ltd',
+    display_name: 'Northwind',
+    country: 'GB',
+    default_currency: 'GBP',
+    status: 'active',
+    mcc: '5814',
+    risk_tier: 'standard',
+    payout_schedule: 'daily',
+    reserve_bps: 0,
+    reserve_hold_days: 0,
+    pricing_model: 'blended',
+    platform_fee_bps: 175,
+    platform_fee_fixed_minor: 20,
+    payout_delay_days: 2,
+    settlement_tolerance_minor: 50,
+    livemode: true,
+    created_at: '2025-04-02T10:00:00.000Z',
+    ...overrides,
+  } as Merchant;
+}
+
 /** `GET /v1/auth/me`. `permissions` is populated, so `toConsoleSession` uses it verbatim. */
 export function makeSession(overrides: Partial<SessionResponse> = {}): SessionResponse {
   return {

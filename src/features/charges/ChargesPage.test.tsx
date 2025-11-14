@@ -34,4 +34,16 @@ describe('the page', () => {
     expect(screen.getByText('Failed')).toBeInTheDocument();
   });
 
+  it('explains an upstream outage rather than blaming the merchant', async () => {
+    server.use(errorHandler('get', '/charges', 502, 'processor_unavailable'));
+
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    expect(
+      await screen.findByText(/upstream providers is not responding/),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('a declined charge', () => {
 });
