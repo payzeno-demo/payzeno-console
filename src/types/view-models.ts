@@ -20,3 +20,8 @@ import type {
   PaymentIntent,
   Payout,
   ReconciliationItem,
+  Refund,
+  User,
+  WebhookEvent,
+} from '@payzeno/contracts';
+

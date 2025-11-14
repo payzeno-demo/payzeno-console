@@ -157,6 +157,32 @@ export function makeRefund(overrides: Partial<Refund> = {}): Refund {
   };
 }
 
+export function makePayout(overrides: Partial<Payout> = {}): Payout {
+  return {
+    id: 'po_01HW0RTPAYOUT00000001',
+    object: 'payout',
+    merchant_id: MERCHANT_ID,
+    bank_account_id: 'ba_01HW0RTBANKACCOUNT0001',
+    amount_minor: 984_300,
+    currency: 'GBP',
+    status: 'in_transit',
+    method: 'standard',
+    available_on: TODAY,
+    arrival_estimate: '2026-03-16',
+    statement_descriptor: 'PAYZENO PAYOUT',
+    failure_code: null,
+    ledger_transaction_id: 'txn_01HW0RTLEDGERTXN000001',
+    reversal_transaction_id: null,
+    livemode: true,
+    initiated_at: '2026-03-14T06:00:00.000Z',
+    paid_at: null,
+    failed_at: null,
+    returned_at: null,
+    created_at: '2026-03-14T05:00:00.000Z',
+    ...overrides,
+  } as Payout;
+}
+
 /** Wrap rows in the envelope every list route returns. */
 export function makePage<T>(rows: ReadonlyArray<T>, hasMore = false): Paginated<T> {
   return {

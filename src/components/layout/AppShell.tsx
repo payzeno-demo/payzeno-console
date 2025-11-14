@@ -40,3 +40,10 @@ export interface AppShellProps {
   /** Overrides for the session-derived values. Tests pass these; the app does not. */
   user?: User;
   merchant?: Merchant;
+  onSignOut?: () => void;
+  onLivemodeChange?: (next: boolean) => void;
+  onSwitchMerchant?: (merchantId: string) => void;
+  /** Nav badge counts, keyed by `NavItemSpec.badgeKey`. */
+  badges?: Partial<Record<'disputes' | 'webhooks', number>>;
+}
+
