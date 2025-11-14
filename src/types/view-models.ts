@@ -25,3 +25,7 @@ import type {
   WebhookEvent,
 } from '@payzeno/contracts';
 
+/** Fields every selectable table row carries. */
+export interface RowSelection {
+  /** Client-side only. Never sent anywhere. */
+  _selected: boolean;

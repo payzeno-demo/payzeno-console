@@ -25,3 +25,7 @@ export function statusHint(status: PaymentIntentStatus): string {
       return 'The bank asked the customer to authenticate.';
     case 'requires_capture':
       return 'Authorised. Capture to take the money.';
+    case 'processing':
+      return 'With the acquirer.';
+    case 'succeeded':
+      return 'Captured.';
