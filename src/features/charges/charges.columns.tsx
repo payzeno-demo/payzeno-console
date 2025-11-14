@@ -67,3 +67,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
   },
   {
     id: 'refunded_amount_minor',
+    header: 'Refunded',
+    align: 'end',
+    cell: (row) =>
+      row.refunded_amount_minor === 0 ? (
+        <span>—</span>
+      ) : (
+        <MoneyCell amountMinor={row.refunded_amount_minor} currency={row.currency} />
