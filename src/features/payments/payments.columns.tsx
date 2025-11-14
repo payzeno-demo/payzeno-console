@@ -16,3 +16,16 @@ import type { PaymentIntentRow } from '@types/view-models';
 
 /** What a merchant should do next, in the words they use rather than ours. */
 export function statusHint(status: PaymentIntentStatus): string {
+  switch (status) {
+    case 'requires_payment_method':
+      return 'Waiting for card details.';
+    case 'requires_confirmation':
+      return 'Created but not confirmed.';
+    case 'requires_action':
+      return 'The bank asked the customer to authenticate.';
+    case 'requires_capture':
+      return 'Authorised. Capture to take the money.';
+    case 'processing':
+      return 'With the acquirer.';
+    case 'succeeded':
+      return 'Captured.';

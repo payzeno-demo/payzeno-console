@@ -7,3 +7,25 @@
  *
  * Everything below is "the contract type, plus what the table needs to render it".
  */
+import type {
+  ApiKey,
+  Balance,
+  BalanceBucket,
+  BankAccount,
+  Charge,
+  Dispute,
+  Invoice,
+  LedgerTransaction,
+  MerchantSettlementBatch,
+  PaymentIntent,
+  Payout,
+  ReconciliationItem,
+  Refund,
+  User,
+  WebhookEvent,
+} from '@payzeno/contracts';
+
+/** Fields every selectable table row carries. */
+export interface RowSelection {
+  /** Client-side only. Never sent anywhere. */
+  _selected: boolean;

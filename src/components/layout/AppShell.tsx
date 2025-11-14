@@ -40,3 +40,17 @@ export interface AppShellProps {
   /** Overrides for the session-derived values. Tests pass these; the app does not. */
   user?: User;
   merchant?: Merchant;
+  onSignOut?: () => void;
+  onLivemodeChange?: (next: boolean) => void;
+  onSwitchMerchant?: (merchantId: string) => void;
+  /** Nav badge counts, keyed by `NavItemSpec.badgeKey`. */
+  badges?: Partial<Record<'disputes' | 'webhooks', number>>;
+}
+
+/**
+ * Write the design tokens onto `:root` as custom properties, once. Keeping them in CSS as well
+ * as in TS is what lets the print stylesheet and the (still hypothetical) dark theme override a
+ * colour without every component re-rendering.
+ */
+function useDesignTokens(): void {
+  useEffect(() => {

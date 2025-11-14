@@ -60,3 +60,37 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
   {
     id: 'amount_minor',
     header: 'Amount',
+    align: 'end',
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),
+    sortable: true,
+  },
+  {
+    id: 'refunded_amount_minor',
+    header: 'Refunded',
+    align: 'end',
+    cell: (row) =>
+      row.refunded_amount_minor === 0 ? (
+        <span>—</span>
+      ) : (
+        <MoneyCell amountMinor={row.refunded_amount_minor} currency={row.currency} />
+      ),
+    exportValue: (row) => String(row.refunded_amount_minor),
+  },
+  {
+    id: 'card',
+    header: 'Card',
+    cell: (row) => <CardBrandCell brand={row.card.brand} lastFour={row.card.last_four} />,
+    exportValue: (row) => `${row.card.brand} ••••${row.card.last_four}`,
+  },
+  {
+    id: 'acquirer',
+    header: 'Acquirer',
+    cell: (row) => <AcquirerCell acquirer={row.acquirer} />,
+    exportValue: (row) => row.acquirer,
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <StatusPill

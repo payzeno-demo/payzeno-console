@@ -66,3 +66,27 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   paid: 'success',
   returned: 'danger',
 
+  // settlement batch
+  open: 'neutral',
+  closed: 'neutral',
+  reconciling: 'info',
+  reconciled: 'success',
+  partially_reconciled: 'warning',
+  funded: 'success',
+
+  // reconciliation item
+  settling: 'info',
+  retryable: 'warning',
+  orphaned: 'danger',
+  needs_review: 'warning',
+  variance_exceeded: 'danger',
+
+  // webhook event
+  delivering: 'info',
+  delivered: 'success',
+  dead: 'danger',
+
+  // invoice
+  draft: 'neutral',
+  uncollectible: 'danger',
+  void: 'neutral',
