@@ -74,3 +74,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
         <span>—</span>
       ) : (
         <MoneyCell amountMinor={row.refunded_amount_minor} currency={row.currency} />
+      ),
+    exportValue: (row) => String(row.refunded_amount_minor),
+  },
+  {
+    id: 'card',
+    header: 'Card',
+    cell: (row) => <CardBrandCell brand={row.card.brand} lastFour={row.card.last_four} />,
