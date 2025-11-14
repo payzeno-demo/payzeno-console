@@ -36,3 +36,15 @@ export interface BadgeProps {
   subtle?: boolean;
   /** Screen-reader-only prefix, e.g. "Status". */
   srPrefix?: string;
+  /** Small leading dot. Decorative. */
+  withDot?: boolean;
+  className?: string;
+}
+
+export function Badge({
+  children,
+  tone = 'neutral',
+  size = 'md',
+  subtle = false,
+  srPrefix,
+  withDot = false,
