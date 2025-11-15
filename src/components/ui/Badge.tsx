@@ -55,3 +55,9 @@ export function Badge({
 
   return (
     <span
+      className={cn(pz('badge'), pz('badge', undefined, resolved), className)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: space[1],
+        padding: size === 'sm' ? `1px ${space[2]}` : `2px ${space[2]}`,
