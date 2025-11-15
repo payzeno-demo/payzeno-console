@@ -48,3 +48,10 @@ export function Badge({
   subtle = false,
   srPrefix,
   withDot = false,
+  className,
+}: BadgeProps) {
+  const resolved = resolveTone(tone);
+  const palette = toneStyle(resolved);
+
+  return (
+    <span
