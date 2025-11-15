@@ -29,12 +29,23 @@ export function seriesColor(index: number): string {
  * Dash patterns per series, so a printed or greyscale chart is still readable. Colour is never
  * the only signal — same rule as `<Badge>` and `<StatusPill>`.
  */
+export const SERIES_DASH: ReadonlyArray<string | undefined> = [
+  undefined,
+  '6 3',
+  '2 3',
+  '8 3 2 3',
+  '1 3',
+  '10 4',
+];
+
 /** Consistent chart heights. A chart shorter than 180px cannot carry an axis legibly. */
 export const CHART_HEIGHT = {
   compact: 180,
   default: 260,
   tall: 360,
 } as const;
+
+export type ChartHeight = keyof typeof CHART_HEIGHT;
 
 export function minorUnitTick(exponent: number): (value: number) => string {
   const divisor = 10 ** exponent;

@@ -31,6 +31,12 @@ describe('Badge', () => {
     expect(container.querySelector('span')).toHaveStyle({ whiteSpace: 'nowrap' });
   });
 
+  it('renders nothing for a negative count either', () => {
+    const { container } = renderBare(<CountBadge count={-3} label="Disputes" />);
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it('renders the count with its label as a screen-reader prefix', () => {
     renderBare(<CountBadge count={7} label="Disputes needing a response" />);
 
@@ -38,4 +44,9 @@ describe('Badge', () => {
     expect(screen.getByText('Disputes needing a response:')).toBeInTheDocument();
   });
 
+  it('uses the danger tone, because a count badge always means "act on this"', () => {
+    const { container } = renderBare(<CountBadge count={2} label="Disputes" />);
+
+    expect(container.querySelector('span')?.className).toContain('danger');
+  });
 });

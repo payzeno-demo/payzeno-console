@@ -42,3 +42,28 @@ export interface BadgeProps {
 }
 
 export function Badge({
+  children,
+  tone = 'neutral',
+  size = 'md',
+  subtle = false,
+  srPrefix,
+  withDot = false,
+  className,
+}: BadgeProps) {
+  const resolved = resolveTone(tone);
+  const palette = toneStyle(resolved);
+
+  return (
+    <span
+      className={cn(pz('badge'), pz('badge', undefined, resolved), className)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: space[1],
+        padding: size === 'sm' ? `1px ${space[2]}` : `2px ${space[2]}`,
+        fontFamily: font.family,
+        fontSize: size === 'sm' ? font.size.xs : font.size.sm,
+        fontWeight: font.weight.medium,
+        lineHeight: font.lineHeight.tight,
+        color: palette.fg,
+        background: subtle ? 'transparent' : palette.bg,

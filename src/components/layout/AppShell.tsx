@@ -54,3 +54,10 @@ export interface AppShellProps {
  */
 function useDesignTokens(): void {
   useEffect(() => {
+    const root = document.documentElement;
+    const applied = cssVariables();
+
+    for (const [name, value] of Object.entries(applied)) {
+      root.style.setProperty(name, value);
+    }
+

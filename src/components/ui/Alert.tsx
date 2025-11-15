@@ -32,3 +32,12 @@ export interface AlertProps {
   action?: ReactNode;
   /** Renders a dismiss button. Omit for alerts describing a persistent condition. */
   onDismiss?: () => void;
+  className?: string;
+}
+
+const ICONS: Record<Extract<Tone, 'info' | 'warning' | 'danger' | 'success'>, string> = {
+  info: 'ℹ',
+  warning: '⚠',
+  danger: '⨯',
+  success: '✓',
+};
