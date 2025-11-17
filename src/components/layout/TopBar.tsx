@@ -20,3 +20,25 @@ import { pz } from '@lib/cn';
 import { IconButton } from '../ui/IconButton';
 import { color, font, layout, space } from '../ui/tokens';
 
+import { LivemodeToggle } from './LivemodeToggle';
+import { MerchantSwitcher } from './MerchantSwitcher';
+import { UserMenu } from './UserMenu';
+
+export interface TopBarProps {
+  user: User;
+  merchant: Merchant;
+  availableMerchants?: ReadonlyArray<Merchant>;
+  livemode: boolean;
+  onLivemodeChange: (next: boolean) => void;
+  onSwitchMerchant?: (merchantId: string) => void;
+  onSignOut: () => void;
+  isSigningOut?: boolean;
+  /** `<NotificationBell />`, mounted by `AppShell`. */
+  notifications?: ReactNode;
+  /** Shown below the `md` breakpoint; opens the nav drawer. */
+  onOpenNav?: () => void;
+}
+
+export function TopBar({
+  user,
+  merchant,

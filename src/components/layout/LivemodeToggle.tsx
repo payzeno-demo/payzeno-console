@@ -40,3 +40,23 @@ export function LivemodeToggle({ livemode, onChange, canGoLive = true }: Livemod
     [onChange, queryClient],
   );
 
+  return (
+    <div
+      className={pz('livemode-toggle')}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: space[2],
+        padding: `${space[1]} ${space[3]}`,
+        borderRadius: radius.pill,
+        border: `1px solid ${livemode ? color.border : color.warning}`,
+        background: livemode ? color.surface : color.warningSubtle,
+        fontFamily: font.family,
+      }}
+    >
+      <Switch
+        id="livemode"
+        checked={livemode}
+        onCheckedChange={flip}
+        disabled={!canGoLive && !livemode}
+        label="Live mode"
