@@ -59,14 +59,17 @@ export function createEndpoints(client: HttpTransport): EndpointRegistry {
   };
 }
 
+export { ApiKeysEndpoint } from './api-keys.endpoint';
 export { BalanceEndpoint } from './balance.endpoint';
 export { BankAccountsEndpoint } from './bank-accounts.endpoint';
 export { ChargesEndpoint } from './charges.endpoint';
 export { DisputesEndpoint } from './disputes.endpoint';
+export { InvoicesEndpoint } from './invoices.endpoint';
 export { PaymentIntentsEndpoint } from './payment-intents.endpoint';
 export { PayoutsEndpoint } from './payouts.endpoint';
 export { RefundsEndpoint } from './refunds.endpoint';
 export { ReportingEndpoint } from './reporting.endpoint';
 export { SettlementsEndpoint } from './settlements.endpoint';
+export { WebhookEndpointsEndpoint } from './webhook-endpoints.endpoint';
 export { WebhookEventsEndpoint } from './webhook-events.endpoint';
 export { ResourceEndpoint } from './base';
