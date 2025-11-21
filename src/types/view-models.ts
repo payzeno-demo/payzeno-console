@@ -29,3 +29,8 @@ import type {
 export interface RowSelection {
   /** Client-side only. Never sent anywhere. */
   _selected: boolean;
+}
+
+export interface ChargeRow extends Charge, RowSelection {
+  /** `captured_amount_minor - refunded_amount_minor`, precomputed for the refund dialog. */
+  _refundableMinor: number;
