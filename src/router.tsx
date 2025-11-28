@@ -94,3 +94,12 @@ const WebhookEventDetailPage = lazy(() =>
 );
 const SettingsPage = lazy(() =>
   import('@features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+);
+
+/**
+ * Per-feature wrapper: permission guard + error boundary + suspense fallback, in that order.
+ *
+ * The boundary is *inside* the guard so that a permission denial renders `<PermissionDenied/>`
+ * (a page, not an error) while a thrown `ConsoleApiError` renders the boundary's fallback. The
+ * `feature` tag is what makes Sentry group by feature instead of by stack frame.
+ */
