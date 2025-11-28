@@ -21,3 +21,10 @@ import { DEFAULT_PAGE_SIZE } from '@config/constants';
 export function disputesListQuery(e: EndpointRegistry, q?: DisputeListQuery) {
   const query: DisputeListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
   return queryOptions<Paginated<Dispute>>({
+    queryKey: queryKeys.disputes.list(query),
+    queryFn: () => e.disputes.list(query),
+    // The evidence clock is the reason this is short: a stale "3 days left" is worse than a
+    // spinner.
+    staleTime: 30_000,
+  });
+}
