@@ -24,3 +24,9 @@ function seg(id: string): string {
 export const ROUTES = {
   root: '/',
 
+  auth: {
+    login: '/login',
+  },
+
+  reporting: {
+    index: '/',

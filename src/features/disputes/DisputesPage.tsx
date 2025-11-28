@@ -22,3 +22,26 @@ import { humanise, pluralise } from '@lib/format';
 import { DisputeTable } from './components/DisputeTable';
 import { disputeColumns } from './disputes.columns';
 import { EVIDENCE_URGENT_HOURS, useDisputes } from './useDisputes';
+
+export function DisputesPage() {
+  useDocumentTitle('Disputes');
+
+  const [status, setStatus] = useEnumParam<DisputeStatus>('status', DISPUTE_STATUSES);
+  const { rows, urgentCount, pagination, isLoading, isFetching, error } = useDisputes({
+    ...(status ? { status } : {}),
+  });
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Disputes"
+        description="Chargebacks raised against your charges, and the clock on each."
+        isBusy={isFetching}
+      >
+        <ExportCsvButton rows={rows} columns={disputeColumns} resource="disputes" />
+      </PageHeader>
+
+      {urgentCount > 0 ? (
+        <Alert tone="critical" title="Evidence due soon" role="status">
+          {pluralise(urgentCount, 'dispute')} need a response within {EVIDENCE_URGENT_HOURS} hours.
+          After the deadline the network decides without you.

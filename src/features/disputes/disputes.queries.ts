@@ -13,3 +13,11 @@ import type {
   SubmitDisputeEvidenceRequest,
 } from '@payzeno/contracts';
 
+import type { EndpointRegistry } from '@api/endpoints';
+import type { DisputeListQuery } from '@api/endpoints/disputes.endpoint';
+import { queryKeys } from '@api/queryKeys';
+import { DEFAULT_PAGE_SIZE } from '@config/constants';
+
+export function disputesListQuery(e: EndpointRegistry, q?: DisputeListQuery) {
+  const query: DisputeListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
+  return queryOptions<Paginated<Dispute>>({

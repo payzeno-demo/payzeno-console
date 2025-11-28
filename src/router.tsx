@@ -84,3 +84,13 @@ const InvoiceDetailPage = lazy(() =>
 const DevelopersPage = lazy(() =>
   import('@features/developers/DevelopersPage').then((m) => ({ default: m.DevelopersPage })),
 );
+const ApiKeyDetailPage = lazy(() =>
+  import('@features/developers/ApiKeyDetailPage').then((m) => ({ default: m.ApiKeyDetailPage })),
+);
+const WebhookEventDetailPage = lazy(() =>
+  import('@features/developers/WebhookEventDetailPage').then((m) => ({
+    default: m.WebhookEventDetailPage,
+  })),
+);
+const SettingsPage = lazy(() =>
+  import('@features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })),
