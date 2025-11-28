@@ -1,0 +1,36 @@
+/**
+ * `router.tsx` — the one route table.
+ *
+ * Every feature PR touches this file, which makes it the repo's hottest by construction and
+ * the one place a mis-registered route goes unnoticed until someone reports a blank page. What
+ * is asserted here is the *table*, not the pages: that each `<Feature>Page` is reachable at the
+ * path `routes.ts` names, that the guards sit where they should, and that the catch-all really
+ * catches.
+ */
+import { describe, expect, it } from 'vitest';
+
+import { AppRoutes } from '@/router';
+import { ROUTES, TOP_LEVEL_PATHS, featureOf, routeTemplate } from '@/routes';
+import { makeViewerSession } from '@/test/factories';
+import { renderWithProviders, screen, waitFor } from '@/test/render';
+
+function renderAt(route: string, options: Parameters<typeof renderWithProviders>[1] = {}) {
+  return renderWithProviders(<AppRoutes />, { route, ...options });
+}
+
+describe('route helpers', () => {
+  it('lists every top-level path', () => {
+    expect(TOP_LEVEL_PATHS).toContain(ROUTES.settlements.index);
+    expect(TOP_LEVEL_PATHS).toContain(ROUTES.developers.index);
+    expect(new Set(TOP_LEVEL_PATHS).size).toBe(TOP_LEVEL_PATHS.length);
+  });
+
+  it('redirects the legacy /dashboard bookmark to the landing route', async () => {
+    renderAt('/dashboard');
+
+    expect(await screen.findByRole('heading', { name: /Hello, Northwind/ })).toBeInTheDocument();
+  });
+});
+
+describe('the signed-out branch', () => {
+});

@@ -34,3 +34,21 @@ export function formatRemaining(hours: number | null): string {
   if (hours <= 0) return 'closed';
   if (hours < 48) return `${Math.floor(hours)}h left`;
   return `${Math.floor(hours / 24)}d left`;
+}
+
+export const disputeColumns: ReadonlyArray<ColumnDef<DisputeRow>> = [
+  {
+    id: 'id',
+    header: 'Dispute',
+    width: '16rem',
+    cell: (row) => (
+      <Link to={ROUTES.disputes.detail(row.id)}>
+        <IdCell value={row.id} />
+      </Link>
+    ),
+    exportValue: (row) => row.id,
+  },
+  {
+    id: 'charge_id',
+    header: 'Charge',
+    cell: (row) => (
