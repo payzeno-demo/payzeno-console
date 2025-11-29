@@ -16,3 +16,9 @@ export function formatAmount(minor: number, currency: string): string {
   const major = minor / 100;
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+  }).format(major);
+}
+
+/** `1234567` → `1,234,567`. Counts, not money. */

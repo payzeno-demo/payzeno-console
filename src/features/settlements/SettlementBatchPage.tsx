@@ -5,3 +5,6 @@
  *
  * Frame 2 of the canonical chain. It mounts both arc-INC components:
  * `<BatchTotalsPanel/>` (posted vs expected) and, through the item columns,
+ * `<DuplicateBadge/>`.
+ */
+import { useParams } from 'react-router-dom';
