@@ -10,3 +10,9 @@
  * it: `features/reporting/components/SummaryCards.tsx`,
  * `features/invoices/invoices.columns.tsx`, `components/data/ExportCsvButton.tsx`.
  *
+ * TODO(rrefactor): replace with `formatMoney` from lib/money.ts and delete. PAY-1968.
+ */
+export function formatAmount(minor: number, currency: string): string {
+  const major = minor / 100;
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',

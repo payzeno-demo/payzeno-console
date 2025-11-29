@@ -3,3 +3,5 @@
  * `ROUTES.settlements.detail(batchId)`. Renamed from `SettlementBatchPage.tsx` in the
  * PAY-2043 PR.
  *
+ * Frame 2 of the canonical chain. It mounts both arc-INC components:
+ * `<BatchTotalsPanel/>` (posted vs expected) and, through the item columns,
