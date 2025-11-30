@@ -22,3 +22,11 @@ export interface NotificationListProps {
   onDismiss: (id: string) => void;
 }
 
+function linkFor(entry: NotificationEntry): string {
+  switch (entry.type) {
+    case 'payout.failed':
+    case 'payout.paid':
+    case 'payout.returned':
+      return ROUTES.payouts.detail(entry.resource_id);
+    case 'settlement.completed':
+      return ROUTES.settlements.detail(entry.resource_id);
