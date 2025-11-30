@@ -25,3 +25,13 @@ export function NotificationBell({ className }: NotificationBellProps) {
     unreadCount === 0
       ? 'Notifications, none unread'
       : `Notifications, ${unreadCount} unread`;
+
+  return (
+    <Popover
+      className={className}
+      trigger={
+        <IconButton aria-label={label} name="bell" variant="ghost">
+          {unreadCount > 0 ? (
+            <Badge tone="critical" aria-hidden>
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </Badge>

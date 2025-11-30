@@ -45,6 +45,7 @@ export function useNotificationStream(
 ): NotificationStream {
   const { mock = false, enabled = true } = options;
   const [entries, setEntries] = useState<NotificationEntry[]>([]);
+  const [state, setState] = useState<SocketState>('idle');
   const socketRef = useRef<SocketClient<ConsoleNotification> | null>(null);
 
   /**
