@@ -50,6 +50,28 @@ export function useNotificationStream(
    * A push tells us server-side state changed. Invalidating the matching query family is
    * what makes the payouts table update behind the toast without a manual refresh.
    */
+  const invalidateFor = useCallback(
+    (notification: ConsoleNotification) => {
+      switch (notification.type) {
+        case 'payout.failed':
+        case 'payout.paid':
+        case 'payout.returned':
+          void queryClient.invalidateQueries({ queryKey: queryKeys.payouts.all });
+          void queryClient.invalidateQueries({ queryKey: queryKeys.balance.all });
+          break;
+        case 'settlement.completed':
+          void queryClient.invalidateQueries({ queryKey: queryKeys.settlements.all });
+          break;
+        case 'dispute.opened':
+          void queryClient.invalidateQueries({ queryKey: queryKeys.disputes.all });
+          break;
+        default:
+          break;
+      }
+    },
+    [queryClient],
+  );
+
   const onMessage = useCallback(
     (notification: ConsoleNotification) => {
       if (!isSurfaced(notification.type)) return;
