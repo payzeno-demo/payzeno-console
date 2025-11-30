@@ -7,3 +7,31 @@
  * the popover is labelled by the heading inside it. Tal will ask.
  */
 import { useNotifications } from '@app/NotificationProvider';
+import { Badge } from '@components/ui/Badge';
+import { IconButton } from '@components/ui/IconButton';
+import { Popover } from '@components/ui/Popover';
+
+import { NotificationList } from './NotificationList';
+
+export interface NotificationBellProps {
+  className?: string;
+}
+
+export function NotificationBell({ className }: NotificationBellProps) {
+  const { entries, unreadCount, state, streamError, markAllRead, markRead, dismiss } =
+    useNotifications();
+
+  const label =
+    unreadCount === 0
+      ? 'Notifications, none unread'
+      : `Notifications, ${unreadCount} unread`;
+
+  return (
+    <Popover
+      className={className}
+      trigger={
+        <IconButton aria-label={label} name="bell" variant="ghost">
+          {unreadCount > 0 ? (
+            <Badge tone="critical" aria-hidden>
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </Badge>

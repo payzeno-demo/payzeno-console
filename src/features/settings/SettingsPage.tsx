@@ -44,6 +44,12 @@ export function SettingsPage() {
   useDocumentTitle('Settings');
 
   const merchant = useCurrentMerchant();
+  const { accounts, isLoading: accountsLoading, error: accountsError } = useBankAccounts();
+  // Reused for its `makeDefault` mutation; the row id comes from the table's button.
+  const { makeDefault, actionError } = useBankAccount(defaultTarget);
+
+  const canManageAccounts = can('settings:write');
+
   const handleMakeDefault = (bankAccountId: string) => {
     setDefaultTarget(bankAccountId);
     makeDefault();

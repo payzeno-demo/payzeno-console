@@ -20,6 +20,8 @@ export const SURFACED_NOTIFICATION_TYPES = [
   'dispute.opened',
 ] as const satisfies ReadonlyArray<PublicEventType>;
 
+export type SurfacedNotificationType = (typeof SURFACED_NOTIFICATION_TYPES)[number];
+
 /** A notification plus the console's own local read state. Never sent to the server. */
 export interface NotificationEntry extends ConsoleNotification {
   read: boolean;
@@ -27,4 +29,16 @@ export interface NotificationEntry extends ConsoleNotification {
 }
 
 export type NotificationSeverity = 'critical' | 'warning' | 'info';
+
+export function severityOf(type: PublicEventType): NotificationSeverity {
+  switch (type) {
+    case 'payout.failed':
+    case 'payout.returned':
+      return 'critical';
+    case 'dispute.opened':
+      return 'warning';
+    default:
+      return 'info';
+  }
+}
 

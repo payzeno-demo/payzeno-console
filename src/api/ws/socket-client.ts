@@ -22,6 +22,7 @@ export interface SocketHandlers<TMessage> {
 export abstract class SocketClient<TMessage> {
   protected abstract readonly url: string;
 
+  private socket: WebSocket | null = null;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   protected constructor(protected readonly handlers: SocketHandlers<TMessage>) {}
 
@@ -33,10 +34,56 @@ export abstract class SocketClient<TMessage> {
     return this.attempts;
   }
 
+  connect(): void {
+    if (this.state === 'open' || this.state === 'connecting') return;
+    this.closedByCaller = false;
+    this.setState(this.attempts === 0 ? 'connecting' : 'reconnecting');
+
+    const socket = this.openSocket();
+    this.socket = socket;
+
+    socket.addEventListener('open', () => this.onOpen());
+    socket.addEventListener('message', (event) => this.onMessage(event));
+    socket.addEventListener('close', () => this.onClose());
+    socket.addEventListener('error', () => {
+      // `error` is always followed by `close`; reconnect logic lives there so a single
+      // failure does not schedule two timers.
+    });
+  }
+
+  /** Overridable so `MockNotificationSocket` can substitute a fake socket. */
+  protected openSocket(): WebSocket {
+    return new WebSocket(this.url);
+  }
+
+  protected onClose(): void {
+    this.stopHeartbeat();
+    this.socket = null;
+    if (this.closedByCaller) return;
+
+    if (this.attempts >= WS_MAX_RECONNECTS) {
+      this.setState('closed');
+      this.handlers.onGiveUp?.(this.attempts);
+      return;
+    }
+
+    this.attempts += 1;
+    this.setState('reconnecting');
+    const delay = this.backoffMs(this.attempts);
+    this.reconnectTimer = setTimeout(() => this.connect(), delay);
+  }
+
   /** Exponential with full jitter, capped at 30s. Every open tab must not retry in lockstep. */
   protected backoffMs(attempt: number): number {
     const exponential = Math.min(WS_BACKOFF_MS * 2 ** (attempt - 1), 30_000);
     return Math.round(exponential * (0.5 + Math.random() * 0.5));
+  }
+
+  private stopHeartbeat(): void {
+    if (this.heartbeatTimer !== null) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
   }
 
   private clearTimers(): void {

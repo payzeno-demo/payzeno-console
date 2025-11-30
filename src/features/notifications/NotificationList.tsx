@@ -6,3 +6,27 @@
  * domain-model.md §9 makes it the one event the console surfaces directly, because a failed
  * payout means the merchant's money did not arrive and the alternative is that they find out
  * from their bank.
+ */
+import { Link } from 'react-router-dom';
+
+import { ROUTES } from '@/routes';
+import { StatusPill } from '@components/data/StatusPill';
+import { formatRelativeTime } from '@lib/date';
+
+import type { NotificationEntry } from './notification.types';
+import { severityOf } from './notification.types';
+
+export interface NotificationListProps {
+  entries: ReadonlyArray<NotificationEntry>;
+  onRead: (id: string) => void;
+  onDismiss: (id: string) => void;
+}
+
+function linkFor(entry: NotificationEntry): string {
+  switch (entry.type) {
+    case 'payout.failed':
+    case 'payout.paid':
+    case 'payout.returned':
+      return ROUTES.payouts.detail(entry.resource_id);
+    case 'settlement.completed':
+      return ROUTES.settlements.detail(entry.resource_id);

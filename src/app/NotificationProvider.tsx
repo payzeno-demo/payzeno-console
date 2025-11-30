@@ -28,3 +28,18 @@ const NotificationContext = createContext<NotificationStream | null>(null);
 
 NotificationContext.displayName = 'NotificationContext';
 
+/** Empty stream, used before sign-in and outside the provider. */
+const EMPTY_STREAM: NotificationStream = {
+  entries: [],
+  unreadCount: 0,
+  state: 'idle',
+  streamError: null,
+  markRead: () => undefined,
+  markAllRead: () => undefined,
+  dismiss: () => undefined,
+};
+
+/** Unread count on its own, for the nav badge. Avoids re-rendering on every entry change. */
+export function useUnreadNotificationCount(): number {
+  return useNotifications().unreadCount;
+}
