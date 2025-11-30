@@ -118,4 +118,8 @@ export function useNotificationStream(
     setEntries((current) => current.map((e) => (e.id === id ? { ...e, read: true } : e)));
   }, []);
 
+  const markAllRead = useCallback(() => {
+    setEntries((current) => current.map((e) => ({ ...e, read: true })));
+  }, []);
+
 }

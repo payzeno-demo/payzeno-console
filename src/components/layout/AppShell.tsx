@@ -68,3 +68,10 @@ function useDesignTokens(): void {
 }
 
 /** One live region for route changes, instead of every page announcing itself differently. */
+function useRouteAnnouncement(): string {
+  const { pathname } = useLocation();
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const first = pathname.split('/').filter(Boolean)[0];
+    setMessage(first ? `Navigated to ${first.replace(/-/g, ' ')}` : 'Navigated to the dashboard');
