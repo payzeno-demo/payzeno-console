@@ -28,3 +28,7 @@ const NotificationContext = createContext<NotificationStream | null>(null);
 
 NotificationContext.displayName = 'NotificationContext';
 
+/** Unread count on its own, for the nav badge. Avoids re-rendering on every entry change. */
+export function useUnreadNotificationCount(): number {
+  return useNotifications().unreadCount;
+}

@@ -50,6 +50,47 @@ export function useNotificationStream(
    * A push tells us server-side state changed. Invalidating the matching query family is
    * what makes the payouts table update behind the toast without a manual refresh.
    */
+  const onMessage = useCallback(
+    (notification: ConsoleNotification) => {
+      if (!isSurfaced(notification.type)) return;
+
+      setEntries((current) => {
+        if (current.some((e) => e.id === notification.id)) return current;
+        const entry: NotificationEntry = { ...notification, read: false, receivedAt: Date.now() };
+        return [entry, ...current].slice(0, MAX_ENTRIES);
+      });
+
+      invalidateFor(notification);
+    },
+    [invalidateFor],
+  );
+
+  useEffect(() => {
+    if (!enabled) return;
+
+    const handlers = {
+      onMessage,
+      onStateChange: setState,
+      onGiveUp: (attempts: number) => {
+        const err = new NotificationStreamError(attempts);
+        setStreamError(err);
+        captureError(err, { attempts });
+      },
+    };
+
+    const socket = mock
+      ? new MockNotificationSocket(handlers)
+      : new NotificationSocket(handlers);
+
+    socketRef.current = socket;
+    socket.connect();
+
+    return () => {
+      socket.close();
+      socketRef.current = null;
+    };
+  }, [enabled, mock, onMessage]);
+
   const markRead = useCallback((id: string) => {
     setEntries((current) => current.map((e) => (e.id === id ? { ...e, read: true } : e)));
   }, []);

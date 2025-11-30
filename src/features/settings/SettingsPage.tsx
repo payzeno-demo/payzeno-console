@@ -44,6 +44,8 @@ export function SettingsPage() {
   useDocumentTitle('Settings');
 
   const merchant = useCurrentMerchant();
+  const canManageAccounts = can('settings:write');
+
   const handleMakeDefault = (bankAccountId: string) => {
     setDefaultTarget(bankAccountId);
     makeDefault();
