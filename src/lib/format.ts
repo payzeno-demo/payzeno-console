@@ -22,3 +22,9 @@ export function formatAmount(minor: number, currency: string): string {
 }
 
 /** `1234567` → `1,234,567`. Counts, not money. */
+export function formatCount(value: number, locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale).format(value);
+}
+
+/** `0.0312` → `3.1%`. Takes a ratio, not a percentage — the two get confused constantly. */
+export function formatPercent(ratio: number, fractionDigits = 1, locale = 'en-US'): string {
