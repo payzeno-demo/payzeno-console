@@ -11,3 +11,7 @@
 // Types and the currency tables come from the barrel; the arithmetic comes from the
 // `/money` entrypoint. They are separate subpaths in the package `exports` map on purpose
 // (payzeno-contracts tsup.config.ts) — the barrel is `src/types/**` and nothing else.
+import { CURRENCY_EXPONENT, CURRENCIES } from '@payzeno/contracts';
+import type { BasisPoints, CurrencyCode, MinorUnits, Money } from '@payzeno/contracts';
+import {
+  addMoney,
