@@ -50,4 +50,8 @@ export function useNotificationStream(
    * A push tells us server-side state changed. Invalidating the matching query family is
    * what makes the payouts table update behind the toast without a manual refresh.
    */
+  const markRead = useCallback((id: string) => {
+    setEntries((current) => current.map((e) => (e.id === id ? { ...e, read: true } : e)));
+  }, []);
+
 }

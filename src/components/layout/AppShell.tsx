@@ -61,3 +61,10 @@ function useDesignTokens(): void {
       root.style.setProperty(name, value);
     }
 
+    return () => {
+      for (const name of Object.keys(applied)) root.style.removeProperty(name);
+    };
+  }, []);
+}
+
+/** One live region for route changes, instead of every page announcing itself differently. */

@@ -7,3 +7,12 @@
  * the popover is labelled by the heading inside it. Tal will ask.
  */
 import { useNotifications } from '@app/NotificationProvider';
+import { Badge } from '@components/ui/Badge';
+import { IconButton } from '@components/ui/IconButton';
+import { Popover } from '@components/ui/Popover';
+
+import { NotificationList } from './NotificationList';
+
+export interface NotificationBellProps {
+  className?: string;
+}
