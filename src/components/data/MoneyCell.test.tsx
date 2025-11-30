@@ -21,6 +21,14 @@ describe('rendering an amount', () => {
     expect(screen.getByText(formatMoney(money(12_500, 'GBP')))).toBeInTheDocument();
   });
 
+  it('prefers `value` when both forms are supplied', () => {
+    renderBare(<MoneyCell value={money(100, 'USD')} amountMinor={999_999} currency="GBP" />);
+
+    expect(screen.getByText(formatMoney(money(100, 'USD')))).toBeInTheDocument();
+  });
+});
+
+describe('JPY — the exponent that catches everyone', () => {
   it('has a zero exponent in the shared table', () => {
     expect(CURRENCY_EXPONENT.JPY).toBe(0);
     expect(CURRENCY_EXPONENT.GBP).toBe(2);
@@ -31,6 +39,10 @@ describe('rendering an amount', () => {
 
     // U+2212 MINUS SIGN. A hyphen renders narrower than the plus and the column jitters.
     expect(screen.getByText(/^−/)).toBeInTheDocument();
+  });
+
+  it('does not scale JPY on the way out either', () => {
+    expect(moneyExportValue(1_200, 'JPY')).toBe('1200 JPY');
   });
 
 });
