@@ -14,3 +14,11 @@ import { StatusPill } from '@components/data/StatusPill';
 import { formatRelativeTime } from '@lib/date';
 
 import type { NotificationEntry } from './notification.types';
+import { severityOf } from './notification.types';
+
+export interface NotificationListProps {
+  entries: ReadonlyArray<NotificationEntry>;
+  onRead: (id: string) => void;
+  onDismiss: (id: string) => void;
+}
+

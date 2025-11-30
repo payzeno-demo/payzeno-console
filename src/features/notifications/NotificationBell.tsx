@@ -16,3 +16,12 @@ import { NotificationList } from './NotificationList';
 export interface NotificationBellProps {
   className?: string;
 }
+
+export function NotificationBell({ className }: NotificationBellProps) {
+  const { entries, unreadCount, state, streamError, markAllRead, markRead, dismiss } =
+    useNotifications();
+
+  const label =
+    unreadCount === 0
+      ? 'Notifications, none unread'
+      : `Notifications, ${unreadCount} unread`;

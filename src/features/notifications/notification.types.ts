@@ -30,3 +30,15 @@ export interface NotificationEntry extends ConsoleNotification {
 
 export type NotificationSeverity = 'critical' | 'warning' | 'info';
 
+export function severityOf(type: PublicEventType): NotificationSeverity {
+  switch (type) {
+    case 'payout.failed':
+    case 'payout.returned':
+      return 'critical';
+    case 'dispute.opened':
+      return 'warning';
+    default:
+      return 'info';
+  }
+}
+
