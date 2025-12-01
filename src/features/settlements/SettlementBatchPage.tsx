@@ -8,3 +8,5 @@
  * `<DuplicateBadge/>`.
  */
 import { useParams } from 'react-router-dom';
+
+import type { ReconciliationItemStatus } from '@payzeno/contracts';

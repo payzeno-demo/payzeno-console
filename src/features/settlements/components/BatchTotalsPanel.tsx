@@ -19,3 +19,7 @@ import type { SettlementItemTotals } from '../useSettlementItems';
 
 export interface BatchTotalsPanelProps {
   totals: SettlementItemTotals;
+  currency: CurrencyCode;
+  isLoading: boolean;
+}
+
