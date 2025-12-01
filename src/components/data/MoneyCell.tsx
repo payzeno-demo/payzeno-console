@@ -14,3 +14,7 @@ import { money } from '@lib/money';
 
 import { color, font } from '../ui/tokens';
 
+export interface MoneyCellProps {
+  /** Either a `Money`… */
+  value?: Money;
+  /** …or the loose pair, which is what most rows carry. */
