@@ -80,3 +80,8 @@ export const queryKeys = {
 
   invoices: {
     all: ['invoices'] as const,
+    list: (q?: AnyListQuery) => ['invoices', 'list', normalize(q)] as const,
+    detail: (id: string) => ['invoices', 'detail', id] as const,
+  },
+
+  apiKeys: {

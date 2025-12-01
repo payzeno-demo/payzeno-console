@@ -38,3 +38,10 @@ export function useCharge(chargeId: string): UseChargeResult {
       ? Math.max(0, charge.captured_amount_minor - charge.refunded_amount_minor)
       : 0,
     isLoading: query.isLoading,
+    isMissing,
+    error: isMissing ? null : ((query.error as Error | null) ?? null),
+    refetch: () => {
+      void query.refetch();
+    },
+  };
+}

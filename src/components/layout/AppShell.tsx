@@ -75,3 +75,10 @@ function useRouteAnnouncement(): string {
   useEffect(() => {
     const first = pathname.split('/').filter(Boolean)[0];
     setMessage(first ? `Navigated to ${first.replace(/-/g, ' ')}` : 'Navigated to the dashboard');
+  }, [pathname]);
+
+  return message;
+}
+
+export function AppShell({
+  children,

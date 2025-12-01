@@ -51,3 +51,10 @@ export interface ApiClientOptions {
 /**
  * Every list route in api-surface.md returns `Paginated<T>` with an opaque cursor. This alias
  * exists so endpoint classes never have to spell the generic twice.
+ */
+export type ListResult<T> = Paginated<T>;
+
+/**
+ * Serialises a `ListQuery` (and any narrowed subtype) into flat query params. Undefined
+ * values are dropped by `buildRequest`, so an absent filter never becomes `?status=undefined`.
+ */

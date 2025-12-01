@@ -60,6 +60,7 @@ export function createEndpoints(client: HttpTransport): EndpointRegistry {
 }
 
 export { ApiKeysEndpoint } from './api-keys.endpoint';
+export { AuthEndpoint } from './auth.endpoint';
 export { BalanceEndpoint } from './balance.endpoint';
 export { BankAccountsEndpoint } from './bank-accounts.endpoint';
 export { ChargesEndpoint } from './charges.endpoint';
