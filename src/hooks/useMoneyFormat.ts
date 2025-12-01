@@ -11,3 +11,7 @@ import type { CurrencyCode, Money, MinorUnits } from '@payzeno/contracts';
 
 import { formatCompact, formatMoney, formatSigned, money } from '@lib/money';
 
+export interface MoneyFormatter {
+  /** `formatMoney` bound to the current locale. */
+  format: (value: Money) => string;
+  /** Minor units + currency, for the very common case of two loose fields. */
