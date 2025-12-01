@@ -144,3 +144,27 @@ const paymentIntentHandlers = [
     ok(makePaymentIntent({ id: String(params.paymentIntentId) })),
   ),
 
+  http.post(url('/payment_intents/:paymentIntentId/capture'), ({ params }) =>
+    ok(makePaymentIntent({ id: String(params.paymentIntentId), status: 'succeeded' })),
+  ),
+
+  http.post(url('/payment_intents/:paymentIntentId/cancel'), ({ params }) =>
+    ok(
+      makePaymentIntent({
+        id: String(params.paymentIntentId),
+        status: 'canceled',
+        canceled_at: '2026-03-14T09:30:00.000Z',
+      }),
+    ),
+  ),
+];
+
+// ---------------------------------------------------------------------------
+// §6 charges
+// ---------------------------------------------------------------------------
+
+const chargeHandlers = [
+  http.get(url('/charges'), () =>
+    ok(
+      makePage([
+        makeCharge(),

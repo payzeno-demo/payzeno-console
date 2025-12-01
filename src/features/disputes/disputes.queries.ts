@@ -28,3 +28,11 @@ export function disputesListQuery(e: EndpointRegistry, q?: DisputeListQuery) {
     staleTime: 30_000,
   });
 }
+
+export function disputeQuery(e: EndpointRegistry, disputeId: string) {
+  return queryOptions<Dispute>({
+    queryKey: queryKeys.disputes.detail(disputeId),
+    queryFn: () => e.disputes.get(disputeId),
+    enabled: disputeId.length > 0,
+    staleTime: 30_000,
+  });

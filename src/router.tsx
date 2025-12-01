@@ -103,3 +103,13 @@ const SettingsPage = lazy(() =>
  * (a page, not an error) while a thrown `ConsoleApiError` renders the boundary's fallback. The
  * `feature` tag is what makes Sentry group by feature instead of by stack frame.
  */
+function FeatureRoute({ permission, label }: { permission: Permission; label: string }) {
+  const { pathname } = useLocation();
+
+  return (
+    <RequireRole permission={permission} action={label}>
+      <QueryErrorBoundary feature={featureOf(pathname)}>
+        <Suspense fallback={<LoadingPage label={`Loading ${label}`} />}>
+          <Outlet />
+        </Suspense>
+      </QueryErrorBoundary>

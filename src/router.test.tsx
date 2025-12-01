@@ -25,6 +25,16 @@ describe('route helpers', () => {
     expect(new Set(TOP_LEVEL_PATHS).size).toBe(TOP_LEVEL_PATHS.length);
   });
 
+  it('renders a payment detail route as a child of payments', async () => {
+    renderAt(ROUTES.payments.detail('pi_01HW0RTPAYMENTINTENT0001'));
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Payment pi_01HW0RTPAYMENTINTENT0001',
+      }),
+    ).toBeInTheDocument();
+  });
+
   it('redirects the legacy /dashboard bookmark to the landing route', async () => {
     renderAt('/dashboard');
 
@@ -33,4 +43,12 @@ describe('route helpers', () => {
 });
 
 describe('the signed-out branch', () => {
+  it('lets a permitted role through', async () => {
+    renderAt(ROUTES.payouts.index);
+
+    expect(await screen.findByRole('heading', { name: 'Payouts' })).toBeInTheDocument();
+  });
+});
+
+describe('the catch-all', () => {
 });
