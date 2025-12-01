@@ -45,3 +45,27 @@ export function DisputesPage() {
         <Alert tone="critical" title="Evidence due soon" role="status">
           {pluralise(urgentCount, 'dispute')} need a response within {EVIDENCE_URGENT_HOURS} hours.
           After the deadline the network decides without you.
+        </Alert>
+      ) : null}
+
+      <FilterBar label="Dispute filters">
+        <Select
+          id="dispute-status"
+          label="Status"
+          value={status ?? ''}
+          onValueChange={(next) => setStatus(next === '' ? null : (next as DisputeStatus))}
+          options={[
+            { value: '', label: 'All statuses' },
+            ...DISPUTE_STATUSES.map((value) => ({ value, label: humanise(value) })),
+          ]}
+        />
+      </FilterBar>
+
+      {error ? (
+        <ErrorState error={error} title="We could not load your disputes" />
+      ) : (
+        <DisputeTable rows={rows} isLoading={isLoading} pagination={pagination} />
+      )}
+    </PageContainer>
+  );
+}

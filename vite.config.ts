@@ -29,3 +29,34 @@ export default defineConfig(({ mode }) => ({
     __CONSOLE_VERSION__: JSON.stringify(process.env.npm_package_version ?? '0.0.0-dev'),
     __BUILD_SHA__: JSON.stringify(process.env.GIT_SHA ?? 'local'),
     __PAYZENO_API_VERSION__: JSON.stringify('2026-01-15'),
+    // `pnpm dev:mock` boots the whole app on MockTransport. Sales demo, no backend.
+    __FORCE_MOCK_TRANSPORT__: JSON.stringify(mode === 'mock'),
+  },
+  server: {
+    port: 5173,
+    strictPort: true,
+    // In compose the console is served by payzeno-nginx, so /v1 and /ws are same-origin.
+    // Locally we proxy so the pz_csrf cookie stays first-party — CSRF breaks otherwise.
+    proxy: {
+      '/v1': { target: 'http://localhost:8080', changeOrigin: false },
+      '/ws': { target: 'ws://localhost:8080', ws: true },
+    },
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: true,
+    target: 'es2022',
+    chunkSizeWarningLimit: 700,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+          query: ['@tanstack/react-query', '@tanstack/react-table'],
+          // recharts is ~250kB and only the reporting route needs it.
+          charts: ['recharts'],
+          telemetry: ['@sentry/react'],
+        },
+      },
+    },
+  },
+}));

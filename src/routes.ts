@@ -30,3 +30,9 @@ export const ROUTES = {
 
   reporting: {
     index: '/',
+  },
+
+  balance: {
+    index: '/balance',
+  },
+
