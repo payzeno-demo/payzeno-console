@@ -42,6 +42,16 @@ describe('the request it sends', () => {
     expect(screen.getByText('Failed')).toBeInTheDocument();
   });
 
+  it('renders the error state instead of the table', async () => {
+    server.use(errorHandler('get', '/charges', 502, 'processor_unavailable'));
+
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    expect(
+      await screen.findByRole('heading', { name: 'We could not load your charges' }),
+    ).toBeInTheDocument();
+  });
+
   it('explains an upstream outage rather than blaming the merchant', async () => {
     server.use(errorHandler('get', '/charges', 502, 'processor_unavailable'));
 
