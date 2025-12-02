@@ -23,3 +23,7 @@ import {
   subMoney,
   toMinor,
 } from '@payzeno/contracts/money';
+
+export {
+  CURRENCIES,
+  CURRENCY_EXPONENT,

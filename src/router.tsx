@@ -84,3 +84,41 @@ const InvoiceDetailPage = lazy(() =>
 const DevelopersPage = lazy(() =>
   import('@features/developers/DevelopersPage').then((m) => ({ default: m.DevelopersPage })),
 );
+const ApiKeyDetailPage = lazy(() =>
+  import('@features/developers/ApiKeyDetailPage').then((m) => ({ default: m.ApiKeyDetailPage })),
+);
+const WebhookEventDetailPage = lazy(() =>
+  import('@features/developers/WebhookEventDetailPage').then((m) => ({
+    default: m.WebhookEventDetailPage,
+  })),
+);
+const SettingsPage = lazy(() =>
+  import('@features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+);
+
+/**
+ * Per-feature wrapper: permission guard + error boundary + suspense fallback, in that order.
+ *
+ * The boundary is *inside* the guard so that a permission denial renders `<PermissionDenied/>`
+ * (a page, not an error) while a thrown `ConsoleApiError` renders the boundary's fallback. The
+ * `feature` tag is what makes Sentry group by feature instead of by stack frame.
+ */
+function FeatureRoute({ permission, label }: { permission: Permission; label: string }) {
+  const { pathname } = useLocation();
+
+  return (
+    <RequireRole permission={permission} action={label}>
+      <QueryErrorBoundary feature={featureOf(pathname)}>
+        <Suspense fallback={<LoadingPage label={`Loading ${label}`} />}>
+          <Outlet />
+        </Suspense>
+      </QueryErrorBoundary>
+    </RequireRole>
+  );
+}
+
+/**
+ * The settlement explorer is flag-gated (`settlement_explorer`). The flag defaulted on months
+ * ago but the route still reads it, because turning it off is the documented mitigation in
+ * `docs/runbooks/console.md` when the ledger's item list is slow.
+ */
