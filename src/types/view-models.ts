@@ -34,3 +34,12 @@ export interface RowSelection {
 export interface ChargeRow extends Charge, RowSelection {
   /** `captured_amount_minor - refunded_amount_minor`, precomputed for the refund dialog. */
   _refundableMinor: number;
+  /**
+   * Only a captured or settled charge with something left can be refunded. An `authorized`
+   * charge takes a *cancel*, which voids the authorisation — a void is not a refund
+   * (domain-model.md §4), and the two used to share a button.
+   */
+  _isRefundable: boolean;
+  /** Present once the charge detail page has loaded its ledger view. */
+  _ledger?: LedgerTransaction[];
+}

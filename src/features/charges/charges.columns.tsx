@@ -94,3 +94,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
     header: 'Status',
     cell: (row) => (
       <StatusPill
+        status={row.status}
+        label={row.status}
+        title={row.failure_code ? explainDecline(row.failure_code) : undefined}
+      />
+    ),
+    exportValue: (row) => row.status,
+  },

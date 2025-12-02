@@ -21,3 +21,15 @@ export interface ChargeTableProps {
 export function ChargeTable({
   rows,
   isLoading,
+  hasMore,
+  nextCursor,
+  onCursorChange,
+}: ChargeTableProps) {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <DataTableToolbar label="Charge actions">
+        <ExportCsvButton filename="charges.csv" columns={chargeColumns} rows={rows} />
+      </DataTableToolbar>
+
