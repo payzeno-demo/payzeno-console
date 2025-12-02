@@ -21,6 +21,12 @@ describe('rendering an amount', () => {
     expect(screen.getByText(formatMoney(money(12_500, 'GBP')))).toBeInTheDocument();
   });
 
+  it('accepts a whole Money object as well', () => {
+    renderBare(<MoneyCell value={money(4_299, 'EUR')} />);
+
+    expect(screen.getByText(formatMoney(money(4_299, 'EUR')))).toBeInTheDocument();
+  });
+
   it('prefers `value` when both forms are supplied', () => {
     renderBare(<MoneyCell value={money(100, 'USD')} amountMinor={999_999} currency="GBP" />);
 
@@ -41,8 +47,19 @@ describe('JPY — the exponent that catches everyone', () => {
     expect(screen.getByText(/^−/)).toBeInTheDocument();
   });
 
+  it('never wraps an amount across two lines', () => {
+    const { container } = renderBare(<MoneyCell amountMinor={123_456_789} currency="GBP" />);
+
+    expect(container.querySelector('span')).toHaveStyle({ whiteSpace: 'nowrap' });
+  });
+});
+
+describe('moneyExportValue', () => {
   it('does not scale JPY on the way out either', () => {
     expect(moneyExportValue(1_200, 'JPY')).toBe('1200 JPY');
   });
 
+  it('keeps a negative amount negative', () => {
+    expect(moneyExportValue(-500, 'USD')).toBe('-500 USD');
+  });
 });
