@@ -23,3 +23,6 @@ export interface BatchTotalsPanelProps {
   isLoading: boolean;
 }
 
+/** 0.1% — the same threshold as the `ledger_batch_overposted` CloudWatch alarm (PAY-2055). */
+const OVERPOST_TOLERANCE = 1.001;
+

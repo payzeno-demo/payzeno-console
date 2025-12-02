@@ -6,3 +6,7 @@
  * There is no `amount / 100` anywhere in this file, because JPY exists.
  */
 import { Link } from 'react-router-dom';
+
+import type { SettlementBatchStatus } from '@payzeno/contracts';
+
+import type { ColumnDef } from '@components/data/DataTable';

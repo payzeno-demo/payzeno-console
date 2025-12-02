@@ -28,3 +28,9 @@ export function formatCount(value: number, locale = 'en-US'): string {
 
 /** `0.0312` → `3.1%`. Takes a ratio, not a percentage — the two get confused constantly. */
 export function formatPercent(ratio: number, fractionDigits = 1, locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'percent',
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(ratio);
+}
