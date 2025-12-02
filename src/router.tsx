@@ -113,3 +113,12 @@ function FeatureRoute({ permission, label }: { permission: Permission; label: st
           <Outlet />
         </Suspense>
       </QueryErrorBoundary>
+    </RequireRole>
+  );
+}
+
+/**
+ * The settlement explorer is flag-gated (`settlement_explorer`). The flag defaulted on months
+ * ago but the route still reads it, because turning it off is the documented mitigation in
+ * `docs/runbooks/console.md` when the ledger's item list is slow.
+ */

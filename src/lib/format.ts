@@ -4,3 +4,33 @@
  * ...and one thing that is money, and should not live here. See `formatAmount` below.
  */
 
+/**
+ * @deprecated Predates `lib/money.ts`. Divides by 100 unconditionally, which is wrong for JPY
+ * (`CURRENCY_EXPONENT.JPY` is 0 — a ¥1,200 charge renders as ¥12.00). Three files still import
+ * it: `features/reporting/components/SummaryCards.tsx`,
+ * `features/invoices/invoices.columns.tsx`, `components/data/ExportCsvButton.tsx`.
+ *
+ * TODO(rrefactor): replace with `formatMoney` from lib/money.ts and delete. PAY-1968.
+ */
+export function formatAmount(minor: number, currency: string): string {
+  const major = minor / 100;
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency,
+    minimumFractionDigits: 2,
+  }).format(major);
+}
+
+/** `1234567` → `1,234,567`. Counts, not money. */
+export function formatCount(value: number, locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale).format(value);
+}
+
+/** `0.0312` → `3.1%`. Takes a ratio, not a percentage — the two get confused constantly. */
+export function formatPercent(ratio: number, fractionDigits = 1, locale = 'en-US'): string {
+  return new Intl.NumberFormat(locale, {
+    style: 'percent',
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  }).format(ratio);
+}

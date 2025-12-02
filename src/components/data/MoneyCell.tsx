@@ -6,3 +6,15 @@
  * is why a JPY row renders correctly here and incorrectly in the three files that still call
  * `lib/format.ts::formatAmount`.
  */
+import type { CurrencyCode, MinorUnits, Money } from '@payzeno/contracts';
+
+import { useMoneyFormat } from '@hooks/useMoneyFormat';
+import { pz } from '@lib/cn';
+import { money } from '@lib/money';
+
+import { color, font } from '../ui/tokens';
+
+export interface MoneyCellProps {
+  /** Either a `Money`… */
+  value?: Money;
+  /** …or the loose pair, which is what most rows carry. */
