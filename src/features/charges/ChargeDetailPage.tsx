@@ -22,3 +22,16 @@ import { Card } from '@components/ui/Card';
 import { CardBrandCell } from '@components/data/CardBrandCell';
 import { DateCell } from '@components/data/DateCell';
 import { IdCell } from '@components/data/IdCell';
+import { MoneyCell } from '@components/data/MoneyCell';
+import { StatusPill } from '@components/data/StatusPill';
+import { RefundDialog } from '@features/refunds/components/RefundDialog';
+import { useDocumentTitle } from '@hooks/useDocumentTitle';
+import { useMoneyFormat } from '@hooks/useMoneyFormat';
+import { usePermissions } from '@hooks/usePermissions';
+import { humanise } from '@lib/format';
+import { ROUTES } from '@/routes';
+
+import { ChargeLedgerPanel } from './components/ChargeLedgerPanel';
+import { useCharge } from './useCharge';
+
+export function ChargeDetailPage() {

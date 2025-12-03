@@ -84,4 +84,9 @@ describe('rendering', () => {
 });
 
 describe('statusExportValue', () => {
+  it('round-trips through toneForStatus without losing the status', () => {
+    const status: AnyStatus = 'variance_exceeded';
+
+    expect(toneForStatus(statusExportValue(status))).toBe('danger');
+  });
 });

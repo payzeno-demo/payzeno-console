@@ -94,3 +94,17 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
     header: 'Status',
     cell: (row) => (
       <StatusPill
+        status={row.status}
+        label={row.status}
+        title={row.failure_code ? explainDecline(row.failure_code) : undefined}
+      />
+    ),
+    exportValue: (row) => row.status,
+  },
+  {
+    id: 'settlement_batch_id',
+    header: 'Settlement',
+    cell: (row) =>
+      row.settlement_batch_id ? (
+        <Link to={ROUTES.settlements.detail(row.settlement_batch_id)}>
+          <IdCell value={row.settlement_batch_id} />

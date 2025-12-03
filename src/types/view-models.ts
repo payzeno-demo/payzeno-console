@@ -38,3 +38,12 @@ export interface ChargeRow extends Charge, RowSelection {
    * Only a captured or settled charge with something left can be refunded. An `authorized`
    * charge takes a *cancel*, which voids the authorisation — a void is not a refund
    * (domain-model.md §4), and the two used to share a button.
+   */
+  _isRefundable: boolean;
+  /** Present once the charge detail page has loaded its ledger view. */
+  _ledger?: LedgerTransaction[];
+}
+
+export interface PaymentIntentRow extends PaymentIntent, RowSelection {
+  /** Manual-capture intent sitting in `requires_capture` — the only shape with a capture button. */
+  _isCapturable: boolean;

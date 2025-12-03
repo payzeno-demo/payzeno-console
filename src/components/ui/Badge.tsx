@@ -67,3 +67,10 @@ export function Badge({
         lineHeight: font.lineHeight.tight,
         color: palette.fg,
         background: subtle ? 'transparent' : palette.bg,
+        border: `1px solid ${subtle ? palette.border : 'transparent'}`,
+        borderRadius: radius.pill,
+        whiteSpace: 'nowrap',
+      }}
+    >
+      {srPrefix ? <span style={visuallyHidden}>{srPrefix}: </span> : null}
+      {withDot ? (
