@@ -43,3 +43,7 @@ export interface ChargeRow extends Charge, RowSelection {
   /** Present once the charge detail page has loaded its ledger view. */
   _ledger?: LedgerTransaction[];
 }
+
+export interface PaymentIntentRow extends PaymentIntent, RowSelection {
+  /** Manual-capture intent sitting in `requires_capture` — the only shape with a capture button. */
+  _isCapturable: boolean;

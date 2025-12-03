@@ -34,6 +34,20 @@ describe('the page', () => {
 });
 
 describe('the request it sends', () => {
+  it('adds the cursor when the URL carries one', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<ChargesPage />, { route: '/charges?cursor=cur_two' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('cursor=cur_two'))).toBe(
+        true,
+      );
+    });
+    recorder.stop();
+  });
+});
+
+describe('the table', () => {
   it('renders each charge status', async () => {
     renderWithProviders(<ChargesPage />, { route: '/charges' });
 
