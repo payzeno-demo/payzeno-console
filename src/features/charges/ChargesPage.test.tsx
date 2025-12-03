@@ -48,12 +48,32 @@ describe('the request it sends', () => {
 });
 
 describe('the table', () => {
+  it('renders a row per charge', async () => {
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    const table = await screen.findByRole('table');
+    await waitFor(() => {
+      expect(table.querySelectorAll('tbody tr')).toHaveLength(3);
+    });
+  });
+
   it('renders each charge status', async () => {
     renderWithProviders(<ChargesPage />, { route: '/charges' });
 
     expect(await screen.findByText('Captured')).toBeInTheDocument();
     expect(screen.getByText('Settled')).toBeInTheDocument();
     expect(screen.getByText('Failed')).toBeInTheDocument();
+  });
+
+  it('renders a JPY charge alongside a GBP one without confusing their exponents', async () => {
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    await screen.findByRole('table');
+
+    // ¥1,200 and £125.00 are the same minor value under different exponents.
+    await waitFor(() => {
+      expect(screen.getByRole('table').textContent).toContain('1,200');
+    });
   });
 
   it('renders the error state instead of the table', async () => {
