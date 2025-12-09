@@ -46,3 +46,11 @@ export function NotificationList({ entries, onRead, onDismiss }: NotificationLis
     <ul aria-label="Recent notifications">
       {entries.map((entry) => {
         const severity = severityOf(entry.type);
+        return (
+          <li key={entry.id} data-severity={severity} data-read={entry.read}>
+            <StatusPill status={severity === 'critical' ? 'failed' : 'pending'} label={entry.type} />
+
+            <Link to={linkFor(entry)} onClick={() => onRead(entry.id)}>
+              {entry.title}
+            </Link>
+

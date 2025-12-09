@@ -24,3 +24,10 @@ export class NotificationSocket extends SocketClient<ConsoleNotification> {
     super(handlers);
     this.url = url;
   }
+
+  /**
+   * Frames that are not a `ConsoleNotification` (heartbeat pongs, gateway `hello`) return
+   * null and are dropped without touching the notification list.
+   */
+  protected parse(raw: MessageEvent): ConsoleNotification | null {
+    if (typeof raw.data !== 'string') return null;
