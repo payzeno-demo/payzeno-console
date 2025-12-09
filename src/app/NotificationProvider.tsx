@@ -39,6 +39,37 @@ const EMPTY_STREAM: NotificationStream = {
   dismiss: () => undefined,
 };
 
+export function NotificationProvider({ children }: { children: ReactNode }) {
+  const session = useSessionContext();
+  const toast = useToast();
+
+  // No session means no socket: the upgrade request would be rejected and the client would sit
+  // in a reconnect loop against a 401 until it gave up.
+  const stream = useNotificationStream({ enabled: session !== null, mock: shouldUseMock() });
+
+  // Toast the loud ones, once each. The ref is what stops a re-render re-toasting the list.
+  const toasted = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    for (const entry of stream.entries) {
+      if (toasted.current.has(entry.id)) continue;
+      toasted.current.add(entry.id);
+
+      if (severityOf(entry.type) === 'critical') {
+        toast.error(entry.title, { description: entry.body });
+      }
+    }
+  }, [stream.entries, toast]);
+
+  return <NotificationContext.Provider value={stream}>{children}</NotificationContext.Provider>;
+}
+
+/**
+ * The notification stream.
+ *
+ * Returns an inert stream outside the provider rather than throwing — `<NotificationBell />`
+ * renders in the shell, which the login route also mounts in some tests.
+ */
 export function useNotifications(): NotificationStream {
   return useContext(NotificationContext) ?? EMPTY_STREAM;
 }

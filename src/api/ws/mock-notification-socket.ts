@@ -21,6 +21,21 @@ export class MockNotificationSocket extends SocketClient<ConsoleNotification> {
     super(handlers);
   }
 
+  protected parse(raw: MessageEvent): ConsoleNotification | null {
+    return (raw.data as ConsoleNotification | undefined) ?? null;
+  }
+
+  /**
+   * A stand-in with just enough of the `WebSocket` surface for `SocketClient` to drive it.
+   * `open` fires on the next tick so `connect()` transitions exactly as it does in prod.
+   */
+  private scheduleReplay(emit: (n: ConsoleNotification) => void): void {
+    mockNotifications.forEach((notification, index) => {
+      const delay = 20_000 + index * 45_000 + jitteredDelay(notification.id);
+      this.timers.push(setTimeout(() => emit(notification), delay));
+    });
+  }
+
   private clearReplay(): void {
     for (const timer of this.timers) clearTimeout(timer);
     this.timers = [];

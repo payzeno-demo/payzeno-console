@@ -38,3 +38,11 @@ function linkFor(entry: NotificationEntry): string {
 }
 
 export function NotificationList({ entries, onRead, onDismiss }: NotificationListProps) {
+  if (entries.length === 0) {
+    return <p>You are all caught up.</p>;
+  }
+
+  return (
+    <ul aria-label="Recent notifications">
+      {entries.map((entry) => {
+        const severity = severityOf(entry.type);
