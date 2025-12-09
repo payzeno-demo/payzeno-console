@@ -35,3 +35,21 @@ export function NotificationBell({ className }: NotificationBellProps) {
             <Badge tone="critical" aria-hidden>
               {unreadCount > 9 ? '9+' : unreadCount}
             </Badge>
+          ) : null}
+        </IconButton>
+      }
+    >
+      <div role="group" aria-label="Notifications">
+        <header>
+          <h2>Notifications</h2>
+          {unreadCount > 0 ? (
+            <button type="button" onClick={markAllRead}>
+              Mark all read
+            </button>
+          ) : null}
+        </header>
+
+        {streamError ? (
+          <p role="status">
+            Live updates are offline. Reload the page to reconnect.
+          </p>

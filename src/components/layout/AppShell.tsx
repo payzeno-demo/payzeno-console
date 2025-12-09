@@ -82,3 +82,18 @@ function useRouteAnnouncement(): string {
 
 export function AppShell({
   children,
+  user,
+  merchant,
+  onSignOut,
+  onLivemodeChange,
+  onSwitchMerchant,
+  badges,
+}: AppShellProps) {
+  const session = useSessionContext();
+  const [navOpen, setNavOpen] = useState(false);
+
+  useDesignTokens();
+  const announcement = useRouteAnnouncement();
+
+  const currentUser = user ?? session?.user;
+  const currentMerchant = merchant ?? session?.merchant;

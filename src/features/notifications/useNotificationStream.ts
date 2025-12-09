@@ -44,6 +44,8 @@ export function useNotificationStream(
   options: NotificationStreamOptions = {},
 ): NotificationStream {
   const { mock = false, enabled = true } = options;
+  const queryClient = useQueryClient();
+
   const [entries, setEntries] = useState<NotificationEntry[]>([]);
   const [state, setState] = useState<SocketState>('idle');
   const socketRef = useRef<SocketClient<ConsoleNotification> | null>(null);
@@ -123,4 +125,7 @@ export function useNotificationStream(
     setEntries((current) => current.map((e) => ({ ...e, read: true })));
   }, []);
 
+  const unreadCount = useMemo(() => entries.filter((e) => !e.read).length, [entries]);
+
+  return { entries, unreadCount, state, streamError, markRead, markAllRead, dismiss };
 }

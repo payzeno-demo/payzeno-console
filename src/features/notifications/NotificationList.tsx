@@ -30,3 +30,35 @@ function linkFor(entry: NotificationEntry): string {
       return ROUTES.payouts.detail(entry.resource_id);
     case 'settlement.completed':
       return ROUTES.settlements.detail(entry.resource_id);
+    case 'dispute.opened':
+      return ROUTES.disputes.detail(entry.resource_id);
+    default:
+      return ROUTES.reporting.index;
+  }
+}
+
+export function NotificationList({ entries, onRead, onDismiss }: NotificationListProps) {
+  if (entries.length === 0) {
+    return <p>You are all caught up.</p>;
+  }
+
+  return (
+    <ul aria-label="Recent notifications">
+      {entries.map((entry) => {
+        const severity = severityOf(entry.type);
+        return (
+          <li key={entry.id} data-severity={severity} data-read={entry.read}>
+            <StatusPill status={severity === 'critical' ? 'failed' : 'pending'} label={entry.type} />
+
+            <Link to={linkFor(entry)} onClick={() => onRead(entry.id)}>
+              {entry.title}
+            </Link>
+
+            <p>{entry.body}</p>
+            <time dateTime={entry.occurred_at}>{formatRelativeTime(entry.occurred_at)}</time>
+
+            <button
+              type="button"
+              aria-label={`Dismiss ${entry.title}`}
+              onClick={() => onDismiss(entry.id)}
+            >

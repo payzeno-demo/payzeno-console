@@ -18,3 +18,16 @@ import type { SocketHandlers } from './socket-client';
  * the merchant's money did not arrive and they will find out from their bank otherwise.
  */
 export class NotificationSocket extends SocketClient<ConsoleNotification> {
+  protected readonly url: string;
+
+  constructor(handlers: SocketHandlers<ConsoleNotification>, url: string = runtime.wsUrl) {
+    super(handlers);
+    this.url = url;
+  }
+
+  /**
+   * Frames that are not a `ConsoleNotification` (heartbeat pongs, gateway `hello`) return
+   * null and are dropped without touching the notification list.
+   */
+  protected parse(raw: MessageEvent): ConsoleNotification | null {
+    if (typeof raw.data !== 'string') return null;
