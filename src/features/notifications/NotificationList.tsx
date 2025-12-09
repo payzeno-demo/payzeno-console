@@ -54,3 +54,11 @@ export function NotificationList({ entries, onRead, onDismiss }: NotificationLis
               {entry.title}
             </Link>
 
+            <p>{entry.body}</p>
+            <time dateTime={entry.occurred_at}>{formatRelativeTime(entry.occurred_at)}</time>
+
+            <button
+              type="button"
+              aria-label={`Dismiss ${entry.title}`}
+              onClick={() => onDismiss(entry.id)}
+            >
