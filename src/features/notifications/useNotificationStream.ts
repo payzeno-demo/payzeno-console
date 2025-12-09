@@ -125,4 +125,7 @@ export function useNotificationStream(
     setEntries((current) => current.map((e) => ({ ...e, read: true })));
   }, []);
 
+  const unreadCount = useMemo(() => entries.filter((e) => !e.read).length, [entries]);
+
+  return { entries, unreadCount, state, streamError, markRead, markAllRead, dismiss };
 }

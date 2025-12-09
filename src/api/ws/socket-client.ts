@@ -22,7 +22,12 @@ export interface SocketHandlers<TMessage> {
 export abstract class SocketClient<TMessage> {
   protected abstract readonly url: string;
 
+  /** Returns null for a frame this client does not care about (heartbeats, unknown types). */
+  protected abstract parse(raw: MessageEvent): TMessage | null;
+
   private socket: WebSocket | null = null;
+  private attempts = 0;
+  private state: SocketState = 'idle';
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   protected constructor(protected readonly handlers: SocketHandlers<TMessage>) {}
 
@@ -54,6 +59,17 @@ export abstract class SocketClient<TMessage> {
   /** Overridable so `MockNotificationSocket` can substitute a fake socket. */
   protected openSocket(): WebSocket {
     return new WebSocket(this.url);
+  }
+
+  protected onOpen(): void {
+    this.attempts = 0;
+    this.setState('open');
+    this.startHeartbeat();
+  }
+
+  protected onMessage(event: MessageEvent): void {
+    const parsed = this.parse(event);
+    if (parsed !== null) this.handlers.onMessage(parsed);
   }
 
   protected onClose(): void {
