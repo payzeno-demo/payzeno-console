@@ -82,3 +82,11 @@ function useRouteAnnouncement(): string {
 
 export function AppShell({
   children,
+  user,
+  merchant,
+  onSignOut,
+  onLivemodeChange,
+  onSwitchMerchant,
+  badges,
+}: AppShellProps) {
+  const session = useSessionContext();

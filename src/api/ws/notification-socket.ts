@@ -18,3 +18,9 @@ import type { SocketHandlers } from './socket-client';
  * the merchant's money did not arrive and they will find out from their bank otherwise.
  */
 export class NotificationSocket extends SocketClient<ConsoleNotification> {
+  protected readonly url: string;
+
+  constructor(handlers: SocketHandlers<ConsoleNotification>, url: string = runtime.wsUrl) {
+    super(handlers);
+    this.url = url;
+  }

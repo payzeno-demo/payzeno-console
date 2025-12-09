@@ -39,6 +39,10 @@ const EMPTY_STREAM: NotificationStream = {
   dismiss: () => undefined,
 };
 
+export function useNotifications(): NotificationStream {
+  return useContext(NotificationContext) ?? EMPTY_STREAM;
+}
+
 /** Unread count on its own, for the nav badge. Avoids re-rendering on every entry change. */
 export function useUnreadNotificationCount(): number {
   return useNotifications().unreadCount;

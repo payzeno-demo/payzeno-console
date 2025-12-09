@@ -30,3 +30,11 @@ function linkFor(entry: NotificationEntry): string {
       return ROUTES.payouts.detail(entry.resource_id);
     case 'settlement.completed':
       return ROUTES.settlements.detail(entry.resource_id);
+    case 'dispute.opened':
+      return ROUTES.disputes.detail(entry.resource_id);
+    default:
+      return ROUTES.reporting.index;
+  }
+}
+
+export function NotificationList({ entries, onRead, onDismiss }: NotificationListProps) {

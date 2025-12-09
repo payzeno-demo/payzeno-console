@@ -42,3 +42,18 @@ export function severityOf(type: PublicEventType): NotificationSeverity {
   }
 }
 
+/** Runtime guard for a frame off the socket. A malformed frame must not enter the list. */
+export function isConsoleNotification(value: unknown): value is ConsoleNotification {
+  if (typeof value !== 'object' || value === null) return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.id === 'string' &&
+    typeof candidate.type === 'string' &&
+    typeof candidate.merchant_id === 'string' &&
+    typeof candidate.title === 'string' &&
+    typeof candidate.body === 'string' &&
+    typeof candidate.occurred_at === 'string' &&
+    typeof candidate.resource_id === 'string'
+  );
+}
+
