@@ -48,6 +48,7 @@ export function SettingsPage() {
   // Reused for its `makeDefault` mutation; the row id comes from the table's button.
   const { makeDefault, actionError } = useBankAccount(defaultTarget);
 
+  const { members, isLoading: usersLoading, error: usersError, isForbidden, reload } = useUsers();
   const canManageAccounts = can('settings:write');
 
   const handleMakeDefault = (bankAccountId: string) => {
