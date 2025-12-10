@@ -43,7 +43,11 @@ function messageFor(error: unknown): string {
 
 export function useInviteUser(): UseInviteUserResult {
   const merchant = useCurrentMerchant();
+  const toast = useToast();
+
   const [isPending, setIsPending] = useState(false);
+  const [invitedUser, setInvitedUser] = useState<User | null>(null);
+
   const inviteUser = useCallback(
     async ({ email, fullName, role }: InviteUserArgs): Promise<User | null> => {
       setIsPending(true);
