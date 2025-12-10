@@ -35,6 +35,15 @@ function qs(params?: ApiFetchInit['params']): string {
 }
 
 function readCsrf(): string | undefined {
+  const parts = document.cookie.split(';');
+  for (const part of parts) {
+    const [name, ...rest] = part.trim().split('=');
+    if (name === 'pz_csrf') return rest.join('=');
+  }
+  return undefined;
+}
+
+export async function apiFetch<T>(path: string, init: ApiFetchInit = {}): Promise<T> {
   const token = readCsrf();
   if (token && verb !== 'GET') headers['X-Payzeno-CSRF'] = token;
   if (verb !== 'GET') headers['Idempotency-Key'] = ulid();
