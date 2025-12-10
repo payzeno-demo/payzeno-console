@@ -9,3 +9,8 @@
  *
  * Two features still live here: `features/invoices` and the team tab in `features/settings`.
  * There are two open tickets about it (PAY-1744, PAY-1902). See ADR 0004.
+ */
+
+export interface LegacyErrorShape {
+  status: number;
+  code: string;
