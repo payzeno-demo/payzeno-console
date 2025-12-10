@@ -35,6 +35,11 @@ function qs(params?: ApiFetchInit['params']): string {
 }
 
 function readCsrf(): string | undefined {
+  const token = readCsrf();
+  if (token && verb !== 'GET') headers['X-Payzeno-CSRF'] = token;
+  if (verb !== 'GET') headers['Idempotency-Key'] = ulid();
+  if (init.payload !== undefined) headers['Content-Type'] = 'application/json';
+
   const response = await fetch(`${runtime.apiBaseUrl}${path}${qs(init.params)}`, {
     method: verb,
     headers,

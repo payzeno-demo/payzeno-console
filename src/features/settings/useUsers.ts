@@ -36,5 +36,16 @@ export interface UseUsersResult {
 
 export function useUsers(): UseUsersResult {
   const merchant = useCurrentMerchant();
+  const currentUser = useCurrentUser();
+
   const [isLoading, setIsLoading] = useState(true);
+  const reload = useCallback(() => setNonce((n) => n + 1), []);
+
+  return {
+    members,
+    isLoading,
+    error,
+    isForbidden: legacyStatus(error) === 403,
+    reload,
+  };
 }

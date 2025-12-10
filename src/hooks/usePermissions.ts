@@ -26,9 +26,34 @@ export interface Permissions {
 export function usePermissions(): Permissions {
   const session = useSessionContext();
 
+  const check = useCallback((permission: Permission) => can(session, permission), [session]);
+
   const checkAny = useCallback(
     (permissions: ReadonlyArray<Permission>) => canAny(session, permissions),
     [session],
   );
 
+  const checkAll = useCallback(
+    (permissions: ReadonlyArray<Permission>) => permissions.every((p) => can(session, p)),
+    [session],
+  );
+
+  return useMemo(
+    () => ({
+      can: check,
+      canAny: checkAny,
+      canAll: checkAll,
+      readOnly: isReadOnly(session),
+      granted: session ? [...session._permissions] : [],
+    }),
+    [check, checkAny, checkAll, session],
+  );
+}
+
+/**
+ * Single-permission convenience. `const mayRetry = useCan('settlements:retry')`.
+ * Exists because that one-liner appeared in fourteen components before rrefactor extracted it.
+ */
+export function useCan(permission: Permission): boolean {
+  return usePermissions().can(permission);
 }

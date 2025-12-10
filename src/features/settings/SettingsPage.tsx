@@ -44,6 +44,7 @@ export function SettingsPage() {
   useDocumentTitle('Settings');
 
   const merchant = useCurrentMerchant();
+  const { can } = usePermissions();
   const { accounts, isLoading: accountsLoading, error: accountsError } = useBankAccounts();
   // Reused for its `makeDefault` mutation; the row id comes from the table's button.
   const { makeDefault, actionError } = useBankAccount(defaultTarget);
@@ -56,4 +57,104 @@ export function SettingsPage() {
     makeDefault();
   };
 
+  const handleInvite = (args: { email: string; fullName: string; role: UserRole }) => {
+    void inviteUser(args).then((user) => {
+      // The legacy path is invisible to `invalidateQueries`, so refresh by hand.
+      if (user) reload();
+    });
+  };
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Settings"
+        description={`${merchant.display_name} · ${merchant.country} · ${merchant.default_currency}`}
+      >
+        {tab === 'accounts' ? (
+          <Button type="button" disabled={!canManageAccounts} onClick={() => setAddOpen(true)}>
+            Add bank account
+          </Button>
+        ) : null}
+      </PageHeader>
+
+      <Tabs value={tab} onValueChange={setTab} label="Settings sections" tabs={TABS} />
+
+      {tab === 'accounts' ? (
+        <>
+          {accountsError ? (
+            <ErrorState error={accountsError} title="We could not load your bank accounts" />
+          ) : (
+            <BankAccountTable
+              rows={accounts}
+              isLoading={accountsLoading}
+              canManage={canManageAccounts}
+              onMakeDefault={handleMakeDefault}
+            />
+          )}
+          {actionError ? <ErrorState error={new Error(actionError)} title="Change failed" /> : null}
+        </>
+      ) : null}
+
+      {tab === 'team' ? (
+        <>
+          {usersError ? (
+            <ErrorState
+              error={usersError}
+              title={
+                isForbidden
+                  ? 'You do not have access to the team list'
+                  : 'We could not load your team'
+              }
+            />
+          ) : (
+            <TeamTable
+              members={members}
+              isLoading={usersLoading}
+              canInvite={can('team:invite')}
+              isInviting={isInviting}
+              inviteError={inviteError}
+              onInvite={handleInvite}
+            />
+          )}
+        </>
+      ) : null}
+
+      {tab === 'payouts' ? (
+        <Card as="section" aria-label="Payout configuration">
+          <h2>Payout schedule</h2>
+          <p>
+            These are set by Payzeno risk and cannot be changed from the console. Ask support if
+            they look wrong.
+          </p>
+          <dl>
+            <dt>Schedule</dt>
+            <dd>{humanise(merchant.payout_schedule)}</dd>
+
+            <dt>Funds availability</dt>
+            <dd>{pluralise(merchant.payout_delay_days, 'banking day')} after settlement</dd>
+
+            <dt>Rolling reserve</dt>
+            <dd>
+              {merchant.reserve_bps === 0
+                ? 'None'
+                : `${formatBps(merchant.reserve_bps)} held for ${pluralise(merchant.reserve_hold_days, 'day')}`}
+            </dd>
+
+            <dt>Risk tier</dt>
+            <dd>{humanise(merchant.risk_tier)}</dd>
+
+            <dt>Deferred capture</dt>
+            <dd>{merchant.capture_at_settlement ? 'On' : 'Off'}</dd>
+          </dl>
+        </Card>
+      ) : null}
+
+      <AddBankAccountDialog
+        open={addOpen}
+        onOpenChange={setAddOpen}
+        defaultCurrency={merchant.default_currency}
+        country={merchant.country}
+      />
+    </PageContainer>
+  );
 }

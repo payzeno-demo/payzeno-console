@@ -43,4 +43,29 @@ function messageFor(error: unknown): string {
 
 export function useInviteUser(): UseInviteUserResult {
   const merchant = useCurrentMerchant();
+  const [isPending, setIsPending] = useState(false);
+  const inviteUser = useCallback(
+    async ({ email, fullName, role }: InviteUserArgs): Promise<User | null> => {
+      setIsPending(true);
+      setErrorMessage(null);
+
+      try {
+        const user = await apiFetch<User>(`/merchants/${merchant.id}/users`, {
+          verb: 'POST',
+          payload: { email: email.trim(), full_name: fullName.trim(), role },
+        });
+        setInvitedUser(user);
+        toast.success(`Invitation sent to ${user.email}.`);
+        return user;
+      } catch (error: unknown) {
+        setErrorMessage(messageFor(error));
+        return null;
+      } finally {
+        setIsPending(false);
+      }
+    },
+    [merchant.id, toast],
+  );
+
+  return { inviteUser, isPending, errorMessage, invitedUser };
 }
