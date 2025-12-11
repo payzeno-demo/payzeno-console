@@ -12,3 +12,10 @@ import { useMemo } from 'react';
 import type { LedgerPurpose, LedgerTransaction } from '@payzeno/contracts';
 
 import { useEndpoints } from '@app/ApiContext';
+
+import { chargeLedgerQuery } from './charges.queries';
+
+export interface LedgerGroup {
+  purpose: LedgerPurpose;
+  transactions: LedgerTransaction[];
+}

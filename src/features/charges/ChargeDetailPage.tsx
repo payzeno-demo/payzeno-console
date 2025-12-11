@@ -47,3 +47,15 @@ export function ChargeDetailPage() {
     return (
       <NotFound
         title="No such charge"
+        body="It may belong to another account, or the id may be from test mode."
+      />
+    );
+  }
+  if (error) {
+    return <ErrorState error={error} title="We could not load this charge" />;
+  }
+  if (isLoading || !charge) {
+    return <LoadingPage label="Loading charge" />;
+  }
+
+  const refundable = refundableMinor > 0 && (charge.status === 'captured' || charge.status === 'settled');

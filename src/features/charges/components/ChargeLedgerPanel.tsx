@@ -17,3 +17,12 @@ import { IdCell } from '@components/data/IdCell';
 import { MoneyCell } from '@components/data/MoneyCell';
 
 import { useChargeLedger } from '../useChargeLedger';
+
+export interface ChargeLedgerPanelProps {
+  chargeId: string;
+  currency: CurrencyCode;
+}
+
+function entryLabel(entry: LedgerEntry): string {
+  return `${entry.direction === 'debit' ? 'Dr' : 'Cr'} ${entry.account_id}`;
+}
