@@ -35,3 +35,15 @@ import { ChargeLedgerPanel } from './components/ChargeLedgerPanel';
 import { useCharge } from './useCharge';
 
 export function ChargeDetailPage() {
+  const { chargeId = '' } = useParams<{ chargeId: string }>();
+  useDocumentTitle(chargeId ? `Charge ${chargeId}` : 'Charge');
+
+  const [refundOpen, setRefundOpen] = useState(false);
+  const { charge, card, refundableMinor, isLoading, isMissing, error } = useCharge(chargeId);
+  const { can, readOnly } = usePermissions();
+  const { formatMinor } = useMoneyFormat();
+
+  if (isMissing) {
+    return (
+      <NotFound
+        title="No such charge"

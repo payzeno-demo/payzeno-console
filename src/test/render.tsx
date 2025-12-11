@@ -66,3 +66,13 @@ export interface ProviderOptions {
   /**
    * Seed the session synchronously. Defaults to the owner session from `factories.ts`; pass
    * `null` to render the signed-out tree.
+   */
+  session?: ConsoleSession | null;
+  flags?: Partial<Record<FlagName, boolean>>;
+  queryClient?: QueryClient;
+}
+
+export type RenderOptionsWithProviders = ProviderOptions & Omit<RenderOptions, 'wrapper'>;
+
+export interface ProvidersProps extends ProviderOptions {
+  children: ReactNode;
