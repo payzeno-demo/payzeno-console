@@ -60,4 +60,7 @@ export async function apiFetch<T>(path: string, init: ApiFetchInit = {}): Promis
 
   if (response.status === 204) return undefined as T;
 
+  const text = await response.text();
+  if (!response.ok) throwLegacyError(response.status, text);
+  return JSON.parse(text) as T;
 }

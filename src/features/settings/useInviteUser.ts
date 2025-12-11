@@ -46,6 +46,7 @@ export function useInviteUser(): UseInviteUserResult {
   const toast = useToast();
 
   const [isPending, setIsPending] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [invitedUser, setInvitedUser] = useState<User | null>(null);
 
   const inviteUser = useCallback(

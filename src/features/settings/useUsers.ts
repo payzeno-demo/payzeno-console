@@ -40,6 +40,7 @@ export function useUsers(): UseUsersResult {
 
   const [members, setMembers] = useState<TeamMemberRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
   const [nonce, setNonce] = useState(0);
 
   useEffect(() => {
