@@ -26,3 +26,13 @@ export interface ChargeLedgerPanelProps {
 function entryLabel(entry: LedgerEntry): string {
   return `${entry.direction === 'debit' ? 'Dr' : 'Cr'} ${entry.account_id}`;
 }
+
+export function ChargeLedgerPanel({ chargeId, currency }: ChargeLedgerPanelProps) {
+  const { groups, hasDuplicateSettlement, isLoading, error } = useChargeLedger(chargeId);
+
+  if (isLoading) {
+    return <Skeleton height="12rem" aria-label="Loading ledger detail" />;
+  }
+
+  if (error) {
+    return (

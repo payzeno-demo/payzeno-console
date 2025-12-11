@@ -19,3 +19,10 @@ export interface LedgerGroup {
   purpose: LedgerPurpose;
   transactions: LedgerTransaction[];
 }
+
+export interface UseChargeLedgerResult {
+  transactions: LedgerTransaction[];
+  /** Grouped by purpose, in posting order, so the story reads top to bottom. */
+  groups: LedgerGroup[];
+  /** More than one `settle` transaction on one charge is the arc-INC fingerprint. */
+  hasDuplicateSettlement: boolean;
