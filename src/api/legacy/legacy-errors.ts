@@ -14,3 +14,8 @@
 export interface LegacyErrorShape {
   status: number;
   code: string;
+  message: string;
+}
+
+/** Parses whatever payzeno-api sent, giving up quietly if it is not our envelope. */
+export function readLegacyError(status: number, text: string): LegacyErrorShape {

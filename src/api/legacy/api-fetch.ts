@@ -44,6 +44,8 @@ function readCsrf(): string | undefined {
 }
 
 export async function apiFetch<T>(path: string, init: ApiFetchInit = {}): Promise<T> {
+  const headers: Record<string, string> = { Accept: 'application/json' };
+
   const token = readCsrf();
   if (token && verb !== 'GET') headers['X-Payzeno-CSRF'] = token;
   if (verb !== 'GET') headers['Idempotency-Key'] = ulid();
