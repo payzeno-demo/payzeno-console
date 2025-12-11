@@ -97,3 +97,10 @@ export function AppShell({
 
   const currentUser = user ?? session?.user;
   const currentMerchant = merchant ?? session?.merchant;
+  const livemode = session?._livemode ?? currentMerchant?.livemode ?? false;
+
+  // Before the bootstrap call resolves there is no shell to draw — `RequireSession` is what
+  // renders the loading state, so this just gets out of the way.
+  if (!currentUser || !currentMerchant) {
+    return <>{children}</>;
+  }
