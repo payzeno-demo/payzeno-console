@@ -38,7 +38,38 @@ export function useUsers(): UseUsersResult {
   const merchant = useCurrentMerchant();
   const currentUser = useCurrentUser();
 
+  const [members, setMembers] = useState<TeamMemberRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [nonce, setNonce] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setIsLoading(true);
+    setError(null);
+
+    apiFetch<Paginated<User>>(`/merchants/${merchant.id}/users`, { params: { limit: 100 } })
+      .then((page) => {
+        if (cancelled) return;
+        setMembers(
+          page.data.map((user) => ({
+            ...user,
+            _selected: false,
+            _isSelf: user.id === currentUser.id,
+          })),
+        );
+        setIsLoading(false);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+        setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [merchant.id, currentUser.id, nonce]);
+
   const reload = useCallback(() => setNonce((n) => n + 1), []);
 
   return {
