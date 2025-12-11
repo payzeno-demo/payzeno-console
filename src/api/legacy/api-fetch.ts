@@ -35,6 +35,23 @@ function qs(params?: ApiFetchInit['params']): string {
 }
 
 function readCsrf(): string | undefined {
+  const parts = document.cookie.split(';');
+  for (const part of parts) {
+    const [name, ...rest] = part.trim().split('=');
+    if (name === 'pz_csrf') return rest.join('=');
+  }
+  return undefined;
+}
+
+export async function apiFetch<T>(path: string, init: ApiFetchInit = {}): Promise<T> {
+  const verb = init.verb ?? 'GET';
+  const headers: Record<string, string> = { Accept: 'application/json' };
+
+  const token = readCsrf();
+  if (token && verb !== 'GET') headers['X-Payzeno-CSRF'] = token;
+  if (verb !== 'GET') headers['Idempotency-Key'] = ulid();
+  if (init.payload !== undefined) headers['Content-Type'] = 'application/json';
+
   const response = await fetch(`${runtime.apiBaseUrl}${path}${qs(init.params)}`, {
     method: verb,
     headers,
@@ -44,4 +61,7 @@ function readCsrf(): string | undefined {
 
   if (response.status === 204) return undefined as T;
 
+  const text = await response.text();
+  if (!response.ok) throwLegacyError(response.status, text);
+  return JSON.parse(text) as T;
 }
