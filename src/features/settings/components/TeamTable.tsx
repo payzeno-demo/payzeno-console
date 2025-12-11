@@ -76,6 +76,74 @@ export function TeamTable({
   onInvite,
 }: TeamTableProps) {
   const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
   const [role, setRole] = useState<UserRole>('viewer');
 
+  const handleInvite = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!canInvite || isInviting) return;
+    onInvite({ email, fullName, role });
+    setEmail('');
+    setFullName('');
+  };
+
+  return (
+    <section aria-labelledby="team-heading">
+      <h2 id="team-heading">Team</h2>
+
+      <DataTable<TeamMemberRow>
+        caption="People who can sign in to this Payzeno account"
+        columns={teamColumns}
+        rows={members}
+        isLoading={isLoading}
+        emptyState={<EmptyRows title="Just you" body="Invite a colleague to share access." />}
+      />
+
+      <form onSubmit={handleInvite} noValidate aria-label="Invite a team member">
+        <Label htmlFor="invite-name">Full name</Label>
+        <Input
+          id="invite-name"
+          name="full_name"
+          required
+          value={fullName}
+          disabled={!canInvite}
+          onChange={(event) => setFullName(event.target.value)}
+        />
+
+        <Label htmlFor="invite-email">Email</Label>
+        <Input
+          id="invite-email"
+          name="email"
+          type="email"
+          required
+          value={email}
+          disabled={!canInvite}
+          aria-describedby={inviteError ? 'invite-error' : undefined}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+
+        <Select
+          id="invite-role"
+          label="Role"
+          value={role}
+          onValueChange={(next) => setRole(next as UserRole)}
+          options={USER_ROLES.filter((value) => value !== 'owner').map((value) => ({
+            value,
+            label: humanise(value),
+          }))}
+        />
+
+        {inviteError ? <InlineError id="invite-error">{inviteError}</InlineError> : null}
+
+        <Button
+          type="submit"
+          disabled={!canInvite || isInviting || email.length === 0 || fullName.length === 0}
+        >
+          {isInviting ? 'Sending…' : 'Send invitation'}
+        </Button>
+
+        {!canInvite ? <p>Only an owner can invite new team members.</p> : null}
+      </form>
+    </section>
+  );
 }

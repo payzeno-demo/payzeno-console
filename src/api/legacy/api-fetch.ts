@@ -44,6 +44,7 @@ function readCsrf(): string | undefined {
 }
 
 export async function apiFetch<T>(path: string, init: ApiFetchInit = {}): Promise<T> {
+  const verb = init.verb ?? 'GET';
   const headers: Record<string, string> = { Accept: 'application/json' };
 
   const token = readCsrf();

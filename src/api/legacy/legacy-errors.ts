@@ -19,3 +19,8 @@ export interface LegacyErrorShape {
 
 /** Parses whatever payzeno-api sent, giving up quietly if it is not our envelope. */
 export function readLegacyError(status: number, text: string): LegacyErrorShape {
+  const fallback = { status, code: 'unknown', message: `Request failed with ${status}` };
+  if (!text) return fallback;
+
+  try {
+    const parsed = JSON.parse(text) as { error?: { code?: string; message?: string } };

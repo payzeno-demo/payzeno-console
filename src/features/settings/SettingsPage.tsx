@@ -45,6 +45,7 @@ export function SettingsPage() {
 
   const merchant = useCurrentMerchant();
   const { can } = usePermissions();
+  const [addOpen, setAddOpen] = useState(false);
   const { accounts, isLoading: accountsLoading, error: accountsError } = useBankAccounts();
   // Reused for its `makeDefault` mutation; the row id comes from the table's button.
   const { makeDefault, actionError } = useBankAccount(defaultTarget);
