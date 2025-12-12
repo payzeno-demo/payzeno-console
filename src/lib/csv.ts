@@ -45,6 +45,34 @@ export function serialiseRow<TRow>(row: TRow, columns: ReadonlyArray<ColumnDef<T
   });
 }
 
+export interface CsvOptions {
+  /** Prepend a UTF-8 BOM so Excel on Windows stops mangling non-ASCII merchant names. */
+  withBom?: boolean;
+  /** Skip the header row (used when appending to an existing file). */
+  omitHeader?: boolean;
+}
+
+/** Serialise rows + columns into a complete CSV document. */
+export function toCsv<TRow>(
+  rows: ReadonlyArray<TRow>,
+  columns: ReadonlyArray<ColumnDef<TRow>>,
+  options: CsvOptions = {},
+): string {
+  const exportable = columns.filter((column) => column.id !== 'actions');
+  const lines: string[] = [];
+
+  if (!options.omitHeader) {
+    lines.push(exportable.map((column) => escapeCell(column.header)).join(DELIMITER));
+  }
+
+  for (const row of rows) {
+    lines.push(serialiseRow(row, exportable).join(DELIMITER));
+  }
+
+  const body = lines.join(NEWLINE) + NEWLINE;
+  return options.withBom ? `﻿${body}` : body;
+}
+
 /** A `text/csv` blob ready for `lib/download.ts::downloadBlob`. */
 export function toCsvBlob<TRow>(
   rows: ReadonlyArray<TRow>,

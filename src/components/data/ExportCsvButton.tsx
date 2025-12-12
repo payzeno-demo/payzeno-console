@@ -76,6 +76,32 @@ function useCachedRows<TRow>(resource: string | undefined, visible: ReadonlyArra
     const unique: TRow[] = [];
     for (const row of collected) {
       const id = (row as { id?: unknown }).id;
+      const key = typeof id === 'string' ? id : JSON.stringify(row);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      unique.push(row);
+    }
+
+    return unique;
+  }, [queryClient, resource, visible]);
+}
+
+export function ExportCsvButton<TRow>({
+  columns,
+  rows,
+  filename,
+  resource,
+  totalMinorOf,
+  currency = 'USD',
+  disabled = false,
+}: ExportCsvButtonProps<TRow>) {
+  const [status, setStatus] = useState<string>('');
+  const [isBusy, setBusy] = useState(false);
+  const collect = useCachedRows(typeof resource === 'string' ? resource : undefined, rows);
+
+  const onExport = useCallback(() => {
+    setBusy(true);
+    try {
       const blob = toCsvBlob(all, columns);
     </span>
   );
