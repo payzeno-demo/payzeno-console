@@ -103,6 +103,9 @@ export function ExportCsvButton<TRow>({
     setBusy(true);
     try {
       const blob = toCsvBlob(all, columns);
+      const name = filename ?? csvFilename(typeof resource === 'string' ? resource : 'export');
+      downloadBlob(blob, name);
+
     </span>
   );
 }

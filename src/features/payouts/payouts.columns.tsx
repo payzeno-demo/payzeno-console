@@ -61,3 +61,19 @@ export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
         title={row.failure_code ? failureHint(row.failure_code) : undefined}
       />
     ),
+    exportValue: (row) => row.status,
+  },
+  {
+    id: 'amount_minor',
+    header: 'Amount',
+    align: 'end',
+    sortable: true,
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),
+  },
+  {
+    id: 'bank',
+    header: 'To',
+    cell: (row) => <span>{row._bankLabel}</span>,
+    exportValue: (row) => row._bankLabel,
+  },
