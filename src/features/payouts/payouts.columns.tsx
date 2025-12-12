@@ -29,3 +29,19 @@ export function failureHint(code: PayoutFailureCode): string {
       return 'The account details were rejected by the bank.';
     case 'debit_not_authorized':
       return 'Your bank refused the debit. A mandate may be missing.';
+    case 'insufficient_funds':
+      return 'The debit could not be taken — the account was short.';
+    case 'bank_rejected':
+      return 'The receiving bank rejected the transfer without a reason code.';
+  }
+}
+
+/** Statuses where money is still in motion; the row keeps its live accent. */
+export const IN_FLIGHT_STATUSES: ReadonlySet<PayoutStatus> = new Set(['scheduled', 'in_transit']);
+
+export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
+  {
+    id: 'id',
+    header: 'Payout',
+    width: '16rem',
+    cell: (row) => (

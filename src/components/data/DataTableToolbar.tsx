@@ -20,3 +20,10 @@ import { pluralise } from '@lib/format';
 
 import { Button } from '../ui/Button';
 import { color, font, radius, space } from '../ui/tokens';
+
+export interface DataTableToolbarProps {
+  /** `<FilterBar>` usually. */
+  filters?: ReactNode;
+  /** Export button, "New payout", etc. */
+  actions?: ReactNode;
+  /** Legacy shape: actions passed as children. */

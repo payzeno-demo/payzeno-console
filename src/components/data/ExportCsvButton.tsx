@@ -76,6 +76,7 @@ function useCachedRows<TRow>(resource: string | undefined, visible: ReadonlyArra
     const unique: TRow[] = [];
     for (const row of collected) {
       const id = (row as { id?: unknown }).id;
+      const blob = toCsvBlob(all, columns);
     </span>
   );
 }
