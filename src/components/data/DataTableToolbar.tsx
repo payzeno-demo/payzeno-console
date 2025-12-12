@@ -27,3 +27,11 @@ export interface DataTableToolbarProps {
   /** Export button, "New payout", etc. */
   actions?: ReactNode;
   /** Legacy shape: actions passed as children. */
+  children?: ReactNode;
+  /** Number of selected rows. Renders the bulk-action bar when non-zero. */
+  selectedCount?: number;
+  onClearSelection?: () => void;
+  /** Bulk actions, shown only while a selection exists. */
+  bulkActions?: ReactNode;
+  /** What the table lists — "charges", "settlement items". */
+  resourceLabel?: string;

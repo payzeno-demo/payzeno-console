@@ -45,3 +45,21 @@ export function serialiseRow<TRow>(row: TRow, columns: ReadonlyArray<ColumnDef<T
   });
 }
 
+/** A `text/csv` blob ready for `lib/download.ts::downloadBlob`. */
+export function toCsvBlob<TRow>(
+  rows: ReadonlyArray<TRow>,
+  columns: ReadonlyArray<ColumnDef<TRow>>,
+): Blob {
+  return new Blob([toCsv(rows, columns, { withBom: true })], {
+    type: 'text/csv;charset=utf-8',
+  });
+}
+
+/**
+ * `payzeno-charges-2026-03-14.csv`. Deterministic, so a merchant exporting the same view twice
+ * in a day overwrites rather than accumulating `charges (3).csv`.
+ */
+export function csvFilename(resource: string, now: Date = new Date()): string {
+  const day = now.toISOString().slice(0, 10);
+  return `payzeno-${resource}-${day}.csv`;
+}

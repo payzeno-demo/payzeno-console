@@ -45,3 +45,19 @@ export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
     header: 'Payout',
     width: '16rem',
     cell: (row) => (
+      <Link to={ROUTES.payouts.detail(row.id)}>
+        <IdCell value={row.id} />
+      </Link>
+    ),
+    exportValue: (row) => row.id,
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <StatusPill
+        status={row.status}
+        label={humanise(row.status)}
+        title={row.failure_code ? failureHint(row.failure_code) : undefined}
+      />
+    ),
