@@ -35,3 +35,10 @@ export interface DataTableToolbarProps {
   bulkActions?: ReactNode;
   /** What the table lists — "charges", "settlement items". */
   resourceLabel?: string;
+  /** Legacy alias: used verbatim as the region's accessible name. */
+  label?: string;
+}
+
+export function DataTableToolbar({
+  filters,
+  actions,

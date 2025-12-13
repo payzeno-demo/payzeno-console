@@ -102,6 +102,15 @@ export function ExportCsvButton<TRow>({
   const onExport = useCallback(() => {
     setBusy(true);
     try {
+      const all = collect();
+
+      if (all.length > CSV_EXPORT_ROW_LIMIT) {
+        setStatus(
+          `That is ${all.length} rows — more than the ${CSV_EXPORT_ROW_LIMIT} this browser export handles. Narrow the filters first.`,
+        );
+        return;
+      }
+
       const blob = toCsvBlob(all, columns);
       const name = filename ?? csvFilename(typeof resource === 'string' ? resource : 'export');
       downloadBlob(blob, name);

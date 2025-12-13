@@ -40,3 +40,9 @@ export function formatPercent(ratio: number, fractionDigits = 1, locale = 'en-US
  * stay readable; truncating only the end makes every id on the page look identical.
  */
 export function truncateId(id: string, head = 8, tail = 4): string {
+  if (id.length <= head + tail + 1) return id;
+  return `${id.slice(0, head)}…${id.slice(-tail)}`;
+}
+
+/** `payment_intent` → `Payment intent`. For enum values rendered as labels. */
+export function humanise(value: string): string {
