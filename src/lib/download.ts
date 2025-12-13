@@ -29,3 +29,13 @@ export function downloadBlob(blob: Blob, filename: string): void {
   document.body.removeChild(anchor);
 
   setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+/** Download a string as a file. Used for CSV and for the webhook payload viewer's "save". */
+export function downloadText(text: string, filename: string, mimeType = 'text/plain'): void {
+  downloadBlob(new Blob([text], { type: `${mimeType};charset=utf-8` }), filename);
+}
+
+/** Pretty-printed JSON download, for a webhook event payload. */
+export function downloadJson(value: unknown, filename: string): void {
+  downloadText(JSON.stringify(value, null, 2), filename, 'application/json');

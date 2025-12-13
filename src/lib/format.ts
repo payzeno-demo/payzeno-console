@@ -34,3 +34,9 @@ export function formatPercent(ratio: number, fractionDigits = 1, locale = 'en-US
     maximumFractionDigits: fractionDigits,
   }).format(ratio);
 }
+
+/**
+ * `pi_01HW…` → `pi_01HW…8Q2F`. Middle-truncates so both the type prefix and the entropy tail
+ * stay readable; truncating only the end makes every id on the page look identical.
+ */
+export function truncateId(id: string, head = 8, tail = 4): string {

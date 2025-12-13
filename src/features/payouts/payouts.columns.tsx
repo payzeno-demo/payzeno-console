@@ -77,3 +77,18 @@ export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
     cell: (row) => <span>{row._bankLabel}</span>,
     exportValue: (row) => row._bankLabel,
   },
+  {
+    id: 'method',
+    header: 'Method',
+    cell: (row) => <span>{labelise(row.method)}</span>,
+    exportValue: (row) => row.method,
+  },
+  {
+    id: 'available_on',
+    header: 'Available on',
+    sortable: true,
+    cell: (row) => <DateCell value={row.available_on} precision="day" />,
+    exportValue: (row) => row.available_on,
+  },
+  {
+    id: 'arrival_estimate',
