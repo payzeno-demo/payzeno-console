@@ -132,3 +132,12 @@ function SettlementsRoute() {
         body="The settlement explorer is turned off for this account. Your payouts page still shows when money arrived."
         homeTo={ROUTES.payouts.index}
       />
+    );
+  }
+
+  return <FeatureRoute permission="settlements:read" label="settlements" />;
+}
+
+/**
+ * The route table.
+ *
