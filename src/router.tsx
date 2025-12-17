@@ -122,3 +122,13 @@ function FeatureRoute({ permission, label }: { permission: Permission; label: st
  * ago but the route still reads it, because turning it off is the documented mitigation in
  * `docs/runbooks/console.md` when the ledger's item list is slow.
  */
+function SettlementsRoute() {
+  const enabled = useFlag('settlement_explorer');
+
+  if (!enabled) {
+    return (
+      <NotFound
+        title="Settlements are not available"
+        body="The settlement explorer is turned off for this account. Your payouts page still shows when money arrived."
+        homeTo={ROUTES.payouts.index}
+      />

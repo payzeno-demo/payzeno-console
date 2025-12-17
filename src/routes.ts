@@ -36,3 +36,10 @@ export const ROUTES = {
     index: '/balance',
   },
 
+  payments: {
+    index: '/payments',
+    detail: (paymentIntentId: string) => `/payments/${seg(paymentIntentId)}`,
+  },
+
+  charges: {
+    index: '/charges',
