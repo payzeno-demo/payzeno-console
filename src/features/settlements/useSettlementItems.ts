@@ -8,3 +8,6 @@
  * this one route's read budget to 30s.
  *
  * It also derives the batch-level rollup the console is not allowed to read directly:
+ * `expected_total_minor` / `posted_total_minor` are acquirer-level and never appear on a
+ * session-authed response, so `BatchTotalsPanel` gets them from the items.
+ */
