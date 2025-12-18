@@ -43,3 +43,9 @@ export const ROUTES = {
 
   charges: {
     index: '/charges',
+    detail: (chargeId: string) => `/charges/${seg(chargeId)}`,
+  },
+
+  refunds: {
+    index: '/refunds',
+  },
