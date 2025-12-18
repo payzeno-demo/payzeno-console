@@ -39,3 +39,7 @@ export function useQueryParamState<T>(
     const parsed = parse(raw);
     return parsed === null ? fallback : parsed;
   }, [raw, parse, fallback]);
+
+  const setValue = useCallback(
+    (next: T) => {
+      setParams(

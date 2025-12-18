@@ -9,3 +9,7 @@ import { queryOptions } from '@tanstack/react-query';
 
 import type {
   MerchantSettlementBatch,
+  Paginated,
+  ReconciliationItem,
+  RetryReconciliationItemRequest,
+} from '@payzeno/contracts';
