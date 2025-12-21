@@ -30,3 +30,7 @@ export interface MoneyCellProps {
 
 export function MoneyCell({
   value,
+  amountMinor,
+  currency,
+  signed = false,
+  muteZero = true,

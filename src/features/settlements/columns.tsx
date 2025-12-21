@@ -18,3 +18,6 @@ import { StatusPill } from '@components/data/StatusPill';
 import { ROUTES } from '@/routes';
 import type { SettlementRow } from '@types/view-models';
 
+/** Which statuses read as "money has actually moved". Merchants conflate the rest. */
+const TERMINAL_STATUSES: ReadonlySet<SettlementBatchStatus> = new Set(['funded', 'failed']);
+

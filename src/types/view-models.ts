@@ -56,3 +56,7 @@ export interface PaymentIntentRow extends PaymentIntent, RowSelection {
 export interface RefundRow extends Refund, RowSelection {
   /** Denormalised from the parent charge so the table does not need a second query. */
   _chargeLastFour: string | null;
+}
+
+export interface DisputeRow extends Dispute, RowSelection {
+  /** Hours left before `evidence_due_by`. Negative when the window has closed. */
