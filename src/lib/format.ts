@@ -34,3 +34,21 @@ export function formatPercent(ratio: number, fractionDigits = 1, locale = 'en-US
     maximumFractionDigits: fractionDigits,
   }).format(ratio);
 }
+
+/**
+ * `pi_01HW…` → `pi_01HW…8Q2F`. Middle-truncates so both the type prefix and the entropy tail
+ * stay readable; truncating only the end makes every id on the page look identical.
+ */
+export function truncateId(id: string, head = 8, tail = 4): string {
+  if (id.length <= head + tail + 1) return id;
+  return `${id.slice(0, head)}…${id.slice(-tail)}`;
+}
+
+/** `payment_intent` → `Payment intent`. For enum values rendered as labels. */
+export function humanise(value: string): string {
+  const spaced = value.replace(/[_-]+/g, ' ').trim();
+  if (spaced.length === 0) return '';
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
+/** `needs_response` → `Needs Response`. Title case, for status pills and column headers. */

@@ -10,3 +10,7 @@ import { Link } from 'react-router-dom';
 import type { SettlementBatchStatus } from '@payzeno/contracts';
 
 import type { ColumnDef } from '@components/data/DataTable';
+import { AcquirerCell } from '@components/data/AcquirerCell';
+import { DateCell } from '@components/data/DateCell';
+import { IdCell } from '@components/data/IdCell';
+import { MoneyCell } from '@components/data/MoneyCell';

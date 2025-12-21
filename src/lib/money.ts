@@ -27,3 +27,7 @@ import {
 export {
   CURRENCIES,
   CURRENCY_EXPONENT,
+  addMoney,
+  applyBps,
+  assertSameCurrency,
+  formatMoney,

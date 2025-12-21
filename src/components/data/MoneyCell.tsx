@@ -18,3 +18,7 @@ export interface MoneyCellProps {
   /** Either a `Money`… */
   value?: Money;
   /** …or the loose pair, which is what most rows carry. */
+  amountMinor?: MinorUnits;
+  currency?: CurrencyCode;
+  /** Render `+`/`−` explicitly. For ledger entries and reconciliation variance. */
+  signed?: boolean;

@@ -15,3 +15,6 @@ export interface MoneyFormatter {
   /** `formatMoney` bound to the current locale. */
   format: (value: Money) => string;
   /** Minor units + currency, for the very common case of two loose fields. */
+  formatMinor: (amount: MinorUnits, currency: CurrencyCode) => string;
+  /** `+£12.00` / `−£12.00`, for ledger-style columns. */
+  formatSigned: (value: Money) => string;
