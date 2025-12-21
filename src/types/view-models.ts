@@ -52,3 +52,7 @@ export interface PaymentIntentRow extends PaymentIntent, RowSelection {
   /** `status === 'requires_action'` — drives the `<NextActionCallout />` row accent. */
   _needsCustomerAction: boolean;
 }
+
+export interface RefundRow extends Refund, RowSelection {
+  /** Denormalised from the parent charge so the table does not need a second query. */
+  _chargeLastFour: string | null;

@@ -36,3 +36,7 @@ export {
   subMoney,
   toMinor,
 };
+export type { BasisPoints, CurrencyCode, MinorUnits, Money };
+
+/** Build a `Money` without spelling the field names out at forty call sites. */
+export function money(amount_minor: MinorUnits, currency: CurrencyCode): Money {
