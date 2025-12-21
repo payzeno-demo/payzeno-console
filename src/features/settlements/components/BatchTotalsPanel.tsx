@@ -30,3 +30,6 @@ export function BatchTotalsPanel({ totals, currency, isLoading }: BatchTotalsPan
   const overposted =
     totals.expectedMinor > 0 && totals.postedMinor > totals.expectedMinor * OVERPOST_TOLERANCE;
 
+  return (
+    <Card as="section" aria-label="Batch totals" data-loading={isLoading}>
+      <h2>Your totals in this batch</h2>

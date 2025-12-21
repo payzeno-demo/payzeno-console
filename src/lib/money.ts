@@ -31,3 +31,8 @@ export {
   applyBps,
   assertSameCurrency,
   formatMoney,
+  fromMinor,
+  isZero,
+  subMoney,
+  toMinor,
+};
