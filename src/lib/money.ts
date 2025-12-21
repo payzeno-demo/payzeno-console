@@ -40,3 +40,7 @@ export type { BasisPoints, CurrencyCode, MinorUnits, Money };
 
 /** Build a `Money` without spelling the field names out at forty call sites. */
 export function money(amount_minor: MinorUnits, currency: CurrencyCode): Money {
+  return { amount_minor, currency };
+}
+
+/** Zero in a given currency. Used as the reduce seed in every totals panel. */

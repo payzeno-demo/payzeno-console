@@ -21,3 +21,7 @@ export interface MoneyFormatter {
   /** `$12.4k`, for chart axes and dense cells. */
   formatCompact: (value: Money) => string;
   locale: string;
+}
+
+/**
+ * @param locale BCP-47 tag. Defaults to the browser's, which is what a merchant's finance team
