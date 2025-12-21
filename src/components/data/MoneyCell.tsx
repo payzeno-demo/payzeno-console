@@ -26,3 +26,7 @@ export interface MoneyCellProps {
   muteZero?: boolean;
   /** Colour negatives in the danger tone. Used for negative balance and reversals. */
   emphasiseNegative?: boolean;
+}
+
+export function MoneyCell({
+  value,
