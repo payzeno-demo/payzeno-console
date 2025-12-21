@@ -18,3 +18,6 @@ export interface MoneyFormatter {
   formatMinor: (amount: MinorUnits, currency: CurrencyCode) => string;
   /** `+£12.00` / `−£12.00`, for ledger-style columns. */
   formatSigned: (value: Money) => string;
+  /** `$12.4k`, for chart axes and dense cells. */
+  formatCompact: (value: Money) => string;
+  locale: string;
