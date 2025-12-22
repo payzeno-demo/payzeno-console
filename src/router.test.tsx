@@ -25,6 +25,13 @@ describe('route helpers', () => {
     expect(new Set(TOP_LEVEL_PATHS).size).toBe(TOP_LEVEL_PATHS.length);
   });
 
+  it('builds detail paths with encoded ids', () => {
+    expect(ROUTES.settlements.detail('set/1')).toBe('/settlements/set%2F1');
+    expect(ROUTES.developers.apiKey('key_1')).toBe('/developers/api-keys/key_1');
+  });
+});
+
+describe('the signed-in tree', () => {
   it('renders a payment detail route as a child of payments', async () => {
     renderAt(ROUTES.payments.detail('pi_01HW0RTPAYMENTINTENT0001'));
 
@@ -51,4 +58,11 @@ describe('the signed-out branch', () => {
 });
 
 describe('the catch-all', () => {
+  it('points home at the landing route', async () => {
+    renderAt('/nowhere-in-particular');
+
+    const link = await screen.findByRole('link', { name: 'Back to the dashboard' });
+    expect(link).toHaveAttribute('href', ROUTES.reporting.index);
+  });
+
 });

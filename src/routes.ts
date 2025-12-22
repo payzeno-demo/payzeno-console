@@ -49,3 +49,9 @@ export const ROUTES = {
   refunds: {
     index: '/refunds',
   },
+
+  disputes: {
+    index: '/disputes',
+    detail: (disputeId: string) => `/disputes/${seg(disputeId)}`,
+  },
+
