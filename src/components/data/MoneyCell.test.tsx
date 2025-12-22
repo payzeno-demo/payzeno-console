@@ -40,6 +40,25 @@ describe('JPY — the exponent that catches everyone', () => {
     expect(CURRENCY_EXPONENT.GBP).toBe(2);
   });
 
+  it('does not divide a JPY amount by a hundred', () => {
+    renderBare(<MoneyCell amountMinor={1_200} currency="JPY" />);
+
+    const rendered = screen.getByText(formatMoney(money(1_200, 'JPY')));
+    expect(rendered).toBeInTheDocument();
+    // 1200 JPY is ¥1,200 — never ¥12.00.
+    expect(rendered.textContent).toContain('1,200');
+    expect(rendered.textContent).not.toContain('12.00');
+  });
+
+  it('renders zero as a real zero, not as a dash', () => {
+    renderBare(<MoneyCell amountMinor={0} currency="GBP" />);
+
+    expect(screen.queryByText('—')).not.toBeInTheDocument();
+    expect(screen.getByText(formatMoney(money(0, 'GBP')))).toBeInTheDocument();
+  });
+});
+
+describe('signed amounts', () => {
   it('uses a real minus sign for a negative amount, not a hyphen', () => {
     renderBare(<MoneyCell amountMinor={-2_500} currency="GBP" signed />);
 
