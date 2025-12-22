@@ -27,3 +27,7 @@ export interface SettlementItemTotals {
   feeMinor: number;
   varianceMinor: number;
   /** Items whose gross was posted more than once — the arc-INC signal. */
+  duplicateCount: number;
+}
+
+export interface UseSettlementItemsResult {
