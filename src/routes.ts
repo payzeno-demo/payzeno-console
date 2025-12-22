@@ -68,3 +68,10 @@ export const ROUTES = {
   invoices: {
     index: '/invoices',
     detail: (invoiceId: string) => `/invoices/${seg(invoiceId)}`,
+  },
+
+  developers: {
+    index: '/developers',
+    apiKey: (apiKeyId: string) => `/developers/api-keys/${seg(apiKeyId)}`,
+    webhookEvent: (eventId: string) => `/developers/webhook-events/${seg(eventId)}`,
+  },
