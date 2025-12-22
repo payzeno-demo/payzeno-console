@@ -44,3 +44,7 @@ export function money(amount_minor: MinorUnits, currency: CurrencyCode): Money {
 }
 
 /** Zero in a given currency. Used as the reduce seed in every totals panel. */
+export function zero(currency: CurrencyCode): Money {
+  return money(0, currency);
+}
+
