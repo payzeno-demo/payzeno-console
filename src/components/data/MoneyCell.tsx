@@ -18,3 +18,19 @@ export interface MoneyCellProps {
   /** Either a `Money`… */
   value?: Money;
   /** …or the loose pair, which is what most rows carry. */
+  amountMinor?: MinorUnits;
+  currency?: CurrencyCode;
+  /** Render `+`/`−` explicitly. For ledger entries and reconciliation variance. */
+  signed?: boolean;
+  /** Grey out zero amounts so a column of zeroes does not compete with the real numbers. */
+  muteZero?: boolean;
+  /** Colour negatives in the danger tone. Used for negative balance and reversals. */
+  emphasiseNegative?: boolean;
+}
+
+export function MoneyCell({
+  value,
+  amountMinor,
+  currency,
+  signed = false,
+  muteZero = true,

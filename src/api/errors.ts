@@ -30,3 +30,8 @@ export class ConsoleApiError extends PayzenoError {
   readonly retryAfterSeconds: number | null;
 
   constructor(init: ConsoleApiErrorInit) {
+    super(init.message, init.details ?? {});
+    this.name = new.target.name;
+    this.code = init.code;
+    this.status = init.status;
+    this.httpStatus = init.status;

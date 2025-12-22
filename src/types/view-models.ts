@@ -47,3 +47,16 @@ export interface ChargeRow extends Charge, RowSelection {
 export interface PaymentIntentRow extends PaymentIntent, RowSelection {
   /** Manual-capture intent sitting in `requires_capture` — the only shape with a capture button. */
   _isCapturable: boolean;
+  /** Cancelling voids the authorisation, so a succeeded intent is past the point of it. */
+  _isCancelable: boolean;
+  /** `status === 'requires_action'` — drives the `<NextActionCallout />` row accent. */
+  _needsCustomerAction: boolean;
+}
+
+export interface RefundRow extends Refund, RowSelection {
+  /** Denormalised from the parent charge so the table does not need a second query. */
+  _chargeLastFour: string | null;
+}
+
+export interface DisputeRow extends Dispute, RowSelection {
+  /** Hours left before `evidence_due_by`. Negative when the window has closed. */

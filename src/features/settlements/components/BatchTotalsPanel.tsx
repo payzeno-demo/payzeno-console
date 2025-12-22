@@ -26,3 +26,10 @@ export interface BatchTotalsPanelProps {
 /** 0.1% — the same threshold as the `ledger_batch_overposted` CloudWatch alarm (PAY-2055). */
 const OVERPOST_TOLERANCE = 1.001;
 
+export function BatchTotalsPanel({ totals, currency, isLoading }: BatchTotalsPanelProps) {
+  const overposted =
+    totals.expectedMinor > 0 && totals.postedMinor > totals.expectedMinor * OVERPOST_TOLERANCE;
+
+  return (
+    <Card as="section" aria-label="Batch totals" data-loading={isLoading}>
+      <h2>Your totals in this batch</h2>
