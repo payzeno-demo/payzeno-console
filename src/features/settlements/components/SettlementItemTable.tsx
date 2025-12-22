@@ -15,3 +15,5 @@ import { ExportCsvButton } from '@components/data/ExportCsvButton';
 import { Select } from '@components/ui/Select';
 import type { SettlementItemRow } from '@types/view-models';
 
+import { settlementItemColumns } from '../settlement-items.columns';
+

@@ -62,3 +62,9 @@ export const ROUTES = {
 
   settlements: {
     index: '/settlements',
+    detail: (batchId: string) => `/settlements/${seg(batchId)}`,
+  },
+
+  invoices: {
+    index: '/invoices',
+    detail: (invoiceId: string) => `/invoices/${seg(invoiceId)}`,
