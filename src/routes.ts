@@ -55,3 +55,10 @@ export const ROUTES = {
     detail: (disputeId: string) => `/disputes/${seg(disputeId)}`,
   },
 
+  payouts: {
+    index: '/payouts',
+    detail: (payoutId: string) => `/payouts/${seg(payoutId)}`,
+  },
+
+  settlements: {
+    index: '/settlements',

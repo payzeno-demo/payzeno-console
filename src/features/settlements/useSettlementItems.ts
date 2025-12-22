@@ -18,3 +18,6 @@ import type { ReconciliationItem, ReconciliationItemStatus } from '@payzeno/cont
 
 import { useEndpoints } from '@app/ApiContext';
 import type { SettlementItemRow } from '@types/view-models';
+
+import { settlementItemsQuery } from './settlements.queries';
+
