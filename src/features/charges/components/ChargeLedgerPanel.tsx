@@ -36,3 +36,12 @@ export function ChargeLedgerPanel({ chargeId, currency }: ChargeLedgerPanelProps
 
   if (error) {
     return (
+      <Alert tone="warning" title="Ledger detail is unavailable">
+        The ledger did not answer in time. The charge itself is unaffected.
+      </Alert>
+    );
+  }
+
+  return (
+    <Card as="section" aria-label="Ledger detail">
+      <h2>Ledger</h2>

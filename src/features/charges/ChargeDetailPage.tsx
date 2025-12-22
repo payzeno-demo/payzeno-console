@@ -59,3 +59,15 @@ export function ChargeDetailPage() {
   }
 
   const refundable = refundableMinor > 0 && (charge.status === 'captured' || charge.status === 'settled');
+  const liabilityShifted = charge.three_d_secure?.liability_shifted ?? false;
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title={`Charge ${charge.id}`}
+        description={`${humanise(charge.status)} · ${charge.acquirer}`}
+      >
+        <StatusPill status={charge.status} label={humanise(charge.status)} />
+        <Button
+          type="button"
+          disabled={!refundable || readOnly || !can('refunds:write')}

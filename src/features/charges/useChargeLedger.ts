@@ -26,3 +26,11 @@ export interface UseChargeLedgerResult {
   groups: LedgerGroup[];
   /** More than one `settle` transaction on one charge is the arc-INC fingerprint. */
   hasDuplicateSettlement: boolean;
+  isLoading: boolean;
+  error: Error | null;
+}
+
+export function useChargeLedger(chargeId: string): UseChargeLedgerResult {
+  const endpoints = useEndpoints();
+  const query = useQuery({
+    ...chargeLedgerQuery(endpoints, chargeId),
