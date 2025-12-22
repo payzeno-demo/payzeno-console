@@ -183,6 +183,26 @@ export function makeRefund(overrides: Partial<Refund> = {}): Refund {
   };
 }
 
+export function makeBalance(overrides: Partial<Balance> = {}): Balance {
+  return {
+    object: 'balance',
+    merchant_id: MERCHANT_ID,
+    currency: 'GBP',
+    available_minor: 1_284_300,
+    pending_minor: 412_050,
+    reserved_minor: 0,
+    disputed_minor: 12_500,
+    negative_balance_minor: 0,
+    buckets: [
+      { type: 'merchant_payable', amount_minor: 1_284_300 },
+      { type: 'merchant_receivable', amount_minor: 412_050 },
+      { type: 'chargeback_liability', amount_minor: 12_500 },
+    ],
+    as_of: NOW,
+    ...overrides,
+  };
+}
+
 export function makePayout(overrides: Partial<Payout> = {}): Payout {
   return {
     id: 'po_01HW0RTPAYOUT00000001',
@@ -207,6 +227,26 @@ export function makePayout(overrides: Partial<Payout> = {}): Payout {
     created_at: '2026-03-14T05:00:00.000Z',
     ...overrides,
   } as Payout;
+}
+
+export function makeDashboardSummary(
+  overrides: Partial<DashboardSummary> = {},
+): DashboardSummary {
+  return {
+    object: 'dashboard_summary',
+    merchant_id: MERCHANT_ID,
+    currency: 'GBP',
+    window: '7d',
+    gross_volume_minor: 4_812_400,
+    net_volume_minor: 4_612_900,
+    refunded_minor: 128_000,
+    dispute_count: 2,
+    succeeded_count: 412,
+    failed_count: 18,
+    next_payout: makePayout({ status: 'scheduled' }),
+    balance: makeBalance(),
+    ...overrides,
+  };
 }
 
 /** Wrap rows in the envelope every list route returns. */

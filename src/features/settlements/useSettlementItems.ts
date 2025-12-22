@@ -21,3 +21,6 @@ import type { SettlementItemRow } from '@types/view-models';
 
 import { settlementItemsQuery } from './settlements.queries';
 
+export interface SettlementItemTotals {
+  expectedMinor: number;
+  postedMinor: number;

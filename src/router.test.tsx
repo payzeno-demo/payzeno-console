@@ -32,6 +32,12 @@ describe('route helpers', () => {
 });
 
 describe('the signed-in tree', () => {
+  it('renders the balance page', async () => {
+    renderAt(ROUTES.balance.index);
+
+    expect(await screen.findByRole('heading', { name: 'Balance' })).toBeInTheDocument();
+  });
+
   it('renders a payment detail route as a child of payments', async () => {
     renderAt(ROUTES.payments.detail('pi_01HW0RTPAYMENTINTENT0001'));
 
@@ -50,6 +56,14 @@ describe('the signed-in tree', () => {
 });
 
 describe('the signed-out branch', () => {
+  it('renders the login page for a session-less visitor', async () => {
+    renderAt(ROUTES.auth.login, { session: null });
+
+    expect(
+      await screen.findByRole('heading', { name: 'Sign in to Payzeno' }),
+    ).toBeInTheDocument();
+  });
+
   it('lets a permitted role through', async () => {
     renderAt(ROUTES.payouts.index);
 
