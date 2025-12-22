@@ -24,3 +24,6 @@ import { settlementItemsQuery } from './settlements.queries';
 export interface SettlementItemTotals {
   expectedMinor: number;
   postedMinor: number;
+  feeMinor: number;
+  varianceMinor: number;
+  /** Items whose gross was posted more than once — the arc-INC signal. */

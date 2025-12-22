@@ -28,3 +28,5 @@ import { useSettlementItems } from './useSettlementItems';
 
 export function SettlementDetailPage() {
   const { batchId = '' } = useParams<{ batchId: string }>();
+  useDocumentTitle(batchId ? `Settlement ${batchId}` : 'Settlement');
+
