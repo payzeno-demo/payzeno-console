@@ -22,3 +22,5 @@ const FILTERABLE_STATUSES: ReadonlyArray<ReconciliationItemStatus | 'all'> = [
   'settled',
   'settling',
   'retryable',
+  'failed',
+  'orphaned',
