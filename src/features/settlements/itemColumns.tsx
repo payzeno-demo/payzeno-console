@@ -26,3 +26,8 @@ const NON_SALE_LINE_TYPES: ReadonlySet<ReconciliationLineType> = new Set([
   'adjustment',
   'reserve_hold',
   'reserve_release',
+]);
+
+export function explainStatus(status: ReconciliationItemStatus, lineType: ReconciliationLineType) {
+  if (status === 'orphaned' && NON_SALE_LINE_TYPES.has(lineType)) {
+    return 'Fee or adjustment line — no charge to match.';

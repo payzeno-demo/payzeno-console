@@ -37,3 +37,6 @@ export interface UseSettlementItemsResult {
   hasMore: boolean;
   isLoading: boolean;
   isFetching: boolean;
+  error: Error | null;
+}
+
