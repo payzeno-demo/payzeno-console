@@ -25,6 +25,19 @@ describe('route helpers', () => {
     expect(new Set(TOP_LEVEL_PATHS).size).toBe(TOP_LEVEL_PATHS.length);
   });
 
+  it('builds detail paths with encoded ids', () => {
+    expect(ROUTES.settlements.detail('set/1')).toBe('/settlements/set%2F1');
+    expect(ROUTES.developers.apiKey('key_1')).toBe('/developers/api-keys/key_1');
+  });
+});
+
+describe('the signed-in tree', () => {
+  it('renders the balance page', async () => {
+    renderAt(ROUTES.balance.index);
+
+    expect(await screen.findByRole('heading', { name: 'Balance' })).toBeInTheDocument();
+  });
+
   it('renders a payment detail route as a child of payments', async () => {
     renderAt(ROUTES.payments.detail('pi_01HW0RTPAYMENTINTENT0001'));
 
@@ -43,6 +56,14 @@ describe('route helpers', () => {
 });
 
 describe('the signed-out branch', () => {
+  it('renders the login page for a session-less visitor', async () => {
+    renderAt(ROUTES.auth.login, { session: null });
+
+    expect(
+      await screen.findByRole('heading', { name: 'Sign in to Payzeno' }),
+    ).toBeInTheDocument();
+  });
+
   it('lets a permitted role through', async () => {
     renderAt(ROUTES.payouts.index);
 
@@ -51,4 +72,11 @@ describe('the signed-out branch', () => {
 });
 
 describe('the catch-all', () => {
+  it('points home at the landing route', async () => {
+    renderAt('/nowhere-in-particular');
+
+    const link = await screen.findByRole('link', { name: 'Back to the dashboard' });
+    expect(link).toHaveAttribute('href', ROUTES.reporting.index);
+  });
+
 });

@@ -14,3 +14,23 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
+import type { ReconciliationItem, ReconciliationItemStatus } from '@payzeno/contracts';
+
+import { useEndpoints } from '@app/ApiContext';
+import type { SettlementItemRow } from '@types/view-models';
+
+import { settlementItemsQuery } from './settlements.queries';
+
+export interface SettlementItemTotals {
+  expectedMinor: number;
+  postedMinor: number;
+  feeMinor: number;
+  varianceMinor: number;
+  /** Items whose gross was posted more than once — the arc-INC signal. */
+  duplicateCount: number;
+}
+
+export interface UseSettlementItemsResult {
+  rows: SettlementItemRow[];
+  totals: SettlementItemTotals;
+  nextCursor: string | null;

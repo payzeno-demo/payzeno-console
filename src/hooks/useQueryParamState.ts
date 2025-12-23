@@ -43,3 +43,8 @@ export function useQueryParamState<T>(
   const setValue = useCallback(
     (next: T) => {
       setParams(
+        (current) => {
+          const updated = new URLSearchParams(current);
+          const serialised = serialise(next);
+          if (serialised === null || serialised === '') updated.delete(key);
+          else updated.set(key, serialised);

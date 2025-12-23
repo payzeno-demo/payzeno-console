@@ -49,3 +49,29 @@ export const ROUTES = {
   refunds: {
     index: '/refunds',
   },
+
+  disputes: {
+    index: '/disputes',
+    detail: (disputeId: string) => `/disputes/${seg(disputeId)}`,
+  },
+
+  payouts: {
+    index: '/payouts',
+    detail: (payoutId: string) => `/payouts/${seg(payoutId)}`,
+  },
+
+  settlements: {
+    index: '/settlements',
+    detail: (batchId: string) => `/settlements/${seg(batchId)}`,
+  },
+
+  invoices: {
+    index: '/invoices',
+    detail: (invoiceId: string) => `/invoices/${seg(invoiceId)}`,
+  },
+
+  developers: {
+    index: '/developers',
+    apiKey: (apiKeyId: string) => `/developers/api-keys/${seg(apiKeyId)}`,
+    webhookEvent: (eventId: string) => `/developers/webhook-events/${seg(eventId)}`,
+  },

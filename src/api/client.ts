@@ -22,3 +22,9 @@ import { toConsoleApiError, transportFailureToApiError } from './http/error-mapp
 import { fetchTransport, NetworkError } from './http/fetch-transport';
 import { IdempotencyAttempt } from './http/idempotency';
 import { buildRequest } from './http/request-builder';
+import { parseResponse } from './http/response-parser';
+import { decideRetry, sleep } from './http/retry';
+import { RequestTimeoutError, timeoutForPath } from './http/timeout';
+import type { ApiClientOptions, HttpTransport, QueryParams, RequestSpec } from './transport';
+
+export const DEFAULT_CLIENT_OPTIONS: ApiClientOptions = {

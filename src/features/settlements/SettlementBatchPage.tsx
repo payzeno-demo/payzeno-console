@@ -25,3 +25,8 @@ import { BatchTotalsPanel } from './components/BatchTotalsPanel';
 import { SettlementItemTable } from './components/SettlementItemTable';
 import { useSettlement } from './useSettlement';
 import { useSettlementItems } from './useSettlementItems';
+
+export function SettlementDetailPage() {
+  const { batchId = '' } = useParams<{ batchId: string }>();
+  useDocumentTitle(batchId ? `Settlement ${batchId}` : 'Settlement');
+

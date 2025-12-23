@@ -141,3 +141,13 @@ function SettlementsRoute() {
 /**
  * The route table.
  *
+ * Rendered inside the `<BrowserRouter>` that `AppProviders` owns — `AppProviders` has to be the
+ * router's parent because `AuthProvider` navigates on a 401, so the table cannot bring its own.
+ */
+export function AppRoutes() {
+  return (
+    <Routes>
+      {/* Signed-out branch. */}
+      <Route element={<RequireNoSession />}>
+        <Route
+          path={ROUTE_PATTERNS.login}

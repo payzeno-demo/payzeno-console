@@ -168,3 +168,27 @@ const chargeHandlers = [
     ok(
       makePage([
         makeCharge(),
+        makeCharge({
+          id: 'ch_01HW0RTCHARGE00000002',
+          status: 'settled',
+          currency: 'JPY',
+          amount_minor: 1_200,
+          captured_amount_minor: 1_200,
+          settled_at: '2026-03-13T22:00:00.000Z',
+        }),
+        makeCharge({
+          id: 'ch_01HW0RTCHARGE00000003',
+          status: 'failed',
+          failure_code: 'insufficient_funds',
+          failure_message: 'The issuer declined this card.',
+          captured_amount_minor: 0,
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/charges/:chargeId'), ({ params }) =>
+    ok(makeCharge({ id: String(params.chargeId) })),
+  ),
+
+  /** arc MIG step 2 — the double-entry view the legacy biller could never produce. */
