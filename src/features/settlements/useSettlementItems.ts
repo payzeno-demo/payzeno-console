@@ -34,3 +34,6 @@ export interface UseSettlementItemsResult {
   rows: SettlementItemRow[];
   totals: SettlementItemTotals;
   nextCursor: string | null;
+  hasMore: boolean;
+  isLoading: boolean;
+  isFetching: boolean;

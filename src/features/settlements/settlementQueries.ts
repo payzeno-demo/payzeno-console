@@ -13,3 +13,7 @@ import type {
   ReconciliationItem,
   RetryReconciliationItemRequest,
 } from '@payzeno/contracts';
+
+import type { EndpointRegistry } from '@api/endpoints';
+import type {
+  SettlementItemListQuery,

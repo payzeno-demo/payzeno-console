@@ -17,3 +17,6 @@ import type { SettlementItemRow } from '@types/view-models';
 
 import { settlementItemColumns } from '../settlement-items.columns';
 
+const FILTERABLE_STATUSES: ReadonlyArray<ReconciliationItemStatus | 'all'> = [
+  'all',
+  'settled',

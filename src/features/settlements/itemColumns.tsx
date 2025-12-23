@@ -22,3 +22,7 @@ import { RetryItemButton } from './components/RetryItemButton';
 
 /** Lines that are not a sale never match a charge; `orphaned` on one of these is expected. */
 const NON_SALE_LINE_TYPES: ReadonlySet<ReconciliationLineType> = new Set([
+  'scheme_fee',
+  'adjustment',
+  'reserve_hold',
+  'reserve_release',

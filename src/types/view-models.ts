@@ -60,3 +60,8 @@ export interface RefundRow extends Refund, RowSelection {
 
 export interface DisputeRow extends Dispute, RowSelection {
   /** Hours left before `evidence_due_by`. Negative when the window has closed. */
+  _hoursRemaining: number | null;
+}
+
+export interface PayoutRow extends Payout, RowSelection {
+  /** Resolved from `bank_account_id` against the merchant's accounts. */
