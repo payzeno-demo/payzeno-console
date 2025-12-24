@@ -40,3 +40,7 @@ export interface UseSettlementItemsResult {
   error: Error | null;
 }
 
+/** Statuses `RetryScheduler.retry_item` will actually accept a claim for. */
+const RETRYABLE_STATUSES: ReadonlySet<ReconciliationItemStatus> = new Set([
+  'retryable',
+  'failed',
