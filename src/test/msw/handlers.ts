@@ -192,3 +192,27 @@ const chargeHandlers = [
   ),
 
   /** arc MIG step 2 — the double-entry view the legacy biller could never produce. */
+  http.get(url('/charges/:chargeId/ledger'), ({ params }) =>
+    ok({
+      charge_id: String(params.chargeId),
+      transactions: [
+        {
+          id: 'txn_01HW0RTLEDGERTXN000001',
+          object: 'ledger_transaction',
+          purpose: 'authorize',
+          currency: 'GBP',
+          entries: [],
+          posted_at: '2026-03-14T08:00:05.000Z',
+        },
+        {
+          id: 'txn_01HW0RTLEDGERTXN000002',
+          object: 'ledger_transaction',
+          purpose: 'capture',
+          currency: 'GBP',
+          entries: [],
+          posted_at: '2026-03-14T08:02:01.000Z',
+        },
+      ],
+    }),
+  ),
+];
