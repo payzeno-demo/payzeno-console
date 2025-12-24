@@ -36,3 +36,7 @@ export function explainStatus(status: ReconciliationItemStatus, lineType: Reconc
     case 'retryable':
       return 'The last attempt failed and will be retried automatically.';
     case 'needs_review':
+      return 'Matched heuristically. Someone has to confirm it.';
+    case 'variance_exceeded':
+      return 'The acquirer amount differs from the authorised amount beyond your tolerance.';
+    case 'settling':
