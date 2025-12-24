@@ -22,3 +22,21 @@ import { RetryItemButton } from './components/RetryItemButton';
 
 /** Lines that are not a sale never match a charge; `orphaned` on one of these is expected. */
 const NON_SALE_LINE_TYPES: ReadonlySet<ReconciliationLineType> = new Set([
+  'scheme_fee',
+  'adjustment',
+  'reserve_hold',
+  'reserve_release',
+]);
+
+export function explainStatus(status: ReconciliationItemStatus, lineType: ReconciliationLineType) {
+  if (status === 'orphaned' && NON_SALE_LINE_TYPES.has(lineType)) {
+    return 'Fee or adjustment line — no charge to match.';
+  }
+  switch (status) {
+    case 'retryable':
+      return 'The last attempt failed and will be retried automatically.';
+    case 'needs_review':
+      return 'Matched heuristically. Someone has to confirm it.';
+    case 'variance_exceeded':
+      return 'The acquirer amount differs from the authorised amount beyond your tolerance.';
+    case 'settling':

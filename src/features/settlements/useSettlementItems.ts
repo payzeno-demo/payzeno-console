@@ -34,3 +34,13 @@ export interface UseSettlementItemsResult {
   rows: SettlementItemRow[];
   totals: SettlementItemTotals;
   nextCursor: string | null;
+  hasMore: boolean;
+  isLoading: boolean;
+  isFetching: boolean;
+  error: Error | null;
+}
+
+/** Statuses `RetryScheduler.retry_item` will actually accept a claim for. */
+const RETRYABLE_STATUSES: ReadonlySet<ReconciliationItemStatus> = new Set([
+  'retryable',
+  'failed',

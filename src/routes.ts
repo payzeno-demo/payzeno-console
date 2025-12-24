@@ -75,3 +75,9 @@ export const ROUTES = {
     apiKey: (apiKeyId: string) => `/developers/api-keys/${seg(apiKeyId)}`,
     webhookEvent: (eventId: string) => `/developers/webhook-events/${seg(eventId)}`,
   },
+
+  settings: {
+    index: '/settings',
+  },
+
+  notFound: '/404',
