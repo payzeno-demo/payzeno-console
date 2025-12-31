@@ -74,3 +74,9 @@ export function Badge({
     >
       {srPrefix ? <span style={visuallyHidden}>{srPrefix}: </span> : null}
       {withDot ? (
+        <span
+          aria-hidden="true"
+          style={{
+            width: '6px',
+            height: '6px',
+            borderRadius: radius.pill,
