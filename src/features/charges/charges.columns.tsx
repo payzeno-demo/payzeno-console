@@ -108,3 +108,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
       row.settlement_batch_id ? (
         <Link to={ROUTES.settlements.detail(row.settlement_batch_id)}>
           <IdCell value={row.settlement_batch_id} />
+        </Link>
+      ) : (
+        <span>—</span>
+      ),
+    exportValue: (row) => row.settlement_batch_id ?? '',
+  },
+  {
