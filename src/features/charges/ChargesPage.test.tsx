@@ -76,6 +76,17 @@ describe('the table', () => {
     });
   });
 
+  it('shows an empty table for a merchant with no charges', async () => {
+    server.use(http.get(url('/charges'), () => HttpResponse.json(makePage([]))));
+
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    const table = await screen.findByRole('table');
+    expect(table.querySelectorAll('tbody tr')).toHaveLength(1);
+  });
+});
+
+describe('failure', () => {
   it('renders the error state instead of the table', async () => {
     server.use(errorHandler('get', '/charges', 502, 'processor_unavailable'));
 

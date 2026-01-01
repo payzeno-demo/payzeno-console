@@ -29,3 +29,12 @@ export function statusHint(status: PaymentIntentStatus): string {
       return 'With the acquirer.';
     case 'succeeded':
       return 'Captured.';
+    case 'failed':
+      return 'Declined or errored.';
+    case 'canceled':
+      return 'The authorisation was released.';
+    default:
+      return '';
+  }
+}
+

@@ -71,3 +71,28 @@ export function ChargeDetailPage() {
         <Button
           type="button"
           disabled={!refundable || readOnly || !can('refunds:write')}
+          onClick={() => setRefundOpen(true)}
+        >
+          Refund
+        </Button>
+      </PageHeader>
+
+      {charge.failure_code ? (
+        <Alert tone="critical" title={`Declined — ${humanise(charge.failure_code)}`}>
+          {charge.failure_message ?? 'The issuer did not give a reason beyond the decline code.'}
+        </Alert>
+      ) : null}
+
+      {charge.status === 'captured' && !charge.settlement_batch_id ? (
+        <Alert tone="info" title="Not settled yet">
+          Captured funds appear in your balance as pending until the acquirer settlement file
+          for this charge is reconciled.
+        </Alert>
+      ) : null}
+
+      <Card as="section" aria-label="Amounts">
+        <dl>
+          <dt>Authorised</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.amount_minor} currency={charge.currency} />
+          </dd>
