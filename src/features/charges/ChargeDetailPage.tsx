@@ -83,3 +83,16 @@ export function ChargeDetailPage() {
         </Alert>
       ) : null}
 
+      {charge.status === 'captured' && !charge.settlement_batch_id ? (
+        <Alert tone="info" title="Not settled yet">
+          Captured funds appear in your balance as pending until the acquirer settlement file
+          for this charge is reconciled.
+        </Alert>
+      ) : null}
+
+      <Card as="section" aria-label="Amounts">
+        <dl>
+          <dt>Authorised</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.amount_minor} currency={charge.currency} />
+          </dd>
