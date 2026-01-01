@@ -34,3 +34,7 @@ export function statusHint(status: PaymentIntentStatus): string {
     case 'canceled':
       return 'The authorisation was released.';
     default:
+      return '';
+  }
+}
+

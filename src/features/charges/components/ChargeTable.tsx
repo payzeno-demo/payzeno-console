@@ -33,3 +33,14 @@ export function ChargeTable({
         <ExportCsvButton filename="charges.csv" columns={chargeColumns} rows={rows} />
       </DataTableToolbar>
 
+      <DataTable<ChargeRow>
+        caption="Charges, newest first"
+        columns={chargeColumns}
+        rows={rows}
+        isLoading={isLoading}
+        onRowClick={(row) => navigate(ROUTES.charges.detail(row.id))}
+        emptyState={
+          <EmptyRows
+            title="No charges match"
+            body="A charge appears once a payment intent is authorised."
+          />

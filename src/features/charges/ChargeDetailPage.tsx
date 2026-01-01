@@ -71,3 +71,15 @@ export function ChargeDetailPage() {
         <Button
           type="button"
           disabled={!refundable || readOnly || !can('refunds:write')}
+          onClick={() => setRefundOpen(true)}
+        >
+          Refund
+        </Button>
+      </PageHeader>
+
+      {charge.failure_code ? (
+        <Alert tone="critical" title={`Declined — ${humanise(charge.failure_code)}`}>
+          {charge.failure_message ?? 'The issuer did not give a reason beyond the decline code.'}
+        </Alert>
+      ) : null}
+
