@@ -115,3 +115,10 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
     exportValue: (row) => row.settlement_batch_id ?? '',
   },
   {
+    id: 'created_at',
+    header: 'Created',
+    cell: (row) => <DateCell value={row.created_at} precision="minute" />,
+    exportValue: (row) => row.created_at,
+    sortable: true,
+  },
+];
