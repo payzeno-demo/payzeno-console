@@ -49,5 +49,28 @@ export interface UseCreateBankAccountResult {
 
 export function useCreateBankAccount(): UseCreateBankAccountResult {
   const endpoints = useEndpoints();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const createBankAccount = useCallback(
+    (args: CreateBankAccountArgs) => {
+      const request: CreateBankAccountRequest = {
+        country: args.country,
+        currency: args.currency,
+        scheme: args.scheme,
+        bank_account_token: args.bankAccountToken,
+        account_holder_name: args.accountHolderName,
+      };
+      if (args.isDefault !== undefined) request.is_default = args.isDefault;
+      mutation.mutate({ request });
+    },
+    [mutation],
+  );
+
+  return {
+    createBankAccount,
+    isPending: mutation.isPending,
+    errorMessage,
+    fieldErrors,
+    createdAccount,
+  };
 }
