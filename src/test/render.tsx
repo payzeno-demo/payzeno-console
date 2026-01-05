@@ -76,3 +76,12 @@ export type RenderOptionsWithProviders = ProviderOptions & Omit<RenderOptions, '
 
 export interface ProvidersProps extends ProviderOptions {
   children: ReactNode;
+}
+
+/** Production query defaults minus the retries. See the file header for why. */
+export function createTestQueryClient(): QueryClient {
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: Number.POSITIVE_INFINITY,

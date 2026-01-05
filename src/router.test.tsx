@@ -48,6 +48,12 @@ describe('the signed-in tree', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the charges index', async () => {
+    renderAt(ROUTES.charges.index);
+
+    expect(await screen.findByRole('heading', { name: 'Charges' })).toBeInTheDocument();
+  });
+
   it('redirects the legacy /dashboard bookmark to the landing route', async () => {
     renderAt('/dashboard');
 
@@ -72,6 +78,14 @@ describe('the signed-out branch', () => {
 });
 
 describe('the catch-all', () => {
+  it('renders the not-found screen for an unknown path', async () => {
+    renderAt('/nowhere-in-particular');
+
+    expect(
+      await screen.findByRole('heading', { name: 'We could not find that' }),
+    ).toBeInTheDocument();
+  });
+
   it('points home at the landing route', async () => {
     renderAt('/nowhere-in-particular');
 
