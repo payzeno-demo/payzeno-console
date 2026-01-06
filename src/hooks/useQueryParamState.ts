@@ -48,3 +48,7 @@ export function useQueryParamState<T>(
           const serialised = serialise(next);
           if (serialised === null || serialised === '') updated.delete(key);
           else updated.set(key, serialised);
+          // Any filter change invalidates the cursor — page 3 of the old filter is meaningless.
+          updated.delete('cursor');
+          return updated;
+        },

@@ -44,3 +44,6 @@ export interface UseSettlementItemsResult {
 const RETRYABLE_STATUSES: ReadonlySet<ReconciliationItemStatus> = new Set([
   'retryable',
   'failed',
+]);
+
+function toRow(item: ReconciliationItem): SettlementItemRow {

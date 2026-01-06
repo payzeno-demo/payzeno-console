@@ -30,3 +30,6 @@ export function SettlementDetailPage() {
   const { batchId = '' } = useParams<{ batchId: string }>();
   useDocumentTitle(batchId ? `Settlement ${batchId}` : 'Settlement');
 
+  const [status, setStatus] = useQueryParamState<ReconciliationItemStatus | 'all'>(
+    'item_status',
+    'all',

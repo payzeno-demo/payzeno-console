@@ -48,6 +48,12 @@ describe('the signed-in tree', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the charges index', async () => {
+    renderAt(ROUTES.charges.index);
+
+    expect(await screen.findByRole('heading', { name: 'Charges' })).toBeInTheDocument();
+  });
+
   it('redirects the legacy /dashboard bookmark to the landing route', async () => {
     renderAt('/dashboard');
 
@@ -64,6 +70,18 @@ describe('the signed-out branch', () => {
     ).toBeInTheDocument();
   });
 
+  it('bounces a signed-in visitor away from the login page', async () => {
+    renderAt(ROUTES.auth.login);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('heading', { name: 'Sign in to Payzeno' }),
+      ).not.toBeInTheDocument();
+    });
+  });
+});
+
+describe('the role guard', () => {
   it('lets a permitted role through', async () => {
     renderAt(ROUTES.payouts.index);
 
@@ -72,6 +90,14 @@ describe('the signed-out branch', () => {
 });
 
 describe('the catch-all', () => {
+  it('renders the not-found screen for an unknown path', async () => {
+    renderAt('/nowhere-in-particular');
+
+    expect(
+      await screen.findByRole('heading', { name: 'We could not find that' }),
+    ).toBeInTheDocument();
+  });
+
   it('points home at the landing route', async () => {
     renderAt('/nowhere-in-particular');
 
@@ -79,4 +105,13 @@ describe('the catch-all', () => {
     expect(link).toHaveAttribute('href', ROUTES.reporting.index);
   });
 
+  it('does not swallow a valid path that merely looks odd', async () => {
+    renderAt(ROUTES.charges.detail('ch_with-dashes_and_underscores'));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('heading', { name: 'We could not find that' }),
+      ).not.toBeInTheDocument();
+    });
+  });
 });

@@ -81,3 +81,9 @@ export const ROUTES = {
   },
 
   notFound: '/404',
+} as const;
+
+/**
+ * The `<Route path>` side of the same table.
+ *
+ * Detail routes are declared **relative** to their index route, because `router.tsx` nests them
