@@ -216,3 +216,28 @@ const chargeHandlers = [
     }),
   ),
 ];
+
+// ---------------------------------------------------------------------------
+// §7 refunds and disputes
+// ---------------------------------------------------------------------------
+
+const refundHandlers = [
+  http.get(url('/refunds'), () => ok(makePage([makeRefund()]))),
+
+  http.post(url('/refunds'), async ({ request }) => {
+    const body = (await request.json()) as { charge_id: string; amount_minor?: number };
+    return ok(
+      makeRefund({
+        charge_id: body.charge_id,
+        amount_minor: body.amount_minor ?? 12_500,
+        status: 'pending',
+        succeeded_at: null,
+      }),
+      201,
+    );
+  }),
+];
+
+const disputeHandlers = [
+  http.get(url('/disputes'), () =>
+    ok(
