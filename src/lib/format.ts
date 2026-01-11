@@ -58,3 +58,9 @@ export function titleCase(value: string): string {
     .split(' ')
     .filter(Boolean)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+/** `visa` → `Visa`, `amex` → `Amex`, but `sepa` → `SEPA`. Acronyms need the exception table. */
+const ACRONYMS = new Set(['sepa', 'ach', 'aba', 'iban', 'bic', 'api', 'csv', 'sca', 'eci', 'mcc']);
+

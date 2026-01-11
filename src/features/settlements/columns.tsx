@@ -21,3 +21,7 @@ import type { SettlementRow } from '@types/view-models';
 /** Which statuses read as "money has actually moved". Merchants conflate the rest. */
 const TERMINAL_STATUSES: ReadonlySet<SettlementBatchStatus> = new Set(['funded', 'failed']);
 
+export function isTerminal(status: SettlementBatchStatus): boolean {
+  return TERMINAL_STATUSES.has(status);
+}
+
