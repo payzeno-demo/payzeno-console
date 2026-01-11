@@ -34,3 +34,8 @@ export function MoneyCell({
   currency,
   signed = false,
   muteZero = true,
+  emphasiseNegative = false,
+}: MoneyCellProps) {
+  const formatter = useMoneyFormat();
+
+  const resolved: Money | null =

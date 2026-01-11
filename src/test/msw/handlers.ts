@@ -241,3 +241,27 @@ const refundHandlers = [
 const disputeHandlers = [
   http.get(url('/disputes'), () =>
     ok(
+      makePage([
+        makeDispute(),
+        makeDispute({
+          id: 'dp_01HW0RTDISPUTE00000002',
+          status: 'under_review',
+          submitted_at: '2026-03-13T15:00:00.000Z',
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/disputes/:disputeId'), ({ params }) =>
+    ok(makeDispute({ id: String(params.disputeId) })),
+  ),
+
+  http.post(url('/disputes/:disputeId/evidence'), ({ params }) =>
+    ok(
+      makeDispute({
+        id: String(params.disputeId),
+        status: 'under_review',
+        submitted_at: '2026-03-14T09:25:00.000Z',
+      }),
+    ),
+  ),

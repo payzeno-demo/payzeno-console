@@ -52,3 +52,9 @@ export function humanise(value: string): string {
 }
 
 /** `needs_response` → `Needs Response`. Title case, for status pills and column headers. */
+export function titleCase(value: string): string {
+  return value
+    .replace(/[_-]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
