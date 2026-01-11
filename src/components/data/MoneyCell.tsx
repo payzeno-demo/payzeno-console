@@ -43,3 +43,7 @@ export function MoneyCell({
 
   if (!resolved) {
     return <span style={{ color: color.textMuted }}>—</span>;
+  }
+
+  const isZeroAmount = resolved.amount_minor === 0;
+  const isNegativeAmount = resolved.amount_minor < 0;
