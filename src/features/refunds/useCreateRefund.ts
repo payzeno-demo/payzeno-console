@@ -23,3 +23,16 @@ import { queryKeys } from '@api/queryKeys';
 import { useEndpoints } from '@app/ApiContext';
 import { useToast } from '@app/ToastProvider';
 import { trackEvent } from '@lib/telemetry';
+
+import { createRefundMutation } from './refunds.queries';
+
+export interface CreateRefundArgs {
+  chargeId: string;
+  amountMinor?: MinorUnits;
+  reason?: CreateRefundRequest['reason'];
+}
+
+export interface UseCreateRefundResult {
+  createRefund: (args: CreateRefundArgs) => void;
+  isPending: boolean;
+  errorMessage: string | null;
