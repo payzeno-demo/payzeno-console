@@ -32,3 +32,68 @@ export function statusHint(status: RefundStatus): string {
   }
 }
 
+/** Reason labels merchants recognise. `expired_uncaptured_auth` is system-generated. */
+export function reasonLabel(reason: RefundReason): string {
+  return reason === 'expired_uncaptured_auth' ? 'Expired authorisation' : humanise(reason);
+}
+
+export const refundColumns: ReadonlyArray<ColumnDef<RefundRow>> = [
+  {
+    id: 'id',
+    header: 'Refund',
+    cell: (row) => <IdCell value={row.id} />,
+    exportValue: (row) => row.id,
+    width: '16rem',
+  },
+  {
+    id: 'charge_id',
+    header: 'Charge',
+    cell: (row) => (
+      <Link to={ROUTES.charges.detail(row.charge_id)}>
+        <IdCell value={row.charge_id} />
+      </Link>
+    ),
+    exportValue: (row) => row.charge_id,
+  },
+  {
+    id: 'card',
+    header: 'Card',
+    cell: (row) => <span>{maskLastFour(row._chargeLastFour)}</span>,
+    exportValue: (row) => row._chargeLastFour ?? '',
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <StatusPill status={row.status} label={humanise(row.status)} title={statusHint(row.status)} />
+    ),
+    exportValue: (row) => row.status,
+  },
+  {
+    id: 'reason',
+    header: 'Reason',
+    cell: (row) => <span>{reasonLabel(row.reason)}</span>,
+    exportValue: (row) => row.reason,
+  },
+  {
+    id: 'amount_minor',
+    header: 'Refunded',
+    align: 'end',
+    sortable: true,
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),
+  },
+  {
+    id: 'failure_reason',
+    header: 'Failure',
+    cell: (row) => <span>{row.failure_reason ? ellipsis(row.failure_reason, 48) : '—'}</span>,
+    exportValue: (row) => row.failure_reason ?? '',
+  },
+  {
+    id: 'created_at',
+    header: 'Created',
+    sortable: true,
+    cell: (row) => <DateCell value={row.created_at} precision="minute" />,
+    exportValue: (row) => row.created_at,
+  },
+];

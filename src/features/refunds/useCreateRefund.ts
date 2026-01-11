@@ -11,3 +11,66 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 
+import type { CreateRefundRequest, MinorUnits, Refund } from '@payzeno/contracts';
+
+import {
+  ConflictApiError,
+  ConsoleApiError,
+  ForbiddenError,
+  ValidationApiError,
+} from '@api/errors';
+import { queryKeys } from '@api/queryKeys';
+import { useEndpoints } from '@app/ApiContext';
+import { useToast } from '@app/ToastProvider';
+import { trackEvent } from '@lib/telemetry';
+
+import { createRefundMutation } from './refunds.queries';
+
+export interface CreateRefundArgs {
+  chargeId: string;
+  amountMinor?: MinorUnits;
+  reason?: CreateRefundRequest['reason'];
+}
+
+export interface UseCreateRefundResult {
+  createRefund: (args: CreateRefundArgs) => void;
+  isPending: boolean;
+  errorMessage: string | null;
+  fieldErrors: Record<string, string>;
+  lastRefund: Refund | null;
+  reset: () => void;
+}
+
+export function useCreateRefund(): UseCreateRefundResult {
+  const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [lastRefund, setLastRefund] = useState<Refund | null>(null);
+
+  const mutation = useMutation({
+    ...createRefundMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (refund: Refund) => {
+      setLastRefund(refund);
+      toast.success('Refund submitted.');
+      trackEvent('refund_created', { currency: refund.currency, reason: refund.reason });
+
+      // A refund moves money: the charge, the refunds list and the balance all change.
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.refunds.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.charges.detail(refund.charge_id) }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.balance.all }),
+      ]);
+    },
+    onError: (error: unknown) => {
+      if (error instanceof ValidationApiError) {
+        setFieldErrors(error.fieldErrorMap());
+        setErrorMessage(
+          error.code === 'refund_window_closed'
+            ? 'This charge is past the refund window. Ask support to raise a credit instead.'
