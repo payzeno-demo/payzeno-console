@@ -50,6 +50,19 @@ describe('JPY — the exponent that catches everyone', () => {
     expect(rendered.textContent).not.toContain('12.00');
   });
 
+  it('renders the same minor value differently for GBP and JPY', () => {
+    const { unmount } = renderBare(<MoneyCell amountMinor={1_200} currency="GBP" />);
+    const gbp = screen.getByText(formatMoney(money(1_200, 'GBP'))).textContent;
+    unmount();
+
+    renderBare(<MoneyCell amountMinor={1_200} currency="JPY" />);
+    const jpy = screen.getByText(formatMoney(money(1_200, 'JPY'))).textContent;
+
+    expect(jpy).not.toBe(gbp);
+  });
+});
+
+describe('missing amounts', () => {
   it('renders zero as a real zero, not as a dash', () => {
     renderBare(<MoneyCell amountMinor={0} currency="GBP" />);
 
@@ -59,6 +72,12 @@ describe('JPY — the exponent that catches everyone', () => {
 });
 
 describe('signed amounts', () => {
+  it('prefixes a positive amount with a plus when asked', () => {
+    renderBare(<MoneyCell amountMinor={2_500} currency="GBP" signed />);
+
+    expect(screen.getByText(/^\+/)).toBeInTheDocument();
+  });
+
   it('uses a real minus sign for a negative amount, not a hyphen', () => {
     renderBare(<MoneyCell amountMinor={-2_500} currency="GBP" signed />);
 
@@ -66,6 +85,14 @@ describe('signed amounts', () => {
     expect(screen.getByText(/^−/)).toBeInTheDocument();
   });
 
+  it('leaves the sign off unless `signed` is set', () => {
+    renderBare(<MoneyCell amountMinor={2_500} currency="GBP" />);
+
+    expect(screen.queryByText(/^\+/)).not.toBeInTheDocument();
+  });
+});
+
+describe('presentation', () => {
   it('never wraps an amount across two lines', () => {
     const { container } = renderBare(<MoneyCell amountMinor={123_456_789} currency="GBP" />);
 

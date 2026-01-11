@@ -34,3 +34,16 @@ export function MoneyCell({
   currency,
   signed = false,
   muteZero = true,
+  emphasiseNegative = false,
+}: MoneyCellProps) {
+  const formatter = useMoneyFormat();
+
+  const resolved: Money | null =
+    value ?? (amountMinor !== undefined && currency ? money(amountMinor, currency) : null);
+
+  if (!resolved) {
+    return <span style={{ color: color.textMuted }}>—</span>;
+  }
+
+  const isZeroAmount = resolved.amount_minor === 0;
+  const isNegativeAmount = resolved.amount_minor < 0;
