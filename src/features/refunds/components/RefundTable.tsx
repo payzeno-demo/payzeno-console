@@ -20,3 +20,31 @@ export interface RefundTableProps {
   hideChargeColumn?: boolean;
 }
 
+export function RefundTable({
+  rows,
+  isLoading,
+  pagination,
+  hideChargeColumn = false,
+}: RefundTableProps) {
+  const columns = hideChargeColumn
+    ? refundColumns.filter((column) => column.id !== 'charge_id')
+    : refundColumns;
+
+  return (
+    <>
+      <DataTable<RefundRow>
+        caption="Refunds, most recently created first"
+        columns={columns}
+        rows={rows}
+        isLoading={isLoading}
+        emptyState={
+          <EmptyRows
+            title="No refunds"
+            body="Refunds you issue from a charge appear here within a few seconds."
+          />
+        }
+      />
+      {pagination ? <DataTablePagination pagination={pagination} label="Refunds pages" /> : null}
+    </>
+  );
+}
