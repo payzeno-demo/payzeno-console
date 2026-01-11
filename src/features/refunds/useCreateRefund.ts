@@ -49,3 +49,16 @@ export function useCreateRefund(): UseCreateRefundResult {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [lastRefund, setLastRefund] = useState<Refund | null>(null);
+
+  const mutation = useMutation({
+    ...createRefundMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (refund: Refund) => {
+      setLastRefund(refund);
+      toast.success('Refund submitted.');
+      trackEvent('refund_created', { currency: refund.currency, reason: refund.reason });
+
+      // A refund moves money: the charge, the refunds list and the balance all change.

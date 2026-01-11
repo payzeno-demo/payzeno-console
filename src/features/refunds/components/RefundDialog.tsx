@@ -29,3 +29,13 @@ const SELECTABLE_REASONS: ReadonlyArray<RefundReason> = [
   'duplicate',
   'fraudulent',
 ];
+
+export interface RefundDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  chargeId: string;
+  currency: CurrencyCode;
+  refundableMinor: MinorUnits;
+}
+
+export function RefundDialog({

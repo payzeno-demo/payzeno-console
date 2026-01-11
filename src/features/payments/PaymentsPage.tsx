@@ -45,3 +45,12 @@ export function PaymentsPage() {
   });
 
   return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Payments"
+        description="Every payment intent your integration has created."
+        isBusy={isFetching}
+      />
+
+      <FilterBar label="Payment filters">
+        <Select
