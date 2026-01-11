@@ -54,3 +54,13 @@ export function PaymentsPage() {
 
       <FilterBar label="Payment filters">
         <Select
+          id="payment-status"
+          label="Status"
+          value={status}
+          onValueChange={(next) => {
+            setStatus(next as PaymentIntentStatus | 'all');
+            setCursor('');
+          }}
+          options={STATUS_OPTIONS.map((value) => ({
+            value,
+            label: value === 'all' ? 'All statuses' : value.replace(/_/g, ' '),
