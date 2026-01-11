@@ -17,3 +17,12 @@ import { PaymentIntentTable } from './components/PaymentIntentTable';
 import { usePaymentIntents } from './usePaymentIntents';
 
 const STATUS_OPTIONS: ReadonlyArray<PaymentIntentStatus | 'all'> = [
+  'all',
+  'requires_payment_method',
+  'requires_confirmation',
+  'requires_action',
+  'requires_capture',
+  'processing',
+  'succeeded',
+  'failed',
+  'canceled',
