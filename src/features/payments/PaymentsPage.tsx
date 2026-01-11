@@ -64,3 +64,12 @@ export function PaymentsPage() {
           options={STATUS_OPTIONS.map((value) => ({
             value,
             label: value === 'all' ? 'All statuses' : value.replace(/_/g, ' '),
+          }))}
+        />
+        <Input
+          id="payment-customer"
+          label="Customer reference"
+          value={customer}
+          placeholder="cust-1024"
+          onChange={(event) => {
+            setCustomer(event.target.value);

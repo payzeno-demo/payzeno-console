@@ -19,3 +19,10 @@ export function refundsListQuery(e: EndpointRegistry, q?: RefundListQuery) {
   return queryOptions<Paginated<Refund>>({
     queryKey: queryKeys.refunds.list(query),
     queryFn: () => e.refunds.list(query),
+    staleTime: 20_000,
+  });
+}
+
+/**
+ * The refunds shown on a charge detail page. Separate factory rather than a filter argument
+ * so the key nests under the charge and one refund invalidates exactly one panel.
