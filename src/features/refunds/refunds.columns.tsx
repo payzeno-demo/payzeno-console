@@ -32,6 +32,11 @@ export function statusHint(status: RefundStatus): string {
   }
 }
 
+/** Reason labels merchants recognise. `expired_uncaptured_auth` is system-generated. */
+export function reasonLabel(reason: RefundReason): string {
+  return reason === 'expired_uncaptured_auth' ? 'Expired authorisation' : humanise(reason);
+}
+
 export const refundColumns: ReadonlyArray<ColumnDef<RefundRow>> = [
   {
     id: 'id',

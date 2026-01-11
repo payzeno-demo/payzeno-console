@@ -70,3 +70,14 @@ export function RefundDialog({
   const isPartial = amountMinor < refundableMinor && !tooSmall;
 
   const handleSubmit = () => {
+    if (isPending || tooLarge || tooSmall) return;
+    createRefund({
+      chargeId,
+      // Omitting the amount means "refund everything still refundable", which is what the
+      // API does with no `amount_minor` — and it avoids a race with a concurrent refund.
+      amountMinor: amountMinor === refundableMinor ? undefined : amountMinor,
+      reason,
+    });
+  };
+
+  return (
