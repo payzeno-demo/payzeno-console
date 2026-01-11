@@ -26,3 +26,13 @@ const STATUS_OPTIONS: ReadonlyArray<PaymentIntentStatus | 'all'> = [
   'succeeded',
   'failed',
   'canceled',
+];
+
+export function PaymentsPage() {
+  useDocumentTitle('Payments');
+
+  const [status, setStatus] = useQueryParamState<PaymentIntentStatus | 'all'>('status', 'all');
+  const [customer, setCustomer] = useQueryParamState<string>('customer', '');
+  const [cursor, setCursor] = useQueryParamState<string>('cursor', '');
+
+  // Typing a customer reference should not fire one request per keystroke.
