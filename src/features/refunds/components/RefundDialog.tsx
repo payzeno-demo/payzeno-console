@@ -50,3 +50,13 @@ export function RefundDialog({
   const { formatMinor } = useMoneyFormat();
   const { createRefund, isPending, errorMessage, fieldErrors, lastRefund, reset } =
     useCreateRefund();
+
+  // Re-prefill whenever the dialog is reopened against a different charge.
+  useEffect(() => {
+    if (open) {
+      setAmountMinor(refundableMinor);
+      reset();
+    }
+  }, [open, refundableMinor, reset]);
+
+  // A successful refund closes the dialog; the charge page shows the new balance.
