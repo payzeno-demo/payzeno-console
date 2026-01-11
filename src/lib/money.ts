@@ -56,3 +56,8 @@ export function zero(currency: CurrencyCode): Money {
 export function sumMoney(values: ReadonlyArray<Money>, currency: CurrencyCode): Money {
   return values.reduce<Money>((acc, value) => addMoney(acc, value), zero(currency));
 }
+
+/** Negate. `Money` is unsigned by convention only; refunds and reversals render as negatives. */
+export function negate(value: Money): Money {
+  return money(-value.amount_minor, value.currency);
+}

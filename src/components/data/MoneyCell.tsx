@@ -39,3 +39,7 @@ export function MoneyCell({
   const formatter = useMoneyFormat();
 
   const resolved: Money | null =
+    value ?? (amountMinor !== undefined && currency ? money(amountMinor, currency) : null);
+
+  if (!resolved) {
+    return <span style={{ color: color.textMuted }}>—</span>;
