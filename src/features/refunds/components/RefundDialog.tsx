@@ -19,3 +19,13 @@ import { Dialog } from '@components/ui/Dialog';
 import { Select } from '@components/ui/Select';
 import { MoneyInput } from '@components/form/MoneyInput';
 import { useMoneyFormat } from '@hooks/useMoneyFormat';
+import { humanise } from '@lib/format';
+
+import { useCreateRefund } from '../useCreateRefund';
+
+/** `expired_uncaptured_auth` is system-generated and is deliberately not offered here. */
+const SELECTABLE_REASONS: ReadonlyArray<RefundReason> = [
+  'requested_by_customer',
+  'duplicate',
+  'fraudulent',
+];

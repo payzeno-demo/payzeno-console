@@ -36,3 +36,16 @@ export interface UseCreateRefundResult {
   createRefund: (args: CreateRefundArgs) => void;
   isPending: boolean;
   errorMessage: string | null;
+  fieldErrors: Record<string, string>;
+  lastRefund: Refund | null;
+  reset: () => void;
+}
+
+export function useCreateRefund(): UseCreateRefundResult {
+  const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [lastRefund, setLastRefund] = useState<Refund | null>(null);

@@ -36,3 +36,12 @@ export function PaymentsPage() {
   const [cursor, setCursor] = useQueryParamState<string>('cursor', '');
 
   // Typing a customer reference should not fire one request per keystroke.
+  const debouncedCustomer = useDebouncedValue(customer, 300);
+
+  const { rows, isLoading, isFetching, hasMore, nextCursor, error } = usePaymentIntents({
+    ...(status === 'all' ? {} : { status }),
+    ...(debouncedCustomer ? { customer_reference: debouncedCustomer } : {}),
+    ...(cursor ? { cursor } : {}),
+  });
+
+  return (
