@@ -39,3 +39,14 @@ export interface RefundDialogProps {
 }
 
 export function RefundDialog({
+  open,
+  onOpenChange,
+  chargeId,
+  currency,
+  refundableMinor,
+}: RefundDialogProps) {
+  const [amountMinor, setAmountMinor] = useState<MinorUnits>(refundableMinor);
+  const [reason, setReason] = useState<RefundReason>('requested_by_customer');
+  const { formatMinor } = useMoneyFormat();
+  const { createRefund, isPending, errorMessage, fieldErrors, lastRefund, reset } =
+    useCreateRefund();
