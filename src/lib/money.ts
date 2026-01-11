@@ -52,3 +52,7 @@ export function zero(currency: CurrencyCode): Money {
  * Sum a list. Throws `CurrencyMismatchError` (from contracts) on the first mismatch rather
  * than silently adding EUR to USD — a totals panel that lies is worse than one that crashes
  * into the error boundary.
+ */
+export function sumMoney(values: ReadonlyArray<Money>, currency: CurrencyCode): Money {
+  return values.reduce<Money>((acc, value) => addMoney(acc, value), zero(currency));
+}
