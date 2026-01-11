@@ -62,3 +62,15 @@ export function useCreateRefund(): UseCreateRefundResult {
       trackEvent('refund_created', { currency: refund.currency, reason: refund.reason });
 
       // A refund moves money: the charge, the refunds list and the balance all change.
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.refunds.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.charges.detail(refund.charge_id) }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.balance.all }),
+      ]);
+    },
+    onError: (error: unknown) => {
+      if (error instanceof ValidationApiError) {
+        setFieldErrors(error.fieldErrorMap());
+        setErrorMessage(
+          error.code === 'refund_window_closed'
+            ? 'This charge is past the refund window. Ask support to raise a credit instead.'
