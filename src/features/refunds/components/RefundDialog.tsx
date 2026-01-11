@@ -60,3 +60,13 @@ export function RefundDialog({
   }, [open, refundableMinor, reset]);
 
   // A successful refund closes the dialog; the charge page shows the new balance.
+  useEffect(() => {
+    if (lastRefund) onOpenChange(false);
+  }, [lastRefund, onOpenChange]);
+
+  const tooLarge = amountMinor > refundableMinor;
+  const tooSmall = amountMinor <= 0;
+  const amountError = fieldErrors.amount_minor ?? (tooLarge ? 'More than is refundable.' : null);
+  const isPartial = amountMinor < refundableMinor && !tooSmall;
+
+  const handleSubmit = () => {

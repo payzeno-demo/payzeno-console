@@ -12,3 +12,10 @@ import type { CreateRefundRequest, Paginated, Refund } from '@payzeno/contracts'
 import type { EndpointRegistry } from '@api/endpoints';
 import type { RefundListQuery } from '@api/endpoints/refunds.endpoint';
 import { queryKeys } from '@api/queryKeys';
+import { DEFAULT_PAGE_SIZE } from '@config/constants';
+
+export function refundsListQuery(e: EndpointRegistry, q?: RefundListQuery) {
+  const query: RefundListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
+  return queryOptions<Paginated<Refund>>({
+    queryKey: queryKeys.refunds.list(query),
+    queryFn: () => e.refunds.list(query),
