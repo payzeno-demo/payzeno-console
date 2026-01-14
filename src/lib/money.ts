@@ -61,3 +61,7 @@ export function sumMoney(values: ReadonlyArray<Money>, currency: CurrencyCode): 
 export function negate(value: Money): Money {
   return money(-value.amount_minor, value.currency);
 }
+
+export function isNegative(value: Money): boolean {
+  return value.amount_minor < 0;
+}

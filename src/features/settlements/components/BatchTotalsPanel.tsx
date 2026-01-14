@@ -33,3 +33,7 @@ export function BatchTotalsPanel({ totals, currency, isLoading }: BatchTotalsPan
   return (
     <Card as="section" aria-label="Batch totals" data-loading={isLoading}>
       <h2>Your totals in this batch</h2>
+
+      <dl>
+        <dt>Expected</dt>
+        <dd>

@@ -25,3 +25,7 @@ export function isTerminal(status: SettlementBatchStatus): boolean {
   return TERMINAL_STATUSES.has(status);
 }
 
+export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
+  {
+    id: 'id',
+    header: 'Batch',
