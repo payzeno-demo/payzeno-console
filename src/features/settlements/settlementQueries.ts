@@ -21,3 +21,6 @@ import type {
 } from '@api/endpoints/settlements.endpoint';
 import { queryKeys } from '@api/queryKeys';
 import { SETTLEMENT_ITEM_PAGE_SIZE } from '@config/constants';
+
+export function settlementsListQuery(e: EndpointRegistry, q?: SettlementListQuery) {
+  return queryOptions<Paginated<MerchantSettlementBatch>>({

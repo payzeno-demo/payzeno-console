@@ -40,3 +40,8 @@ export function explainStatus(status: ReconciliationItemStatus, lineType: Reconc
     case 'variance_exceeded':
       return 'The acquirer amount differs from the authorised amount beyond your tolerance.';
     case 'settling':
+      return 'A settlement pass holds this item right now.';
+    default:
+      return '';
+  }
+}
