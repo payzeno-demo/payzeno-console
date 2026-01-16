@@ -45,3 +45,8 @@ export function explainStatus(status: ReconciliationItemStatus, lineType: Reconc
       return '';
   }
 }
+
+export function settlementItemColumns(
+  batchId: string,
+): ReadonlyArray<ColumnDef<SettlementItemRow>> {
+  return [
