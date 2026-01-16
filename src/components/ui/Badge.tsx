@@ -80,3 +80,9 @@ export function Badge({
             width: '6px',
             height: '6px',
             borderRadius: radius.pill,
+            background: palette.fg,
+          }}
+        />
+      ) : null}
+      {children}
+    </span>

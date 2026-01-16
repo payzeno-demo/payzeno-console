@@ -35,6 +35,76 @@ export interface CardProps {
   className?: string;
 }
 
+export function Card({
+  children,
+  as = 'section',
+  title,
+  headingLevel = 3,
+  description,
+  actions,
+  flush = false,
+  className,
+  ...aria
+}: CardProps) {
+  const Heading = `h${headingLevel}` as const;
+  const Element = as;
+
+  return (
+    <Element
+      {...aria}
+      className={cn(pz('card'), className)}
+      style={{
+        background: color.surface,
+        border: `1px solid ${color.border}`,
+        borderRadius: radius.lg,
+        boxShadow: shadow.sm,
+        overflow: 'hidden',
+      }}
+    >
+      {title ? (
+        <header
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            gap: space[4],
+            padding: `${space[4]} ${space[5]}`,
+            borderBottom: `1px solid ${color.border}`,
+          }}
+        >
+          <div>
+            <Heading
+              style={{
+                margin: 0,
+                fontFamily: font.family,
+                fontSize: font.size.lg,
+                fontWeight: font.weight.semibold,
+                color: color.textPrimary,
+              }}
+            >
+              {title}
+            </Heading>
+            {description ? (
+              <p
+                style={{
+                  margin: `${space[1]} 0 0`,
+                  fontSize: font.size.sm,
+                  color: color.textSecondary,
+                }}
+              >
+                {description}
+              </p>
+            ) : null}
+          </div>
+          {actions ? <div style={{ flexShrink: 0 }}>{actions}</div> : null}
+        </header>
+      ) : null}
+
+      <div style={{ padding: flush ? 0 : space[5] }}>{children}</div>
+    </Element>
+  );
+}
+
 /** Metric tile: a big number with a caption. The reporting summary is four of these. */
 export function StatCard({
   label,

@@ -41,3 +41,12 @@ const ICONS: Record<Extract<Tone, 'info' | 'warning' | 'danger' | 'success'>, st
   danger: '⨯',
   success: '✓',
 };
+
+export function Alert({ tone, role, title, children, action, onDismiss, className }: AlertProps) {
+  const resolved = resolveAlertTone(tone);
+  const palette = toneStyle(resolved);
+
+  return (
+    <div
+      role={role ?? (resolved === 'danger' ? 'alert' : 'status')}
+      className={cn(pz('alert'), pz('alert', undefined, resolved), className)}
