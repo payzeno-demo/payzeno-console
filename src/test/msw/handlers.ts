@@ -265,3 +265,27 @@ const disputeHandlers = [
       }),
     ),
   ),
+];
+
+// ---------------------------------------------------------------------------
+// §8 balance, payouts, settlements
+// ---------------------------------------------------------------------------
+
+const balanceHandlers = [
+  http.get(url('/balance'), ({ request }) => {
+    const currency = new URL(request.url).searchParams.get('currency') ?? 'GBP';
+    return ok(makeBalance({ currency: currency as 'GBP' }));
+  }),
+];
+
+const payoutHandlers = [
+  http.get(url('/payouts'), () =>
+    ok(
+      makePage([
+        makePayout(),
+        makePayout({
+          id: 'po_01HW0RTPAYOUT00000002',
+          status: 'failed',
+          failure_code: 'bank_rejected',
+          failed_at: '2026-03-13T18:00:00.000Z',
+          reversal_transaction_id: 'txn_01HW0RTLEDGERTXN000009',

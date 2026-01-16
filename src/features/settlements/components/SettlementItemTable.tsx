@@ -24,3 +24,7 @@ const FILTERABLE_STATUSES: ReadonlyArray<ReconciliationItemStatus | 'all'> = [
   'retryable',
   'failed',
   'orphaned',
+  'needs_review',
+  'variance_exceeded',
+];
+
