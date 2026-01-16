@@ -22,3 +22,16 @@ import { renderWithProviders, screen, waitFor } from '@/test/render';
 
 import { HttpResponse, http } from 'msw';
 
+const BATCH_ID = 'sb_01HW0RTBATCH000000001';
+const ROUTE = `/settlements/${BATCH_ID}`;
+const PATTERN = '/settlements/:batchId';
+
+function renderPage(route = ROUTE) {
+  return renderWithProviders(<SettlementDetailPage />, { route, path: PATTERN });
+}
+
+describe('the batch header', () => {
+  it('names the batch and its acquirer', async () => {
+    renderPage();
+
+    expect(

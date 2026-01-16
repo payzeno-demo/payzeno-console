@@ -50,3 +50,7 @@ export function settlementItemColumns(
   batchId: string,
 ): ReadonlyArray<ColumnDef<SettlementItemRow>> {
   return [
+    {
+      id: 'id',
+      header: 'Item',
+      cell: (row) => (
