@@ -86,3 +86,10 @@ export function Badge({
       ) : null}
       {children}
     </span>
+  );
+}
+
+/** Numeric badge for nav items ("3 disputes need a response"). Caps at 99+. */
+export function CountBadge({ count, label }: { count: number; label: string }) {
+  if (count <= 0) return null;
+
