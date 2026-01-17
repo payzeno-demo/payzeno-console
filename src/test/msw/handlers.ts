@@ -289,3 +289,27 @@ const payoutHandlers = [
           failure_code: 'bank_rejected',
           failed_at: '2026-03-13T18:00:00.000Z',
           reversal_transaction_id: 'txn_01HW0RTLEDGERTXN000009',
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/payouts/:payoutId'), ({ params }) =>
+    ok(makePayout({ id: String(params.payoutId) })),
+  ),
+
+  http.post(url('/payouts'), async ({ request }) => {
+    const body = (await request.json()) as { amount_minor?: number; currency: string };
+    return ok(
+      makePayout({
+        id: 'po_01HW0RTPAYOUTCREATED01',
+        status: 'scheduled',
+        amount_minor: body.amount_minor ?? 984_300,
+        currency: body.currency as 'GBP',
+        initiated_at: null,
+      }),
+      201,
+    );
+  }),
+
+  http.post(url('/payouts/:payoutId/cancel'), ({ params }) =>
