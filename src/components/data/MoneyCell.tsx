@@ -47,3 +47,7 @@ export function MoneyCell({
 
   const isZeroAmount = resolved.amount_minor === 0;
   const isNegativeAmount = resolved.amount_minor < 0;
+  const text = signed ? formatter.formatSigned(resolved) : formatter.format(resolved);
+
+  return (
+    <span
