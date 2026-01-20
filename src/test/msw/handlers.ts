@@ -313,3 +313,28 @@ const payoutHandlers = [
   }),
 
   http.post(url('/payouts/:payoutId/cancel'), ({ params }) =>
+    ok(makePayout({ id: String(params.payoutId), status: 'canceled' })),
+  ),
+];
+
+const settlementHandlers = [
+  http.get(url('/settlements'), () =>
+    ok(
+      makePage([
+        makeSettlementBatch(),
+        makeSettlementBatch({
+          id: 'sb_01HW0RTBATCH000000002',
+          status: 'funded',
+          funded_at: '2026-03-13T16:00:00.000Z',
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/settlements/:batchId'), ({ params }) =>
+    ok(makeSettlementBatch({ id: String(params.batchId) })),
+  ),
+
+  /**
+   * arc PERF: the console asks for 50 here, not 500, and the endpoint sends the 30s read
+   * timeout. Three items, one of which is the arc-INC duplicate suspect (settled after two
