@@ -65,3 +65,7 @@ export function negate(value: Money): Money {
 export function isNegative(value: Money): boolean {
   return value.amount_minor < 0;
 }
+
+/**
+ * Format with an explicit sign, for ledger-style columns where a credit and a debit sit in the
+ * same column and the reader needs to tell them apart at a glance.

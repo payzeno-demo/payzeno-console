@@ -29,3 +29,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
   {
     id: 'id',
     header: 'Batch',
+    cell: (row) => (
+      <Link to={ROUTES.settlements.detail(row.id)}>
+        <IdCell value={row.id} />
+      </Link>
