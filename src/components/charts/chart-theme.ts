@@ -38,6 +38,11 @@ export const SERIES_DASH: ReadonlyArray<string | undefined> = [
   '10 4',
 ];
 
+export const tooltipCursor = {
+  stroke: color.borderStrong,
+  strokeWidth: 1,
+} as const;
+
 /** Consistent chart heights. A chart shorter than 180px cannot carry an axis legibly. */
 export const CHART_HEIGHT = {
   compact: 180,
