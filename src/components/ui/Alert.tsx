@@ -50,3 +50,11 @@ export function Alert({ tone, role, title, children, action, onDismiss, classNam
     <div
       role={role ?? (resolved === 'danger' ? 'alert' : 'status')}
       className={cn(pz('alert'), pz('alert', undefined, resolved), className)}
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        gap: space[3],
+        padding: space[4],
+        fontFamily: font.family,
+        background: palette.bg,
+        border: `1px solid ${palette.border}`,
