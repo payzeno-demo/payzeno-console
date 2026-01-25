@@ -49,7 +49,10 @@ export function useZodForm<TValues extends Record<string, string>>(
   formId: string,
 ): ZodForm<TValues> {
   const [values, setValues] = useState<TValues>(initialValues);
+  const [errors, setErrors] = useState<FormErrors>(NO_ERRORS);
   const [isSubmitting, setSubmitting] = useState(false);
+
+  const fieldNames = useMemo(() => Object.keys(initialValues), [initialValues]);
 
   const setValue = useCallback((name: keyof TValues & string, value: string) => {
     setValues((current) => ({ ...current, [name]: value }));
