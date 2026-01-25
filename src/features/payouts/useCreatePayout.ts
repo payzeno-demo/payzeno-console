@@ -80,3 +80,13 @@ export function useCreatePayout(): UseCreatePayoutResult {
     },
     onError: (error: unknown) => {
       if (error instanceof ConflictApiError) {
+        setErrorMessage(
+          error.code === 'payout_blocked'
+            ? 'Payouts are blocked while your balance is negative.'
+            : 'This payout conflicts with one already in flight.',
+        );
+        return;
+      }
+
+      if (error instanceof ValidationApiError) {
+        setFieldErrors(error.fieldErrorMap());
