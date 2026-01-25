@@ -67,3 +67,13 @@ export function PayoutsPage() {
         title="Payouts"
         description="Money on its way from your Payzeno balance to your bank."
         isBusy={isFetching}
+      >
+        <ExportCsvButton rows={rows} columns={payoutColumns} resource="payouts" />
+        <Button
+          type="button"
+          disabled={readOnly || !can('payouts:write') || availableMinor <= 0}
+          onClick={() => setCreateOpen(true)}
+        >
+          Pay out
+        </Button>
+      </PageHeader>
