@@ -58,3 +58,12 @@ export function PayoutsPage() {
     () => entries.filter((entry) => entry.type === 'payout.failed' && !entry.read),
     [entries],
   );
+
+  const availableMinor = balance?.available_minor ?? 0;
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Payouts"
+        description="Money on its way from your Payzeno balance to your bank."
+        isBusy={isFetching}

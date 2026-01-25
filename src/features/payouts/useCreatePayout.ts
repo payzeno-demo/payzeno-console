@@ -70,3 +70,13 @@ export function useCreatePayout(): UseCreatePayoutResult {
     },
     onSuccess: async (payout: Payout) => {
       setCreatedPayout(payout);
+      toast.success(`Payout ${payout.id} scheduled.`);
+      trackEvent('payout_created', { currency: payout.currency, method: payout.method });
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.payouts.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.balance.all }),
+      ]);
+    },
+    onError: (error: unknown) => {
+      if (error instanceof ConflictApiError) {

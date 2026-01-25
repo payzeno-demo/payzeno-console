@@ -45,6 +45,23 @@ export function CreatePayoutDialog({
   const [bankAccountId, setBankAccountId] = useState<string>('');
   const [method, setMethod] = useState<PayoutMethod>('standard_ach');
 
+  // Payzeno never converts, so only accounts in this currency are selectable at all.
+  const eligible = useMemo(
+    () => accounts.filter((account) => account.currency === currency && account.status === 'validated'),
+    [accounts, currency],
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    setAmountMinor(availableMinor);
+    const preferred = eligible.find((account) => account.is_default) ?? eligible[0];
+    setBankAccountId(preferred?.id ?? '');
+  }, [open, availableMinor, eligible]);
+
+  useEffect(() => {
+    if (createdPayout) onOpenChange(false);
+  }, [createdPayout, onOpenChange]);
+
   const tooLarge = amountMinor > availableMinor;
   const noAccount = eligible.length === 0;
   const amountError = fieldErrors.amount_minor ?? (tooLarge ? 'More than is available.' : null);

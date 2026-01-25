@@ -113,3 +113,14 @@ export function Form({
       {actions ? (
         <div style={{ display: 'flex', gap: space[2], justifyContent: 'flex-end' }}>{actions}</div>
       ) : null}
+    </form>
+  );
+}
+
+/**
+ * Fieldset for a group of related controls. The legend is what makes a screen reader announce
+ * "Bank details, group" before the first input; without it the fields are orphans.
+ */
+export function FormSection({
+  legend,
+  description,
