@@ -49,6 +49,8 @@ export function useZodForm<TValues extends Record<string, string>>(
   formId: string,
 ): ZodForm<TValues> {
   const [values, setValues] = useState<TValues>(initialValues);
+  const [isSubmitting, setSubmitting] = useState(false);
+
   const setValue = useCallback((name: keyof TValues & string, value: string) => {
     setValues((current) => ({ ...current, [name]: value }));
     setErrors((current) => {
@@ -87,6 +89,37 @@ export function useZodForm<TValues extends Record<string, string>>(
       'aria-describedby': describedBy(name, errors, hintId),
     }),
     [errors, formId, setValue, validateField, values],
+  );
+
+  const submit = useCallback(
+    async (onValid: (parsed: unknown) => Promise<void> | void) => {
+      const result = schema.safeParse(values);
+
+      if (!result.success) {
+        const fields: Record<string, string> = {};
+        for (const issue of result.error.issues) {
+          const key = String(issue.path[0] ?? '');
+          if (key && fields[key] === undefined) fields[key] = issue.message;
+        }
+        const first = Object.keys(fields)[0] ?? null;
+        setErrors({ fields, formLevel: [], firstField: first });
+        if (first) document.getElementById(`${formId}-${first}`)?.focus();
+        return;
+      }
+
+      setErrors(NO_ERRORS);
+      setSubmitting(true);
+      try {
+        await onValid(result.data);
+      } catch (error) {
+        const mapped = toFormErrors(error, fieldNames);
+        setErrors(mapped);
+        if (mapped.firstField) document.getElementById(`${formId}-${mapped.firstField}`)?.focus();
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [fieldNames, formId, schema, values],
   );
 
   const reset = useCallback(() => {

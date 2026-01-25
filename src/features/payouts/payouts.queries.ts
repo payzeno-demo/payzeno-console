@@ -43,3 +43,8 @@ export function failedPayoutsQuery(e: EndpointRegistry, currency?: PayoutListQue
 }
 
 export interface CreatePayoutInput {
+  request: CreatePayoutRequest;
+}
+
+export function createPayoutMutation(e: EndpointRegistry) {
+  return {

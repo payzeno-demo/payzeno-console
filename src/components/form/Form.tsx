@@ -124,3 +124,13 @@ export function Form({
 export function FormSection({
   legend,
   description,
+  children,
+}: {
+  legend: string;
+  description?: string;
+  children: ReactNode;
+}) {
+  return (
+    <fieldset
+      className={pz('form', 'section')}
+      style={{ margin: 0, padding: 0, border: 'none', display: 'grid', gap: space[3] }}
