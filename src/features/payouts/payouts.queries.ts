@@ -48,3 +48,9 @@ export interface CreatePayoutInput {
 
 export function createPayoutMutation(e: EndpointRegistry) {
   return {
+    mutationKey: ['payouts', 'create'] as const,
+    mutationFn: ({ request }: CreatePayoutInput): Promise<Payout> => e.payouts.create(request),
+  };
+}
+
+/**
