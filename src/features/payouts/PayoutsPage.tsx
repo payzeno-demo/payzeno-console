@@ -77,3 +77,13 @@ export function PayoutsPage() {
           Pay out
         </Button>
       </PageHeader>
+
+      {liveFailures.length > 0 ? (
+        <Alert tone="critical" title="A payout just failed" role="alert">
+          {liveFailures.map((entry) => (
+            <p key={entry.id}>{entry.body}</p>
+          ))}
+          The funds are returned to your available balance once the ledger posts the reversal.
+        </Alert>
+      ) : null}
+

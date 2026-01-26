@@ -338,3 +338,27 @@ const settlementHandlers = [
   /**
    * arc PERF: the console asks for 50 here, not 500, and the endpoint sends the 30s read
    * timeout. Three items, one of which is the arc-INC duplicate suspect (settled after two
+   * attempts) so `useSettlementItems`'s rollup has something to count.
+   */
+  http.get(url('/settlements/:batchId/items'), ({ params }) => {
+    const batchId = String(params.batchId);
+    const rows: Paginated<ReturnType<typeof makeReconciliationItem>> = makePage([
+      makeReconciliationItem({ batch_id: batchId }),
+      makeReconciliationItem({
+        id: 'ri_01HW0RTITEM00000000002',
+        batch_id: batchId,
+        status: 'settled',
+        attempt_count: 2,
+        settled_transaction_id: 'txn_01HW0RTLEDGERTXN000003',
+      }),
+      makeReconciliationItem({
+        id: 'ri_01HW0RTITEM00000000003',
+        batch_id: batchId,
+        status: 'orphaned',
+        charge_id: null,
+        expected_gross_minor: null,
+        match_method: 'unmatched',
+        matched_at: null,
+      }),
+    ]);
+    return ok(rows);

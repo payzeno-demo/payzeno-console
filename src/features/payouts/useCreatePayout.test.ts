@@ -57,6 +57,19 @@ describe('creating a payout', () => {
   });
 
   it('exposes the created payout', async () => {
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP', amountMinor: 250_000 });
+    });
+
+    await waitFor(() => {
+      expect(result.current.createdPayout).not.toBeNull();
+    });
+    expect(result.current.createdPayout?.status).toBe('scheduled');
+  });
+
+  it('invalidates the payout list and the balance', async () => {
     const { result, queryClient } = renderHookWithProviders(() => useCreatePayout());
 
     queryClient.setQueryData(queryKeys.payouts.list({ limit: 25 }), {
@@ -103,6 +116,33 @@ describe('the failure branches', () => {
       }),
     );
 
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP', amountMinor: -1 });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBe('amount_minor must be positive');
+    });
+  });
+
+  it('names the role on a 403', async () => {
+    server.use(errorHandler('post', '/payouts', 403, 'permission_denied'));
+
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBe('Creating a payout needs an admin role.');
+    });
+  });
+
+  it('clears a previous error when a new attempt starts', async () => {
+    server.use(errorHandler('post', '/payouts', 403, 'permission_denied'));
     const { result } = renderHookWithProviders(() => useCreatePayout());
 
     act(() => {
