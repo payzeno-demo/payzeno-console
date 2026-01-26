@@ -35,6 +35,19 @@ describe('creating a payout', () => {
     const { result } = renderHookWithProviders(() => useCreatePayout());
 
     act(() => {
+      result.current.createPayout({ currency: 'GBP' });
+    });
+
+    await waitFor(() => {
+      expect(box.seen).not.toBeNull();
+    });
+    expect(box.seen).toEqual({ currency: 'GBP' });
+  });
+
+  it('includes every optional field the dialog supplied', async () => {
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
       result.current.createPayout({
         currency: 'GBP',
         amountMinor: 250_000,
@@ -114,6 +127,23 @@ describe('the failure branches', () => {
       errorHandler('post', '/payouts', 422, 'currency_mismatch', 'Account is EUR.', {
         field_errors: [{ path: 'bank_account_id', message: 'Held in EUR.' }],
       }),
+    );
+
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP', bankAccountId: 'ba_eur' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toContain('does not convert');
+    });
+    expect(result.current.fieldErrors).toEqual({ bank_account_id: 'Held in EUR.' });
+  });
+
+  it('shows the server message for an ordinary 422', async () => {
+    server.use(
+      errorHandler('post', '/payouts', 422, 'validation_failed', 'amount_minor must be positive'),
     );
 
     const { result } = renderHookWithProviders(() => useCreatePayout());

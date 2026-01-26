@@ -87,3 +87,13 @@ export function PayoutsPage() {
         </Alert>
       ) : null}
 
+      {liveFailures.length === 0 && failedCount > 0 ? (
+        <Alert tone="warning" title="Failed payouts need attention" role="status">
+          {pluralise(failedCount, 'payout')} did not reach your bank. Check the account details
+          before the next one is scheduled.
+        </Alert>
+      ) : null}
+
+      <FilterBar label="Payout filters">
+        <CurrencySelect
+          id="payout-currency"

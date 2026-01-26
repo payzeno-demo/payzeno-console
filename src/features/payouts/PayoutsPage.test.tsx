@@ -53,6 +53,28 @@ describe('the page', () => {
 });
 
 describe('the table', () => {
+  it('renders a row per payout', async () => {
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    const table = await screen.findByRole('table');
+    await waitFor(() => {
+      expect(table.querySelectorAll('tbody tr')).toHaveLength(2);
+    });
+  });
+
+  it('shows the failed payout with its status', async () => {
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    await screen.findByRole('table');
+    expect(screen.getByRole('table').textContent).toMatch(/failed/i);
+  });
+
+  it('appears when the list contains a failed payout', async () => {
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    expect(await screen.findByText('Failed payouts need attention')).toBeInTheDocument();
+  });
+
   it('is absent when every payout is healthy', async () => {
     server.use(
       http.get(url('/payouts'), () =>
