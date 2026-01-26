@@ -45,8 +45,92 @@ export function CreatePayoutDialog({
   const [bankAccountId, setBankAccountId] = useState<string>('');
   const [method, setMethod] = useState<PayoutMethod>('standard_ach');
 
+  // Payzeno never converts, so only accounts in this currency are selectable at all.
+  const eligible = useMemo(
+    () => accounts.filter((account) => account.currency === currency && account.status === 'validated'),
+    [accounts, currency],
+  );
+
+  useEffect(() => {
+    if (!open) return;
+    setAmountMinor(availableMinor);
+    const preferred = eligible.find((account) => account.is_default) ?? eligible[0];
+    setBankAccountId(preferred?.id ?? '');
+  }, [open, availableMinor, eligible]);
+
+  useEffect(() => {
+    if (createdPayout) onOpenChange(false);
+  }, [createdPayout, onOpenChange]);
+
   const tooLarge = amountMinor > availableMinor;
   const noAccount = eligible.length === 0;
   const amountError = fieldErrors.amount_minor ?? (tooLarge ? 'More than is available.' : null);
 
+  const handleSubmit = () => {
+    if (isPending || tooLarge || tooSmall || noAccount) return;
+    createPayout({
+      currency,
+      amountMinor: amountMinor === availableMinor ? undefined : amountMinor,
+      bankAccountId,
+      method,
+    });
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Pay out"
+      description={`${formatMinor(availableMinor, currency)} available in ${currency}.`}
+    >
+      {noAccount && !accountsLoading ? (
+        <InlineError id="payout-no-account">
+          You have no validated {currency} bank account. Add one in Settings first — Payzeno
+          does not convert between currencies.
+        </InlineError>
+      ) : null}
+
+      <MoneyInput
+        id="payout-amount"
+        label="Amount"
+        currency={currency}
+        valueMinor={amountMinor}
+        onValueChange={setAmountMinor}
+        aria-describedby={amountError ? 'payout-amount-error' : undefined}
+      />
+      {amountError ? <InlineError id="payout-amount-error">{amountError}</InlineError> : null}
+
+      <Select
+        id="payout-account"
+        label="To account"
+        value={bankAccountId}
+        onValueChange={setBankAccountId}
+        options={eligible.map((account) => ({
+          value: account.id,
+          label: `${account.bank_name} ${maskLastFour(account.last_four)}${account.is_default ? ' (default)' : ''}`,
+        }))}
+      />
+
+      <Select
+        id="payout-method"
+        label="Method"
+        value={method}
+        onValueChange={(next) => setMethod(next as PayoutMethod)}
+        options={METHODS.map((value) => ({ value, label: labelise(value) }))}
+      />
+
+      {errorMessage ? <InlineError id="payout-error">{errorMessage}</InlineError> : null}
+
+      <Button
+        type="button"
+        onClick={handleSubmit}
+        disabled={isPending || tooLarge || tooSmall || noAccount}
+      >
+        {isPending ? 'Scheduling…' : 'Schedule payout'}
+      </Button>
+      <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+        Cancel
+      </Button>
+    </Dialog>
+  );
 }

@@ -58,3 +58,42 @@ export function PayoutsPage() {
     () => entries.filter((entry) => entry.type === 'payout.failed' && !entry.read),
     [entries],
   );
+
+  const availableMinor = balance?.available_minor ?? 0;
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Payouts"
+        description="Money on its way from your Payzeno balance to your bank."
+        isBusy={isFetching}
+      >
+        <ExportCsvButton rows={rows} columns={payoutColumns} resource="payouts" />
+        <Button
+          type="button"
+          disabled={readOnly || !can('payouts:write') || availableMinor <= 0}
+          onClick={() => setCreateOpen(true)}
+        >
+          Pay out
+        </Button>
+      </PageHeader>
+
+      {liveFailures.length > 0 ? (
+        <Alert tone="critical" title="A payout just failed" role="alert">
+          {liveFailures.map((entry) => (
+            <p key={entry.id}>{entry.body}</p>
+          ))}
+          The funds are returned to your available balance once the ledger posts the reversal.
+        </Alert>
+      ) : null}
+
+      {liveFailures.length === 0 && failedCount > 0 ? (
+        <Alert tone="warning" title="Failed payouts need attention" role="status">
+          {pluralise(failedCount, 'payout')} did not reach your bank. Check the account details
+          before the next one is scheduled.
+        </Alert>
+      ) : null}
+
+      <FilterBar label="Payout filters">
+        <CurrencySelect
+          id="payout-currency"

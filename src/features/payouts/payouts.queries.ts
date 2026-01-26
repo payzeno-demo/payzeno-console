@@ -37,3 +37,20 @@ export function payoutQuery(e: EndpointRegistry, payoutId: string) {
 export function failedPayoutsQuery(e: EndpointRegistry, currency?: PayoutListQuery['currency']) {
   return queryOptions<Paginated<Payout>>({
     queryKey: queryKeys.payouts.list({ status: 'failed', currency, limit: 20 }),
+    queryFn: () => e.payouts.listFailed(currency),
+    staleTime: 60_000,
+  });
+}
+
+export interface CreatePayoutInput {
+  request: CreatePayoutRequest;
+}
+
+export function createPayoutMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['payouts', 'create'] as const,
+    mutationFn: ({ request }: CreatePayoutInput): Promise<Payout> => e.payouts.create(request),
+  };
+}
+
+/**

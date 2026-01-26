@@ -32,6 +32,7 @@ export function useCancelPayout(): UseCancelPayoutResult {
   const queryClient = useQueryClient();
   const toast = useToast();
 
+  const [alreadyInTransitId, setAlreadyInTransitId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const invalidate = useCallback(
@@ -76,4 +77,17 @@ export function useCancelPayout(): UseCancelPayoutResult {
     },
   });
 
+  const cancelPayout = useCallback(
+    (payoutId: string) => {
+      mutation.mutate({ payoutId });
+    },
+    [mutation],
+  );
+
+  return {
+    cancelPayout,
+    isPending: mutation.isPending,
+    alreadyInTransitId,
+    errorMessage,
+  };
 }
