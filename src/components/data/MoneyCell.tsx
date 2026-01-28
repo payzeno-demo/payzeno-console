@@ -51,3 +51,7 @@ export function MoneyCell({
 
   return (
     <span
+      className={pz('money-cell')}
+      style={{
+        fontFamily: font.familyMono,
+        fontVariantNumeric: 'tabular-nums',
