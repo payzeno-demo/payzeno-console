@@ -87,3 +87,10 @@ export const ROUTES = {
  * The `<Route path>` side of the same table.
  *
  * Detail routes are declared **relative** to their index route, because `router.tsx` nests them
+ * as children (blueprint §0: "detail routes are registered as children of that index route").
+ */
+export const ROUTE_PATTERNS = {
+  login: '/login',
+  reporting: '/',
+  balance: '/balance',
+

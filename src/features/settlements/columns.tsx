@@ -33,3 +33,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
       <Link to={ROUTES.settlements.detail(row.id)}>
         <IdCell value={row.id} />
       </Link>
+    ),
+    exportValue: (row) => row.id,
+    width: '18rem',
+  },

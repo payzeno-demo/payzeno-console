@@ -24,3 +24,7 @@ import { SETTLEMENT_ITEM_PAGE_SIZE } from '@config/constants';
 
 export function settlementsListQuery(e: EndpointRegistry, q?: SettlementListQuery) {
   return queryOptions<Paginated<MerchantSettlementBatch>>({
+    queryKey: queryKeys.settlements.list(q),
+    queryFn: () => e.settlements.list(q),
+    staleTime: 60_000,
+  });
