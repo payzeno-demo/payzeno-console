@@ -15,3 +15,12 @@ import { Select } from '@components/ui/Select';
 import { useCurrentMerchant } from '@app/SessionContext';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { useQueryParamState } from '@hooks/useQueryParamState';
+
+import { SettlementTable } from './components/SettlementTable';
+import { useSettlements } from './useSettlements';
+
+const STATUS_OPTIONS: ReadonlyArray<SettlementBatchStatus | 'all'> = [
+  'all',
+  'open',
+  'closed',
+  'reconciling',

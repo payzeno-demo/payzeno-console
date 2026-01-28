@@ -9,3 +9,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 
+import type { MerchantSettlementBatch } from '@payzeno/contracts';
+
+import { NotFoundApiError } from '@api/errors';
+import { useEndpoints } from '@app/ApiContext';

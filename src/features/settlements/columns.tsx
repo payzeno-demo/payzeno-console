@@ -37,3 +37,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
     exportValue: (row) => row.id,
     width: '18rem',
   },
+  {
+    id: 'processing_date',
+    header: 'Processing date',
+    cell: (row) => <DateCell value={row.processing_date} precision="day" />,
