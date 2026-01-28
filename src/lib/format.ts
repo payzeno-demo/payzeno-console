@@ -64,3 +64,9 @@ export function titleCase(value: string): string {
 /** `visa` → `Visa`, `amex` → `Amex`, but `sepa` → `SEPA`. Acronyms need the exception table. */
 const ACRONYMS = new Set(['sepa', 'ach', 'aba', 'iban', 'bic', 'api', 'csv', 'sca', 'eci', 'mcc']);
 
+export function labelise(value: string): string {
+  return value
+    .replace(/[_-]+/g, ' ')
+    .split(' ')
+    .filter(Boolean)
+    .map((word) =>

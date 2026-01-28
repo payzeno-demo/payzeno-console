@@ -40,3 +40,11 @@ export const CURRENCY_NAMES: Readonly<Record<CurrencyCode, string>> = {
   JPY: 'Japanese yen',
 };
 
+export function currencyLabel(code: CurrencyCode): string {
+  return `${code} — ${CURRENCY_NAMES[code]}`;
+}
+
+export function isCurrencyCode(value: string): value is CurrencyCode {
+  return (CURRENCIES as ReadonlyArray<string>).includes(value);
+}
+

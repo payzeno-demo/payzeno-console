@@ -21,3 +21,26 @@ export interface SummaryCardsProps {
   currency: CurrencyCode | undefined;
   successRatio: number;
   refundRatio: number;
+  isLoading: boolean;
+}
+
+export function SummaryCards({
+  tiles,
+  currency,
+  successRatio,
+  refundRatio,
+  isLoading,
+}: SummaryCardsProps) {
+  if (isLoading || !currency) {
+    return (
+      <div role="group" aria-label="Summary">
+        {[0, 1, 2, 3, 4].map((index) => (
+          <Skeleton key={index} height="6rem" aria-label="Loading summary" />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div role="group" aria-label={`Summary in ${currency}`}>
+      {tiles.map((tile) => (
