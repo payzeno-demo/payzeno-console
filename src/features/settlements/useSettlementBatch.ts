@@ -13,3 +13,7 @@ import type { MerchantSettlementBatch } from '@payzeno/contracts';
 
 import { NotFoundApiError } from '@api/errors';
 import { useEndpoints } from '@app/ApiContext';
+
+import { settlementQuery } from './settlements.queries';
+
+export interface UseSettlementResult {
