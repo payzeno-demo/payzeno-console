@@ -32,3 +32,12 @@ const STATUS_OPTIONS: ReadonlyArray<SettlementBatchStatus | 'all'> = [
 
 export function SettlementsPage() {
   useDocumentTitle('Settlements');
+
+  const merchant = useCurrentMerchant();
+  const [status, setStatus] = useQueryParamState<SettlementBatchStatus | 'all'>('status', 'all');
+  const [currency, setCurrency] = useQueryParamState<CurrencyCode>(
+    'currency',
+    merchant.default_currency,
+  );
+
+  const { rows, isLoading, isFetching, error } = useSettlements({
