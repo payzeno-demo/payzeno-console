@@ -13,3 +13,8 @@ import { ROUTES } from '@/routes';
 import type { SettlementRow } from '@types/view-models';
 
 import { settlementColumns } from '../settlements.columns';
+
+export interface SettlementTableProps {
+  rows: ReadonlyArray<SettlementRow>;
+  isLoading: boolean;
+}

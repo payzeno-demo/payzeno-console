@@ -17,3 +17,7 @@ import { useEndpoints } from '@app/ApiContext';
 import { settlementQuery } from './settlements.queries';
 
 export interface UseSettlementResult {
+  batch: MerchantSettlementBatch | undefined;
+  isLoading: boolean;
+  isMissing: boolean;
+  error: Error | null;
