@@ -52,6 +52,10 @@ describe('the re-export surface', () => {
 });
 
 describe('sumMoney', () => {
+  it('returns a typed zero for an empty list rather than undefined', () => {
+    expect(sumMoney([], 'EUR')).toEqual({ amount_minor: 0, currency: 'EUR' });
+  });
+
   it('uses U+2212 MINUS SIGN, not a hyphen', () => {
     const rendered = formatSigned(money(-2_500, 'GBP'), 'en-GB');
 
@@ -59,4 +63,19 @@ describe('sumMoney', () => {
     expect(rendered).not.toMatch(/^-/);
   });
 
+  it('renders the magnitude the same either way', () => {
+    const positive = formatSigned(money(2_500, 'GBP'), 'en-GB').slice(1);
+    const negative = formatSigned(money(-2_500, 'GBP'), 'en-GB').slice(1);
+
+    expect(positive).toBe(negative);
+  });
+});
+
+describe('formatCompact', () => {
+  it('refuses to compare across currencies', () => {
+    expect(() => shareOf(money(100, 'GBP'), money(100, 'USD'))).toThrow();
+  });
+});
+
+describe('formatBps', () => {
 });
