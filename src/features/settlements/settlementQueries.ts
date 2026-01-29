@@ -28,3 +28,7 @@ export function settlementsListQuery(e: EndpointRegistry, q?: SettlementListQuer
     queryFn: () => e.settlements.list(q),
     staleTime: 60_000,
   });
+}
+
+export function settlementQuery(e: EndpointRegistry, batchId: string) {
+  return queryOptions<MerchantSettlementBatch>({

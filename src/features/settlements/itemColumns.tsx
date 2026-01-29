@@ -54,3 +54,8 @@ export function settlementItemColumns(
       id: 'id',
       header: 'Item',
       cell: (row) => (
+        <>
+          <IdCell value={row.id} />
+          {row._isDuplicateSuspect ? <DuplicateBadge attemptCount={row.attempt_count} /> : null}
+        </>
+      ),
