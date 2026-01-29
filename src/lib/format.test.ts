@@ -43,6 +43,16 @@ describe('formatAmount — the JPY bug (PAY-1968, §8.2)', () => {
     expect(formatAmount(1_200, 'JPY')).not.toContain('1,200');
   });
 
+  it('is ignorant of the locale as well — it is pinned to en-US', () => {
+    expect(formatAmount(12_500, 'GBP')).toContain('£');
+  });
+});
+
+describe('formatCount', () => {
+  it('groups thousands', () => {
+    expect(formatCount(4_812_400)).toBe('4,812,400');
+  });
+
   it('renders zero', () => {
     expect(formatCount(0)).toBe('0');
   });
@@ -62,6 +72,23 @@ describe('truncateId', () => {
 });
 
 describe('humanise', () => {
+  it('handles kebab-case too', () => {
+    expect(humanise('bank-rejected')).toBe('Bank rejected');
+  });
+
+  it('returns an empty string for empty input', () => {
+    expect(humanise('')).toBe('');
+    expect(humanise('__')).toBe('');
+  });
+});
+
+describe('titleCase', () => {
+  it('capitalises every word and lowercases the rest', () => {
+    expect(titleCase('PARTIALLY_RECONCILED')).toBe('Partially Reconciled');
+  });
+});
+
+describe('labelise', () => {
   it('uppercases known payment acronyms', () => {
     expect(labelise('sepa_pending')).toBe('SEPA Pending');
     expect(labelise('iban_only')).toBe('IBAN Only');
@@ -82,6 +109,23 @@ describe('humanise', () => {
 describe('ellipsis', () => {
   it('renders kilobytes', () => {
     expect(formatBytes(2_048)).toBe('2.0 kB');
+  });
+
+  it('renders megabytes', () => {
+    expect(formatBytes(5 * 1024 * 1024)).toBe('5.0 MB');
+  });
+});
+
+describe('listSentence', () => {
+  it('joins three with commas and a final "and"', () => {
+    expect(listSentence(['visa', 'mastercard', 'amex'])).toBe('visa, mastercard and amex');
+  });
+});
+
+describe('pluralise', () => {
+  it('uses the plural for anything else', () => {
+    expect(pluralise(0, 'dispute')).toBe('0 disputes');
+    expect(pluralise(2, 'dispute')).toBe('2 disputes');
   });
 
 });

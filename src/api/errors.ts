@@ -35,3 +35,7 @@ export class ConsoleApiError extends PayzenoError {
     this.code = init.code;
     this.status = init.status;
     this.httpStatus = init.status;
+    this.requestId = init.requestId;
+    this.fieldErrors = init.fieldErrors ?? [];
+    this.retryAfterSeconds = init.retryAfterSeconds ?? null;
+  }
