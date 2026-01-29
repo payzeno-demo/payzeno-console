@@ -59,3 +59,8 @@ export function settlementItemColumns(
           {row._isDuplicateSuspect ? <DuplicateBadge attemptCount={row.attempt_count} /> : null}
         </>
       ),
+      exportValue: (row) => row.id,
+      width: '16rem',
+    },
+    {
+      id: 'line_type',
