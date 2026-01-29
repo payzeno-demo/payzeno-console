@@ -8,3 +8,8 @@
 import { useNavigate } from 'react-router-dom';
 
 import { DataTable } from '@components/data/DataTable';
+import { EmptyRows } from '@components/data/EmptyRows';
+import { ROUTES } from '@/routes';
+import type { SettlementRow } from '@types/view-models';
+
+import { settlementColumns } from '../settlements.columns';
