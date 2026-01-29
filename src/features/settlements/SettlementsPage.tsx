@@ -24,3 +24,11 @@ const STATUS_OPTIONS: ReadonlyArray<SettlementBatchStatus | 'all'> = [
   'open',
   'closed',
   'reconciling',
+  'reconciled',
+  'partially_reconciled',
+  'funded',
+  'failed',
+];
+
+export function SettlementsPage() {
+  useDocumentTitle('Settlements');
