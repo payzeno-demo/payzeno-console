@@ -55,3 +55,7 @@ export function MoneyCell({
       style={{
         fontFamily: font.familyMono,
         fontVariantNumeric: 'tabular-nums',
+        whiteSpace: 'nowrap',
+        color:
+          emphasiseNegative && isNegativeAmount
+            ? color.danger
