@@ -70,3 +70,9 @@ export function labelise(value: string): string {
     .split(' ')
     .filter(Boolean)
     .map((word) =>
+      ACRONYMS.has(word.toLowerCase())
+        ? word.toUpperCase()
+        : word.charAt(0).toUpperCase() + word.slice(1),
+    )
+    .join(' ');
+}

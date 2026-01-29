@@ -61,6 +61,9 @@ export function parseAmount(raw: string, currency: CurrencyCode): MinorUnits | n
   const cleaned = normaliseInput(raw);
   if (cleaned === '' || cleaned === '-' || cleaned === '.') return null;
 
+  const [whole = '', fraction] = cleaned.split('.');
+  const exponent = CURRENCY_EXPONENT[currency];
+
   // Trim excess precision rather than throwing: the user is mid-keystroke, not wrong yet.
   const trimmed =
     fraction === undefined || exponent === 0
@@ -106,6 +109,7 @@ export const MoneyInput = forwardRef<HTMLInputElement, MoneyInputProps>(function
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [valueMinor, currency]);
 
+  const hintId = hint ? `${id}-hint` : undefined;
   const describedBy = [hintId, errorId].filter(Boolean).join(' ') || undefined;
 
   return (
