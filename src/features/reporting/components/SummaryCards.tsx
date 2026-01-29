@@ -44,3 +44,26 @@ export function SummaryCards({
   return (
     <div role="group" aria-label={`Summary in ${currency}`}>
       {tiles.map((tile) => (
+        <Card key={tile.id} as="article" aria-labelledby={`tile-${tile.id}-label`}>
+          <h3 id={`tile-${tile.id}-label`}>{tile.label}</h3>
+          <p aria-describedby={`tile-${tile.id}-hint`}>
+            {tile.amountMinor !== null
+              ? formatAmount(tile.amountMinor, currency)
+              : formatCount(tile.count ?? 0)}
+          </p>
+          <p id={`tile-${tile.id}-hint`}>{tile.hint}</p>
+        </Card>
+      ))}
+
+      <Card as="article" aria-labelledby="tile-rates-label">
+        <h3 id="tile-rates-label">Rates</h3>
+        <dl>
+          <dt>Authorisation success</dt>
+          <dd>{formatPercent(successRatio)}</dd>
+          <dt>Refund rate</dt>
+          <dd>{formatPercent(refundRatio)}</dd>
+        </dl>
+      </Card>
+    </div>
+  );
+}

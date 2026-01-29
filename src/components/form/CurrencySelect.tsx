@@ -48,3 +48,39 @@ export function isCurrencyCode(value: string): value is CurrencyCode {
   return (CURRENCIES as ReadonlyArray<string>).includes(value);
 }
 
+export function CurrencySelect({
+  id,
+  value,
+  onChange,
+  label = 'Currency',
+  available,
+  disabled = false,
+}: CurrencySelectProps) {
+  const codes = available && available.length > 0 ? available : CURRENCIES;
+
+  return (
+    <div className={pz('currency-select')} style={{ display: 'grid', gap: space[1] }}>
+      <label
+        htmlFor={id}
+        style={{
+          fontFamily: font.family,
+          fontSize: font.size.sm,
+          fontWeight: font.weight.medium,
+          color: color.textSecondary,
+        }}
+      >
+        {label}
+      </label>
+
+      <Select<CurrencyCode>
+        id={id}
+        value={value}
+        disabled={disabled}
+        onValueChange={(next) => {
+          if (isCurrencyCode(next)) onChange(next);
+        }}
+        options={codes.map((code) => ({ value: code, label: currencyLabel(code) }))}
+      />
+    </div>
+  );
+}
