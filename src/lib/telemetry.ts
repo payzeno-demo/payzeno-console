@@ -29,3 +29,31 @@ export function initTelemetry(): void {
   initialised = true;
 }
 
+export interface ErrorContext {
+  /** `X-Request-Id` of the failing call, when there was one. */
+  requestId?: string;
+  /** The contracts `ErrorCode`, when the failure came back as an `ApiError`. */
+  code?: string;
+  /** Route path — never the full URL, which can carry a resource id in a query string. */
+  route?: string;
+  feature?: string;
+}
+
+/**
+ * Report an error.
+ *
+ * `context` values are scrubbed on the way in as well as in `beforeSend`; belt and braces,
+ * because `beforeSend` only sees what Sentry decided to serialise.
+ */
+/** A named user action worth seeing in the trail before a crash. */
+export function trackEvent(name: string, data: Record<string, string | number | boolean> = {}): void {
+  if (!isTelemetryEnabled()) return;
+
+  Sentry.addBreadcrumb({
+    category: 'console.action',
+    level: 'info',
+    message: name,
+    data,
+  });
+}
+

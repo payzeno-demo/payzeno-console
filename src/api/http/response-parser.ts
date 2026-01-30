@@ -10,3 +10,9 @@ import type { ApiError } from '@payzeno/contracts';
 
 import { isApiErrorBody } from '../errors';
 
+import { readRequestId, wasIdempotentReplay } from './headers';
+import type { RawResponse } from './fetch-transport';
+
+export interface ParsedResponse<T> {
+  ok: true;
+  status: number;

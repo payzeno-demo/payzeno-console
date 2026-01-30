@@ -40,6 +40,37 @@ export const DENYLISTED_FIELDS: ReadonlyArray<string> = [
 
 const REDACTED = '[redacted]';
 
+/** 13-19 digits, optionally split by spaces or dashes. */
+const PAN_CANDIDATE = /\b(?:\d[ -]*?){13,19}\b/g;
+
+/**
+ * Luhn check. Without it every order id and every `network_transaction_id` in a breadcrumb gets
+ * mangled into `[redacted]` and the traces become useless, which is how the first version of
+ * this file got reverted.
+ */
+export function scrubValue(value: unknown, seen: WeakSet<object> = new WeakSet()): unknown {
+  if (typeof value === 'string') return scrubPan(value);
+  if (value === null || typeof value !== 'object') return value;
+  if (seen.has(value)) return '[circular]';
+  seen.add(value);
+
+  if (Array.isArray(value)) {
+    return value.map((item) => scrubValue(item, seen));
+  }
+
+  const out: Record<string, unknown> = {};
+  for (const [key, item] of Object.entries(value as Record<string, unknown>)) {
+    out[key] = isDenylisted(key) ? REDACTED : scrubValue(item, seen);
+  }
+  return out;
+}
+
+/**
+ * `beforeSend`. Drops request/response bodies wholesale, then scrubs whatever is left.
+ *
+ * Returning `null` discards the event; we only do that for events that carry a body we cannot
+ * prove is clean.
+ */
 /** Options handed to `Sentry.init()` by `lib/telemetry.ts::initTelemetry`. */
 export function sentryOptions(): BrowserOptions {
   return {

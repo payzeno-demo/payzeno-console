@@ -40,6 +40,20 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
 
   container.innerHTML = '';
 
+  const heading = document.createElement('h1');
+  heading.style.cssText = 'font-size:18px;margin:0 0 8px';
+  heading.textContent = 'The console is misconfigured';
+
+  const pre = document.createElement('pre');
+  pre.style.cssText =
+    'margin:0;padding:12px;border-radius:6px;background:#f5f6f8;white-space:pre-wrap;font:12px/1.5 ui-monospace,SFMono-Regular,monospace';
+  pre.textContent = detail;
+
+  wrapper.append(heading, body, pre);
+  container.append(wrapper);
+}
+
+async function bootstrap(): Promise<void> {
 }
 
 void bootstrap();
