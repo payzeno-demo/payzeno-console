@@ -18,3 +18,8 @@ export interface SettlementTableProps {
   rows: ReadonlyArray<SettlementRow>;
   isLoading: boolean;
 }
+
+export function SettlementTable({ rows, isLoading }: SettlementTableProps) {
+  const navigate = useNavigate();
+
+  return (
