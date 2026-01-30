@@ -59,3 +59,7 @@ export function MoneyCell({
         color:
           emphasiseNegative && isNegativeAmount
             ? color.danger
+            : muteZero && isZeroAmount
+              ? color.textMuted
+              : color.textPrimary,
+      }}
