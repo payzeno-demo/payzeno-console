@@ -59,6 +59,14 @@ describe('formatCount', () => {
 });
 
 describe('formatPercent', () => {
+  it('renders a ratio as a percentage with one decimal', () => {
+    expect(formatPercent(0.9312)).toBe('93.1%');
+  });
+
+  it('honours a requested precision', () => {
+    expect(formatPercent(0.9312, 2)).toBe('93.12%');
+  });
+
   it('renders zero and one', () => {
     expect(formatPercent(0)).toBe('0.0%');
     expect(formatPercent(1)).toBe('100.0%');
@@ -66,12 +74,20 @@ describe('formatPercent', () => {
 });
 
 describe('truncateId', () => {
+  it('leaves a short id alone', () => {
+    expect(truncateId('ch_1')).toBe('ch_1');
+  });
+
   it('honours custom head and tail lengths', () => {
     expect(truncateId('ch_01HW0RTCHARGE00000001', 4, 2)).toBe('ch_0…01');
   });
 });
 
 describe('humanise', () => {
+  it('turns a snake_case status into a sentence', () => {
+    expect(humanise('requires_capture')).toBe('Requires capture');
+  });
+
   it('handles kebab-case too', () => {
     expect(humanise('bank-rejected')).toBe('Bank rejected');
   });
@@ -107,6 +123,14 @@ describe('labelise', () => {
 });
 
 describe('ellipsis', () => {
+  it('leaves a short string alone', () => {
+    expect(ellipsis('short', 64)).toBe('short');
+  });
+
+  it('renders bytes below a kilobyte', () => {
+    expect(formatBytes(512)).toBe('512 B');
+  });
+
   it('renders kilobytes', () => {
     expect(formatBytes(2_048)).toBe('2.0 kB');
   });
@@ -117,6 +141,10 @@ describe('ellipsis', () => {
 });
 
 describe('listSentence', () => {
+  it('joins two with "and"', () => {
+    expect(listSentence(['visa', 'mastercard'])).toBe('visa and mastercard');
+  });
+
   it('joins three with commas and a final "and"', () => {
     expect(listSentence(['visa', 'mastercard', 'amex'])).toBe('visa, mastercard and amex');
   });
@@ -128,4 +156,7 @@ describe('pluralise', () => {
     expect(pluralise(2, 'dispute')).toBe('2 disputes');
   });
 
+  it('groups thousands in the count', () => {
+    expect(pluralise(4_812, 'charge')).toBe('4,812 charges');
+  });
 });

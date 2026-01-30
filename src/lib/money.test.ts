@@ -72,10 +72,23 @@ describe('sumMoney', () => {
 });
 
 describe('formatCompact', () => {
+  it('divides by the currency exponent, not by a hundred', () => {
+    expect(toMajorNumber(12_500, 'GBP')).toBe(125);
+    expect(toMajorNumber(1_200, 'JPY')).toBe(1_200);
+  });
+
+  it('returns zero rather than Infinity when the total is zero', () => {
+    expect(shareOf(money(2_500, 'GBP'), money(0, 'GBP'))).toBe(0);
+  });
+
   it('refuses to compare across currencies', () => {
     expect(() => shareOf(money(100, 'GBP'), money(100, 'USD'))).toThrow();
   });
 });
 
 describe('formatBps', () => {
+  it('renders zero', () => {
+    expect(formatBps(0)).toBe('0.00%');
+  });
+
 });
