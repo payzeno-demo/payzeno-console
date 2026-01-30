@@ -42,6 +42,22 @@ describe('format', () => {
 });
 
 describe('formatMinor', () => {
+  it('takes minor units and a currency', () => {
+    const result = formatter('en-GB').current;
+
+    expect(result.formatMinor(12_500, 'GBP')).toBe(result.format(money(12_500, 'GBP')));
+  });
+
+  it('keeps a two-decimal currency at two decimals', () => {
+    expect(formatter('en-GB').current.formatMinor(1_200, 'GBP')).toContain('12.00');
+  });
+
+  it('prefixes a positive amount with a plus', () => {
+    expect(formatter('en-GB').current.formatSigned(money(2_500, 'GBP')).startsWith('+')).toBe(
+      true,
+    );
+  });
+
   it('uses a true minus sign for a negative amount', () => {
     expect(formatter('en-GB').current.formatSigned(money(-2_500, 'GBP')).startsWith('−')).toBe(
       true,

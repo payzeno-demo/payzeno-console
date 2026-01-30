@@ -69,3 +69,7 @@ export function isNegative(value: Money): boolean {
 /**
  * Format with an explicit sign, for ledger-style columns where a credit and a debit sit in the
  * same column and the reader needs to tell them apart at a glance.
+ */
+export function formatSigned(value: Money, locale?: string): string {
+  const formatted = formatMoney(money(Math.abs(value.amount_minor), value.currency), locale);
+  return value.amount_minor < 0 ? `−${formatted}` : `+${formatted}`;

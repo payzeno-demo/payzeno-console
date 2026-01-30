@@ -52,11 +52,43 @@ describe('the re-export surface', () => {
 });
 
 describe('sumMoney', () => {
+  it('returns a typed zero for an empty list rather than undefined', () => {
+    expect(sumMoney([], 'EUR')).toEqual({ amount_minor: 0, currency: 'EUR' });
+  });
+
   it('uses U+2212 MINUS SIGN, not a hyphen', () => {
     const rendered = formatSigned(money(-2_500, 'GBP'), 'en-GB');
 
     expect(rendered).toMatch(/^−/);
     expect(rendered).not.toMatch(/^-/);
+  });
+
+  it('renders the magnitude the same either way', () => {
+    const positive = formatSigned(money(2_500, 'GBP'), 'en-GB').slice(1);
+    const negative = formatSigned(money(-2_500, 'GBP'), 'en-GB').slice(1);
+
+    expect(positive).toBe(negative);
+  });
+});
+
+describe('formatCompact', () => {
+  it('divides by the currency exponent, not by a hundred', () => {
+    expect(toMajorNumber(12_500, 'GBP')).toBe(125);
+    expect(toMajorNumber(1_200, 'JPY')).toBe(1_200);
+  });
+
+  it('returns zero rather than Infinity when the total is zero', () => {
+    expect(shareOf(money(2_500, 'GBP'), money(0, 'GBP'))).toBe(0);
+  });
+
+  it('refuses to compare across currencies', () => {
+    expect(() => shareOf(money(100, 'GBP'), money(100, 'USD'))).toThrow();
+  });
+});
+
+describe('formatBps', () => {
+  it('renders zero', () => {
+    expect(formatBps(0)).toBe('0.00%');
   });
 
 });
