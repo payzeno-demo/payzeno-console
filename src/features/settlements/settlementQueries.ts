@@ -24,3 +24,15 @@ import { SETTLEMENT_ITEM_PAGE_SIZE } from '@config/constants';
 
 export function settlementsListQuery(e: EndpointRegistry, q?: SettlementListQuery) {
   return queryOptions<Paginated<MerchantSettlementBatch>>({
+    queryKey: queryKeys.settlements.list(q),
+    queryFn: () => e.settlements.list(q),
+    staleTime: 60_000,
+  });
+}
+
+export function settlementQuery(e: EndpointRegistry, batchId: string) {
+  return queryOptions<MerchantSettlementBatch>({
+    queryKey: queryKeys.settlements.detail(batchId),
+    queryFn: () => e.settlements.get(batchId),
+    // A batch only 404s when this merchant has no item in it, and that does not change.
+    retry: 1,
