@@ -32,3 +32,7 @@ export function settlementsListQuery(e: EndpointRegistry, q?: SettlementListQuer
 
 export function settlementQuery(e: EndpointRegistry, batchId: string) {
   return queryOptions<MerchantSettlementBatch>({
+    queryKey: queryKeys.settlements.detail(batchId),
+    queryFn: () => e.settlements.get(batchId),
+    // A batch only 404s when this merchant has no item in it, and that does not change.
+    retry: 1,
