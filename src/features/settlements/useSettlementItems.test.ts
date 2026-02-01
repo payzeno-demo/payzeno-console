@@ -43,5 +43,22 @@ describe('the request', () => {
       expect(result.current.rows).toHaveLength(3);
     });
 
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._isDuplicateSuspect).toBe(false);
+  });
+
+  it('does not flag a retryable item that has been attempted twice — it never settled', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([makeReconciliationItem({ status: 'retryable', attempt_count: 4 })]),
+        ),
+      ),
+    );
+
   });
 });

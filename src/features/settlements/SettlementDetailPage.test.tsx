@@ -59,3 +59,15 @@ describe('the batch header', () => {
 
 describe('the totals panel (arc INC)', () => {
   it('renders posted alongside expected', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Your totals in this batch')).toBeInTheDocument();
+    expect(screen.getByText('Expected')).toBeInTheDocument();
+    expect(screen.getByText('Posted')).toBeInTheDocument();
+    expect(screen.getByText('Acquirer fees')).toBeInTheDocument();
+    expect(screen.getByText('Variance')).toBeInTheDocument();
+  });
+
+  it('stays quiet while posted is within tolerance of expected', async () => {
+    renderPage();
+
