@@ -29,5 +29,13 @@ describe('the request', () => {
       expect(result.current.rows).toEqual([]);
     });
 
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+  });
+
+  it('marks a retryable item as retryable and a settled one as not', async () => {
   });
 });

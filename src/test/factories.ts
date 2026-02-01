@@ -183,6 +183,29 @@ export function makeRefund(overrides: Partial<Refund> = {}): Refund {
   };
 }
 
+export function makeDispute(overrides: Partial<Dispute> = {}): Dispute {
+  return {
+    id: 'dp_01HW0RTDISPUTE00000001',
+    object: 'dispute',
+    merchant_id: MERCHANT_ID,
+    charge_id: 'ch_01HW0RTCHARGE00000001',
+    amount_minor: 12_500,
+    fee_minor: 1_500,
+    currency: 'GBP',
+    status: 'needs_response',
+    reason: 'fraudulent',
+    network_reason_code: '10.4',
+    evidence_due_by: '2026-03-21T23:59:59.000Z',
+    evidence: {},
+    is_charge_refundable: false,
+    liability_shifted: false,
+    submitted_at: null,
+    resolved_at: null,
+    created_at: '2026-03-13T11:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export function makeBalance(overrides: Partial<Balance> = {}): Balance {
   return {
     object: 'balance',

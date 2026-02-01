@@ -35,3 +35,15 @@ describe('the batch header', () => {
     renderPage();
 
     expect(
+      await screen.findByRole('heading', { name: `Settlement ${BATCH_ID}` }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/worldflow · processing date 2026-03-13/)).toBeInTheDocument();
+  });
+
+  it('says the batch has not been funded when funded_at is null', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Not funded yet')).toBeInTheDocument();
+  });
+
+  it('renders the not-found screen for a batch this merchant has no items in', async () => {
