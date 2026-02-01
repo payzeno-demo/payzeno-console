@@ -89,3 +89,13 @@ export const queryKeys = {
     list: () => ['api_keys', 'list'] as const,
     detail: (id: string) => ['api_keys', 'detail', id] as const,
   },
+
+  webhookEvents: {
+    all: ['webhook_events'] as const,
+    list: (q?: AnyListQuery) => ['webhook_events', 'list', normalize(q)] as const,
+    detail: (id: string) => ['webhook_events', 'detail', id] as const,
+  },
+
+  webhookEndpoints: {
+    all: ['webhook_endpoints'] as const,
+    list: () => ['webhook_endpoints', 'list'] as const,

@@ -35,3 +35,6 @@ export function SettlementDetailPage() {
     'all',
   );
 
+  const { batch, isLoading, isMissing, error } = useSettlement(batchId);
+  const items = useSettlementItems(batchId, status === 'all' ? undefined : { status });
+

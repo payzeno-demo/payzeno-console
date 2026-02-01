@@ -28,3 +28,5 @@ const FILTERABLE_STATUSES: ReadonlyArray<ReconciliationItemStatus | 'all'> = [
   'variance_exceeded',
 ];
 
+export interface SettlementItemTableProps {
+  batchId: string;

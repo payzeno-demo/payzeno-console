@@ -28,3 +28,9 @@ import { RequestTimeoutError, timeoutForPath } from './http/timeout';
 import type { ApiClientOptions, HttpTransport, QueryParams, RequestSpec } from './transport';
 
 export const DEFAULT_CLIENT_OPTIONS: ApiClientOptions = {
+  baseUrl: runtime.apiBaseUrl,
+  connectTimeoutMs: CONNECT_TIMEOUT_MS,
+  readTimeoutMs: 10_000,
+  retries: TRANSPORT_RETRIES,
+  retryOn: [502, 503, 504],
+  apiVersion: runtime.apiVersion,

@@ -183,6 +183,29 @@ export function makeRefund(overrides: Partial<Refund> = {}): Refund {
   };
 }
 
+export function makeDispute(overrides: Partial<Dispute> = {}): Dispute {
+  return {
+    id: 'dp_01HW0RTDISPUTE00000001',
+    object: 'dispute',
+    merchant_id: MERCHANT_ID,
+    charge_id: 'ch_01HW0RTCHARGE00000001',
+    amount_minor: 12_500,
+    fee_minor: 1_500,
+    currency: 'GBP',
+    status: 'needs_response',
+    reason: 'fraudulent',
+    network_reason_code: '10.4',
+    evidence_due_by: '2026-03-21T23:59:59.000Z',
+    evidence: {},
+    is_charge_refundable: false,
+    liability_shifted: false,
+    submitted_at: null,
+    resolved_at: null,
+    created_at: '2026-03-13T11:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export function makeBalance(overrides: Partial<Balance> = {}): Balance {
   return {
     object: 'balance',
@@ -227,6 +250,40 @@ export function makePayout(overrides: Partial<Payout> = {}): Payout {
     created_at: '2026-03-14T05:00:00.000Z',
     ...overrides,
   } as Payout;
+}
+
+export function makeReconciliationItem(
+  overrides: Partial<ReconciliationItem> = {},
+): ReconciliationItem {
+  return {
+    id: 'ri_01HW0RTITEM00000000001',
+    object: 'reconciliation_item',
+    batch_id: 'sb_01HW0RTBATCH000000001',
+    charge_id: 'ch_01HW0RTCHARGE00000001',
+    merchant_id: MERCHANT_ID,
+    line_type: 'sale',
+    gross_minor: 12_500,
+    fee_minor: 240,
+    interchange_minor: 150,
+    scheme_fee_minor: 30,
+    net_minor: 12_260,
+    expected_gross_minor: 12_500,
+    variance_minor: 0,
+    currency: 'GBP',
+    livemode: true,
+    acquirer_reference: 'wf_ref_88123',
+    match_method: 'exact_reference',
+    matched_at: '2026-03-14T02:00:00.000Z',
+    status: 'retryable',
+    attempt_count: 1,
+    last_error_code: 'ledger_unavailable',
+    last_attempt_at: '2026-03-14T02:30:00.000Z',
+    next_attempt_at: '2026-03-14T03:00:00.000Z',
+    settled_transaction_id: null,
+    created_at: '2026-03-14T01:00:00.000Z',
+    updated_at: NOW,
+    ...overrides,
+  } as ReconciliationItem;
 }
 
 export function makeDashboardSummary(

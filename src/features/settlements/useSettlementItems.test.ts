@@ -1,0 +1,64 @@
+/**
+ * `useSettlementItems` — the read half of arc INC and the trigger for arc PERF.
+ *
+ * Two behaviours worth a test:
+ *  - the rollup. `BatchTotalsPanel` renders `posted` against `expected`, and the duplicate
+ *    count that goes with it. A settled item with `attempt_count > 1` is the merchant-visible
+ *    fingerprint of the double-settle (`_isDuplicateSuspect`).
+ *  - the page size. It asks for `SETTLEMENT_ITEM_PAGE_SIZE` (50), not the 500 that made
+ *    payzeno-api seq-scan.
+ */
+import { describe, expect, it } from 'vitest';
+
+import { SETTLEMENT_ITEM_PAGE_SIZE } from '@config/constants';
+import { useSettlementItems } from '@features/settlements/useSettlementItems';
+import { makePage, makeReconciliationItem } from '@/test/factories';
+import { errorHandler, recordRequests, server, url } from '@/test/msw/server';
+import { renderHookWithProviders, waitFor } from '@/test/render';
+
+import { HttpResponse, http } from 'msw';
+
+const BATCH_ID = 'sb_01HW0RTBATCH000000001';
+
+describe('the request', () => {
+  it('asks for 50 items, the page size the PERF fix settled on', async () => {
+    const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useSettlementItems(''));
+
+    await waitFor(() => {
+      expect(result.current.rows).toEqual([]);
+    });
+
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+  });
+
+  it('marks a retryable item as retryable and a settled one as not', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._isDuplicateSuspect).toBe(false);
+  });
+
+  it('does not flag a retryable item that has been attempted twice — it never settled', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([makeReconciliationItem({ status: 'retryable', attempt_count: 4 })]),
+        ),
+      ),
+    );
+
+  });
+});

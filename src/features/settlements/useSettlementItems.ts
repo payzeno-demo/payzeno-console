@@ -47,3 +47,9 @@ const RETRYABLE_STATUSES: ReadonlySet<ReconciliationItemStatus> = new Set([
 ]);
 
 function toRow(item: ReconciliationItem): SettlementItemRow {
+  return {
+    ...item,
+    _selected: false,
+    _isRetryable: RETRYABLE_STATUSES.has(item.status),
+    // A settled item that took more than one attempt is where a duplicate `settle`
+    // transaction would have come from. PAY-2054's nightly audit checks the same thing

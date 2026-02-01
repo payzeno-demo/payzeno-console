@@ -36,3 +36,6 @@ export function settlementQuery(e: EndpointRegistry, batchId: string) {
     queryFn: () => e.settlements.get(batchId),
     // A batch only 404s when this merchant has no item in it, and that does not change.
     retry: 1,
+    staleTime: 30_000,
+  });
+}

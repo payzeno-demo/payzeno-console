@@ -35,3 +35,39 @@ describe('the batch header', () => {
     renderPage();
 
     expect(
+      await screen.findByRole('heading', { name: `Settlement ${BATCH_ID}` }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/worldflow · processing date 2026-03-13/)).toBeInTheDocument();
+  });
+
+  it('says the batch has not been funded when funded_at is null', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Not funded yet')).toBeInTheDocument();
+  });
+
+  it('renders the not-found screen for a batch this merchant has no items in', async () => {
+    server.use(errorHandler('get', '/settlements/:batchId', 404, 'not_found'));
+
+    renderPage();
+
+    expect(
+      await screen.findByRole('heading', { name: 'No such settlement batch' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('the totals panel (arc INC)', () => {
+  it('renders posted alongside expected', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Your totals in this batch')).toBeInTheDocument();
+    expect(screen.getByText('Expected')).toBeInTheDocument();
+    expect(screen.getByText('Posted')).toBeInTheDocument();
+    expect(screen.getByText('Acquirer fees')).toBeInTheDocument();
+    expect(screen.getByText('Variance')).toBeInTheDocument();
+  });
+
+  it('stays quiet while posted is within tolerance of expected', async () => {
+    renderPage();
+

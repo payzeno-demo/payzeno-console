@@ -64,3 +64,7 @@ export function settlementItemColumns(
     },
     {
       id: 'line_type',
+      header: 'Line',
+      cell: (row) => <span>{row.line_type.replace(/_/g, ' ')}</span>,
+      exportValue: (row) => row.line_type,
+    },
