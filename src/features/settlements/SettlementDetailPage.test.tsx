@@ -47,3 +47,15 @@ describe('the batch header', () => {
   });
 
   it('renders the not-found screen for a batch this merchant has no items in', async () => {
+    server.use(errorHandler('get', '/settlements/:batchId', 404, 'not_found'));
+
+    renderPage();
+
+    expect(
+      await screen.findByRole('heading', { name: 'No such settlement batch' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('the totals panel (arc INC)', () => {
+  it('renders posted alongside expected', async () => {

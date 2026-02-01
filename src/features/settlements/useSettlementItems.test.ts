@@ -37,5 +37,11 @@ describe('the request', () => {
   });
 
   it('marks a retryable item as retryable and a settled one as not', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
   });
 });

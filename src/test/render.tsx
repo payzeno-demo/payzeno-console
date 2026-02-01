@@ -85,3 +85,13 @@ export function createTestQueryClient(): QueryClient {
       queries: {
         retry: false,
         gcTime: Number.POSITIVE_INFINITY,
+        staleTime: 0,
+        refetchOnWindowFocus: false,
+        refetchOnReconnect: false,
+      },
+      mutations: { retry: false },
+    },
+  });
+}
+
+/**
