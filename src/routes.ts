@@ -94,3 +94,9 @@ export const ROUTE_PATTERNS = {
   reporting: '/',
   balance: '/balance',
 
+  payments: '/payments',
+  paymentDetail: ':paymentIntentId',
+
+  charges: '/charges',
+  chargeDetail: ':chargeId',
+
