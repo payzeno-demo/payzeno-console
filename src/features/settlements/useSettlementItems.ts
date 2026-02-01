@@ -47,3 +47,6 @@ const RETRYABLE_STATUSES: ReadonlySet<ReconciliationItemStatus> = new Set([
 ]);
 
 function toRow(item: ReconciliationItem): SettlementItemRow {
+  return {
+    ...item,
+    _selected: false,
