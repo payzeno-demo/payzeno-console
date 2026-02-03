@@ -23,6 +23,14 @@ const BATCH_ID = 'sb_01HW0RTBATCH000000001';
 describe('the request', () => {
   it('asks for 50 items, the page size the PERF fix settled on', async () => {
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() =>
+      useSettlementItems(BATCH_ID, { status: 'retryable' }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
     const { result } = renderHookWithProviders(() => useSettlementItems(''));
 
     await waitFor(() => {
