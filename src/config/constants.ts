@@ -10,9 +10,29 @@
 /** Default page size for every list route that does not override it. */
 export const DEFAULT_PAGE_SIZE = 25;
 
+/** TCP connect budget. Beyond this the upstream is down, not slow. */
+export const CONNECT_TIMEOUT_MS = 3_000;
+
+/** Paths that get `LONG_READ_TIMEOUT_MS` instead of `READ_TIMEOUT_MS`. Prefix match. */
+export const LONG_READ_PATH_PREFIXES: ReadonlyArray<string> = [
+  '/settlements/',
+  '/reporting/volume',
+  '/reporting/balance-history',
+];
+
+export const TRANSPORT_RETRIES = MAX_TRANSPORT_RETRIES;
+
+/** First backoff step for a transport-level retry. Doubled per attempt, jittered. */
+export const TRANSPORT_RETRY_BASE_MS = 250;
+
 /** WebSocket reconnect backoff schedule, milliseconds. Jittered by `NotificationSocket`. */
 export const WS_BACKOFF_MS: ReadonlyArray<number> = [500, 1_000, 2_000, 5_000, 10_000, 30_000];
 
 /** Heartbeat ping interval. payzeno-api's gateway drops idle sockets at 60s. */
 export const WS_HEARTBEAT_MS = 25_000;
 
+/** Debounce for search-as-you-type filters. */
+export const FILTER_DEBOUNCE_MS = 250;
+
+/** TanStack Query defaults. Lists go stale fast; a settlement batch does not. */
+export const STALE_TIME_MS = 30_000;

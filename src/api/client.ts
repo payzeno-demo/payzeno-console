@@ -34,3 +34,9 @@ export const DEFAULT_CLIENT_OPTIONS: ApiClientOptions = {
   retries: TRANSPORT_RETRIES,
   retryOn: [502, 503, 504],
   apiVersion: runtime.apiVersion,
+  userAgent: `payzeno-console/${runtime.environment}`,
+};
+
+export class ApiClient implements HttpTransport {
+  private readonly options: ApiClientOptions;
+
