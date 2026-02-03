@@ -10,3 +10,15 @@
 import { LONG_READ_TIMEOUT_MS, READ_TIMEOUT_MS } from '@config/constants';
 
 export interface TimeoutHandle {
+  signal: AbortSignal;
+  /** Clears the timer. Must be called in a `finally`, or the tab leaks a timer per request. */
+  dispose: () => void;
+  /** True once the timer fired; distinguishes an abort we caused from a user navigation. */
+  timedOut: () => boolean;
+}
+
+/** Routes whose read timeout is not `READ_TIMEOUT_MS`. Matched by prefix on the spec path. */
+const LONG_READ_PATH_PATTERNS: ReadonlyArray<RegExp> = [
+  /^\/settlements\/[^/]+\/items$/,
+  /^\/reporting\/balance-history$/,
+];

@@ -58,3 +58,11 @@ export type ListResult<T> = Paginated<T>;
  * Serialises a `ListQuery` (and any narrowed subtype) into flat query params. Undefined
  * values are dropped by `buildRequest`, so an absent filter never becomes `?status=undefined`.
  */
+export function listQueryToParams(q?: ListQuery & Record<string, unknown>): QueryParams {
+  if (!q) return {};
+  const params: QueryParams = {};
+  for (const [key, value] of Object.entries(q)) {
+    if (value === undefined || value === null) continue;
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      params[key] = value;
+    } else {

@@ -77,3 +77,11 @@ export function DataTable<TRow extends { id: string }>({
     setSort((current) =>
       current?.columnId === columnId
         ? { columnId, direction: toggleDirection(current.direction) }
+        : { columnId, direction: 'asc' },
+    );
+  }
+
+  const isEmpty = !isLoading && sorted.length === 0;
+
+  return (
+    <div
