@@ -38,3 +38,7 @@ export function SettlementDetailPage() {
   const { batch, isLoading, isMissing, error } = useSettlement(batchId);
   const items = useSettlementItems(batchId, status === 'all' ? undefined : { status });
 
+  if (isMissing) {
+    return <NotFound title="No such settlement batch" body="You have no items in this batch." />;
+  }
+  if (isLoading || !batch) {
