@@ -30,3 +30,6 @@ const FILTERABLE_STATUSES: ReadonlyArray<ReconciliationItemStatus | 'all'> = [
 
 export interface SettlementItemTableProps {
   batchId: string;
+  rows: ReadonlyArray<SettlementItemRow>;
+  isLoading: boolean;
+  status: ReconciliationItemStatus | 'all';
