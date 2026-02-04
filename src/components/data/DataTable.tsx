@@ -85,3 +85,19 @@ export function DataTable<TRow extends { id: string }>({
 
   return (
     <div
+      className={pz('data-table', 'scroller')}
+      style={{ overflowX: 'auto', border: `1px solid ${color.border}`, borderRadius: radius.lg }}
+    >
+      <table
+        className={pz('data-table')}
+        aria-busy={isLoading || undefined}
+        aria-rowcount={sorted.length}
+        style={{
+          width: '100%',
+          borderCollapse: 'collapse',
+          fontFamily: font.family,
+          fontSize: font.size.md,
+          background: color.surface,
+        }}
+      >
+        <caption
