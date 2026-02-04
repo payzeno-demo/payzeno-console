@@ -22,3 +22,26 @@ const LONG_READ_PATH_PATTERNS: ReadonlyArray<RegExp> = [
   /^\/settlements\/[^/]+\/items$/,
   /^\/reporting\/balance-history$/,
 ];
+
+export function timeoutForPath(path: string, override?: number): number {
+  if (override !== undefined) return override;
+  for (const pattern of LONG_READ_PATH_PATTERNS) {
+    if (pattern.test(path)) return LONG_READ_TIMEOUT_MS;
+  }
+  return READ_TIMEOUT_MS;
+}
+
+export class RequestTimeoutError extends Error {
+  constructor(
+    readonly timeoutMs: number,
+    readonly path: string,
+  ) {
+    super(`Request to ${path} timed out after ${timeoutMs}ms`);
+    this.name = 'RequestTimeoutError';
+  }
+}
+
+/**
+ * Creates a signal that aborts after `timeoutMs`. When `parent` is supplied (a TanStack Query
+ * cancellation signal), aborting the parent aborts this one too.
+ */
