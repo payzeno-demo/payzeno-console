@@ -101,3 +101,10 @@ export function DataTable<TRow extends { id: string }>({
         }}
       >
         <caption
+          style={{
+            captionSide: 'top',
+            textAlign: 'start',
+            padding: `${space[3]} ${space[4]}`,
+            fontSize: font.size.sm,
+            color: color.textSecondary,
+          }}
