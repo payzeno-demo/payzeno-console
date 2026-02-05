@@ -26,3 +26,10 @@ export function refundsListQuery(e: EndpointRegistry, q?: RefundListQuery) {
 /**
  * The refunds shown on a charge detail page. Separate factory rather than a filter argument
  * so the key nests under the charge and one refund invalidates exactly one panel.
+ */
+export function refundsForChargeQuery(e: EndpointRegistry, chargeId: string) {
+  return queryOptions<Paginated<Refund>>({
+    queryKey: queryKeys.refunds.list({ charge_id: chargeId }),
+    queryFn: () => e.refunds.listForCharge(chargeId),
+    enabled: chargeId.length > 0,
+    staleTime: 30_000,

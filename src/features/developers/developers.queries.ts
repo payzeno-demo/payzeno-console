@@ -8,3 +8,8 @@
  * cache is a secret in a devtools snapshot.
  */
 import { queryOptions } from '@tanstack/react-query';
+
+import type {
+  ApiKey,
+  CreateApiKeyRequest,
+  CreateApiKeyResponse,

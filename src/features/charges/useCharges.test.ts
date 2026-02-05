@@ -19,6 +19,12 @@ import { HttpResponse, http } from 'msw';
 describe('the request', () => {
   it('asks for the default page size', async () => {
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
     const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useCharges());
 
@@ -72,9 +78,35 @@ describe('the request', () => {
     const { result } = renderHookWithProviders(() => useCharges());
 
     await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._isRefundable).toBe(false);
+  });
+
+  it('is false for a failed charge', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
       expect(result.current.rows).toHaveLength(3);
     });
 
+    const failed = result.current.rows.find((row) => row.status === 'failed');
+    expect(failed?._isRefundable).toBe(false);
+  });
+});
+
+describe('currency handling', () => {
+  it('leaves a JPY charge in minor units — the console does no money arithmetic', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    expect(result.current.rows.every((row) => row._selected === false)).toBe(true);
+  });
+
+  it('carries the contract fields through unchanged', async () => {
     const { result } = renderHookWithProviders(() => useCharges());
 
     await waitFor(() => {
