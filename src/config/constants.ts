@@ -10,6 +10,15 @@
 /** Default page size for every list route that does not override it. */
 export const DEFAULT_PAGE_SIZE = 25;
 
+/** Page sizes the `<DataTablePagination />` control offers. */
+export const PAGE_SIZE_OPTIONS: ReadonlyArray<number> = [25, 50, 100];
+
+/**
+ * Settlement items page size.
+ *
+ * Was 500 until PAY-1996. The batch detail page renders a virtualised table so the smaller
+ * page is invisible to the user and survivable for the ledger.
+ */
 export const SETTLEMENT_ITEM_PAGE_SIZE = 50;
 
 /** TCP connect budget. Beyond this the upstream is down, not slow. */
@@ -24,6 +33,15 @@ export const LONG_READ_PATH_PREFIXES: ReadonlyArray<string> = [
   '/reporting/balance-history',
 ];
 
+/** Transport retry ceiling for idempotent verbs. */
+export const MAX_TRANSPORT_RETRIES = 2;
+
+/**
+ * Alias of `MAX_TRANSPORT_RETRIES`.
+ *
+ * `api/client.ts` was written against this name and half the repo against the other one.
+ * TODO(rrefactor): pick one and delete the other — PAY-1934.
+ */
 export const TRANSPORT_RETRIES = MAX_TRANSPORT_RETRIES;
 
 /** First backoff step for a transport-level retry. Doubled per attempt, jittered. */
@@ -43,6 +61,9 @@ export const FILTER_DEBOUNCE_MS = 250;
 
 /** TanStack Query defaults. Lists go stale fast; a settlement batch does not. */
 export const STALE_TIME_MS = 30_000;
+/** Rows rendered while a list query is pending. */
+export const SKELETON_ROW_COUNT = 8;
+
 /** Above this row count `<DataTable />` switches to windowed rendering. */
 export const VIRTUALISATION_THRESHOLD = 200;
 

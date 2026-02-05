@@ -44,3 +44,9 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
     >
       {columns.map((column, index) => {
         const content = column.cell(row);
+        const isFirst = index === 0;
+
+        return (
+          <td
+            key={column.id}
+            style={{
