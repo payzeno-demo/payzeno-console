@@ -15,6 +15,8 @@ export const SETTLEMENT_ITEM_PAGE_SIZE = 50;
 /** TCP connect budget. Beyond this the upstream is down, not slow. */
 export const CONNECT_TIMEOUT_MS = 3_000;
 
+export const LONG_READ_TIMEOUT_MS = 30_000;
+
 /** Paths that get `LONG_READ_TIMEOUT_MS` instead of `READ_TIMEOUT_MS`. Prefix match. */
 export const LONG_READ_PATH_PREFIXES: ReadonlyArray<string> = [
   '/settlements/',
@@ -41,3 +43,9 @@ export const FILTER_DEBOUNCE_MS = 250;
 
 /** TanStack Query defaults. Lists go stale fast; a settlement batch does not. */
 export const STALE_TIME_MS = 30_000;
+/** Above this row count `<DataTable />` switches to windowed rendering. */
+export const VIRTUALISATION_THRESHOLD = 200;
+
+/** The plaintext API key secret is shown once, for this long, then never again. */
+export const SECRET_REVEAL_MS = 60_000;
+

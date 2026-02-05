@@ -45,3 +45,15 @@ export class RequestTimeoutError extends Error {
  * Creates a signal that aborts after `timeoutMs`. When `parent` is supplied (a TanStack Query
  * cancellation signal), aborting the parent aborts this one too.
  */
+export function withTimeout(timeoutMs: number, parent?: AbortSignal): TimeoutHandle {
+  const controller = new AbortController();
+  let fired = false;
+
+  const timer = setTimeout(() => {
+    fired = true;
+    controller.abort();
+  }, timeoutMs);
+
+  const onParentAbort = () => controller.abort();
+  if (parent) {
+    if (parent.aborted) controller.abort();
