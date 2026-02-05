@@ -108,3 +108,11 @@ export function DataTable<TRow extends { id: string }>({
             fontSize: font.size.sm,
             color: color.textSecondary,
           }}
+        >
+          {caption}
+          {windowed ? ` — showing the first ${VIRTUALISATION_THRESHOLD} of ${sorted.length} rows` : null}
+        </caption>
+
+        <DataTableHeader
+          columns={columns}
+          sortedColumnId={sort?.columnId ?? null}
