@@ -42,3 +42,6 @@ export function SettlementDetailPage() {
     return <NotFound title="No such settlement batch" body="You have no items in this batch." />;
   }
   if (isLoading || !batch) {
+    return <LoadingPage label="Loading settlement batch" />;
+  }
+  if (error) {
