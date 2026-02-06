@@ -80,6 +80,19 @@ describe('ApiClient.get', () => {
     const request = recorder.requests.at(-1);
     recorder.stop();
 
+    expect(request?.headers.get(HEADER_CSRF)).toBe('csrf-token-write');
+  });
+
+  it('sends the mutation without a CSRF header rather than throwing when the cookie is gone', async () => {
+    const recorder = recordRequests();
+
+    await expect(
+      new ApiClient().post('/refunds', { charge_id: 'ch_1' }, 'idem-key-0003'),
+    ).resolves.toBeDefined();
+
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
     // SessionGuard turns this into a 403, which carries a request id. Throwing client-side
     // would lose it — see the comment in `http/csrf.ts`.
     expect(request?.headers.get(HEADER_CSRF)).toBeNull();
@@ -152,6 +165,32 @@ describe('ApiClient error mapping', () => {
       ),
     );
 
+    const thrown = await new ApiClient({ retries: 1 })
+      .get('/charges')
+      .catch((err: unknown) => err);
+
+    expect(calls).toBe(2);
+    expect(thrown).toBeInstanceOf(UpstreamUnavailableApiError);
+  });
+
+  it('never repeats a 4xx — a 409 is an answer, not a hiccup', async () => {
+    let calls = 0;
+    server.use(
+      http.get(url('/charges'), () => {
+        calls += 1;
+        return HttpResponse.json(
+          { error: { code: 'conflict', message: 'nope', request_id: 'r' } },
+          { status: 409 },
+        );
+      }),
+    );
+
+    await new ApiClient().get('/charges').catch(() => undefined);
+
+    expect(calls).toBe(1);
+  });
+
+  it('reuses one idempotency key across the retries of a single attempt', async () => {
     const client = new ApiClient();
   });
 });
