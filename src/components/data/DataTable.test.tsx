@@ -123,6 +123,32 @@ describe('loading and empty states', () => {
     expect(table.querySelectorAll('tbody tr')).toHaveLength(SKELETON_ROW_COUNT);
   });
 
+  it('renders the empty state only when loading has finished', () => {
+    const { rerender } = renderTable({ isLoading: true, rows: [] });
+    expect(screen.queryByText('Nothing to show')).not.toBeInTheDocument();
+
+    rerender(
+      <DataTable<Row>
+        caption="Test rows, newest first"
+        columns={columns}
+        rows={[]}
+        isLoading={false}
+        emptyState={<p>Nothing to show</p>}
+      />,
+    );
+
+    expect(screen.getByText('Nothing to show')).toBeInTheDocument();
+  });
+
+  it('spans the empty state across every column', () => {
+    renderTable({ rows: [], isLoading: false });
+
+    const cell = screen.getByText('Nothing to show').closest('td');
+    expect(cell).toHaveAttribute('colspan', String(columns.length));
+  });
+});
+
+describe('sorting', () => {
   it('toggles to descending on the second click of the same header', async () => {
     const { user } = renderTable();
     const header = screen.getByRole('button', { name: /name/i });
@@ -135,6 +161,23 @@ describe('loading and empty states', () => {
     expect(screen.getByRole('columnheader', { name: /name/i })).toHaveAttribute(
       'aria-sort',
       'descending',
+    );
+  });
+
+  it('restarts at ascending when a different column takes over', async () => {
+    const { user } = renderTable();
+
+    await user.click(screen.getByRole('button', { name: /name/i }));
+    await user.click(screen.getByRole('button', { name: /name/i }));
+    await user.click(screen.getByRole('button', { name: /amount/i }));
+
+    expect(screen.getByRole('columnheader', { name: /amount/i })).toHaveAttribute(
+      'aria-sort',
+      'ascending',
+    );
+    expect(screen.getByRole('columnheader', { name: /name/i })).toHaveAttribute(
+      'aria-sort',
+      'none',
     );
   });
 
@@ -172,6 +215,12 @@ describe('windowing above the virtualisation threshold', () => {
     name: `Name ${index}`,
     amount: index,
   }));
+
+  it('renders only the capped window', () => {
+    renderTable({ rows: many });
+
+    expect(screen.getAllByRole('row')).toHaveLength(VIRTUALISATION_THRESHOLD + 1);
+  });
 
   it('says so in the caption, so the count on screen is not a lie', () => {
     renderTable({ rows: many });
