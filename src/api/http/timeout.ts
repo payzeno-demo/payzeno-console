@@ -57,3 +57,15 @@ export function withTimeout(timeoutMs: number, parent?: AbortSignal): TimeoutHan
   const onParentAbort = () => controller.abort();
   if (parent) {
     if (parent.aborted) controller.abort();
+    else parent.addEventListener('abort', onParentAbort, { once: true });
+  }
+
+  return {
+    signal: controller.signal,
+    timedOut: () => fired,
+    dispose: () => {
+      clearTimeout(timer);
+      if (parent) parent.removeEventListener('abort', onParentAbort);
+    },
+  };
+}

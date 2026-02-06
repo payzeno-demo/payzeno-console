@@ -23,6 +23,14 @@ const BATCH_ID = 'sb_01HW0RTBATCH000000001';
 describe('the request', () => {
   it('asks for 50 items, the page size the PERF fix settled on', async () => {
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() =>
+      useSettlementItems(BATCH_ID, { status: 'retryable' }),
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
     const { result } = renderHookWithProviders(() => useSettlementItems(''));
 
     await waitFor(() => {
@@ -59,6 +67,26 @@ describe('the request', () => {
         ),
       ),
     );
+
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.totals).toEqual({
+      expectedMinor: 0,
+      postedMinor: 0,
+      feeMinor: 0,
+      varianceMinor: 0,
+      duplicateCount: 0,
+    });
+  });
+});
+
+describe('failure', () => {
+  it('surfaces a 502 rather than pretending the batch is empty', async () => {
+    server.use(errorHandler('get', '/settlements/:batchId/items', 502, 'processor_unavailable'));
 
   });
 });
