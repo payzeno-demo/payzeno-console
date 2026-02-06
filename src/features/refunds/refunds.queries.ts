@@ -33,3 +33,10 @@ export function refundsForChargeQuery(e: EndpointRegistry, chargeId: string) {
     queryFn: () => e.refunds.listForCharge(chargeId),
     enabled: chargeId.length > 0,
     staleTime: 30_000,
+  });
+}
+
+export interface CreateRefundInput {
+  request: CreateRefundRequest;
+}
+
