@@ -66,3 +66,10 @@ export function listQueryToParams(q?: ListQuery & Record<string, unknown>): Quer
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
       params[key] = value;
     } else {
+      params[key] = String(value);
+    }
+  }
+  return params;
+}
+
+export const MUTATING_METHODS: ReadonlySet<HttpMethod> = new Set<HttpMethod>([
