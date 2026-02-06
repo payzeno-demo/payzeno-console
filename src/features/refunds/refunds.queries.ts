@@ -40,3 +40,10 @@ export interface CreateRefundInput {
   request: CreateRefundRequest;
 }
 
+/**
+ * `POST /v1/refunds`.
+ *
+ * `ApiClient.post` mints the `Idempotency-Key` per attempt. That matters more here than
+ * anywhere else in the console: a double-submitted refund is money out of the merchant's
+ * balance twice, and payzeno-api's idempotency table is the only thing standing between an
+ * impatient double-click and a support ticket.
