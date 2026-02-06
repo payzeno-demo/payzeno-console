@@ -36,3 +36,10 @@ export function disputeQuery(e: EndpointRegistry, disputeId: string) {
     enabled: disputeId.length > 0,
     staleTime: 30_000,
   });
+}
+
+/** The "needs response" bucket the dashboard card links to. */
+export function disputesNeedingResponseQuery(e: EndpointRegistry) {
+  return queryOptions<Paginated<Dispute>>({
+    queryKey: queryKeys.disputes.list({ status: 'needs_response' }),
+    queryFn: () => e.disputes.listNeedingResponse({ limit: 5 }),

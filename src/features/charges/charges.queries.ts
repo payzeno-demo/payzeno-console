@@ -36,3 +36,7 @@ export function chargeQuery(e: EndpointRegistry, chargeId: string) {
 }
 
 /**
+ * `GET /v1/charges/:id/ledger` — added by arc MIG step 2, when balances and statements moved
+ * off the legacy biller. payzeno-api reads through to the ledger's
+ * `GET /internal/v1/transactions?reference_type=charge&reference_id=…`.
+ */

@@ -19,6 +19,12 @@ import { HttpResponse, http } from 'msw';
 describe('the request', () => {
   it('asks for the default page size', async () => {
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
     const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useCharges());
 
@@ -38,6 +44,24 @@ describe('the request', () => {
         ),
       ),
     );
+
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._refundableMinor).toBe(0);
+    expect(result.current.rows[0]?._isRefundable).toBe(false);
+  });
+});
+
+describe('_isRefundable', () => {
+  it('is true for a captured charge with headroom', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
 
     const captured = result.current.rows.find((row) => row.status === 'captured');
     expect(captured?._isRefundable).toBe(true);
@@ -72,8 +96,57 @@ describe('the request', () => {
     const { result } = renderHookWithProviders(() => useCharges());
 
     await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._isRefundable).toBe(false);
+  });
+
+  it('is false for a failed charge', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
       expect(result.current.rows).toHaveLength(3);
     });
+
+    const failed = result.current.rows.find((row) => row.status === 'failed');
+    expect(failed?._isRefundable).toBe(false);
+  });
+});
+
+describe('currency handling', () => {
+  it('leaves a JPY charge in minor units — the console does no money arithmetic', async () => {
+    const jpy = result.current.rows.find((row) => row.currency === 'JPY');
+    expect(jpy?.amount_minor).toBe(1_200);
+    expect(jpy?._refundableMinor).toBe(1_200);
+  });
+});
+
+describe('row shape', () => {
+  it('starts every row unselected', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    expect(result.current.rows.every((row) => row._selected === false)).toBe(true);
+  });
+
+  it('carries the contract fields through unchanged', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    expect(result.current.rows[0]?.card?.brand).toBe('visa');
+    expect(result.current.rows[0]?.acquirer).toBe('worldflow');
+  });
+});
+
+describe('failure', () => {
+  it('surfaces the error and leaves the list empty', async () => {
+    server.use(errorHandler('get', '/charges', 502, 'processor_unavailable'));
 
     const { result } = renderHookWithProviders(() => useCharges());
 

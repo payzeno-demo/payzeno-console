@@ -26,3 +26,24 @@ export function refundsListQuery(e: EndpointRegistry, q?: RefundListQuery) {
 /**
  * The refunds shown on a charge detail page. Separate factory rather than a filter argument
  * so the key nests under the charge and one refund invalidates exactly one panel.
+ */
+export function refundsForChargeQuery(e: EndpointRegistry, chargeId: string) {
+  return queryOptions<Paginated<Refund>>({
+    queryKey: queryKeys.refunds.list({ charge_id: chargeId }),
+    queryFn: () => e.refunds.listForCharge(chargeId),
+    enabled: chargeId.length > 0,
+    staleTime: 30_000,
+  });
+}
+
+export interface CreateRefundInput {
+  request: CreateRefundRequest;
+}
+
+/**
+ * `POST /v1/refunds`.
+ *
+ * `ApiClient.post` mints the `Idempotency-Key` per attempt. That matters more here than
+ * anywhere else in the console: a double-submitted refund is money out of the merchant's
+ * balance twice, and payzeno-api's idempotency table is the only thing standing between an
+ * impatient double-click and a support ticket.

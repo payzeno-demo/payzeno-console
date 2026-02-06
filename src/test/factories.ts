@@ -252,6 +252,29 @@ export function makePayout(overrides: Partial<Payout> = {}): Payout {
   } as Payout;
 }
 
+export function makeSettlementBatch(
+  overrides: Partial<MerchantSettlementBatch> = {},
+): MerchantSettlementBatch {
+  return {
+    id: 'sb_01HW0RTBATCH000000001',
+    object: 'merchant_settlement_batch',
+    merchant_id: MERCHANT_ID,
+    currency: 'GBP',
+    processing_date: '2026-03-13',
+    acquirer: 'worldflow',
+    status: 'partially_reconciled',
+    item_count: 3,
+    net_minor: 36_120,
+    funded_at: null,
+    ...overrides,
+  };
+}
+
+/**
+ * A reconciliation item. `attempt_count` defaults to 1 so that
+ * `useSettlementItems::_isDuplicateSuspect` is false unless a test asks for the arc-INC
+ * fingerprint — a settled item that took more than one attempt.
+ */
 export function makeReconciliationItem(
   overrides: Partial<ReconciliationItem> = {},
 ): ReconciliationItem {

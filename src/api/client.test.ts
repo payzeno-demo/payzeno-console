@@ -62,7 +62,64 @@ describe('ApiClient defaults', () => {
 
 describe('ApiClient.get', () => {
   it('builds the versioned URL and returns the parsed envelope', async () => {
+    const client = new ApiClient();
+
+    await client.get('/charges', { limit: 25, status: 'captured', cursor: undefined });
+
     const recorder = recordRequests();
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.method).toBe('POST');
+    expect(request?.headers.get(HEADER_IDEMPOTENCY_KEY)).toBe('idem-key-0001');
+    expect(request?.headers.get('Content-Type')).toBe('application/json');
+  });
+
+  it('attaches X-Payzeno-CSRF from the pz_csrf cookie on a mutating verb', async () => {
+    setCsrfCookie('csrf-token-write');
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.headers.get(HEADER_CSRF)).toBe('csrf-token-write');
+  });
+
+  it('sends the mutation without a CSRF header rather than throwing when the cookie is gone', async () => {
+    const recorder = recordRequests();
+
+    await expect(
+      new ApiClient().post('/refunds', { charge_id: 'ch_1' }, 'idem-key-0003'),
+    ).resolves.toBeDefined();
+
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    // SessionGuard turns this into a 403, which carries a request id. Throwing client-side
+    // would lose it — see the comment in `http/csrf.ts`.
+    expect(request?.headers.get(HEADER_CSRF)).toBeNull();
+  });
+
+  it('returns undefined for a 204 rather than choking on an empty body', async () => {
+    server.use(
+      http.delete(url('/api-keys/:apiKeyId'), () => new HttpResponse(null, { status: 204 })),
+    );
+
+    await expect(new ApiClient().delete('/api-keys/key_1', 'idem-key-0004')).resolves.toBeUndefined();
+  });
+});
+
+describe('ApiClient error mapping', () => {
+  it.each([
+    [401, 'authentication_required', UnauthorizedError],
+    [403, 'permission_denied', ForbiddenError],
+    [404, 'not_found', NotFoundApiError],
+    [409, 'settlement_locked', ConflictApiError],
+    [422, 'validation_failed', ValidationApiError],
+    [429, 'rate_limited', RateLimitedApiError],
+    [502, 'processor_unavailable', UpstreamUnavailableApiError],
+    [500, 'internal_error', ServerError],
+  ] as const)('maps %i onto its subclass', async (status, code, Expected) => {
+    server.use(errorHandler('get', '/charges', status, code, 'synthetic'));
+
     const thrown = await client.get('/charges').catch((err: unknown) => err);
 
     expect(thrown).toBeInstanceOf(Expected);
@@ -108,5 +165,32 @@ describe('ApiClient.get', () => {
       ),
     );
 
+    const thrown = await new ApiClient({ retries: 1 })
+      .get('/charges')
+      .catch((err: unknown) => err);
+
+    expect(calls).toBe(2);
+    expect(thrown).toBeInstanceOf(UpstreamUnavailableApiError);
+  });
+
+  it('never repeats a 4xx — a 409 is an answer, not a hiccup', async () => {
+    let calls = 0;
+    server.use(
+      http.get(url('/charges'), () => {
+        calls += 1;
+        return HttpResponse.json(
+          { error: { code: 'conflict', message: 'nope', request_id: 'r' } },
+          { status: 409 },
+        );
+      }),
+    );
+
+    await new ApiClient().get('/charges').catch(() => undefined);
+
+    expect(calls).toBe(1);
+  });
+
+  it('reuses one idempotency key across the retries of a single attempt', async () => {
+    const client = new ApiClient();
   });
 });
