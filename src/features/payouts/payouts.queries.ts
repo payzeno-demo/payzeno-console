@@ -54,3 +54,8 @@ export function createPayoutMutation(e: EndpointRegistry) {
 }
 
 /**
+ * `POST /v1/payouts/:payoutId/cancel`. Only a `scheduled` payout can be cancelled — once the
+ * rail has it (`in_transit`) the answer is `409 invalid_state` and the only remedy is a
+ * return, which takes days.
+ */
+export function cancelPayoutMutation(e: EndpointRegistry) {
