@@ -33,3 +33,5 @@ export interface SettlementItemTableProps {
   rows: ReadonlyArray<SettlementItemRow>;
   isLoading: boolean;
   status: ReconciliationItemStatus | 'all';
+  onStatusChange: (next: ReconciliationItemStatus | 'all') => void;
+}
