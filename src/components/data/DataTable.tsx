@@ -93,3 +93,26 @@ export function DataTable<TRow extends { id: string }>({
         aria-busy={isLoading || undefined}
         aria-rowcount={sorted.length}
         style={{
+          width: '100%',
+          borderCollapse: 'collapse',
+          fontFamily: font.family,
+          fontSize: font.size.md,
+          background: color.surface,
+        }}
+      >
+        <caption
+          style={{
+            captionSide: 'top',
+            textAlign: 'start',
+            padding: `${space[3]} ${space[4]}`,
+            fontSize: font.size.sm,
+            color: color.textSecondary,
+          }}
+        >
+          {caption}
+          {windowed ? ` — showing the first ${VIRTUALISATION_THRESHOLD} of ${sorted.length} rows` : null}
+        </caption>
+
+        <DataTableHeader
+          columns={columns}
+          sortedColumnId={sort?.columnId ?? null}

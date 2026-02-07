@@ -37,3 +37,16 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
         if (!onRowClick || fromInteractiveChild(event)) return;
         onRowClick(row);
       }}
+      style={{
+        borderBottom: `1px solid ${color.border}`,
+        cursor: clickable ? 'pointer' : 'default',
+      }}
+    >
+      {columns.map((column, index) => {
+        const content = column.cell(row);
+        const isFirst = index === 0;
+
+        return (
+          <td
+            key={column.id}
+            style={{
