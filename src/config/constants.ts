@@ -71,6 +71,8 @@ export const FILTER_DEBOUNCE_MS = 250;
 
 /** TanStack Query defaults. Lists go stale fast; a settlement batch does not. */
 export const STALE_TIME_MS = 30_000;
+export const LONG_STALE_TIME_MS = 5 * 60_000;
+
 /** Rows rendered while a list query is pending. */
 export const SKELETON_ROW_COUNT = 8;
 
@@ -83,3 +85,5 @@ export const SECRET_REVEAL_MS = 60_000;
 /** Reporting windows the summary cards offer, in the contracts vocabulary. */
 export const REPORTING_WINDOW_OPTIONS: ReadonlyArray<'24h' | '7d' | '30d'> = ['24h', '7d', '30d'];
 
+/** Maximum rows a client-side CSV export will produce before it insists on a report job. */
+export const CSV_EXPORT_ROW_LIMIT = 10_000;

@@ -73,3 +73,11 @@ export function listQueryToParams(q?: ListQuery & Record<string, unknown>): Quer
 }
 
 export const MUTATING_METHODS: ReadonlySet<HttpMethod> = new Set<HttpMethod>([
+  'POST',
+  'PATCH',
+  'DELETE',
+]);
+
+export function isMutating(method: HttpMethod): boolean {
+  return MUTATING_METHODS.has(method);
+}
