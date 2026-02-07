@@ -47,3 +47,7 @@ export function settlementQuery(e: EndpointRegistry, batchId: string) {
  * route is 30s.
  */
 export function settlementItemsQuery(
+  e: EndpointRegistry,
+  batchId: string,
+  q?: SettlementItemListQuery,
+) {
