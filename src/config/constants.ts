@@ -24,6 +24,13 @@ export const SETTLEMENT_ITEM_PAGE_SIZE = 50;
 /** TCP connect budget. Beyond this the upstream is down, not slow. */
 export const CONNECT_TIMEOUT_MS = 3_000;
 
+/** Default response budget for a normal read. */
+export const READ_TIMEOUT_MS = 10_000;
+
+/**
+ * Read budget for the endpoints that are legitimately slow: `GET /v1/settlements/:id/items`
+ * and `GET /v1/reporting/volume` over a 30d window. Matches api-surface.md §11.
+ */
 export const LONG_READ_TIMEOUT_MS = 30_000;
 
 /** Paths that get `LONG_READ_TIMEOUT_MS` instead of `READ_TIMEOUT_MS`. Prefix match. */
@@ -50,6 +57,9 @@ export const TRANSPORT_RETRY_BASE_MS = 250;
 /** WebSocket reconnect backoff schedule, milliseconds. Jittered by `NotificationSocket`. */
 export const WS_BACKOFF_MS: ReadonlyArray<number> = [500, 1_000, 2_000, 5_000, 10_000, 30_000];
 
+/** After this many consecutive failures the stream gives up and raises `NotificationStreamError`. */
+export const WS_MAX_RECONNECTS = 8;
+
 /** Heartbeat ping interval. payzeno-api's gateway drops idle sockets at 60s. */
 export const WS_HEARTBEAT_MS = 25_000;
 
@@ -69,4 +79,7 @@ export const VIRTUALISATION_THRESHOLD = 200;
 
 /** The plaintext API key secret is shown once, for this long, then never again. */
 export const SECRET_REVEAL_MS = 60_000;
+
+/** Reporting windows the summary cards offer, in the contracts vocabulary. */
+export const REPORTING_WINDOW_OPTIONS: ReadonlyArray<'24h' | '7d' | '30d'> = ['24h', '7d', '30d'];
 
