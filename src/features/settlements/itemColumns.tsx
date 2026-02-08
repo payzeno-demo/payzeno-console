@@ -68,3 +68,8 @@ export function settlementItemColumns(
       cell: (row) => <span>{row.line_type.replace(/_/g, ' ')}</span>,
       exportValue: (row) => row.line_type,
     },
+    {
+      id: 'charge_id',
+      header: 'Charge',
+      cell: (row) => (row.charge_id ? <IdCell value={row.charge_id} /> : <span>Unmatched</span>),
+      exportValue: (row) => row.charge_id ?? '',
