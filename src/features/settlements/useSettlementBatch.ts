@@ -21,3 +21,7 @@ export interface UseSettlementResult {
   isLoading: boolean;
   isMissing: boolean;
   error: Error | null;
+  refetch: () => void;
+}
+
+export function useSettlement(batchId: string): UseSettlementResult {
