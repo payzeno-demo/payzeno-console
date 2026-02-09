@@ -35,3 +35,5 @@ export interface SettlementItemTableProps {
   status: ReconciliationItemStatus | 'all';
   onStatusChange: (next: ReconciliationItemStatus | 'all') => void;
 }
+
+export function SettlementItemTable({
