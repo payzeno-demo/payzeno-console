@@ -45,3 +45,5 @@ export function SettlementDetailPage() {
     return <LoadingPage label="Loading settlement batch" />;
   }
   if (error) {
+    return <ErrorState error={error} title="We could not load this batch" />;
+  }
