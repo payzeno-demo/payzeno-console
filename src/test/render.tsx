@@ -95,3 +95,22 @@ export function createTestQueryClient(): QueryClient {
 }
 
 /**
+ * The registry a test asserts against directly (`endpoints.settlements.retryItem(…)`), built
+ * over the same transport a render would use.
+ */
+export function createTestEndpoints(transport: HttpTransport = new ApiClient()): EndpointRegistry {
+  return createEndpoints(transport);
+}
+
+/** The whole stack, with a `MemoryRouter` outside it and an optional route pattern inside. */
+export function Providers({
+  children,
+  route = '/',
+  path,
+  transport,
+  session = makeConsoleSession(),
+  flags,
+  queryClient,
+}: ProvidersProps) {
+  const body = path ? (
+    <Routes>

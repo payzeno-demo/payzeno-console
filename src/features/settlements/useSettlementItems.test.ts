@@ -31,6 +31,7 @@ describe('the request', () => {
   });
 
   it('passes a status filter through', async () => {
+    const recorder = recordRequests();
     const { result } = renderHookWithProviders(() =>
       useSettlementItems(BATCH_ID, { status: 'retryable' }),
     );
