@@ -43,3 +43,11 @@ export function settlementQuery(e: EndpointRegistry, batchId: string) {
 /**
  * arc PERF (PAY-1918): the page size was 500 and the ledger's `list_items` started timing
  * out on month-end batches. It is now `SETTLEMENT_ITEM_PAGE_SIZE` (50) with a cursor, and
+ * the endpoint sends `LONG_READ_TIMEOUT_MS` because the ledger's own read budget for this
+ * route is 30s.
+ */
+export function settlementItemsQuery(
+  e: EndpointRegistry,
+  batchId: string,
+  q?: SettlementItemListQuery,
+) {

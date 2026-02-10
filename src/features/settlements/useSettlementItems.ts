@@ -53,3 +53,7 @@ function toRow(item: ReconciliationItem): SettlementItemRow {
     _isRetryable: RETRYABLE_STATUSES.has(item.status),
     // A settled item that took more than one attempt is where a duplicate `settle`
     // transaction would have come from. PAY-2054's nightly audit checks the same thing
+    // server-side; this is the merchant-visible half.
+    _isDuplicateSuspect: item.status === 'settled' && item.attempt_count > 1,
+  };
+}

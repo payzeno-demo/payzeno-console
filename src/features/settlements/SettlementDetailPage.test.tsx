@@ -71,3 +71,16 @@ describe('the totals panel (arc INC)', () => {
   it('stays quiet while posted is within tolerance of expected', async () => {
     renderPage();
 
+    await screen.findByText('Your totals in this batch');
+    expect(
+      screen.queryByText('Posted total is above the expected total'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('warns loudly when the batch has posted more than the acquirer file expected', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([
+            makeReconciliationItem({
+              id: 'ri_a',

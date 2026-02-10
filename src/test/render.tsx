@@ -105,3 +105,12 @@ export function createTestEndpoints(transport: HttpTransport = new ApiClient()):
 /** The whole stack, with a `MemoryRouter` outside it and an optional route pattern inside. */
 export function Providers({
   children,
+  route = '/',
+  path,
+  transport,
+  session = makeConsoleSession(),
+  flags,
+  queryClient,
+}: ProvidersProps) {
+  const body = path ? (
+    <Routes>
