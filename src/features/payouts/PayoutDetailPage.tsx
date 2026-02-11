@@ -34,6 +34,7 @@ export function PayoutDetailPage() {
   const { payoutId = '' } = useParams<{ payoutId: string }>();
   useDocumentTitle(payoutId ? `Payout ${payoutId}` : 'Payout');
 
+  const { can } = usePermissions();
   const { payout, isCancelable, isFailed, awaitingReversal, isLoading, isMissing, error } =
     usePayout(payoutId);
   const { cancelPayout, isPending, alreadyInTransitId, errorMessage } = useCancelPayout();

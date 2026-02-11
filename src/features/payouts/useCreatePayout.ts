@@ -100,3 +100,14 @@ export function useCreatePayout(): UseCreatePayoutResult {
 
       if (error instanceof ForbiddenError) {
         setErrorMessage('Creating a payout needs an admin role.');
+        return;
+      }
+
+      setErrorMessage(
+        error instanceof ConsoleApiError
+          ? error.message
+          : 'The payout could not be created. Try again in a moment.',
+      );
+    },
+  });
+
