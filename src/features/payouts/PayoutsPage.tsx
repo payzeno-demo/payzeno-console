@@ -97,3 +97,13 @@ export function PayoutsPage() {
       <FilterBar label="Payout filters">
         <CurrencySelect
           id="payout-currency"
+          value={currency as CurrencyCode}
+          onChange={(next) => setCurrency(next)}
+        />
+        <Select
+          id="payout-status"
+          label="Status"
+          value={status ?? ''}
+          onValueChange={(next) => setStatus(next === '' ? null : (next as PayoutStatus))}
+          options={[
+            { value: '', label: 'All statuses' },

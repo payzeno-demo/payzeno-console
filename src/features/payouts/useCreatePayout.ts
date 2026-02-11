@@ -90,3 +90,13 @@ export function useCreatePayout(): UseCreatePayoutResult {
 
       if (error instanceof ValidationApiError) {
         setFieldErrors(error.fieldErrorMap());
+        setErrorMessage(
+          error.code === 'currency_mismatch'
+            ? 'That bank account is not held in this currency. Payzeno does not convert.'
+            : error.message,
+        );
+        return;
+      }
+
+      if (error instanceof ForbiddenError) {
+        setErrorMessage('Creating a payout needs an admin role.');
