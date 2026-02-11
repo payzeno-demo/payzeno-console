@@ -62,6 +62,15 @@ describe('the table', () => {
     });
   });
 
+  it('names the destination bank account rather than showing its id', async () => {
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    await screen.findByRole('table');
+    await waitFor(() => {
+      expect(screen.getByRole('table').textContent).toContain('Northern Counties Bank');
+    });
+  });
+
   it('shows the failed payout with its status', async () => {
     renderWithProviders(<PayoutsPage />, { route: '/payouts' });
 
@@ -69,6 +78,17 @@ describe('the table', () => {
     expect(screen.getByRole('table').textContent).toMatch(/failed/i);
   });
 
+  it('renders an empty table for a merchant with no payouts yet', async () => {
+    server.use(http.get(url('/payouts'), () => HttpResponse.json(makePage([]))));
+
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    const table = await screen.findByRole('table');
+    expect(table.querySelectorAll('tbody tr')).toHaveLength(1);
+  });
+});
+
+describe('the failed-payout banner', () => {
   it('appears when the list contains a failed payout', async () => {
     renderWithProviders(<PayoutsPage />, { route: '/payouts' });
 
@@ -88,6 +108,20 @@ describe('the table', () => {
     expect(screen.queryByText('Failed payouts need attention')).not.toBeInTheDocument();
   });
 
+  it('counts a returned payout as needing attention too', async () => {
+    server.use(
+      http.get(url('/payouts'), () =>
+        HttpResponse.json(makePage([makePayout({ status: 'returned' })])),
+      ),
+    );
+
+    renderWithProviders(<PayoutsPage />, { route: '/payouts' });
+
+    expect(await screen.findByText('Failed payouts need attention')).toBeInTheDocument();
+  });
+});
+
+describe('failure', () => {
   it('renders the error state instead of the table', async () => {
     server.use(errorHandler('get', '/payouts', 500, 'internal_error'));
 

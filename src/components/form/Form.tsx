@@ -134,3 +134,14 @@ export function FormSection({
     <fieldset
       className={pz('form', 'section')}
       style={{ margin: 0, padding: 0, border: 'none', display: 'grid', gap: space[3] }}
+    >
+      <legend
+        style={{
+          padding: 0,
+          fontSize: font.size.md,
+          fontWeight: font.weight.semibold,
+          color: color.textPrimary,
+        }}
+      >
+        {legend}
+      </legend>

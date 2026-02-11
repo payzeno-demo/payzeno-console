@@ -45,6 +45,7 @@ describe('creating a payout', () => {
   });
 
   it('includes every optional field the dialog supplied', async () => {
+    const box = captureBody();
     const { result } = renderHookWithProviders(() => useCreatePayout());
 
     act(() => {
@@ -108,6 +109,22 @@ describe('creating a payout', () => {
 describe('the failure branches', () => {
   it('explains payout_blocked in terms of the balance', async () => {
     server.use(errorHandler('post', '/payouts', 409, 'payout_blocked', 'Blocked.'));
+
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBe(
+        'Payouts are blocked while your balance is negative.',
+      );
+    });
+  });
+
+  it('explains any other 409 as an in-flight conflict', async () => {
+    server.use(errorHandler('post', '/payouts', 409, 'conflict', 'Already running.'));
 
     const { result } = renderHookWithProviders(() => useCreatePayout());
 

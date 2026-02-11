@@ -41,6 +41,8 @@ export function CreatePayoutDialog({
 }: CreatePayoutDialogProps) {
   const { accounts, isLoading: accountsLoading } = useBankAccounts();
   const { formatMinor } = useMoneyFormat();
+  const { createPayout, isPending, errorMessage, fieldErrors, createdPayout } = useCreatePayout();
+
   const [amountMinor, setAmountMinor] = useState<MinorUnits>(availableMinor);
   const [bankAccountId, setBankAccountId] = useState<string>('');
   const [method, setMethod] = useState<PayoutMethod>('standard_ach');
@@ -63,6 +65,7 @@ export function CreatePayoutDialog({
   }, [createdPayout, onOpenChange]);
 
   const tooLarge = amountMinor > availableMinor;
+  const tooSmall = amountMinor <= 0;
   const noAccount = eligible.length === 0;
   const amountError = fieldErrors.amount_minor ?? (tooLarge ? 'More than is available.' : null);
 

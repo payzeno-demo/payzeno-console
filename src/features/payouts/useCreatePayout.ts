@@ -90,3 +90,44 @@ export function useCreatePayout(): UseCreatePayoutResult {
 
       if (error instanceof ValidationApiError) {
         setFieldErrors(error.fieldErrorMap());
+        setErrorMessage(
+          error.code === 'currency_mismatch'
+            ? 'That bank account is not held in this currency. Payzeno does not convert.'
+            : error.message,
+        );
+        return;
+      }
+
+      if (error instanceof ForbiddenError) {
+        setErrorMessage('Creating a payout needs an admin role.');
+        return;
+      }
+
+      setErrorMessage(
+        error instanceof ConsoleApiError
+          ? error.message
+          : 'The payout could not be created. Try again in a moment.',
+      );
+    },
+  });
+
+  const createPayout = useCallback(
+    ({ currency, amountMinor, bankAccountId, method, statementDescriptor }: CreatePayoutArgs) => {
+      const request: CreatePayoutRequest = { currency };
+      if (amountMinor !== undefined) request.amount_minor = amountMinor;
+      if (bankAccountId) request.bank_account_id = bankAccountId;
+      if (method) request.method = method;
+      if (statementDescriptor) request.statement_descriptor = statementDescriptor;
+      mutation.mutate({ request });
+    },
+    [mutation],
+  );
+
+  return {
+    createPayout,
+    isPending: mutation.isPending,
+    errorMessage,
+    fieldErrors,
+    createdPayout,
+  };
+}

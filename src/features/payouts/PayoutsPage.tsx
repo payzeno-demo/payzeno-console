@@ -97,3 +97,33 @@ export function PayoutsPage() {
       <FilterBar label="Payout filters">
         <CurrencySelect
           id="payout-currency"
+          value={currency as CurrencyCode}
+          onChange={(next) => setCurrency(next)}
+        />
+        <Select
+          id="payout-status"
+          label="Status"
+          value={status ?? ''}
+          onValueChange={(next) => setStatus(next === '' ? null : (next as PayoutStatus))}
+          options={[
+            { value: '', label: 'All statuses' },
+            ...PAYOUT_STATUSES.map((value) => ({ value, label: humanise(value) })),
+          ]}
+        />
+      </FilterBar>
+
+      {error ? (
+        <ErrorState error={error} title="We could not load your payouts" />
+      ) : (
+        <PayoutTable rows={rows} isLoading={isLoading} pagination={pagination} />
+      )}
+
+      <CreatePayoutDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        currency={currency as CurrencyCode}
+        availableMinor={availableMinor}
+      />
+    </PageContainer>
+  );
+}
