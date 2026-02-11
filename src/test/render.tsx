@@ -114,3 +114,13 @@ export function Providers({
 }: ProvidersProps) {
   const body = path ? (
     <Routes>
+      <Route path={path} element={<>{children}</>} />
+    </Routes>
+  ) : (
+    children
+  );
+
+  return (
+    <MemoryRouter initialEntries={[route]}>
+      <FlagsProvider overrides={flags}>
+        <QueryProvider client={queryClient ?? createTestQueryClient()}>

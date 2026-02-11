@@ -117,3 +117,13 @@ export function PayoutsPage() {
       ) : (
         <PayoutTable rows={rows} isLoading={isLoading} pagination={pagination} />
       )}
+
+      <CreatePayoutDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        currency={currency as CurrencyCode}
+        availableMinor={availableMinor}
+      />
+    </PageContainer>
+  );
+}
