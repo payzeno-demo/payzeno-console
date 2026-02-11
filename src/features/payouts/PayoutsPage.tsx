@@ -107,3 +107,13 @@ export function PayoutsPage() {
           onValueChange={(next) => setStatus(next === '' ? null : (next as PayoutStatus))}
           options={[
             { value: '', label: 'All statuses' },
+            ...PAYOUT_STATUSES.map((value) => ({ value, label: humanise(value) })),
+          ]}
+        />
+      </FilterBar>
+
+      {error ? (
+        <ErrorState error={error} title="We could not load your payouts" />
+      ) : (
+        <PayoutTable rows={rows} isLoading={isLoading} pagination={pagination} />
+      )}

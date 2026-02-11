@@ -111,3 +111,13 @@ export function useCreatePayout(): UseCreatePayoutResult {
     },
   });
 
+  const createPayout = useCallback(
+    ({ currency, amountMinor, bankAccountId, method, statementDescriptor }: CreatePayoutArgs) => {
+      const request: CreatePayoutRequest = { currency };
+      if (amountMinor !== undefined) request.amount_minor = amountMinor;
+      if (bankAccountId) request.bank_account_id = bankAccountId;
+      if (method) request.method = method;
+      if (statementDescriptor) request.statement_descriptor = statementDescriptor;
+      mutation.mutate({ request });
+    },
+    [mutation],
