@@ -121,3 +121,13 @@ export function useCreatePayout(): UseCreatePayoutResult {
       mutation.mutate({ request });
     },
     [mutation],
+  );
+
+  return {
+    createPayout,
+    isPending: mutation.isPending,
+    errorMessage,
+    fieldErrors,
+    createdPayout,
+  };
+}
