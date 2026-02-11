@@ -65,6 +65,7 @@ export function CreatePayoutDialog({
   }, [createdPayout, onOpenChange]);
 
   const tooLarge = amountMinor > availableMinor;
+  const tooSmall = amountMinor <= 0;
   const noAccount = eligible.length === 0;
   const amountError = fieldErrors.amount_minor ?? (tooLarge ? 'More than is available.' : null);
 

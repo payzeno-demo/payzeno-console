@@ -94,6 +94,13 @@ export function useZodForm<TValues extends Record<string, string>>(
     [errors, formId, setValue, validateField, values],
   );
 
+  const applyServerError = useCallback(
+    (error: unknown) => {
+      setErrors(toFormErrors(error, fieldNames));
+    },
+    [fieldNames],
+  );
+
   const submit = useCallback(
     async (onValid: (parsed: unknown) => Promise<void> | void) => {
       const result = schema.safeParse(values);
