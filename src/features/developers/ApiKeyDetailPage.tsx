@@ -25,3 +25,10 @@ import { usePermissions } from '@hooks/usePermissions';
 import { listSentence, pluralise } from '@lib/format';
 
 import { useApiKey } from './useApiKey';
+import { useApiKeys } from './useApiKeys';
+
+export function ApiKeyDetailPage() {
+  const { apiKeyId = '' } = useParams<{ apiKeyId: string }>();
+  useDocumentTitle(apiKeyId ? `API key ${apiKeyId}` : 'API key');
+
+  const { can } = usePermissions();

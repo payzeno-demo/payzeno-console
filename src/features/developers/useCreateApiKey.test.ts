@@ -27,11 +27,40 @@ describe('creating a key', () => {
       expect(result.current.createdKey).not.toBeNull();
     });
 
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.createdKey).not.toBeNull();
+    });
+
     expect(result.current.createdKey).not.toHaveProperty('secret');
     expect(result.current.createdKey?.last_four).toHaveLength(4);
   });
 
   it('returns the secret separately, exactly once', async () => {
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
+      result.current.createApiKey({
+        name: 'Read only',
+        mode: 'test',
+        scopes: ['charges:read'],
+      });
+    });
+
+    await waitFor(() => {
+      expect(result.current.createdKey).not.toBeNull();
+    });
+    expect(result.current.errorMessage).toBeNull();
+  });
+});
+
+describe('clearSecret', () => {
+  it('drops both the secret and the metadata, so nothing survives the dialog', async () => {
     const { result } = renderHookWithProviders(() => useCreateApiKey());
 
     act(() => {

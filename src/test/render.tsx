@@ -124,3 +124,13 @@ export function Providers({
     <MemoryRouter initialEntries={[route]}>
       <FlagsProvider overrides={flags}>
         <QueryProvider client={queryClient ?? createTestQueryClient()}>
+          <TransportProvider transport={transport ?? new ApiClient()}>
+            <ToastProvider>
+              <AuthProvider initialSession={session ?? undefined}>
+                <NotificationProvider>
+                  <TooltipProvider>{body}</TooltipProvider>
+                </NotificationProvider>
+              </AuthProvider>
+            </ToastProvider>
+          </TransportProvider>
+        </QueryProvider>
