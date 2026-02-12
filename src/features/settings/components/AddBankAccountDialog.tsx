@@ -70,9 +70,138 @@ async function tokeniseBankAccount(fields: {
     throw new VaultTokenisationError('The card vault could not be reached.');
   }
 
+  const vaultReference = response.headers.get('X-Vault-Reference');
+
+  if (!response.ok) {
+    throw new VaultTokenisationError(
+      `The vault rejected these details (${response.status}).`,
+      vaultReference,
+    );
+  }
+
+  const [scheme, setScheme] = useState<BankAccountScheme>('aba');
   const [accountHolderName, setAccountHolderName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [routingNumber, setRoutingNumber] = useState('');
   const [makeDefault, setMakeDefault] = useState(false);
   const [vaultError, setVaultError] = useState<string | null>(null);
   const accountLabel = scheme === 'iban' ? 'IBAN' : 'Account number';
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isPending || isTokenising) return;
+
+    setVaultError(null);
+    setIsTokenising(true);
+
+    try {
+      const token = await tokeniseBankAccount({
+        scheme,
+        accountNumber,
+        routingNumber,
+        accountHolderName,
+      });
+
+      // Clear the raw values the moment the vault has them.
+      setAccountNumber('');
+      setRoutingNumber('');
+
+      createBankAccount({
+        country,
+        currency,
+        scheme,
+        bankAccountToken: token,
+        accountHolderName,
+        isDefault: makeDefault,
+      });
+    } catch (error: unknown) {
+      setVaultError(
+        error instanceof VaultTokenisationError
+          ? error.message
+          : 'We could not securely store those details.',
+      );
+    } finally {
+      setIsTokenising(false);
+    }
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Add a bank account"
+      description="Your account details go straight to our vault. Payzeno never stores them."
+    >
+      <form onSubmit={handleSubmit} noValidate>
+        <Select
+          id="bank-scheme"
+          label="Account type"
+          value={scheme}
+          onValueChange={(next) => setScheme(next as BankAccountScheme)}
+          options={SCHEMES.map((value) => ({ value, label: labelise(value) }))}
+        />
+
+        <CurrencySelect id="bank-currency" value={currency} onChange={setCurrency} />
+
+        <Label htmlFor="bank-holder">Account holder name</Label>
+        <Input
+          id="bank-holder"
+          name="account_holder_name"
+          autoComplete="off"
+          required
+          value={accountHolderName}
+          aria-describedby={
+            fieldErrors.account_holder_name ? 'bank-holder-error' : undefined
+          }
+          onChange={(event) => setAccountHolderName(event.target.value)}
+        />
+        {fieldErrors.account_holder_name ? (
+          <InlineError id="bank-holder-error">{fieldErrors.account_holder_name}</InlineError>
+        ) : null}
+
+        <Label htmlFor="bank-account-number">{accountLabel}</Label>
+        <Input
+          id="bank-account-number"
+          name="account_number"
+          inputMode="numeric"
+          autoComplete="off"
+          required
+          value={accountNumber}
+          onChange={(event) => setAccountNumber(event.target.value)}
+        />
+
+        {scheme !== 'iban' ? (
+          <>
+            <Label htmlFor="bank-routing">{routingLabel}</Label>
+            <Input
+              id="bank-routing"
+              name="routing_number"
+              inputMode="numeric"
+              autoComplete="off"
+              required
+              value={routingNumber}
+              onChange={(event) => setRoutingNumber(event.target.value)}
+            />
+          </>
+        ) : null}
+
+        <Checkbox
+          id="bank-default"
+          label={`Use as my default ${currency} payout account`}
+          checked={makeDefault}
+          onCheckedChange={setMakeDefault}
+        />
+
+        {vaultError ? <InlineError id="bank-vault-error">{vaultError}</InlineError> : null}
+        {errorMessage ? <InlineError id="bank-api-error">{errorMessage}</InlineError> : null}
+
+        <Button type="submit" disabled={isPending || isTokenising}>
+          {isTokenising ? 'Securing details…' : isPending ? 'Adding…' : 'Add account'}
+        </Button>
+        <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+          Cancel
+        </Button>
+      </form>
+    </Dialog>
+  );
 }

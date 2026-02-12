@@ -49,8 +49,47 @@ export interface UseCreateBankAccountResult {
 
 export function useCreateBankAccount(): UseCreateBankAccountResult {
   const endpoints = useEndpoints();
+  const toast = useToast();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const mutation = useMutation({
+    ...createBankAccountMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (account: BankAccount) => {
+      setCreatedAccount(account);
+      toast.success('Bank account added. Verification usually takes a day or two.');
+      trackEvent('bank_account_added', { scheme: account.scheme, currency: account.currency });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.bankAccounts.all });
+    },
+    onError: (error: unknown) => {
+      if (error instanceof VaultTokenisationError) {
+        setErrorMessage('We could not securely store those details. Check them and try again.');
+        return;
+      }
+
+      if (error instanceof ValidationApiError) {
+        setFieldErrors(error.fieldErrorMap());
+        setErrorMessage('Some of the account details were rejected.');
+        return;
+      }
+
+      if (error instanceof ForbiddenError) {
+        setErrorMessage('Adding a bank account needs an admin role.');
+        return;
+      }
+
+      setErrorMessage(
+        error instanceof ConsoleApiError
+          ? error.message
+          : 'The account could not be added. Try again in a moment.',
+      );
+    },
+  });
+
   const createBankAccount = useCallback(
     (args: CreateBankAccountArgs) => {
       const request: CreateBankAccountRequest = {

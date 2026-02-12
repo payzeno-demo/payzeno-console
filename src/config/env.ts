@@ -20,3 +20,32 @@ const httpUrl = z
     message: 'must be an http(s) URL',
   });
 
+export function readEnv(raw: Record<string, unknown> = import.meta.env): Env {
+  const parsed = schema.safeParse(raw);
+
+  if (!parsed.success) {
+    throw new EnvConfigError(
+      parsed.error.issues.map((issue) => ({
+        path: issue.path.join('.') || '(root)',
+        message: issue.message,
+      })),
+    );
+  }
+
+  const value = parsed.data;
+
+  return {
+    apiUrl: normaliseBase(value.VITE_PAYZENO_API_URL),
+    wsUrl: value.VITE_WS_URL,
+    vaultPublicUrl: normaliseBase(value.VITE_VAULT_PUBLIC_URL),
+    sentryDsn: value.VITE_SENTRY_DSN.trim() === '' ? null : value.VITE_SENTRY_DSN.trim(),
+    environment: value.VITE_ENVIRONMENT,
+    featureSettlementExplorer: value.VITE_FEATURE_SETTLEMENT_EXPLORER,
+    featureDisputeEvidenceV2: value.VITE_FEATURE_DISPUTE_EVIDENCE_V2,
+  };
+}
+
+/**
+ * Evaluated once, at module load. `main.tsx` imports `config/runtime.ts`, which imports this,
+ * so a misconfigured bundle throws `EnvConfigError` before React mounts.
+ */
