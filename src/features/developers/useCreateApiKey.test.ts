@@ -32,5 +32,19 @@ describe('creating a key', () => {
   });
 
   it('returns the secret separately, exactly once', async () => {
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBe('Creating an API key needs an admin role.');
+    });
+  });
+
+  it('leaves no secret behind when the create fails', async () => {
+    server.use(errorHandler('post', '/api-keys', 500, 'internal_error'));
+
   });
 });

@@ -17,3 +17,8 @@ import type { ApiKeyRow } from '@/types/view-models';
 
 import { apiKeysQuery, revokeApiKeyMutation } from './developers.queries';
 
+export interface UseApiKeysResult {
+  liveKeys: ApiKeyRow[];
+  testKeys: ApiKeyRow[];
+  revokedKeys: ApiKeyRow[];
+  isLoading: boolean;

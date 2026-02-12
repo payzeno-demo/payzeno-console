@@ -33,3 +33,15 @@ import { allFlags } from '@lib/flags';
 import { pluralise } from '@lib/format';
 
 import { apiKeyColumns } from './api-keys.columns';
+import { SecretRevealOnce } from './components/SecretRevealOnce';
+import { useApiKeys } from './useApiKeys';
+import { useCreateApiKey } from './useCreateApiKey';
+import { useWebhookEndpoints } from './useWebhookEndpoints';
+import { useWebhookEvents } from './useWebhookEvents';
+import { COMMON_EVENT_TYPES, webhookEventColumns } from './webhook-events.columns';
+
+const TABS = [
+  { value: 'keys', label: 'API keys' },
+  { value: 'webhooks', label: 'Webhooks' },
+  { value: 'build', label: 'Build info' },
+];
