@@ -99,3 +99,8 @@ export const queryKeys = {
   webhookEndpoints: {
     all: ['webhook_endpoints'] as const,
     list: () => ['webhook_endpoints', 'list'] as const,
+  },
+
+  reporting: {
+    all: ['reporting'] as const,
+    summary: (window: ReportingWindow, currency: CurrencyCode) =>
