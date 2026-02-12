@@ -22,3 +22,8 @@ export interface UseApiKeysResult {
   testKeys: ApiKeyRow[];
   revokedKeys: ApiKeyRow[];
   isLoading: boolean;
+  error: Error | null;
+  revoke: (apiKeyId: string) => void;
+  isRevoking: boolean;
+  revokeError: string | null;
+}

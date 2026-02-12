@@ -57,3 +57,15 @@ export function DevelopersPage() {
 
   const { liveKeys, testKeys, revokedKeys, isLoading: keysLoading, error: keysError, revoke, revokeError } =
     useApiKeys();
+  const { createApiKey, isPending, createdKey, secret, clearSecret, errorMessage, fieldErrors } =
+    useCreateApiKey();
+
+  const { rows: events, deadCount, pagination, isLoading: eventsLoading, error: eventsError } =
+    useWebhookEvents({ ...(eventType ? { type: eventType as PublicEventType } : {}) });
+  const { endpoints, enabledCount, isLoading: endpointsLoading } = useWebhookEndpoints();
+
+  const canWrite = can('developers:write');
+  // Read scopes by default: a key that can move money should be an explicit choice.
+  const defaultScopes: ApiKeyScope[] = API_KEY_SCOPES.filter((scope) => scope.endsWith(':read'));
+
+  return (

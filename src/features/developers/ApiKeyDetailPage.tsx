@@ -32,3 +32,9 @@ export function ApiKeyDetailPage() {
   useDocumentTitle(apiKeyId ? `API key ${apiKeyId}` : 'API key');
 
   const { can } = usePermissions();
+  const { apiKey, displayLabel, isRevoked, isLive, writeScopes, isLoading, isMissing, error } =
+    useApiKey(apiKeyId);
+  const { revoke, isRevoking, revokeError } = useApiKeys();
+
+  if (isMissing) {
+    return <NotFound title="No such key" body="It may have been created on another account." />;
