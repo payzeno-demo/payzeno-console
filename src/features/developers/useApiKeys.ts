@@ -17,3 +17,17 @@ import type { ApiKeyRow } from '@/types/view-models';
 
 import { apiKeysQuery, revokeApiKeyMutation } from './developers.queries';
 
+export interface UseApiKeysResult {
+  liveKeys: ApiKeyRow[];
+  testKeys: ApiKeyRow[];
+  revokedKeys: ApiKeyRow[];
+  isLoading: boolean;
+  error: Error | null;
+  revoke: (apiKeyId: string) => void;
+  isRevoking: boolean;
+  revokeError: string | null;
+}
+
+function toRow(key: ApiKey): ApiKeyRow {
+  return { ...key, _selected: false };
+}

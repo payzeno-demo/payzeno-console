@@ -18,3 +18,14 @@ import type {
   WebhookEndpoint,
   WebhookEvent,
 } from '@payzeno/contracts';
+
+import type { EndpointRegistry } from '@api/endpoints';
+import type { WebhookEventListQuery } from '@api/endpoints/webhook-events.endpoint';
+import { queryKeys } from '@api/queryKeys';
+import { DEFAULT_PAGE_SIZE } from '@config/constants';
+
+export function apiKeysQuery(e: EndpointRegistry, q?: ListQuery) {
+  return queryOptions<Paginated<ApiKey>>({
+    queryKey: queryKeys.apiKeys.list(),
+    queryFn: () => e.apiKeys.list(q),
+    staleTime: 60_000,

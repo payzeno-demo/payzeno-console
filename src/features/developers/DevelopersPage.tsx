@@ -33,3 +33,62 @@ import { allFlags } from '@lib/flags';
 import { pluralise } from '@lib/format';
 
 import { apiKeyColumns } from './api-keys.columns';
+import { SecretRevealOnce } from './components/SecretRevealOnce';
+import { useApiKeys } from './useApiKeys';
+import { useCreateApiKey } from './useCreateApiKey';
+import { useWebhookEndpoints } from './useWebhookEndpoints';
+import { useWebhookEvents } from './useWebhookEvents';
+import { COMMON_EVENT_TYPES, webhookEventColumns } from './webhook-events.columns';
+
+const TABS = [
+  { value: 'keys', label: 'API keys' },
+  { value: 'webhooks', label: 'Webhooks' },
+  { value: 'build', label: 'Build info' },
+];
+
+export function DevelopersPage() {
+  useDocumentTitle('Developers');
+
+  const { can } = usePermissions();
+  const [tab, setTab] = useStringParam('tab', 'keys');
+  const [keyName, setKeyName] = useState('');
+  const [keyMode, setKeyMode] = useState<ApiKeyMode>('test');
+  const [eventType, setEventType] = useStringParam('type', '');
+
+  const { liveKeys, testKeys, revokedKeys, isLoading: keysLoading, error: keysError, revoke, revokeError } =
+    useApiKeys();
+  const { createApiKey, isPending, createdKey, secret, clearSecret, errorMessage, fieldErrors } =
+    useCreateApiKey();
+
+  const { rows: events, deadCount, pagination, isLoading: eventsLoading, error: eventsError } =
+    useWebhookEvents({ ...(eventType ? { type: eventType as PublicEventType } : {}) });
+  const { endpoints, enabledCount, isLoading: endpointsLoading } = useWebhookEndpoints();
+
+  const canWrite = can('developers:write');
+  // Read scopes by default: a key that can move money should be an explicit choice.
+  const defaultScopes: ApiKeyScope[] = API_KEY_SCOPES.filter((scope) => scope.endsWith(':read'));
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Developers"
+        description="Keys, webhooks and everything you need to integrate."
+      />
+
+      <Tabs value={tab} onValueChange={setTab} label="Developer sections" tabs={TABS} />
+
+      {tab === 'keys' ? (
+        <>
+          {secret && createdKey ? (
+            <SecretRevealOnce apiKey={createdKey} secret={secret} onDismiss={clearSecret} />
+          ) : null}
+
+          <Card as="section" aria-labelledby="create-key-heading">
+            <h2 id="create-key-heading">Create a key</h2>
+            <Label htmlFor="key-name">Name</Label>
+            <Input
+              id="key-name"
+              name="name"
+              placeholder="Checkout service"
+              value={keyName}
+              disabled={!canWrite}

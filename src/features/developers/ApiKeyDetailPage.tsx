@@ -18,3 +18,23 @@ import { PageHeader } from '@components/layout/PageHeader';
 import { Alert } from '@components/ui/Alert';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
+import { DateCell } from '@components/data/DateCell';
+import { StatusPill } from '@components/data/StatusPill';
+import { useDocumentTitle } from '@hooks/useDocumentTitle';
+import { usePermissions } from '@hooks/usePermissions';
+import { listSentence, pluralise } from '@lib/format';
+
+import { useApiKey } from './useApiKey';
+import { useApiKeys } from './useApiKeys';
+
+export function ApiKeyDetailPage() {
+  const { apiKeyId = '' } = useParams<{ apiKeyId: string }>();
+  useDocumentTitle(apiKeyId ? `API key ${apiKeyId}` : 'API key');
+
+  const { can } = usePermissions();
+  const { apiKey, displayLabel, isRevoked, isLive, writeScopes, isLoading, isMissing, error } =
+    useApiKey(apiKeyId);
+  const { revoke, isRevoking, revokeError } = useApiKeys();
+
+  if (isMissing) {
+    return <NotFound title="No such key" body="It may have been created on another account." />;

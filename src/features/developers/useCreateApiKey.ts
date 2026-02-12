@@ -11,3 +11,17 @@
  */
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
+
+import type { ApiKey, ApiKeyMode, ApiKeyScope, CreateApiKeyRequest } from '@payzeno/contracts';
+
+import { ConsoleApiError, ForbiddenError, ValidationApiError } from '@api/errors';
+import { queryKeys } from '@api/queryKeys';
+import { useEndpoints } from '@app/ApiContext';
+import { useToast } from '@app/ToastProvider';
+import { trackEvent } from '@lib/telemetry';
+
+import { createApiKeyMutation } from './developers.queries';
+
+export interface CreateApiKeyArgs {
+  name: string;
+  mode: ApiKeyMode;

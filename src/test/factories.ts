@@ -309,6 +309,46 @@ export function makeReconciliationItem(
   } as ReconciliationItem;
 }
 
+export function makeWebhookEndpoint(
+  overrides: Partial<WebhookEndpoint> = {},
+): WebhookEndpoint {
+  return {
+    id: 'whe_01HW0RTENDPOINT0000001',
+    object: 'webhook_endpoint',
+    merchant_id: MERCHANT_ID,
+    url: 'https://northwind.example/hooks/payzeno',
+    enabled_events: ['payment.captured', 'payout.failed', 'dispute.opened'],
+    status: 'enabled',
+    signing_secret_last_four: '41ab',
+    rotated_at: null,
+    livemode: true,
+    created_at: '2025-04-04T09:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function makeWebhookEvent(overrides: Partial<WebhookEvent> = {}): WebhookEvent {
+  return {
+    id: 'evt_01HW0RTWEBHOOKEVENT001',
+    object: 'webhook_event',
+    merchant_id: MERCHANT_ID,
+    endpoint_id: 'whe_01HW0RTENDPOINT0000001',
+    type: 'payment.captured',
+    source_event_id: 'bus_01HW0RTBUSEVENT000001',
+    payload: { object: 'charge', id: 'ch_01HW0RTCHARGE00000001' },
+    status: 'delivered',
+    attempt_count: 1,
+    next_attempt_at: null,
+    last_response_status: 200,
+    last_error: null,
+    signature_version: 'v1',
+    livemode: true,
+    created_at: '2026-03-14T08:02:01.000Z',
+    delivered_at: '2026-03-14T08:02:02.000Z',
+    ...overrides,
+  };
+}
+
 export function makeDashboardSummary(
   overrides: Partial<DashboardSummary> = {},
 ): DashboardSummary {
