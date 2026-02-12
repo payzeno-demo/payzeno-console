@@ -36,6 +36,29 @@ describe('GET /v1/api-keys', () => {
 
   it('uses the hyphenated path — api-keys, not api_keys', async () => {
     const recorder = recordRequests();
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.headers.get(HEADER_IDEMPOTENCY_KEY)).toBe('create-key-attempt-1');
+  });
+
+  it('surfaces a 403 for a developer-role session', async () => {
+    server.use(errorHandler('post', '/api-keys', 403, 'permission_denied'));
+
+    await expect(endpoint().create({ name: 'x', mode: 'test' })).rejects.toBeInstanceOf(
+      ForbiddenError,
+    );
+  });
+});
+
+describe('DELETE /v1/api-keys/:apiKeyId', () => {
+  it('revokes a key and resolves with nothing', async () => {
+    // §9 has no DELETE fixture in the default handler set — revocation is the one write the
+    // demo dataset must not perform — so the case registers it for itself.
+    server.use(
+      http.delete(url('/api-keys/:apiKeyId'), () => new HttpResponse(null, { status: 204 })),
+    );
+
     const key = makeApiKey({ prefix: 'sk_live_', last_four: '9f2c' });
 
     expect(endpoint().displayLabel(key)).toBe('sk_live_…9f2c');
