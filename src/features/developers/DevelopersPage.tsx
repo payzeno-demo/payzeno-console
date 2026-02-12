@@ -45,3 +45,15 @@ const TABS = [
   { value: 'webhooks', label: 'Webhooks' },
   { value: 'build', label: 'Build info' },
 ];
+
+export function DevelopersPage() {
+  useDocumentTitle('Developers');
+
+  const { can } = usePermissions();
+  const [tab, setTab] = useStringParam('tab', 'keys');
+  const [keyName, setKeyName] = useState('');
+  const [keyMode, setKeyMode] = useState<ApiKeyMode>('test');
+  const [eventType, setEventType] = useStringParam('type', '');
+
+  const { liveKeys, testKeys, revokedKeys, isLoading: keysLoading, error: keysError, revoke, revokeError } =
+    useApiKeys();
