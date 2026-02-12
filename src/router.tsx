@@ -151,3 +151,12 @@ export function AppRoutes() {
       <Route element={<RequireNoSession />}>
         <Route
           path={ROUTE_PATTERNS.login}
+          element={
+            <Suspense fallback={<LoadingPage label="Loading sign in" variant="spinner" />}>
+              <LoginPage />
+            </Suspense>
+          }
+        />
+      </Route>
+
+      {/* Everything below needs a session. */}
