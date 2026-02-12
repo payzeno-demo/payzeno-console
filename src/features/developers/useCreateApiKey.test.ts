@@ -30,6 +30,19 @@ describe('creating a key', () => {
     const { result } = renderHookWithProviders(() => useCreateApiKey());
 
     act(() => {
+      result.current.createApiKey({ name: '  Batch worker  ', mode: 'test' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.createdKey).not.toBeNull();
+    });
+    expect(result.current.createdKey?.name).toBe('Batch worker');
+  });
+
+  it('returns the metadata without the secret on it', async () => {
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
       result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
     });
 

@@ -134,3 +134,12 @@ export function Providers({
             </ToastProvider>
           </TransportProvider>
         </QueryProvider>
+      </FlagsProvider>
+    </MemoryRouter>
+  );
+}
+
+export interface RenderWithProvidersResult extends RenderResult {
+  /** Pre-bound `userEvent`, so no case forgets `userEvent.setup()`. */
+  user: UserEvent;
+  queryClient: QueryClient;

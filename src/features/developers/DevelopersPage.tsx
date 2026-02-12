@@ -69,3 +69,14 @@ export function DevelopersPage() {
   const defaultScopes: ApiKeyScope[] = API_KEY_SCOPES.filter((scope) => scope.endsWith(':read'));
 
   return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Developers"
+        description="Keys, webhooks and everything you need to integrate."
+      />
+
+      <Tabs value={tab} onValueChange={setTab} label="Developer sections" tabs={TABS} />
+
+      {tab === 'keys' ? (
+        <>
+          {secret && createdKey ? (

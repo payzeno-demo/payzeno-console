@@ -35,6 +35,13 @@ describe('GET /v1/api-keys', () => {
   });
 
   it('uses the hyphenated path — api-keys, not api_keys', async () => {
+    const recorder = recordRequests();
+    const key = makeApiKey({ prefix: 'sk_live_', last_four: '9f2c' });
+
+    expect(endpoint().displayLabel(key)).toBe('sk_live_…9f2c');
+  });
+
+  it('works for a test-mode key too', () => {
     const key = makeApiKey({ mode: 'test', prefix: 'sk_test_', last_four: 'aa11' });
 
     expect(endpoint().displayLabel(key)).toBe('sk_test_…aa11');
