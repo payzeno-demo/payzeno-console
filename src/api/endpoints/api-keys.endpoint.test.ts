@@ -59,6 +59,20 @@ describe('DELETE /v1/api-keys/:apiKeyId', () => {
       http.delete(url('/api-keys/:apiKeyId'), () => new HttpResponse(null, { status: 204 })),
     );
 
+    const recorder = recordRequests();
+    await expect(endpoint().revoke('key_01HW0RTAPIKEY000000002')).resolves.toBeUndefined();
+
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.method).toBe('DELETE');
+    expect(request?.url).toBe('http://localhost/v1/api-keys/key_01HW0RTAPIKEY000000002');
+    expect(request?.headers.get(HEADER_IDEMPOTENCY_KEY)).toBeTruthy();
+  });
+});
+
+describe('displayLabel', () => {
+  it('joins the prefix and last four with an ellipsis, never the middle', () => {
     const key = makeApiKey({ prefix: 'sk_live_', last_four: '9f2c' });
 
     expect(endpoint().displayLabel(key)).toBe('sk_live_…9f2c');

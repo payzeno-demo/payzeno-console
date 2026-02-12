@@ -79,6 +79,47 @@ describe('clearSecret', () => {
     act(() => {
       result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
     });
+    await waitFor(() => {
+      expect(result.current.secret).not.toBeNull();
+    });
+
+    act(() => {
+      result.current.clearSecret();
+    });
+
+    expect(result.current.secret).toBeNull();
+    expect(result.current.createdKey).toBeNull();
+  });
+});
+
+describe('failure', () => {
+  it('maps 422 field errors onto the form', async () => {
+    server.use(
+      errorHandler('post', '/api-keys', 422, 'validation_failed', 'Bad name.', {
+        field_errors: [{ path: 'name', message: 'Already in use.' }],
+      }),
+    );
+
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.fieldErrors).toEqual({ name: 'Already in use.' });
+    });
+    expect(result.current.errorMessage).toBe('Check the key name and scopes.');
+  });
+
+  it('names the role on a 403', async () => {
+    server.use(errorHandler('post', '/api-keys', 403, 'permission_denied'));
+
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
 
     await waitFor(() => {
       expect(result.current.errorMessage).toBe('Creating an API key needs an admin role.');
