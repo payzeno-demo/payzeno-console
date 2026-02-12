@@ -27,3 +27,7 @@ export interface UseApiKeysResult {
   isRevoking: boolean;
   revokeError: string | null;
 }
+
+function toRow(key: ApiKey): ApiKeyRow {
+  return { ...key, _selected: false };
+}

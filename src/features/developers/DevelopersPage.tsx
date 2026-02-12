@@ -80,3 +80,15 @@ export function DevelopersPage() {
       {tab === 'keys' ? (
         <>
           {secret && createdKey ? (
+            <SecretRevealOnce apiKey={createdKey} secret={secret} onDismiss={clearSecret} />
+          ) : null}
+
+          <Card as="section" aria-labelledby="create-key-heading">
+            <h2 id="create-key-heading">Create a key</h2>
+            <Label htmlFor="key-name">Name</Label>
+            <Input
+              id="key-name"
+              name="name"
+              placeholder="Checkout service"
+              value={keyName}
+              disabled={!canWrite}
