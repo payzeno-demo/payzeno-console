@@ -91,3 +91,16 @@ export function FormField({
           }}
         >
           {hint}
+        </p>
+      ) : null}
+
+      {children(wiring)}
+
+      {hasError ? (
+        <InlineError id={errorIdFor(id)} severity="status">
+          {error}
+        </InlineError>
+      ) : null}
+    </div>
+  );
+}

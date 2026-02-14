@@ -17,10 +17,25 @@ import type { Env, EnvironmentName } from './env';
  */
 export { API_VERSION };
 
+declare const __FORCE_MOCK_TRANSPORT__: boolean;
+
+/**
+ * Build a `RuntimeConfig` from a parsed `Env`.
+ *
+ * Kept as a pure function of `Env` so tests can produce a staging-shaped config without
+ * rebuilding the bundle.
+ */
 export const runtimeConfig: RuntimeConfig = buildRuntimeConfig(env);
 
 /**
  * Short alias. `api/client.ts` and the http modules import `runtime`; everything written after
  * PAY-1902 imports `runtimeConfig`. Same object, two names.
  * TODO(rrefactor): one codemod, one PR — PAY-1934.
+ */
+export const runtime: RuntimeConfig = runtimeConfig;
+
+/**
+ * `livemode` is not configuration — it is a property of the session's API key mode. This is
+ * only the *default* toggle position for a fresh session, which is "live everywhere except
+ * local".
  */
