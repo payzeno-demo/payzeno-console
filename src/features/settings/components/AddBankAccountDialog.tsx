@@ -79,12 +79,35 @@ async function tokeniseBankAccount(fields: {
     );
   }
 
+  const body = (await response.json()) as VaultTokenResponse;
+  return body.token;
+}
+
+export interface AddBankAccountDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  defaultCurrency: CurrencyCode;
+  country: string;
+}
+
+export function AddBankAccountDialog({
+  open,
+  onOpenChange,
+  defaultCurrency,
+  country,
+}: AddBankAccountDialogProps) {
   const [scheme, setScheme] = useState<BankAccountScheme>('aba');
+  const [currency, setCurrency] = useState<CurrencyCode>(defaultCurrency);
   const [accountHolderName, setAccountHolderName] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [routingNumber, setRoutingNumber] = useState('');
   const [makeDefault, setMakeDefault] = useState(false);
   const [vaultError, setVaultError] = useState<string | null>(null);
+  const [isTokenising, setIsTokenising] = useState(false);
+
+  const { createBankAccount, isPending, errorMessage, fieldErrors } = useCreateBankAccount();
+
+  const routingLabel = scheme === 'uk_sort_code' ? 'Sort code' : 'Routing number';
   const accountLabel = scheme === 'iban' ? 'IBAN' : 'Account number';
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {

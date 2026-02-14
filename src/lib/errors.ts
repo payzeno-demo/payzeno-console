@@ -51,6 +51,28 @@ export class NotificationStreamError extends ConsoleClientError {
 
 /** `lib/csv.ts` hit a cell it cannot turn into a string without lying about it. */
 export class CsvExportError extends ConsoleClientError {
+  readonly code: ErrorCode = 'internal_error';
+  readonly httpStatus = 0;
+  readonly clientCode = 'csv_export_failed';
+  readonly recoverable = false;
+
+  constructor(
+    readonly columnId: string,
+    reason: string,
+  ) {
+    super(`Cannot export column "${columnId}": ${reason}`, { columnId, reason });
+  }
+}
+
+/**
+ * `POST /public/tokens` at the vault rejected the card or bank details (arc PCI).
+ * The PAN never reached payzeno-api, so there is no request id to correlate on — only the
+ * vault's own reference.
+ */
+export class VaultTokenisationError extends ConsoleClientError {
+  readonly code: ErrorCode = 'invalid_request';
+  readonly httpStatus = 0;
+  readonly clientCode = 'vault_tokenisation_failed';
   readonly recoverable = true;
 
   constructor(
@@ -71,6 +93,7 @@ export class CsvExportError extends ConsoleClientError {
 export class EnvConfigError extends ConsoleClientError {
   readonly code: ErrorCode = 'internal_error';
   readonly httpStatus = 0;
+  readonly clientCode = 'env_config_invalid';
   readonly recoverable = false;
 
   constructor(

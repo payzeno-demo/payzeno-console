@@ -49,10 +49,13 @@ export interface UseCreateBankAccountResult {
 
 export function useCreateBankAccount(): UseCreateBankAccountResult {
   const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
   const toast = useToast();
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [createdAccount, setCreatedAccount] = useState<BankAccount | null>(null);
+
   const mutation = useMutation({
     ...createBankAccountMutation(endpoints),
     onMutate: () => {
