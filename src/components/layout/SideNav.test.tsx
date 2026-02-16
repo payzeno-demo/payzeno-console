@@ -35,6 +35,12 @@ describe('NAV_SECTIONS', () => {
     }
   });
 
+  it('is a labelled primary navigation landmark', () => {
+    renderWithProviders(<SideNav />);
+
+    expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
+  });
+
   it('links each item at its route constant', () => {
     renderWithProviders(<SideNav />);
 
@@ -57,6 +63,28 @@ describe('NAV_SECTIONS', () => {
     );
   });
 
+  it('does not mark a non-prefix item current on a sibling route', () => {
+    renderWithProviders(<SideNav />, { route: '/refunds/whatever' });
+
+    expect(screen.getByRole('link', { name: 'Refunds' })).not.toHaveAttribute('aria-current');
+  });
+});
+
+describe('as a viewer', () => {
+  it('drops a section entirely once all its items are hidden', () => {
+    renderWithProviders(<SideNav />, { session: makeViewerSession() });
+
+    expect(screen.queryByText('Account')).not.toBeInTheDocument();
+  });
+
+  it('shows the full nav again for a session that holds the permissions', () => {
+    renderWithProviders(<SideNav />, { session: makeConsoleSession() });
+
+    expect(screen.getByRole('link', { name: 'Settings' })).toBeInTheDocument();
+  });
+});
+
+describe('badges', () => {
   it('announces what the count means', () => {
     renderWithProviders(<SideNav badges={{ disputes: 4 }} />);
 
@@ -78,4 +106,29 @@ describe('the collapsed rail', () => {
     expect(screen.queryByText('Money in')).not.toBeInTheDocument();
   });
 
+  it('reports navigation so the shell can close the drawer', async () => {
+    const onNavigate = vi.fn();
+    const { user } = renderWithProviders(<SideNav onNavigate={onNavigate} />);
+
+    await user.click(screen.getByRole('link', { name: 'Balance' }));
+
+    expect(onNavigate).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('the settlement_explorer flag', () => {
+  it('shows Settlements while the build-time flag is on', () => {
+    expect(isFlagEnabled('settlement_explorer')).toBe(true);
+    renderWithProviders(<SideNav />);
+
+    expect(screen.getByRole('link', { name: /Settlements/ })).toBeInTheDocument();
+  });
+
+  it('ignores a context-level flag override — the nav reads the build-time value', () => {
+    // If this ever starts passing with the link hidden, `SideNav` has been switched onto
+    // `useFlag`, and §8's "build-time values, no network" claim needs revisiting.
+    renderWithProviders(<SideNav />, { flags: { settlement_explorer: false } });
+
+    expect(screen.getByRole('link', { name: /Settlements/ })).toBeInTheDocument();
+  });
 });

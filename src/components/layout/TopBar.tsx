@@ -42,3 +42,25 @@ export interface TopBarProps {
 export function TopBar({
   user,
   merchant,
+  availableMerchants,
+  livemode,
+  onLivemodeChange,
+  onSwitchMerchant,
+  onSignOut,
+  isSigningOut = false,
+  notifications,
+  onOpenNav,
+}: TopBarProps) {
+  return (
+    <header
+      role="banner"
+      className={pz('top-bar')}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: space[4],
+        height: layout.topBarHeight,
+        padding: `0 ${space[4]}`,
+        borderBottom: `1px solid ${color.border}`,
+        background: color.surface,
+        fontFamily: font.family,
