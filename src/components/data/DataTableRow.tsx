@@ -50,3 +50,10 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
           <td
             key={column.id}
             style={{
+              padding: `${space[3]} ${space[4]}`,
+              textAlign: column.align === 'end' ? 'right' : 'left',
+              fontSize: font.size.md,
+              color: color.textPrimary,
+              verticalAlign: 'middle',
+            }}
+          >
