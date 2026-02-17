@@ -57,3 +57,9 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
               verticalAlign: 'middle',
             }}
           >
+            {isFirst && onRowClick ? (
+              <button
+                type="button"
+                onClick={() => onRowClick(row)}
+                className={pz('data-table', 'row-open')}
+                style={{
