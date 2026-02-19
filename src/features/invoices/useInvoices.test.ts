@@ -1,0 +1,36 @@
+/**
+ * `useInvoices` — the one feature still on the legacy fetch path (ADR 0004, blueprint §8.1).
+ *
+ * This is the thinnest test file in `features/`, and that is the honest state of the code: the
+ * migration to `InvoicesEndpoint` is about 85% done and stalled, and invoices is the holdout.
+ * What is asserted here is the *consequence* of that, not a pretence that it is fine:
+ *
+ *  - the request goes out through `api/legacy/legacy-query.ts` (a `useEffect` fetch with its
+ *    own loading state), so it does not participate in TanStack invalidation;
+ *  - its errors bypass `error-mapper.ts` entirely, arriving as bare `Error` objects with a
+ *    `status` property rather than as `ConsoleApiError` subclasses. `legacyStatus()` is how the
+ *    hook recovers the status it would otherwise have had.
+ *
+ * When the migration lands, this file should get considerably longer.
+ */
+import { describe, expect, it } from 'vitest';
+
+import { ConsoleApiError } from '@api/errors';
+import { openInvoiceCount, useInvoices } from '@features/invoices/useInvoices';
+import { makeInvoice, makePage } from '@/test/factories';
+import { errorHandler, recordRequests, server, url } from '@/test/msw/server';
+import { renderHookWithProviders, waitFor } from '@/test/render';
+
+import { HttpResponse, http } from 'msw';
+
+describe('the legacy read', () => {
+  it('fetches /v1/invoices and returns the rows', async () => {
+    const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useInvoices({ status: 'open', limit: 10 }));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+  });
+});
