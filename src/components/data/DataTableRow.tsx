@@ -63,3 +63,10 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
                 onClick={() => onRowClick(row)}
                 className={pz('data-table', 'row-open')}
                 style={{
+                  padding: 0,
+                  background: 'transparent',
+                  border: 'none',
+                  font: 'inherit',
+                  color: color.textLink,
+                  textAlign: 'inherit',
+                  cursor: 'pointer',

@@ -30,3 +30,10 @@ export function DataTableHeader<TRow>({
         {columns.map((column) => {
           const sortState = ariaSortFor(column.id);
           const isSorted = sortedColumnId === column.id;
+
+          return (
+            <th
+              key={column.id}
+              scope="col"
+              aria-sort={column.sortable ? sortState : undefined}
+              style={{

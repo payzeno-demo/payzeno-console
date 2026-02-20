@@ -95,6 +95,19 @@ describe('accessibility contract', () => {
 });
 
 describe('rows', () => {
+  it('renders one row per datum plus the header row', () => {
+    renderTable();
+
+    expect(screen.getAllByRole('row')).toHaveLength(rows.length + 1);
+  });
+
+  it('renders each column cell through its own renderer', () => {
+    renderTable();
+
+    expect(screen.getByTestId('amount-row_1')).toHaveTextContent('300');
+    expect(screen.getByRole('button', { name: 'Open Alpha' })).toBeInTheDocument();
+  });
+
   it('keys rows by id, so a re-render with reordered rows does not remount cells', () => {
     const { rerender } = renderTable();
     const before = screen.getByTestId('amount-row_2');
@@ -149,6 +162,19 @@ describe('loading and empty states', () => {
 });
 
 describe('sorting', () => {
+  it('sorts ascending on the first click of a sortable header', async () => {
+    const { user } = renderTable();
+
+    await user.click(screen.getByRole('button', { name: /name/i }));
+
+    const cells = screen.getAllByRole('cell').filter((cell) => cell.cellIndex === 0);
+    expect(cells.map((cell) => cell.textContent)).toEqual(['Alpha', 'Bravo', 'Charlie']);
+    expect(screen.getByRole('columnheader', { name: /name/i })).toHaveAttribute(
+      'aria-sort',
+      'ascending',
+    );
+  });
+
   it('toggles to descending on the second click of the same header', async () => {
     const { user } = renderTable();
     const header = screen.getByRole('button', { name: /name/i });
@@ -189,6 +215,16 @@ describe('sorting', () => {
 });
 
 describe('row interaction', () => {
+  it('calls onRowClick when the row is clicked', async () => {
+    const onRowClick = vi.fn();
+    const { user } = renderTable({ onRowClick });
+
+    await user.click(screen.getByText('Bravo'));
+
+    expect(onRowClick).toHaveBeenCalledTimes(1);
+    expect(onRowClick).toHaveBeenCalledWith(rows[2]);
+  });
+
   it('does not fire onRowClick when an interactive child was the target', async () => {
     const onRowClick = vi.fn();
     const { user } = renderTable({ onRowClick });
