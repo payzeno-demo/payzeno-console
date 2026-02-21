@@ -159,3 +159,13 @@ const TONE_STYLES: Readonly<Record<Tone, ToneStyle>> = {
   warning: { fg: color.warning, bg: color.warningSubtle, border: color.warning },
   danger: { fg: color.danger, bg: color.dangerSubtle, border: color.danger },
   info: { fg: color.info, bg: color.infoSubtle, border: color.info },
+  brand: { fg: color.brand, bg: color.brandSubtle, border: color.brand },
+};
+
+/**
+ * Foreground/background/border for a tone.
+ *
+ * Every pair here clears WCAG AA (4.5:1) on its own background — that is why the `fg` values
+ * are darker than the tone's "natural" colour. Do not brighten one without re-checking it.
+ */
+export function toneStyle(tone: Tone): ToneStyle {

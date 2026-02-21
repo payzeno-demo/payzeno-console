@@ -38,6 +38,11 @@ export const SERIES_DASH: ReadonlyArray<string | undefined> = [
   '10 4',
 ];
 
+export const gridStyle = {
+  stroke: color.border,
+  strokeDasharray: '3 3',
+} as const;
+
 export const tooltipCursor = {
   stroke: color.borderStrong,
   strokeWidth: 1,
@@ -52,6 +57,17 @@ export const CHART_HEIGHT = {
 
 export type ChartHeight = keyof typeof CHART_HEIGHT;
 
+/** Recharts margin that leaves room for a rotated x-axis label and a y-axis in the thousands. */
+export const CHART_MARGIN = { top: 8, right: 16, bottom: 8, left: 8 } as const;
+
+/**
+ * Tick formatter for a minor-unit axis.
+ *
+ * Divides by the exponent the *caller* supplies rather than assuming 2 — a JPY volume chart
+ * with a /100 axis is off by two orders of magnitude and nobody notices until a Japanese
+ * merchant complains. See `lib/format.ts::formatAmount` for the version of this mistake that
+ * is still in the codebase.
+ */
 export function minorUnitTick(exponent: number): (value: number) => string {
   const divisor = 10 ** exponent;
 
