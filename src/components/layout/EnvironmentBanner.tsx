@@ -31,3 +31,19 @@ export function toneForEnvironment(environment: string): Tone {
       return 'neutral';
     case 'qa':
       return 'info';
+    case 'staging':
+      return 'warning';
+    default:
+      return 'neutral';
+  }
+}
+
+const LABELS: Readonly<Record<string, string>> = {
+  local: 'Local development build',
+  qa: 'QA environment — data here is disposable',
+  staging: 'Staging environment — this is not production data',
+};
+
+export function EnvironmentBanner({
+  environment = runtimeConfig.environment,
+  buildSha = runtimeConfig.buildSha,
