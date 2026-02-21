@@ -24,6 +24,13 @@ describe('Badge', () => {
     expect(screen.getByText('Captured')).toBeInTheDocument();
   });
 
+  it('resolves the console-only "critical" tone onto danger', () => {
+    const { container } = renderBare(<Badge tone="critical">Duplicate</Badge>);
+
+    expect(container.querySelector('span')?.className).toContain('danger');
+    expect(container.querySelector('span')?.className).not.toContain('critical');
+  });
+
   it('renders a decorative dot only when asked, and marks it hidden', () => {
     const { container: without } = renderBare(<Badge>Plain</Badge>);
     expect(without.querySelector('[aria-hidden="true"]')).not.toBeInTheDocument();
@@ -55,6 +62,12 @@ describe('Badge', () => {
     renderBare(<CountBadge count={412} label="Disputes" />);
 
     expect(screen.getByText('99+')).toBeInTheDocument();
+  });
+
+  it('shows 99 exactly, un-capped', () => {
+    renderBare(<CountBadge count={99} label="Disputes" />);
+
+    expect(screen.getByText('99')).toBeInTheDocument();
   });
 
   it('uses the danger tone, because a count badge always means "act on this"', () => {

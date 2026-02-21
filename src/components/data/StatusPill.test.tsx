@@ -76,6 +76,12 @@ describe('toneForStatus', () => {
 });
 
 describe('rendering', () => {
+  it('uppercases known acronyms through `labelise`', () => {
+    renderBare(<StatusPill status={'sepa_pending' as AnyStatus} />);
+
+    expect(screen.getByText('SEPA Pending')).toBeInTheDocument();
+  });
+
   it('renders a small pill when asked, without changing the text', () => {
     renderBare(<StatusPill status="pending" size="sm" />);
 
