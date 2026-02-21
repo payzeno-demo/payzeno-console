@@ -17,6 +17,13 @@ describe('Badge', () => {
     expect(screen.getByText('Live')).toBeInTheDocument();
   });
 
+  it('renders a screen-reader prefix before the content', () => {
+    renderBare(<Badge srPrefix="Status">Captured</Badge>);
+
+    expect(screen.getByText('Status:')).toBeInTheDocument();
+    expect(screen.getByText('Captured')).toBeInTheDocument();
+  });
+
   it('renders a decorative dot only when asked, and marks it hidden', () => {
     const { container: without } = renderBare(<Badge>Plain</Badge>);
     expect(without.querySelector('[aria-hidden="true"]')).not.toBeInTheDocument();
@@ -42,6 +49,12 @@ describe('Badge', () => {
 
     expect(screen.getByText('7')).toBeInTheDocument();
     expect(screen.getByText('Disputes needing a response:')).toBeInTheDocument();
+  });
+
+  it('caps the displayed number at 99+ so the pill keeps its shape', () => {
+    renderBare(<CountBadge count={412} label="Disputes" />);
+
+    expect(screen.getByText('99+')).toBeInTheDocument();
   });
 
   it('uses the danger tone, because a count badge always means "act on this"', () => {

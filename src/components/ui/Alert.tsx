@@ -58,3 +58,12 @@ export function Alert({ tone, role, title, children, action, onDismiss, classNam
         fontFamily: font.family,
         background: palette.bg,
         border: `1px solid ${palette.border}`,
+        borderRadius: radius.md,
+      }}
+    >
+      <span aria-hidden="true" style={{ color: palette.fg, fontWeight: font.weight.semibold }}>
+        {ICONS[resolved]}
+      </span>
+
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p
