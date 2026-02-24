@@ -26,6 +26,14 @@ describe('the page', () => {
     ).toBeInTheDocument();
   });
 
+  it('sets the document title', async () => {
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    await waitFor(() => {
+      expect(document.title).toContain('Charges');
+    });
+  });
+
   it('renders a labelled filter region', async () => {
     renderWithProviders(<ChargesPage />, { route: '/charges' });
 
@@ -63,6 +71,15 @@ describe('the table', () => {
     expect(await screen.findByText('Captured')).toBeInTheDocument();
     expect(screen.getByText('Settled')).toBeInTheDocument();
     expect(screen.getByText('Failed')).toBeInTheDocument();
+  });
+
+  it('renders the card brand and last four, and nothing more of the card', async () => {
+    const { container } = renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    await screen.findByRole('table');
+
+    expect(container.innerHTML).toContain('4242');
+    expect(container.innerHTML).not.toContain('4242424242424242');
   });
 
   it('renders a JPY charge alongside a GBP one without confusing their exponents', async () => {
