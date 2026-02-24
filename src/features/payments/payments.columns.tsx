@@ -38,3 +38,8 @@ export function statusHint(status: PaymentIntentStatus): string {
   }
 }
 
+export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = [
+  {
+    id: 'id',
+    header: 'Payment',
+    cell: (row) => (
