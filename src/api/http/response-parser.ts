@@ -16,3 +16,9 @@ import type { RawResponse } from './fetch-transport';
 export interface ParsedResponse<T> {
   ok: true;
   status: number;
+  data: T;
+  requestId: string;
+  /** payzeno-api replayed a stored idempotent response rather than doing the work again. */
+  replayed: boolean;
+}
+

@@ -40,3 +40,9 @@ export const DEFAULT_CLIENT_OPTIONS: ApiClientOptions = {
 export class ApiClient implements HttpTransport {
   private readonly options: ApiClientOptions;
 
+  constructor(options: Partial<ApiClientOptions> = {}) {
+    this.options = { ...DEFAULT_CLIENT_OPTIONS, ...options };
+  }
+
+  /**
+   * The one funnel. Every other method on this class delegates here, and every endpoint class
