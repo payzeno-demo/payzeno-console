@@ -95,3 +95,18 @@ export function isWithin(value: IsoTimestamp, range: DateRange): boolean {
   return parsed >= from && parsed <= to;
 }
 
+/** Duration between two instants, rendered as `1m 12s`. Null when either end is missing. */
+export function formatDuration(
+  start: IsoTimestamp | null | undefined,
+  end: IsoTimestamp | null | undefined,
+): string {
+  const from = parseTimestamp(start);
+  const to = parseTimestamp(end);
+  if (!from || !to) return '—';
+
+  const seconds = Math.max(0, Math.round((to.getTime() - from.getTime()) / 1000));
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ${seconds % 60}s`;
+  return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+}
