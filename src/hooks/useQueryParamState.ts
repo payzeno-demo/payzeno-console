@@ -57,3 +57,8 @@ export function useQueryParamState<T>(
     },
     [key, serialise, setParams, replace],
   );
+
+  return [value, setValue];
+}
+
+/** String parameter. The common case: a status filter, a currency. */

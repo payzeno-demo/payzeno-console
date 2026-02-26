@@ -55,3 +55,8 @@ export function FilterBar({
         gap: space[3],
         padding: `${space[3]} ${space[4]}`,
         marginBottom: space[4],
+        background: color.surfaceMuted,
+        border: `1px solid ${color.border}`,
+        borderRadius: radius.lg,
+        fontFamily: font.family,
+      }}
