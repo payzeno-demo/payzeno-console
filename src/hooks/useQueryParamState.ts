@@ -62,3 +62,7 @@ export function useQueryParamState<T>(
 }
 
 /** String parameter. The common case: a status filter, a currency. */
+export function useStringParam(key: string, fallback = ''): [string, (next: string) => void] {
+  return useQueryParamState<string>(key, {
+    parse: (raw) => raw,
+    serialise: (value) => (value === fallback ? null : value),
