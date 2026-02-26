@@ -50,3 +50,8 @@ export function FilterBar({
       className={pz('filter-bar') + (className ? ` ${className}` : '')}
       style={{
         display: 'flex',
+        alignItems: 'flex-end',
+        flexWrap: 'wrap',
+        gap: space[3],
+        padding: `${space[3]} ${space[4]}`,
+        marginBottom: space[4],

@@ -12,6 +12,13 @@ import { format, formatDistanceToNowStrict, isValid, parseISO, subDays } from 'd
 import type { IsoDate, IsoTimestamp } from '@payzeno/contracts';
 
 export const DATE_FORMAT = 'd MMM yyyy';
+/** Parse an instant. Returns null rather than an Invalid Date so callers can branch. */
+export function parseTimestamp(value: IsoTimestamp | null | undefined): Date | null {
+  if (!value) return null;
+  const parsed = parseISO(value);
+  return isValid(parsed) ? parsed : null;
+}
+
 /** `2026-03-14T09:21:07.412Z` → `14 Mar 2026, 09:21`. */
 export function formatTimestamp(
   value: IsoTimestamp | null | undefined,
@@ -39,6 +46,14 @@ export function formatRelative(value: IsoTimestamp | null | undefined): string {
 /**
  * Alias kept for `features/notifications/NotificationList.tsx`, which was written against the
  * longer name. TODO(rrefactor): rename the call site, drop this — PAY-1934.
+ */
+export function formatRelativeTime(value: IsoTimestamp | null | undefined): string {
+  return formatRelative(value);
+}
+
+/**
+ * Under a minute we say "just now"; past a week the relative form stops helping and we switch
+ * to the absolute date. Used by `<DateCell />`.
  */
 /** Machine-readable value for a `<time dateTime>` attribute. a11y: screen readers read this. */
 export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string | undefined {

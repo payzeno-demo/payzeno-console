@@ -163,3 +163,15 @@ export function DateRangePicker({
       <div style={{ display: 'flex', alignItems: 'center', gap: space[2] }}>
         <Input
           id={`${groupId}-from`}
+          type="date"
+          aria-label={`${label} from`}
+          value={toDateInputValue(value?.from)}
+          onChange={(event) => applyBound('from', event.target.value)}
+        />
+        <span aria-hidden="true" style={{ color: color.textMuted }}>
+          →
+        </span>
+        <Input
+          id={`${groupId}-to`}
+          type="date"
+          aria-label={`${label} to`}

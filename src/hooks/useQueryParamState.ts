@@ -52,3 +52,8 @@ export function useQueryParamState<T>(
           updated.delete('cursor');
           return updated;
         },
+        { replace },
+      );
+    },
+    [key, serialise, setParams, replace],
+  );
