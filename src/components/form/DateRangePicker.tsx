@@ -175,3 +175,16 @@ export function DateRangePicker({
           id={`${groupId}-to`}
           type="date"
           aria-label={`${label} to`}
+          value={toDateInputValue(value?.to)}
+          onChange={(event) => applyBound('to', event.target.value)}
+        />
+      </div>
+
+      {tooLong ? (
+        <p role="alert" style={{ margin: 0, fontSize: font.size.sm, color: color.danger }}>
+          That range is longer than {maxDays} days. Narrow it, or export the data instead.
+        </p>
+      ) : null}
+    </fieldset>
+  );
+}

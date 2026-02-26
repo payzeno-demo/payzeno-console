@@ -65,6 +65,14 @@ export interface DateRange {
   to: IsoTimestamp;
 }
 
+/** A trailing-N-day range ending now, as the `created_after` / `created_before` list filters. */
+export function lastNDays(days: number, now: Date = new Date()): DateRange {
+  return {
+    from: subDays(now, days).toISOString(),
+    to: now.toISOString(),
+  };
+}
+
 /** The three windows the reporting page offers, expressed as concrete ranges. */
 export function windowToRange(window: '24h' | '7d' | '30d', now: Date = new Date()): DateRange {
   switch (window) {
