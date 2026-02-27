@@ -55,6 +55,16 @@ export function formatRelativeTime(value: IsoTimestamp | null | undefined): stri
  * Under a minute we say "just now"; past a week the relative form stops helping and we switch
  * to the absolute date. Used by `<DateCell />`.
  */
+export function formatSmart(value: IsoTimestamp | null | undefined, now: Date = new Date()): string {
+  const parsed = parseTimestamp(value);
+  if (!parsed) return '—';
+
+  const deltaMs = now.getTime() - parsed.getTime();
+  if (deltaMs < 60_000) return 'just now';
+  if (deltaMs < 7 * 86_400_000) return formatRelative(value);
+  return formatTimestamp(value);
+}
+
 /** Machine-readable value for a `<time dateTime>` attribute. a11y: screen readers read this. */
 export function toDateTimeAttr(value: IsoTimestamp | null | undefined): string | undefined {
   return parseTimestamp(value)?.toISOString();
