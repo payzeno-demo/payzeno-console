@@ -145,3 +145,13 @@ export function FormSection({
       >
         {legend}
       </legend>
+      {description ? (
+        <p style={{ margin: 0, fontSize: font.size.sm, color: color.textSecondary }}>{description}</p>
+      ) : null}
+      {children}
+    </fieldset>
+  );
+}
+
+/** True when anything at all is wrong. Re-exported so call sites import one module. */
+export { hasErrors };

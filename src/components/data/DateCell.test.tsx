@@ -39,6 +39,15 @@ describe('instant mode', () => {
     expect(screen.getByText(/ago$/)).toBeInTheDocument();
   });
 
+  it('switches to the absolute date past a week, where "9 days ago" stops helping', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-03-30T09:21:07.412Z'));
+
+    renderBare(<DateCell value={INSTANT} />);
+
+    expect(screen.getByText('14 Mar 2026, 09:21')).toBeInTheDocument();
+  });
+
   it('puts a machine-readable ISO instant on the dateTime attribute', () => {
     const { container } = renderBare(<DateCell value={INSTANT} />);
 
@@ -71,6 +80,12 @@ describe('banking mode', () => {
     expect(screen.queryByText(/Feb/)).not.toBeInTheDocument();
   });
 
+  it('keeps the raw IsoDate on the dateTime attribute, not an instant', () => {
+    const { container } = renderBare(<DateCell value={BANKING_DAY} mode="banking" />);
+
+    expect(container.querySelector('time')).toHaveAttribute('dateTime', BANKING_DAY);
+  });
+
   it('renders no tooltip in banking mode — there is no time of day to reveal', () => {
     const { container } = renderBare(<DateCell value={BANKING_DAY} mode="banking" />);
 
@@ -85,6 +100,20 @@ describe('missing values', () => {
     expect(screen.getByText('—')).toBeInTheDocument();
   });
 
+  it('renders an em dash in banking mode too', () => {
+    renderBare(<DateCell value={null} mode="banking" />);
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
+  it('never renders the string "Invalid Date"', () => {
+    renderBare(<DateCell value={'not-a-date' as string} />);
+
+    expect(screen.queryByText(/Invalid Date/)).not.toBeInTheDocument();
+  });
+});
+
+describe('dateExportValue', () => {
   it('exports the raw ISO value so a spreadsheet can sort it', () => {
     expect(dateExportValue(INSTANT)).toBe(INSTANT);
     expect(dateExportValue(BANKING_DAY)).toBe(BANKING_DAY);

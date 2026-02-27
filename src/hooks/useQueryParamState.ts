@@ -52,3 +52,17 @@ export function useQueryParamState<T>(
           updated.delete('cursor');
           return updated;
         },
+        { replace },
+      );
+    },
+    [key, serialise, setParams, replace],
+  );
+
+  return [value, setValue];
+}
+
+/** String parameter. The common case: a status filter, a currency. */
+export function useStringParam(key: string, fallback = ''): [string, (next: string) => void] {
+  return useQueryParamState<string>(key, {
+    parse: (raw) => raw,
+    serialise: (value) => (value === fallback ? null : value),
