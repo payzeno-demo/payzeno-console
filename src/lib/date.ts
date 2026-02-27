@@ -12,6 +12,7 @@ import { format, formatDistanceToNowStrict, isValid, parseISO, subDays } from 'd
 import type { IsoDate, IsoTimestamp } from '@payzeno/contracts';
 
 export const DATE_FORMAT = 'd MMM yyyy';
+export const DATETIME_FORMAT = 'd MMM yyyy, HH:mm';
 export const DATETIME_PRECISE_FORMAT = 'd MMM yyyy, HH:mm:ss';
 
 /** Parse an instant. Returns null rather than an Invalid Date so callers can branch. */
