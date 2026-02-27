@@ -45,8 +45,23 @@ describe('formatTimestamp', () => {
     expect(formatTimestamp(INSTANT)).toMatch(/^14 Mar 2026, \d{2}:\d{2}$/);
   });
 
+  it('renders an em dash for a missing value', () => {
+    expect(formatTimestamp(null)).toBe('—');
+    expect(formatTimestamp('nonsense')).toBe('—');
+  });
+
+  it('renders seconds in the precise form', () => {
+    expect(formatPreciseTimestamp(INSTANT)).toMatch(/^14 Mar 2026, \d{2}:\d{2}:\d{2}$/);
+  });
+});
+
+describe('formatBankingDate — the PAY-1904 guard', () => {
   it('does not shift the first of the month backwards', () => {
     expect(formatBankingDate('2026-03-01')).toBe('1 Mar 2026');
+  });
+
+  it('does not shift the first of the year backwards', () => {
+    expect(formatBankingDate('2026-01-01')).toBe('1 Jan 2026');
   });
 
   it('passes an unrecognisable value through rather than inventing a date', () => {
@@ -110,8 +125,16 @@ describe('ranges', () => {
 describe('isWithin', () => {
   const range = windowToRange('7d', NOW);
 
+  it('is false before it', () => {
+    expect(isWithin('2026-01-01T00:00:00.000Z', range)).toBe(false);
+  });
+
   it('is false after it', () => {
     expect(isWithin('2026-04-01T00:00:00.000Z', range)).toBe(false);
+  });
+
+  it('is inclusive at the upper bound', () => {
+    expect(isWithin(range.to, range)).toBe(true);
   });
 
   it('is false for an unparseable value', () => {
@@ -120,4 +143,16 @@ describe('isWithin', () => {
 });
 
 describe('formatDuration', () => {
+  it('renders minutes and seconds under an hour', () => {
+    expect(formatDuration('2026-03-14T09:00:00Z', '2026-03-14T09:01:12Z')).toBe('1m 12s');
+  });
+
+  it('renders hours and minutes past an hour', () => {
+    expect(formatDuration('2026-03-14T09:00:00Z', '2026-03-14T11:30:00Z')).toBe('2h 30m');
+  });
+
+  it('renders an em dash when either end is missing', () => {
+    expect(formatDuration(null, INSTANT)).toBe('—');
+    expect(formatDuration(INSTANT, null)).toBe('—');
+  });
 });
