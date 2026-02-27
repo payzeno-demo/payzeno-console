@@ -28,6 +28,17 @@ export function formatTimestamp(
   return parsed ? format(parsed, pattern) : '—';
 }
 
+/** Second-precision variant, for webhook attempts and ledger postings. */
+export function formatPreciseTimestamp(value: IsoTimestamp | null | undefined): string {
+  return formatTimestamp(value, DATETIME_PRECISE_FORMAT);
+}
+
+/**
+ * Format a banking-calendar day.
+ *
+ * Splits the string instead of parsing it. `parseISO('2026-03-14')` yields local midnight, and
+ * `format` then renders 13 Mar for anyone behind UTC.
+ */
 export function formatBankingDate(value: IsoDate | null | undefined): string {
   if (!value) return '—';
   const [year, month, day] = value.split('-');

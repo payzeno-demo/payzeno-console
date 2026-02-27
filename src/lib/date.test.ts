@@ -56,12 +56,20 @@ describe('formatTimestamp', () => {
 });
 
 describe('formatBankingDate — the PAY-1904 guard', () => {
+  it('renders the calendar day exactly as the file names it', () => {
+    expect(formatBankingDate('2026-03-14')).toBe('14 Mar 2026');
+  });
+
   it('does not shift the first of the month backwards', () => {
     expect(formatBankingDate('2026-03-01')).toBe('1 Mar 2026');
   });
 
   it('does not shift the first of the year backwards', () => {
     expect(formatBankingDate('2026-01-01')).toBe('1 Jan 2026');
+  });
+
+  it('renders an em dash for a missing day', () => {
+    expect(formatBankingDate(null)).toBe('—');
   });
 
   it('passes an unrecognisable value through rather than inventing a date', () => {
@@ -74,6 +82,13 @@ describe('formatRelative', () => {
     expect(formatRelative(new Date(Date.now() - 3 * 3_600_000).toISOString())).toMatch(/ago$/);
   });
 
+  it('renders an em dash for a missing value, never "Invalid Date ago"', () => {
+    expect(formatRelative(null)).toBe('—');
+    expect(formatRelative('nonsense')).toBe('—');
+  });
+});
+
+describe('formatSmart', () => {
   it('says "just now" under a minute', () => {
     expect(formatSmart(INSTANT, new Date('2026-03-14T09:21:40.000Z'))).toBe('just now');
   });
@@ -103,6 +118,12 @@ describe('toDateTimeAttr', () => {
 });
 
 describe('ranges', () => {
+  it('lastNDays ends at now', () => {
+    const range = lastNDays(7, NOW);
+
+    expect(range.to).toBe(NOW.toISOString());
+  });
+
   it('lastNDays starts n days earlier', () => {
     const range = lastNDays(7, NOW);
     const from = new Date(range.from);
@@ -125,6 +146,10 @@ describe('ranges', () => {
 describe('isWithin', () => {
   const range = windowToRange('7d', NOW);
 
+  it('is true inside the range', () => {
+    expect(isWithin('2026-03-12T00:00:00.000Z', range)).toBe(true);
+  });
+
   it('is false before it', () => {
     expect(isWithin('2026-01-01T00:00:00.000Z', range)).toBe(false);
   });
@@ -143,12 +168,20 @@ describe('isWithin', () => {
 });
 
 describe('formatDuration', () => {
+  it('renders seconds under a minute', () => {
+    expect(formatDuration('2026-03-14T09:00:00Z', '2026-03-14T09:00:42Z')).toBe('42s');
+  });
+
   it('renders minutes and seconds under an hour', () => {
     expect(formatDuration('2026-03-14T09:00:00Z', '2026-03-14T09:01:12Z')).toBe('1m 12s');
   });
 
   it('renders hours and minutes past an hour', () => {
     expect(formatDuration('2026-03-14T09:00:00Z', '2026-03-14T11:30:00Z')).toBe('2h 30m');
+  });
+
+  it('never renders a negative duration', () => {
+    expect(formatDuration('2026-03-14T09:01:00Z', '2026-03-14T09:00:00Z')).toBe('0s');
   });
 
   it('renders an em dash when either end is missing', () => {
