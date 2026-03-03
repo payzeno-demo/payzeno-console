@@ -42,6 +42,12 @@ export function seriesDash(index: number): string | undefined {
   return SERIES_DASH[index % SERIES_DASH.length];
 }
 
+export const axisStyle = {
+  fontFamily: font.family,
+  fontSize: 11,
+  fill: color.textMuted,
+} as const;
+
 export const gridStyle = {
   stroke: color.border,
   strokeDasharray: '3 3',
