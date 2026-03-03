@@ -67,3 +67,12 @@ export function Alert({ tone, role, title, children, action, onDismiss, classNam
 
       <div style={{ flex: 1, minWidth: 0 }}>
         <p
+          style={{
+            margin: 0,
+            fontSize: font.size.md,
+            fontWeight: font.weight.semibold,
+            color: palette.fg,
+          }}
+        >
+          {title}
+        </p>
