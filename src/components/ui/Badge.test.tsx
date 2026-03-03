@@ -24,6 +24,21 @@ describe('Badge', () => {
     expect(screen.getByText('Captured')).toBeInTheDocument();
   });
 
+  it('renders no prefix when none is asked for', () => {
+    renderBare(<Badge>Live</Badge>);
+
+    expect(screen.queryByText(/:$/)).not.toBeInTheDocument();
+  });
+
+  it.each(['neutral', 'success', 'warning', 'danger', 'info', 'brand'] as const)(
+    'carries a %s tone as a modifier class, not only as inline colour',
+    (tone) => {
+      const { container } = renderBare(<Badge tone={tone}>Text</Badge>);
+
+      expect(container.querySelector('span')?.className).toContain(tone);
+    },
+  );
+
   it('resolves the console-only "critical" tone onto danger', () => {
     const { container } = renderBare(<Badge tone="critical">Duplicate</Badge>);
 
@@ -45,6 +60,14 @@ describe('Badge', () => {
     expect(container.querySelector('span')).toHaveStyle({ whiteSpace: 'nowrap' });
   });
 
+  it('accepts an extra class name from the call site', () => {
+    const { container } = renderBare(<Badge className="mine">Text</Badge>);
+
+    expect(container.querySelector('span')?.className).toContain('mine');
+  });
+});
+
+describe('CountBadge', () => {
   it('renders nothing for a negative count either', () => {
     const { container } = renderBare(<CountBadge count={-3} label="Disputes" />);
 

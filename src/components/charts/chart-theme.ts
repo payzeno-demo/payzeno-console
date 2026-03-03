@@ -38,6 +38,10 @@ export const SERIES_DASH: ReadonlyArray<string | undefined> = [
   '10 4',
 ];
 
+export function seriesDash(index: number): string | undefined {
+  return SERIES_DASH[index % SERIES_DASH.length];
+}
+
 export const gridStyle = {
   stroke: color.border,
   strokeDasharray: '3 3',
@@ -79,3 +83,5 @@ export function minorUnitTick(exponent: number): (value: number) => string {
   };
 }
 
+/** Empty-state message shown inside the chart frame rather than replacing it. */
+export const EMPTY_CHART_MESSAGE = 'No data in this window yet.';
