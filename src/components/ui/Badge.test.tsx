@@ -24,6 +24,21 @@ describe('Badge', () => {
     expect(screen.getByText('Captured')).toBeInTheDocument();
   });
 
+  it('renders no prefix when none is asked for', () => {
+    renderBare(<Badge>Live</Badge>);
+
+    expect(screen.queryByText(/:$/)).not.toBeInTheDocument();
+  });
+
+  it.each(['neutral', 'success', 'warning', 'danger', 'info', 'brand'] as const)(
+    'carries a %s tone as a modifier class, not only as inline colour',
+    (tone) => {
+      const { container } = renderBare(<Badge tone={tone}>Text</Badge>);
+
+      expect(container.querySelector('span')?.className).toContain(tone);
+    },
+  );
+
   it('resolves the console-only "critical" tone onto danger', () => {
     const { container } = renderBare(<Badge tone="critical">Duplicate</Badge>);
 
@@ -39,10 +54,34 @@ describe('Badge', () => {
     expect(withDot.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
   });
 
+  it('renders a subtle variant with a transparent background', () => {
+    const { container } = renderBare(
+      <Badge tone="warning" subtle>
+        Check
+      </Badge>,
+    );
+
+    expect(container.querySelector('span')).toHaveStyle({ background: 'transparent' });
+  });
+
   it('never wraps — a badge that breaks across two lines destroys a table row', () => {
     const { container } = renderBare(<Badge>A rather long badge label</Badge>);
 
     expect(container.querySelector('span')).toHaveStyle({ whiteSpace: 'nowrap' });
+  });
+
+  it('accepts an extra class name from the call site', () => {
+    const { container } = renderBare(<Badge className="mine">Text</Badge>);
+
+    expect(container.querySelector('span')?.className).toContain('mine');
+  });
+});
+
+describe('CountBadge', () => {
+  it('renders nothing at zero, so an empty nav item stays clean', () => {
+    const { container } = renderBare(<CountBadge count={0} label="Disputes" />);
+
+    expect(container).toBeEmptyDOMElement();
   });
 
   it('renders nothing for a negative count either', () => {

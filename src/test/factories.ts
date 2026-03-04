@@ -38,6 +38,8 @@ import type { ConsoleNotification } from '@features/notifications/notification.t
 /** Fixed instant every timestamp below is derived from: 2026-03-14T09:21:07.412Z. */
 export const NOW = '2026-03-14T09:21:07.412Z';
 export const MERCHANT_ID = 'mch_01HW0RTHERMOSPHERE0001';
+export const USER_ID = 'usr_01HW0RTHERMOSPHERE0002';
+
 export function makeMerchant(overrides: Partial<Merchant> = {}): Merchant {
   return {
     id: MERCHANT_ID,

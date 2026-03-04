@@ -20,3 +20,17 @@ export interface Segment<TValue extends string> {
   disabled?: boolean;
 }
 
+export interface SegmentedControlProps<TValue extends string> {
+  segments: ReadonlyArray<Segment<TValue>>;
+  value: TValue;
+  onValueChange: (value: TValue) => void;
+  /** Accessible name for the group. */
+  label: string;
+  size?: 'sm' | 'md';
+  className?: string;
+}
+
+/**
+ * Renders as a real radio group (`role="radiogroup"` + `role="radio"`), not a row of buttons:
+ * the semantics are "pick one of these", and arrow-key navigation comes free with the roles.
+ */

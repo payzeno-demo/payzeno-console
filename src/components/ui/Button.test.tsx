@@ -24,6 +24,20 @@ describe('defaults', () => {
     expect(screen.getByRole('button', { name: 'Cancel' })).toHaveAttribute('type', 'button');
   });
 
+  it('accepts type="submit" when a form genuinely wants it', () => {
+    renderBare(<Button type="submit">Sign in</Button>);
+
+    expect(screen.getByRole('button', { name: 'Sign in' })).toHaveAttribute('type', 'submit');
+  });
+
+  it('forwards its ref, so a form can focus it after a validation failure', () => {
+    const ref = createRef<HTMLButtonElement>();
+    renderBare(<Button ref={ref}>Retry</Button>);
+
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+    expect(ref.current?.textContent).toContain('Retry');
+  });
+
   it('passes arbitrary button attributes through', () => {
     renderBare(
       <Button aria-describedby="hint" data-testid="pay">
@@ -37,6 +51,15 @@ describe('defaults', () => {
 });
 
 describe('clicking', () => {
+  it('calls onClick', async () => {
+    const onClick = vi.fn();
+    const { user } = renderBare(<Button onClick={onClick}>Refund</Button>);
+
+    await user.click(screen.getByRole('button', { name: 'Refund' }));
+
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
   it('does not call onClick while disabled', async () => {
     const onClick = vi.fn();
     const { user } = renderBare(
@@ -52,6 +75,18 @@ describe('clicking', () => {
 });
 
 describe('the loading state', () => {
+  it('marks itself busy for assistive technology', () => {
+    renderBare(<Button isLoading>Capture</Button>);
+
+    expect(screen.getByRole('button', { name: /Capture/ })).toHaveAttribute('aria-busy', 'true');
+  });
+
+  it('disables itself, so a second click cannot fire a second POST', () => {
+    renderBare(<Button isLoading>Capture</Button>);
+
+    expect(screen.getByRole('button', { name: /Capture/ })).toBeDisabled();
+  });
+
   it('swallows a click that somehow arrives anyway', async () => {
     const onClick = vi.fn();
     const { user } = renderBare(

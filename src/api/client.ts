@@ -46,3 +46,9 @@ export class ApiClient implements HttpTransport {
 
   /**
    * The one funnel. Every other method on this class delegates here, and every endpoint class
+   * reaches the network through exactly this frame.
+   */
+  async request<TRes, TBody = unknown>(spec: RequestSpec<TBody>): Promise<TRes> {
+    const built = buildRequest(spec);
+    const timeoutMs = timeoutForPath(spec.path, spec.timeoutMs);
+

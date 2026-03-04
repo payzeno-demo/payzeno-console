@@ -93,3 +93,9 @@ export function Badge({
 export function CountBadge({ count, label }: { count: number; label: string }) {
   if (count <= 0) return null;
 
+  return (
+    <Badge tone="danger" size="sm" srPrefix={label}>
+      {count > 99 ? '99+' : count}
+    </Badge>
+  );
+}
