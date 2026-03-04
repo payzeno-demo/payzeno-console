@@ -85,3 +85,9 @@ export function Checkbox({
   );
 }
 
+/** Header-cell state for a "select all" checkbox over a page of rows. */
+export function selectAllState(selectedCount: number, rowCount: number): CheckedState {
+  if (rowCount === 0 || selectedCount === 0) return false;
+  if (selectedCount === rowCount) return true;
+  return 'indeterminate';
+}
