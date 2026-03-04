@@ -112,3 +112,13 @@ export function RefundDialog({
       </p>
 
       {errorMessage ? <InlineError id="refund-error">{errorMessage}</InlineError> : null}
+
+      <Button type="button" onClick={handleSubmit} disabled={isPending || tooLarge || tooSmall}>
+        {isPending ? 'Refunding…' : 'Refund'}
+      </Button>
+      <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+        Cancel
+      </Button>
+    </Dialog>
+  );
+}
