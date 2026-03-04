@@ -18,6 +18,14 @@ describe('the page', () => {
     expect(screen.getByText('Every refund you have issued, newest first.')).toBeInTheDocument();
   });
 
+  it('sets the document title', async () => {
+    renderWithProviders(<RefundsPage />, { route: '/refunds' });
+
+    await waitFor(() => {
+      expect(document.title).toContain('Refunds');
+    });
+  });
+
   it('offers a CSV export', async () => {
     renderWithProviders(<RefundsPage />, { route: '/refunds' });
 
@@ -67,4 +75,37 @@ describe('the filters', () => {
 });
 
 describe('the table', () => {
+  it('shows a failed refund with its status', async () => {
+    server.use(
+      http.get(url('/refunds'), () =>
+        HttpResponse.json(
+          makePage([
+            makeRefund({
+              status: 'failed',
+              failure_reason: 'The issuer rejected the credit.',
+              succeeded_at: null,
+            }),
+          ]),
+        ),
+      ),
+    );
+
+    renderWithProviders(<RefundsPage />, { route: '/refunds' });
+
+    await screen.findByRole('table');
+    expect(screen.getByRole('table').textContent).toMatch(/failed/i);
+  });
+});
+
+describe('failure', () => {
+  it('renders the error state instead of the table', async () => {
+    server.use(errorHandler('get', '/refunds', 500, 'internal_error'));
+
+    renderWithProviders(<RefundsPage />, { route: '/refunds' });
+
+    expect(
+      await screen.findByRole('heading', { name: 'We could not load your refunds' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
 });

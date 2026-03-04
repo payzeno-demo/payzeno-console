@@ -81,3 +81,13 @@ export function RefundDialog({
   };
 
   return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Refund this charge"
+      description={`${formatMinor(refundableMinor, currency)} is still refundable.`}
+    >
+      <MoneyInput
+        id="refund-amount"
+        label="Refund amount"
+        currency={currency}

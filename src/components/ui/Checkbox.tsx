@@ -13,6 +13,19 @@ import { color, font, radius, space } from './tokens';
 
 export type CheckedState = boolean | 'indeterminate';
 
+export interface CheckboxProps {
+  id: string;
+  checked: CheckedState;
+  onCheckedChange: (checked: CheckedState) => void;
+  /** Visible label. Omit only when `ariaLabel` is provided (table row selectors). */
+  label?: string;
+  /** Accessible name when there is no visible label. One of the two is required. */
+  ariaLabel?: string;
+  disabled?: boolean;
+  describedBy?: string;
+  className?: string;
+}
+
 export function Checkbox({
   id,
   checked,

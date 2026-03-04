@@ -74,3 +74,16 @@ export function useCreateRefund(): UseCreateRefundResult {
         setErrorMessage(
           error.code === 'refund_window_closed'
             ? 'This charge is past the refund window. Ask support to raise a credit instead.'
+            : error.message,
+        );
+        return;
+      }
+
+      if (error instanceof ConflictApiError) {
+        setErrorMessage(
+          'This charge has not been captured yet. Release the authorisation from the payment instead.',
+        );
+        return;
+      }
+
+      if (error instanceof ForbiddenError) {
