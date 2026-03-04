@@ -54,6 +54,16 @@ describe('Badge', () => {
     expect(withDot.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
   });
 
+  it('renders a subtle variant with a transparent background', () => {
+    const { container } = renderBare(
+      <Badge tone="warning" subtle>
+        Check
+      </Badge>,
+    );
+
+    expect(container.querySelector('span')).toHaveStyle({ background: 'transparent' });
+  });
+
   it('never wraps — a badge that breaks across two lines destroys a table row', () => {
     const { container } = renderBare(<Badge>A rather long badge label</Badge>);
 
@@ -68,6 +78,12 @@ describe('Badge', () => {
 });
 
 describe('CountBadge', () => {
+  it('renders nothing at zero, so an empty nav item stays clean', () => {
+    const { container } = renderBare(<CountBadge count={0} label="Disputes" />);
+
+    expect(container).toBeEmptyDOMElement();
+  });
+
   it('renders nothing for a negative count either', () => {
     const { container } = renderBare(<CountBadge count={-3} label="Disputes" />);
 
