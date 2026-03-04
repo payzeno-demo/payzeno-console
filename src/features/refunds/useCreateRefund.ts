@@ -100,3 +100,15 @@ export function useCreateRefund(): UseCreateRefundResult {
     },
   });
 
+  const createRefund = useCallback(
+    ({ chargeId, amountMinor, reason }: CreateRefundArgs) => {
+      const request: CreateRefundRequest = { charge_id: chargeId };
+      if (amountMinor !== undefined) request.amount_minor = amountMinor;
+      if (reason) request.reason = reason;
+      mutation.mutate({ request });
+    },
+    [mutation],
+  );
+
+  const reset = useCallback(() => {
+    setErrorMessage(null);

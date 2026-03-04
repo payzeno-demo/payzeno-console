@@ -83,3 +83,12 @@ export function PaymentsPage() {
       ) : (
         <PaymentIntentTable
           rows={rows}
+          isLoading={isLoading}
+          hasMore={hasMore}
+          nextCursor={nextCursor}
+          onCursorChange={(next) => setCursor(next ?? '')}
+        />
+      )}
+    </PageContainer>
+  );
+}
