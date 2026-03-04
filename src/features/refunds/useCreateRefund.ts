@@ -112,3 +112,16 @@ export function useCreateRefund(): UseCreateRefundResult {
 
   const reset = useCallback(() => {
     setErrorMessage(null);
+    setFieldErrors({});
+    setLastRefund(null);
+  }, []);
+
+  return {
+    createRefund,
+    isPending: mutation.isPending,
+    errorMessage,
+    fieldErrors,
+    lastRefund,
+    reset,
+  };
+}

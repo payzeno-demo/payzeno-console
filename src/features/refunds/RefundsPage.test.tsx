@@ -58,6 +58,22 @@ describe('the filters', () => {
     recorder.stop();
   });
 
+  it('reads the charge filter out of the URL', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<RefundsPage />, {
+      route: '/refunds?charge_id=ch_01HW0RTCHARGE00000001',
+    });
+
+    await waitFor(() => {
+      expect(
+        recorder.requests.some((request) =>
+          request.url.includes('charge_id=ch_01HW0RTCHARGE00000001'),
+        ),
+      ).toBe(true);
+    });
+    recorder.stop();
+  });
+
   it('debounces typing rather than firing a request per keystroke', async () => {
     const recorder = recordRequests();
     const { user } = renderWithProviders(<RefundsPage />, { route: '/refunds' });
@@ -75,6 +91,22 @@ describe('the filters', () => {
 });
 
 describe('the table', () => {
+  it('renders a row per refund', async () => {
+    renderWithProviders(<RefundsPage />, { route: '/refunds' });
+
+    const table = await screen.findByRole('table');
+    await waitFor(() => {
+      expect(table.querySelectorAll('tbody tr')).toHaveLength(1);
+    });
+  });
+
+  it('shows the refund reason in human form', async () => {
+    renderWithProviders(<RefundsPage />, { route: '/refunds' });
+
+    await screen.findByRole('table');
+    expect(screen.getByRole('table').textContent).toMatch(/customer/i);
+  });
+
   it('shows a failed refund with its status', async () => {
     server.use(
       http.get(url('/refunds'), () =>
