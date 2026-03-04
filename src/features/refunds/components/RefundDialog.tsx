@@ -91,3 +91,13 @@ export function RefundDialog({
         id="refund-amount"
         label="Refund amount"
         currency={currency}
+        valueMinor={amountMinor}
+        onValueChange={setAmountMinor}
+        aria-describedby={amountError ? 'refund-amount-error' : 'refund-summary'}
+      />
+      {amountError ? <InlineError id="refund-amount-error">{amountError}</InlineError> : null}
+
+      <Select
+        id="refund-reason"
+        label="Reason"
+        value={reason}
