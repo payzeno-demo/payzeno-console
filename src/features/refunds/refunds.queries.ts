@@ -47,3 +47,10 @@ export interface CreateRefundInput {
  * anywhere else in the console: a double-submitted refund is money out of the merchant's
  * balance twice, and payzeno-api's idempotency table is the only thing standing between an
  * impatient double-click and a support ticket.
+ */
+export function createRefundMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['refunds', 'create'] as const,
+    mutationFn: ({ request }: CreateRefundInput): Promise<Refund> => e.refunds.create(request),
+  };
+}

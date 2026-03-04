@@ -74,3 +74,54 @@ export function useCreateRefund(): UseCreateRefundResult {
         setErrorMessage(
           error.code === 'refund_window_closed'
             ? 'This charge is past the refund window. Ask support to raise a credit instead.'
+            : error.message,
+        );
+        return;
+      }
+
+      if (error instanceof ConflictApiError) {
+        setErrorMessage(
+          'This charge has not been captured yet. Release the authorisation from the payment instead.',
+        );
+        return;
+      }
+
+      if (error instanceof ForbiddenError) {
+        setErrorMessage('Issuing a refund needs an owner or admin role.');
+        return;
+      }
+
+      if (error instanceof ConsoleApiError) {
+        setErrorMessage(error.message);
+        return;
+      }
+
+      setErrorMessage('The refund could not be submitted. Try again in a moment.');
+    },
+  });
+
+  const createRefund = useCallback(
+    ({ chargeId, amountMinor, reason }: CreateRefundArgs) => {
+      const request: CreateRefundRequest = { charge_id: chargeId };
+      if (amountMinor !== undefined) request.amount_minor = amountMinor;
+      if (reason) request.reason = reason;
+      mutation.mutate({ request });
+    },
+    [mutation],
+  );
+
+  const reset = useCallback(() => {
+    setErrorMessage(null);
+    setFieldErrors({});
+    setLastRefund(null);
+  }, []);
+
+  return {
+    createRefund,
+    isPending: mutation.isPending,
+    errorMessage,
+    fieldErrors,
+    lastRefund,
+    reset,
+  };
+}

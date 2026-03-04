@@ -81,3 +81,44 @@ export function RefundDialog({
   };
 
   return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Refund this charge"
+      description={`${formatMinor(refundableMinor, currency)} is still refundable.`}
+    >
+      <MoneyInput
+        id="refund-amount"
+        label="Refund amount"
+        currency={currency}
+        valueMinor={amountMinor}
+        onValueChange={setAmountMinor}
+        aria-describedby={amountError ? 'refund-amount-error' : 'refund-summary'}
+      />
+      {amountError ? <InlineError id="refund-amount-error">{amountError}</InlineError> : null}
+
+      <Select
+        id="refund-reason"
+        label="Reason"
+        value={reason}
+        onValueChange={(next) => setReason(next as RefundReason)}
+        options={SELECTABLE_REASONS.map((value) => ({ value, label: humanise(value) }))}
+      />
+
+      <p id="refund-summary" role="status">
+        {isPartial
+          ? `Refunding ${formatMinor(amountMinor, currency)} of ${formatMinor(refundableMinor, currency)}. The rest stays available.`
+          : `Refunding the full ${formatMinor(refundableMinor, currency)}.`}
+      </p>
+
+      {errorMessage ? <InlineError id="refund-error">{errorMessage}</InlineError> : null}
+
+      <Button type="button" onClick={handleSubmit} disabled={isPending || tooLarge || tooSmall}>
+        {isPending ? 'Refunding…' : 'Refund'}
+      </Button>
+      <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
+        Cancel
+      </Button>
+    </Dialog>
+  );
+}

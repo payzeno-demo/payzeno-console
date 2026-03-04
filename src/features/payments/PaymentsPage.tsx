@@ -73,3 +73,22 @@ export function PaymentsPage() {
           placeholder="cust-1024"
           onChange={(event) => {
             setCustomer(event.target.value);
+            setCursor('');
+          }}
+        />
+      </FilterBar>
+
+      {error ? (
+        <ErrorState error={error} title="We could not load your payments" />
+      ) : (
+        <PaymentIntentTable
+          rows={rows}
+          isLoading={isLoading}
+          hasMore={hasMore}
+          nextCursor={nextCursor}
+          onCursorChange={(next) => setCursor(next ?? '')}
+        />
+      )}
+    </PageContainer>
+  );
+}

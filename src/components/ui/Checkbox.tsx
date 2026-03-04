@@ -13,6 +13,19 @@ import { color, font, radius, space } from './tokens';
 
 export type CheckedState = boolean | 'indeterminate';
 
+export interface CheckboxProps {
+  id: string;
+  checked: CheckedState;
+  onCheckedChange: (checked: CheckedState) => void;
+  /** Visible label. Omit only when `ariaLabel` is provided (table row selectors). */
+  label?: string;
+  /** Accessible name when there is no visible label. One of the two is required. */
+  ariaLabel?: string;
+  disabled?: boolean;
+  describedBy?: string;
+  className?: string;
+}
+
 export function Checkbox({
   id,
   checked,
@@ -72,3 +85,9 @@ export function Checkbox({
   );
 }
 
+/** Header-cell state for a "select all" checkbox over a page of rows. */
+export function selectAllState(selectedCount: number, rowCount: number): CheckedState {
+  if (rowCount === 0 || selectedCount === 0) return false;
+  if (selectedCount === rowCount) return true;
+  return 'indeterminate';
+}
