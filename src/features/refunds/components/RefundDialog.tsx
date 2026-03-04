@@ -101,3 +101,14 @@ export function RefundDialog({
         id="refund-reason"
         label="Reason"
         value={reason}
+        onValueChange={(next) => setReason(next as RefundReason)}
+        options={SELECTABLE_REASONS.map((value) => ({ value, label: humanise(value) }))}
+      />
+
+      <p id="refund-summary" role="status">
+        {isPartial
+          ? `Refunding ${formatMinor(amountMinor, currency)} of ${formatMinor(refundableMinor, currency)}. The rest stays available.`
+          : `Refunding the full ${formatMinor(refundableMinor, currency)}.`}
+      </p>
+
+      {errorMessage ? <InlineError id="refund-error">{errorMessage}</InlineError> : null}

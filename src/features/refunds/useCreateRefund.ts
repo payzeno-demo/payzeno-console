@@ -87,3 +87,16 @@ export function useCreateRefund(): UseCreateRefundResult {
       }
 
       if (error instanceof ForbiddenError) {
+        setErrorMessage('Issuing a refund needs an owner or admin role.');
+        return;
+      }
+
+      if (error instanceof ConsoleApiError) {
+        setErrorMessage(error.message);
+        return;
+      }
+
+      setErrorMessage('The refund could not be submitted. Try again in a moment.');
+    },
+  });
+
