@@ -34,3 +34,10 @@ export function useChargeLedger(chargeId: string): UseChargeLedgerResult {
   const endpoints = useEndpoints();
   const query = useQuery({
     ...chargeLedgerQuery(endpoints, chargeId),
+    enabled: chargeId.length > 0,
+  });
+
+  const transactions = useMemo(() => query.data?.transactions ?? [], [query.data]);
+
+  const groups = useMemo(() => {
+    const byPurpose = new Map<LedgerPurpose, LedgerTransaction[]>();

@@ -96,3 +96,15 @@ export function ChargeDetailPage() {
           <dd>
             <MoneyCell amountMinor={charge.amount_minor} currency={charge.currency} />
           </dd>
+
+          <dt>Captured</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.captured_amount_minor} currency={charge.currency} />
+          </dd>
+
+          <dt>Refunded</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.refunded_amount_minor} currency={charge.currency} />
+          </dd>
+
+          <dt>Refundable</dt>

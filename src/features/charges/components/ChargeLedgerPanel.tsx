@@ -45,3 +45,13 @@ export function ChargeLedgerPanel({ chargeId, currency }: ChargeLedgerPanelProps
   return (
     <Card as="section" aria-label="Ledger detail">
       <h2>Ledger</h2>
+
+      {hasDuplicateSettlement ? (
+        <Alert tone="critical" title="This charge has more than one settlement posting">
+          Contact support with this charge id. A duplicate settlement is internally balanced,
+          so it will not show up as a discrepancy in your totals.
+        </Alert>
+      ) : null}
+
+      {groups.length === 0 ? (
+        <p>Nothing has been posted against this charge yet.</p>
