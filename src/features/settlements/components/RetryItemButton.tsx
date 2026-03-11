@@ -16,3 +16,7 @@ import { useRetrySettlementItem } from '../useRetrySettlementItem';
 
 export interface RetryItemButtonProps {
   batchId: string;
+  itemId: string;
+  disabled?: boolean;
+}
+
