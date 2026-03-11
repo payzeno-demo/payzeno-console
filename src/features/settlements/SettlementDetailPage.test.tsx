@@ -84,3 +84,15 @@ describe('the totals panel (arc INC)', () => {
           makePage([
             makeReconciliationItem({
               id: 'ri_a',
+              status: 'settled',
+              attempt_count: 2,
+              gross_minor: 12_500,
+              expected_gross_minor: 12_500,
+            }),
+            makeReconciliationItem({
+              id: 'ri_b',
+              status: 'settled',
+              attempt_count: 2,
+              gross_minor: 12_500,
+              expected_gross_minor: null,
+            }),

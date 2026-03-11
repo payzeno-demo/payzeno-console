@@ -311,6 +311,28 @@ export function makeReconciliationItem(
   } as ReconciliationItem;
 }
 
+export function makeBankAccount(overrides: Partial<BankAccount> = {}): BankAccount {
+  return {
+    id: 'ba_01HW0RTBANKACCOUNT0001',
+    object: 'bank_account',
+    merchant_id: MERCHANT_ID,
+    country: 'GB',
+    currency: 'GBP',
+    bank_name: 'Northern Counties Bank',
+    scheme: 'uk_sort_code',
+    last_four: '8812',
+    routing_last_four: null,
+    iban_last_four: null,
+    bic: 'NCBKGB2L',
+    sort_code_last_four: '0417',
+    status: 'validated',
+    is_default: true,
+    livemode: true,
+    created_at: '2025-04-03T09:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export function makeWebhookEndpoint(
   overrides: Partial<WebhookEndpoint> = {},
 ): WebhookEndpoint {

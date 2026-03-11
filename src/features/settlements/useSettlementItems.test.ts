@@ -54,6 +54,12 @@ describe('the request', () => {
   });
 
   it('marks a retryable item as retryable and a settled one as not', async () => {
+    const byStatus = new Map(result.current.rows.map((row) => [row.status, row]));
+    expect(byStatus.get('retryable')?._isRetryable).toBe(true);
+    expect(byStatus.get('settled')?._isRetryable).toBe(false);
+  });
+
+  it('flags a settled item that took more than one attempt as a duplicate suspect', async () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {
