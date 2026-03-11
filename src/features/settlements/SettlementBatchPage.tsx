@@ -47,3 +47,6 @@ export function SettlementDetailPage() {
   if (error) {
     return <ErrorState error={error} title="We could not load this batch" />;
   }
+
+  return (
+    <PageContainer as="main">
