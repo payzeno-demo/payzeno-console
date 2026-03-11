@@ -96,3 +96,15 @@ describe('the totals panel (arc INC)', () => {
               gross_minor: 12_500,
               expected_gross_minor: null,
             }),
+          ]),
+        ),
+      ),
+    );
+
+    renderPage();
+
+    expect(
+      await screen.findByText('Posted total is above the expected total'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/do not retry further items/)).toBeInTheDocument();
+  });
