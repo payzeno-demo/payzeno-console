@@ -37,3 +37,5 @@ export interface SettlementItemTableProps {
 }
 
 export function SettlementItemTable({
+  batchId,
+  rows,

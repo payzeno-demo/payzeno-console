@@ -39,3 +39,8 @@ export class ConsoleApiError extends PayzenoError {
     this.fieldErrors = init.fieldErrors ?? [];
     this.retryAfterSeconds = init.retryAfterSeconds ?? null;
   }
+
+  /** Field errors indexed by their dotted path, for `mapFieldErrorsToForm`. */
+  fieldErrorMap(): Record<string, string> {
+    const out: Record<string, string> = {};
+    for (const fe of this.fieldErrors) out[fe.path] = fe.message;

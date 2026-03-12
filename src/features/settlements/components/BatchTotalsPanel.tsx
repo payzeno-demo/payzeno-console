@@ -47,3 +47,7 @@ export function BatchTotalsPanel({ totals, currency, isLoading }: BatchTotalsPan
             currency={currency}
             tone={overposted ? 'critical' : undefined}
           />
+        </dd>
+
+        <dt>Acquirer fees</dt>
+        <dd>

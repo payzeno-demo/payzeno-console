@@ -12,3 +12,11 @@ import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
 import { usePermissions } from '@hooks/usePermissions';
 
+import { useRetrySettlementItem } from '../useRetrySettlementItem';
+
+export interface RetryItemButtonProps {
+  batchId: string;
+  itemId: string;
+  disabled?: boolean;
+}
+

@@ -54,11 +54,33 @@ describe('the request', () => {
   });
 
   it('marks a retryable item as retryable and a settled one as not', async () => {
+    const byStatus = new Map(result.current.rows.map((row) => [row.status, row]));
+    expect(byStatus.get('retryable')?._isRetryable).toBe(true);
+    expect(byStatus.get('settled')?._isRetryable).toBe(false);
+  });
+
+  it('flags a settled item that took more than one attempt as a duplicate suspect', async () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {
       expect(result.current.rows).toHaveLength(3);
     });
+
+    const settled = result.current.rows.find((row) => row.status === 'settled');
+    expect(settled?.attempt_count).toBe(2);
+    expect(settled?._isDuplicateSuspect).toBe(true);
+  });
+
+  it('does not flag a settled item that went through on the first attempt', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([
+            makeReconciliationItem({ status: 'settled', attempt_count: 1 }),
+          ]),
+        ),
+      ),
+    );
 
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
@@ -80,6 +102,16 @@ describe('the request', () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    expect(result.current.totals.feeMinor).toBe(720);
+  });
+
+  it('counts the duplicate suspects, which is what BatchTotalsPanel warns on', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
 
@@ -97,5 +129,11 @@ describe('failure', () => {
   it('surfaces a 502 rather than pretending the batch is empty', async () => {
     server.use(errorHandler('get', '/settlements/:batchId/items', 502, 'processor_unavailable'));
 
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
+    expect(result.current.rows).toEqual([]);
   });
 });

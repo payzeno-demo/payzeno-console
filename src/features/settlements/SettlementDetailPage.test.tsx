@@ -84,3 +84,51 @@ describe('the totals panel (arc INC)', () => {
           makePage([
             makeReconciliationItem({
               id: 'ri_a',
+              status: 'settled',
+              attempt_count: 2,
+              gross_minor: 12_500,
+              expected_gross_minor: 12_500,
+            }),
+            makeReconciliationItem({
+              id: 'ri_b',
+              status: 'settled',
+              attempt_count: 2,
+              gross_minor: 12_500,
+              expected_gross_minor: null,
+            }),
+          ]),
+        ),
+      ),
+    );
+
+    renderPage();
+
+    expect(
+      await screen.findByText('Posted total is above the expected total'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/do not retry further items/)).toBeInTheDocument();
+  });
+
+  it('names how many items settled after more than one attempt', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([
+            makeReconciliationItem({
+              id: 'ri_a',
+              status: 'settled',
+              attempt_count: 3,
+              gross_minor: 50_000,
+              expected_gross_minor: 1_000,
+            }),
+          ]),
+        ),
+      ),
+    );
+
+    renderPage();
+
+    expect(await screen.findByText(/1 item\(s\) settled after more than one attempt/)).toBeInTheDocument();
+  });
+});
+
