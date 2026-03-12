@@ -103,5 +103,11 @@ describe('failure', () => {
   it('surfaces a 502 rather than pretending the batch is empty', async () => {
     server.use(errorHandler('get', '/settlements/:batchId/items', 502, 'processor_unavailable'));
 
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
+    expect(result.current.rows).toEqual([]);
   });
 });
