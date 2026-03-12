@@ -120,3 +120,15 @@ describe('the totals panel (arc INC)', () => {
               attempt_count: 3,
               gross_minor: 50_000,
               expected_gross_minor: 1_000,
+            }),
+          ]),
+        ),
+      ),
+    );
+
+    renderPage();
+
+    expect(await screen.findByText(/1 item\(s\) settled after more than one attempt/)).toBeInTheDocument();
+  });
+});
+

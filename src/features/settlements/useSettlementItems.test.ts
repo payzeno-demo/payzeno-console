@@ -66,6 +66,22 @@ describe('the request', () => {
       expect(result.current.rows).toHaveLength(3);
     });
 
+    const settled = result.current.rows.find((row) => row.status === 'settled');
+    expect(settled?.attempt_count).toBe(2);
+    expect(settled?._isDuplicateSuspect).toBe(true);
+  });
+
+  it('does not flag a settled item that went through on the first attempt', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([
+            makeReconciliationItem({ status: 'settled', attempt_count: 1 }),
+          ]),
+        ),
+      ),
+    );
+
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {
