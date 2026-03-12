@@ -86,6 +86,16 @@ describe('the request', () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    expect(result.current.totals.feeMinor).toBe(720);
+  });
+
+  it('counts the duplicate suspects, which is what BatchTotalsPanel warns on', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
 

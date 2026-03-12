@@ -108,3 +108,15 @@ describe('the totals panel (arc INC)', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/do not retry further items/)).toBeInTheDocument();
   });
+
+  it('names how many items settled after more than one attempt', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([
+            makeReconciliationItem({
+              id: 'ri_a',
+              status: 'settled',
+              attempt_count: 3,
+              gross_minor: 50_000,
+              expected_gross_minor: 1_000,
