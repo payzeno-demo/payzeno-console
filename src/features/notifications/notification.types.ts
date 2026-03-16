@@ -22,6 +22,17 @@ export const SURFACED_NOTIFICATION_TYPES = [
 
 export type SurfacedNotificationType = (typeof SURFACED_NOTIFICATION_TYPES)[number];
 
+export interface ConsoleNotification {
+  id: string;
+  type: PublicEventType;
+  merchant_id: MerchantId;
+  title: string;
+  body: string;
+  occurred_at: IsoTimestamp;
+  /** The payout / batch / dispute id this points at. Drives the "View" link. */
+  resource_id: string;
+}
+
 /** A notification plus the console's own local read state. Never sent to the server. */
 export interface NotificationEntry extends ConsoleNotification {
   read: boolean;

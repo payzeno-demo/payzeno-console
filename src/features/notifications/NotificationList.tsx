@@ -62,3 +62,11 @@ export function NotificationList({ entries, onRead, onDismiss }: NotificationLis
               aria-label={`Dismiss ${entry.title}`}
               onClick={() => onDismiss(entry.id)}
             >
+              Dismiss
+            </button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}

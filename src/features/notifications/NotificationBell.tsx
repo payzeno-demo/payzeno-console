@@ -53,3 +53,12 @@ export function NotificationBell({ className }: NotificationBellProps) {
           <p role="status">
             Live updates are offline. Reload the page to reconnect.
           </p>
+        ) : null}
+
+        {state === 'reconnecting' ? <p role="status">Reconnecting…</p> : null}
+
+        <NotificationList entries={entries} onRead={markRead} onDismiss={dismiss} />
+      </div>
+    </Popover>
+  );
+}
