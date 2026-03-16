@@ -48,6 +48,7 @@ export function useNotificationStream(
 
   const [entries, setEntries] = useState<NotificationEntry[]>([]);
   const [state, setState] = useState<SocketState>('idle');
+  const [streamError, setStreamError] = useState<NotificationStreamError | null>(null);
   const socketRef = useRef<SocketClient<ConsoleNotification> | null>(null);
 
   /**

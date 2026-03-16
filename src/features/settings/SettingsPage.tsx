@@ -45,12 +45,17 @@ export function SettingsPage() {
 
   const merchant = useCurrentMerchant();
   const { can } = usePermissions();
+  const [tab, setTab] = useStringParam('tab', 'accounts');
   const [addOpen, setAddOpen] = useState(false);
+  const [defaultTarget, setDefaultTarget] = useState<string>('');
+
   const { accounts, isLoading: accountsLoading, error: accountsError } = useBankAccounts();
   // Reused for its `makeDefault` mutation; the row id comes from the table's button.
   const { makeDefault, actionError } = useBankAccount(defaultTarget);
 
   const { members, isLoading: usersLoading, error: usersError, isForbidden, reload } = useUsers();
+  const { inviteUser, isPending: isInviting, errorMessage: inviteError } = useInviteUser();
+
   const canManageAccounts = can('settings:write');
 
   const handleMakeDefault = (bankAccountId: string) => {

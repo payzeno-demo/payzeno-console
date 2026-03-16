@@ -31,3 +31,9 @@ export class NotificationSocket extends SocketClient<ConsoleNotification> {
    */
   protected parse(raw: MessageEvent): ConsoleNotification | null {
     if (typeof raw.data !== 'string') return null;
+
+    let decoded: unknown;
+    try {
+      decoded = JSON.parse(raw.data);
+    } catch {
+      // A malformed frame is not worth tearing the socket down for.
