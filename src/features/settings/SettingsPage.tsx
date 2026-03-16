@@ -45,6 +45,7 @@ export function SettingsPage() {
 
   const merchant = useCurrentMerchant();
   const { can } = usePermissions();
+  const [tab, setTab] = useStringParam('tab', 'accounts');
   const [addOpen, setAddOpen] = useState(false);
   const [defaultTarget, setDefaultTarget] = useState<string>('');
 
