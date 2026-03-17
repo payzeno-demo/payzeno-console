@@ -41,3 +41,5 @@ export function SettlementItemTable({
   rows,
   isLoading,
   status,
+  onStatusChange,
+}: SettlementItemTableProps) {
