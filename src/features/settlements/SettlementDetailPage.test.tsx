@@ -132,3 +132,16 @@ describe('the totals panel (arc INC)', () => {
   });
 });
 
+describe('the item table', () => {
+  it('renders a captioned table naming the batch', async () => {
+    renderPage();
+
+    expect(
+      await screen.findByRole('table', {
+        name: new RegExp(`Reconciliation items in settlement batch ${BATCH_ID}`),
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows the duplicate badge on an item that settled after two attempts', async () => {
+    renderPage();

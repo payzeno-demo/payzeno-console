@@ -40,6 +40,13 @@ describe('the request', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/items'));
+    recorder.stop();
+
+    expect(request?.url).toContain('status=retryable');
+  });
+
+  it('does not fire at all without a batch id', async () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(''));
 
     await waitFor(() => {

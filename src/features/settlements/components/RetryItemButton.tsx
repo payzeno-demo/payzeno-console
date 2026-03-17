@@ -20,3 +20,10 @@ export interface RetryItemButtonProps {
   disabled?: boolean;
 }
 
+export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItemButtonProps) {
+  const { retry, isPending, lockedItemId, errorMessage } = useRetrySettlementItem();
+  const { can } = usePermissions();
+
+  const allowed = can('settlements:retry');
+  const wasLocked = lockedItemId === itemId;
+

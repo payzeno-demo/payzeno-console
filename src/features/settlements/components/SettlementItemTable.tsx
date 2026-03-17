@@ -39,3 +39,7 @@ export interface SettlementItemTableProps {
 export function SettlementItemTable({
   batchId,
   rows,
+  isLoading,
+  status,
+  onStatusChange,
+}: SettlementItemTableProps) {
