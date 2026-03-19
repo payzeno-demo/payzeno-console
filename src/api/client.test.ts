@@ -73,6 +73,15 @@ describe('ApiClient.get', () => {
 
     await client.get('/charges', { limit: 25, status: 'captured', cursor: undefined });
 
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.url).toContain('limit=25');
+    expect(request?.url).toContain('status=captured');
+    expect(request?.url).not.toContain('cursor');
+  });
+
+  it('sends Accept, the pinned API version and a fresh request id on every call', async () => {
     const recorder = recordRequests();
     const recorder = recordRequests();
 
@@ -88,6 +97,10 @@ describe('ApiClient.get', () => {
 
   it('attaches X-Payzeno-CSRF from the pz_csrf cookie on a mutating verb', async () => {
     setCsrfCookie('csrf-token-write');
+    const recorder = recordRequests();
+
+    await new ApiClient().post('/refunds', { charge_id: 'ch_1' }, 'idem-key-0002');
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 
@@ -131,6 +144,8 @@ describe('ApiClient error mapping', () => {
   ] as const)('maps %i onto its subclass', async (status, code, Expected) => {
     server.use(errorHandler('get', '/charges', status, code, 'synthetic'));
 
+    // 502 is retried by the transport; a zero-retry client keeps the assertion quick.
+    const client = new ApiClient({ retries: 0 });
     const thrown = await client.get('/charges').catch((err: unknown) => err);
 
     expect(thrown).toBeInstanceOf(Expected);
@@ -186,6 +201,13 @@ describe('ApiClient error mapping', () => {
 
 describe('ApiClient transport retry', () => {
   it('repeats an idempotent GET through a 503 and returns the eventual body', async () => {
+    const page = await new ApiClient().get<{ data: unknown[] }>('/charges');
+
+    expect(calls).toBe(2);
+    expect(page.data).toHaveLength(1);
+  });
+
+  it('gives up after `retries` attempts and surfaces the upstream error', async () => {
     const thrown = await new ApiClient({ retries: 1 })
       .get('/charges')
       .catch((err: unknown) => err);

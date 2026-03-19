@@ -34,3 +34,9 @@ export interface ParsedError {
 export type ParseResult<T> = ParsedResponse<T> | ParsedError;
 
 function tryParseJson(text: string | undefined): unknown {
+  if (text === undefined || text.trim().length === 0) return undefined;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
