@@ -49,6 +49,11 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
   heading.style.cssText = 'font-size:18px;margin:0 0 8px';
   heading.textContent = 'The console is misconfigured';
 
+  const body = document.createElement('p');
+  body.style.cssText = 'margin:0 0 16px;color:#5b6478';
+  body.textContent =
+    'This build is missing required configuration, so it will not start. This is a deployment problem, not an account problem.';
+
   const pre = document.createElement('pre');
   pre.style.cssText =
     'margin:0;padding:12px;border-radius:6px;background:#f5f6f8;white-space:pre-wrap;font:12px/1.5 ui-monospace,SFMono-Regular,monospace';

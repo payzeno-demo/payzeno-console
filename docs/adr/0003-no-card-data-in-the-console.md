@@ -20,6 +20,19 @@ reaching the browser console and — via a Sentry breadcrumb — Sentry.
 
 Scope is not a property of the field. It is a property of everything the field's bytes touch.
 
+## Consequences
+
+- The console cannot re-render a saved card. It has a `CardSummary` (brand, last four, expiry)
+  and that is all the API will give it. `components/data/CardBrandCell.tsx` renders from that.
+- A vault outage breaks card entry and nothing else. `VaultTokenisationError`
+  (`src/lib/errors.ts`) is a client-side error branch, not an HTTP one, because there is no
+  Payzeno response involved.
+- Two failure paths for one form: the vault call can fail before the payzeno-api call is ever
+  made. `TokenizedCardInput` owns the first and reports it inline; the page owns the second.
+- Sentry issues from card-entry code are less useful than they would otherwise be, because the
+  redaction is aggressive and false-positives on things like a long numeric reference. That is
+  the trade and it is not up for renegotiation.
+
 ## Alternatives considered
 
 **Keep collecting the PAN, redact it server-side.** This is what we were doing. Redaction is a

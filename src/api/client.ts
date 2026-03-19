@@ -52,3 +52,9 @@ export class ApiClient implements HttpTransport {
     const built = buildRequest(spec);
     const timeoutMs = timeoutForPath(spec.path, spec.timeoutMs);
 
+    let attempt = 0;
+    // Loop bounded by `decideRetry`, which stops at `options.retries + 1` attempts.
+    for (;;) {
+      attempt += 1;
+      try {
+        const raw = await fetchTransport(built, { timeoutMs });
