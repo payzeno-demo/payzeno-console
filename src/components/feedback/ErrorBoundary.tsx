@@ -52,6 +52,95 @@ export interface ErrorFallbackProps {
  * the same branching, and two copies of this ladder is how the 429 branch went missing for a
  * month (PAY-1854).
  */
+/** One branch per subclass. Order matters: subclasses are checked before their base. */
+function renderError(error: unknown, onRetry: () => void): ReactNode {
+  if (error instanceof UnauthorizedError) {
+    // 401 is handled by AuthProvider, which redirects to /login. If one reaches here the
+    // session expired mid-render and a reload is the honest answer.
+    return (
+      <ErrorMessage
+        title="Your session has expired"
+        body="Sign in again to continue."
+        actionLabel="Reload"
+        onAction={() => window.location.assign('/login')}
+      />
+    );
+  }
+
+  if (error instanceof ForbiddenError) {
+    return <PermissionDenied requestId={error.requestId} />;
+  }
+
+  if (error instanceof NotFoundApiError) {
+    return <NotFound title="Not found" body="This record does not exist, or belongs to another account." />;
+  }
+
+  if (error instanceof RateLimitedApiError) {
+    return <RateLimitCountdown seconds={error.retryAfter} onExpire={onRetry} />;
+  }
+
+  if (error instanceof UpstreamUnavailableApiError) {
+    return <UpstreamDown onRetry={onRetry} requestId={error.requestId} />;
+  }
+
+  if (error instanceof ValidationApiError) {
+    return (
+      <ErrorMessage
+        title="That request was rejected"
+        body={error.message}
+        details={error.fieldErrors.map((fieldError) => `${fieldError.path}: ${fieldError.message}`)}
+        actionLabel="Try again"
+        onAction={onRetry}
+      />
+    );
+  }
+
+  if (error instanceof ConflictApiError) {
+    return (
+      <ErrorMessage
+        title={error.isSettlementLocked() ? 'Already being settled' : 'That changed while you were looking'}
+        body={
+          error.isSettlementLocked()
+            ? 'A sweep is working on this batch right now. Refresh in a moment.'
+            : error.message
+        }
+        actionLabel="Refresh"
+        onAction={onRetry}
+      />
+    );
+  }
+
+  if (error instanceof BadRequestApiError) {
+    return <ErrorMessage title="We could not process that" body={error.message} actionLabel="Try again" onAction={onRetry} />;
+  }
+
+  if (error instanceof ConsoleApiError) {
+    // Covers ServerError and anything a future subclass forgets to branch for.
+    return (
+      <ErrorMessage
+        title="Something went wrong on our side"
+        body="The team has been notified. Retrying often works."
+        requestId={error.requestId}
+        actionLabel="Try again"
+        onAction={onRetry}
+      />
+    );
+  }
+
+  if (isConsoleClientError(error)) {
+    return (
+      <ErrorMessage
+        title="The console hit a problem"
+        body={error.displayMessage}
+        actionLabel={error.recoverable ? 'Try again' : undefined}
+        onAction={error.recoverable ? onRetry : undefined}
+      />
+    );
+  }
+
+  return <ErrorState error={error} title="Something went wrong" onRetry={onRetry} />;
+}
+
 interface ErrorMessageProps {
   title: string;
   body: string;

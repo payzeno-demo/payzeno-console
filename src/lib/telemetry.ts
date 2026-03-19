@@ -29,6 +29,11 @@ export function initTelemetry(): void {
   initialised = true;
 }
 
+/** Whether telemetry is actually reporting. `false` in local dev, where the DSN is empty. */
+export function isTelemetryEnabled(): boolean {
+  return initialised && runtimeConfig.sentryDsn !== null;
+}
+
 export interface ErrorContext {
   /** `X-Request-Id` of the failing call, when there was one. */
   requestId?: string;
@@ -57,3 +62,40 @@ export function trackEvent(name: string, data: Record<string, string | number | 
   });
 }
 
+/** HTTP breadcrumb. Method, path template and status — never the body, never the query. */
+export function addRequestBreadcrumb(
+  method: string,
+  pathTemplate: string,
+  status: number,
+  durationMs: number,
+): void {
+  if (!isTelemetryEnabled()) return;
+
+  Sentry.addBreadcrumb({
+    category: 'console.http',
+    level: status >= 500 ? 'error' : status >= 400 ? 'warning' : 'info',
+    message: `${method} ${pathTemplate}`,
+    data: { status, durationMs },
+  });
+}
+
+/**
+ * Associate the session with a user.
+ *
+ * Id and merchant only. `sendDefaultPii` is false and the email is deliberately not sent —
+ * dhotfix removed it in PAY-1811 and the review comment is the canonical statement of the
+ * rule.
+ */
+export function identifySession(userId: string, merchantId: string, role: string): void {
+  if (!isTelemetryEnabled()) return;
+
+  Sentry.setUser({ id: userId });
+  Sentry.setTag('merchant.id', merchantId);
+  Sentry.setTag('user.role', role);
+}
+
+/** Called on logout so the next session on a shared machine is not attributed to the last one. */
+export function clearSession(): void {
+  if (!isTelemetryEnabled()) return;
+  Sentry.setUser(null);
+}

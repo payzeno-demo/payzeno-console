@@ -63,10 +63,44 @@ describe('ApiClient defaults', () => {
 describe('ApiClient.get', () => {
   it('builds the versioned URL and returns the parsed envelope', async () => {
     const client = new ApiClient();
+    const page = await client.get<{ data: unknown[]; has_more: boolean }>('/charges');
+
+    expect(page.data).toHaveLength(3);
+    expect(page.has_more).toBe(false);
+  });
+
+  it('serialises query parameters and drops undefined ones', async () => {
+    const client = new ApiClient();
 
     await client.get('/charges', { limit: 25, status: 'captured', cursor: undefined });
 
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.url).toContain('limit=25');
+    expect(request?.url).toContain('status=captured');
+    expect(request?.url).not.toContain('cursor');
+  });
+
+  it('sends Accept, the pinned API version and a fresh request id on every call', async () => {
     const recorder = recordRequests();
+    const [first, second] = recorder.requests.slice(-2);
+    recorder.stop();
+
+    expect(first?.headers.get('Accept')).toBe('application/json');
+    expect(first?.headers.get(HEADER_API_VERSION)).toBe(API_VERSION);
+    expect(first?.headers.get(HEADER_REQUEST_ID)).toBeTruthy();
+    expect(second?.headers.get(HEADER_REQUEST_ID)).not.toBe(
+      first?.headers.get(HEADER_REQUEST_ID),
+    );
+  });
+
+  it('does not send a CSRF header on a read, even when the cookie is present', async () => {
+    setCsrfCookie('csrf-token-read');
+    const recorder = recordRequests();
+
+    await new ApiClient().get('/charges');
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 
@@ -77,6 +111,10 @@ describe('ApiClient.get', () => {
 
   it('attaches X-Payzeno-CSRF from the pz_csrf cookie on a mutating verb', async () => {
     setCsrfCookie('csrf-token-write');
+    const recorder = recordRequests();
+
+    await new ApiClient().post('/refunds', { charge_id: 'ch_1' }, 'idem-key-0002');
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 
@@ -120,6 +158,8 @@ describe('ApiClient error mapping', () => {
   ] as const)('maps %i onto its subclass', async (status, code, Expected) => {
     server.use(errorHandler('get', '/charges', status, code, 'synthetic'));
 
+    // 502 is retried by the transport; a zero-retry client keeps the assertion quick.
+    const client = new ApiClient({ retries: 0 });
     const thrown = await client.get('/charges').catch((err: unknown) => err);
 
     expect(thrown).toBeInstanceOf(Expected);
@@ -165,6 +205,34 @@ describe('ApiClient error mapping', () => {
       ),
     );
 
+    const thrown = (await new ApiClient({ retries: 0 })
+      .get('/charges')
+      .catch((err: unknown) => err)) as RateLimitedApiError;
+
+    expect(thrown.retryAfter).toBe(17);
+  });
+});
+
+describe('ApiClient transport retry', () => {
+  it('repeats an idempotent GET through a 503 and returns the eventual body', async () => {
+    const page = await new ApiClient().get<{ data: unknown[] }>('/charges');
+
+    expect(calls).toBe(2);
+    expect(page.data).toHaveLength(1);
+  });
+
+  it('gives up after `retries` attempts and surfaces the upstream error', async () => {
+    let calls = 0;
+    server.use(
+      http.get(url('/charges'), () => {
+        calls += 1;
+        return HttpResponse.json(
+          { error: { code: 'processor_unavailable', message: 'still down', request_id: 'r' } },
+          { status: 502 },
+        );
+      }),
+    );
+
     const thrown = await new ApiClient({ retries: 1 })
       .get('/charges')
       .catch((err: unknown) => err);
@@ -191,6 +259,32 @@ describe('ApiClient error mapping', () => {
   });
 
   it('reuses one idempotency key across the retries of a single attempt', async () => {
+    let calls = 0;
+
+    server.use(
+      http.post(url('/payouts'), ({ request }) => {
+        seen.push(request.headers.get(HEADER_IDEMPOTENCY_KEY));
+        calls += 1;
+        if (calls === 1) {
+          return HttpResponse.json(
+            { error: { code: 'processor_unavailable', message: 'x', request_id: 'r' } },
+            { status: 503 },
+          );
+        }
+        return HttpResponse.json({ ok: true }, { status: 201 });
+      }),
+    );
+
+    await new ApiClient().post('/payouts', { currency: 'GBP' }, 'attempt-key-42');
+
+    expect(calls).toBe(2);
+    expect(seen).toEqual(['attempt-key-42', 'attempt-key-42']);
+  });
+
+  it('turns a transport-level failure into an UpstreamUnavailableApiError', async () => {
+    server.use(http.get(url('/charges'), () => HttpResponse.error()));
+
     const client = new ApiClient();
+    const first = client.newAttempt();
   });
 });

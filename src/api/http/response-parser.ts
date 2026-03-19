@@ -22,3 +22,27 @@ export interface ParsedResponse<T> {
   replayed: boolean;
 }
 
+export interface ParsedError {
+  ok: false;
+  status: number;
+  requestId: string;
+  /** Null when the body was empty or not JSON — nginx 502 pages, for example. */
+  body: ApiError | null;
+  raw: string | undefined;
+}
+
+export type ParseResult<T> = ParsedResponse<T> | ParsedError;
+
+function tryParseJson(text: string | undefined): unknown {
+  if (text === undefined || text.trim().length === 0) return undefined;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+}
+
+export function parseResponse<T>(response: RawResponse): ParseResult<T> {
+  const requestId = readRequestId(response.headers);
+  const parsed = tryParseJson(response.text);
+

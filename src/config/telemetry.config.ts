@@ -48,6 +48,36 @@ const PAN_CANDIDATE = /\b(?:\d[ -]*?){13,19}\b/g;
  * mangled into `[redacted]` and the traces become useless, which is how the first version of
  * this file got reverted.
  */
+export function isLuhnValid(digits: string): boolean {
+  if (digits.length < 13 || digits.length > 19) return false;
+
+  let sum = 0;
+  let double = false;
+
+  for (let i = digits.length - 1; i >= 0; i -= 1) {
+    const char = digits[i];
+    if (char === undefined) return false;
+    let digit = char.charCodeAt(0) - 48;
+    if (digit < 0 || digit > 9) return false;
+    if (double) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
+    }
+    sum += digit;
+    double = !double;
+  }
+
+  return sum % 10 === 0;
+}
+
+function isDenylisted(key: string): boolean {
+  return DENYLISTED_FIELDS.includes(key.toLowerCase());
+}
+
+/**
+ * Deep-scrub an arbitrary value. Cycles are cut with a seen-set: Sentry contexts routinely
+ * carry React fibers, which are cyclic, and a naive walk blows the stack.
+ */
 export function scrubValue(value: unknown, seen: WeakSet<object> = new WeakSet()): unknown {
   if (typeof value === 'string') return scrubPan(value);
   if (value === null || typeof value !== 'object') return value;
@@ -71,6 +101,39 @@ export function scrubValue(value: unknown, seen: WeakSet<object> = new WeakSet()
  * Returning `null` discards the event; we only do that for events that carry a body we cannot
  * prove is clean.
  */
+export function beforeSend(event: ErrorEvent, _hint: EventHint): ErrorEvent | null {
+  if (event.request) {
+    // A body is never worth the risk. Keep method and URL only.
+    delete event.request.data;
+    delete event.request.cookies;
+    if (event.request.headers) {
+      event.request.headers = scrubValue(event.request.headers) as Record<string, string>;
+    }
+    if (typeof event.request.url === 'string') {
+      event.request.url = scrubPan(event.request.url);
+    }
+  }
+
+  if (event.extra) {
+    event.extra = scrubValue(event.extra) as Record<string, unknown>;
+  }
+  if (event.contexts) {
+    event.contexts = scrubValue(event.contexts) as NonNullable<ErrorEvent['contexts']>;
+  }
+  if (event.breadcrumbs) {
+    event.breadcrumbs = event.breadcrumbs.map((crumb) => ({
+      ...crumb,
+      message: typeof crumb.message === 'string' ? scrubPan(crumb.message) : crumb.message,
+      data: crumb.data ? (scrubValue(crumb.data) as Record<string, unknown>) : crumb.data,
+    }));
+  }
+  if (event.message) {
+    event.message = scrubPan(event.message);
+  }
+
+  return event;
+}
+
 /** Options handed to `Sentry.init()` by `lib/telemetry.ts::initTelemetry`. */
 export function sentryOptions(): BrowserOptions {
   return {
