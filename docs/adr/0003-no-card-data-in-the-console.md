@@ -20,3 +20,12 @@ reaching the browser console and — via a Sentry breadcrumb — Sentry.
 
 Scope is not a property of the field. It is a property of everything the field's bytes touch.
 
+## Alternatives considered
+
+**Keep collecting the PAN, redact it server-side.** This is what we were doing. Redaction is a
+control that fails open: it protects the paths someone remembered.
+
+**An iframe-based vault field.** Genuinely stronger — the PAN would never enter our origin at
+all, so even a compromised bundle could not read it. Rejected only on cost and a11y: the
+acquirer's hosted field could not be labelled or error-described the way the rest of our forms
+are. Revisit if the vendor ships an accessible one.

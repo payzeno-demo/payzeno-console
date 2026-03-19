@@ -28,3 +28,9 @@ export interface ParsedError {
   requestId: string;
   /** Null when the body was empty or not JSON — nginx 502 pages, for example. */
   body: ApiError | null;
+  raw: string | undefined;
+}
+
+export type ParseResult<T> = ParsedResponse<T> | ParsedError;
+
+function tryParseJson(text: string | undefined): unknown {
