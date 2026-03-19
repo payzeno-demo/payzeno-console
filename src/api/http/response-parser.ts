@@ -22,3 +22,9 @@ export interface ParsedResponse<T> {
   replayed: boolean;
 }
 
+export interface ParsedError {
+  ok: false;
+  status: number;
+  requestId: string;
+  /** Null when the body was empty or not JSON — nginx 502 pages, for example. */
+  body: ApiError | null;

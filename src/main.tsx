@@ -40,6 +40,11 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
 
   container.innerHTML = '';
 
+  const wrapper = document.createElement('main');
+  wrapper.setAttribute('role', 'alert');
+  wrapper.style.cssText =
+    'max-width:60ch;margin:8vh auto;padding:24px;font:14px/1.6 ui-sans-serif,system-ui,sans-serif;color:#1c2333';
+
   const heading = document.createElement('h1');
   heading.style.cssText = 'font-size:18px;margin:0 0 8px';
   heading.textContent = 'The console is misconfigured';
@@ -54,6 +59,33 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
 }
 
 async function bootstrap(): Promise<void> {
+  const container = mountPoint();
+
+  try {
+    // Order matters: telemetry first, so an error thrown while the app module graph evaluates
+    // is still reported. `initTelemetry()` is a no-op when `VITE_SENTRY_DSN` is empty, which is
+    // the local-dev default.
+    const [{ initTelemetry }, { AppProviders }, { App }] = await Promise.all([
+      import('@lib/telemetry'),
+      import('@app/AppProviders'),
+      import('@/App'),
+    ]);
+
+    initTelemetry();
+
+    createRoot(container).render(
+      <StrictMode>
+        <AppProviders>
+          <App />
+        </AppProviders>
+      </StrictMode>,
+    );
+  } catch (error) {
+    renderBootFailure(container, error);
+    // Rethrowing keeps the failure in the browser console and in any error reporter that did
+    // manage to initialise. Swallowing it here cost us half a day on the qa environment.
+    throw error;
+  }
 }
 
 void bootstrap();

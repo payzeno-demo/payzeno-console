@@ -62,11 +62,22 @@ describe('ApiClient defaults', () => {
 
 describe('ApiClient.get', () => {
   it('builds the versioned URL and returns the parsed envelope', async () => {
+    const page = await client.get<{ data: unknown[]; has_more: boolean }>('/charges');
+
+    expect(page.data).toHaveLength(3);
+    expect(page.has_more).toBe(false);
+  });
+
+  it('serialises query parameters and drops undefined ones', async () => {
     const client = new ApiClient();
 
     await client.get('/charges', { limit: 25, status: 'captured', cursor: undefined });
 
     const recorder = recordRequests();
+    const recorder = recordRequests();
+
+    await new ApiClient().get('/charges');
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 
@@ -165,6 +176,16 @@ describe('ApiClient error mapping', () => {
       ),
     );
 
+    const thrown = (await new ApiClient({ retries: 0 })
+      .get('/charges')
+      .catch((err: unknown) => err)) as RateLimitedApiError;
+
+    expect(thrown.retryAfter).toBe(17);
+  });
+});
+
+describe('ApiClient transport retry', () => {
+  it('repeats an idempotent GET through a 503 and returns the eventual body', async () => {
     const thrown = await new ApiClient({ retries: 1 })
       .get('/charges')
       .catch((err: unknown) => err);
@@ -192,5 +213,6 @@ describe('ApiClient error mapping', () => {
 
   it('reuses one idempotency key across the retries of a single attempt', async () => {
     const client = new ApiClient();
+    const first = client.newAttempt();
   });
 });
