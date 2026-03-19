@@ -29,6 +29,11 @@ export function initTelemetry(): void {
   initialised = true;
 }
 
+/** Whether telemetry is actually reporting. `false` in local dev, where the DSN is empty. */
+export function isTelemetryEnabled(): boolean {
+  return initialised && runtimeConfig.sentryDsn !== null;
+}
+
 export interface ErrorContext {
   /** `X-Request-Id` of the failing call, when there was one. */
   requestId?: string;
@@ -89,3 +94,8 @@ export function identifySession(userId: string, merchantId: string, role: string
   Sentry.setTag('user.role', role);
 }
 
+/** Called on logout so the next session on a shared machine is not attributed to the last one. */
+export function clearSession(): void {
+  if (!isTelemetryEnabled()) return;
+  Sentry.setUser(null);
+}
