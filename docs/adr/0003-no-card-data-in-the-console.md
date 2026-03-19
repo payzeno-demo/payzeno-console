@@ -20,6 +20,38 @@ reaching the browser console and — via a Sentry breadcrumb — Sentry.
 
 Scope is not a property of the field. It is a property of everything the field's bytes touch.
 
+## Decision
+
+**Card data never transits Payzeno. The console is out of PCI scope and stays there.**
+
+1. **`CardNumberInput.tsx` is deleted.** Not deprecated, not flag-gated. Its replacement is
+   `src/components/form/TokenizedCardInput.tsx`, which POSTs the PAN **directly** from the
+   browser to the vault at `VITE_VAULT_PUBLIC_URL` (`POST /public/tokens`) and receives
+   a `pmt_…` `PaymentMethodToken`. Only the token is handed to `onToken`, and only the token
+   ever reaches payzeno-api.
+
+   That `fetch` is the one network call in the repo that does not go through `ApiClient`, and
+   that is the point: routing it through the client would put the card number into the CSRF,
+   idempotency, retry and breadcrumb pipeline, which is precisely the surface this ADR removes.
+
+2. **The same rule applies to bank details.**
+   `src/features/settings/components/AddBankAccountDialog.tsx` sends `bank_account_token`
+   (`bat_…`), not `account_number`. `BankAccountsEndpoint.create` has no field for an account
+   number and never will.
+
+3. **No request or response bodies in logs, breadcrumbs or Sentry extras. Ever.**
+   - `src/api/http/response-parser.ts` carries the rule in a comment because that is where it
+     was broken.
+   - `src/lib/telemetry.ts` accepts a small, typed context object. It does not accept a body.
+   - `src/config/telemetry.config.ts` implements `beforeSend`: it drops bodies, scrubs every
+     key in `DENYLISTED_FIELDS` at any depth, and Luhn-checks any 13-19 digit run in free text
+     before letting it through. The denylist mirrors payzeno-api's `RedactionInterceptor`
+     (`domain-model.md` §11.2). **If the two drift, the console becomes the leak.**
+
+4. **`CODEOWNERS` enforces it.** `/src/components/form/TokenizedCardInput.tsx`,
+   `/src/api/http/response-parser.ts`, `/src/lib/telemetry.ts`, `/src/config/` and this file
+   require `@dhotfix`. That list is not negotiable and is the first thing `README.md` says.
+
 ## Consequences
 
 - The console cannot re-render a saved card. It has a `CardSummary` (brand, last four, expiry)
