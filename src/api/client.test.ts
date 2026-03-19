@@ -62,6 +62,7 @@ describe('ApiClient defaults', () => {
 
 describe('ApiClient.get', () => {
   it('builds the versioned URL and returns the parsed envelope', async () => {
+    const client = new ApiClient();
     const page = await client.get<{ data: unknown[]; has_more: boolean }>('/charges');
 
     expect(page.data).toHaveLength(3);
@@ -83,6 +84,19 @@ describe('ApiClient.get', () => {
 
   it('sends Accept, the pinned API version and a fresh request id on every call', async () => {
     const recorder = recordRequests();
+    const [first, second] = recorder.requests.slice(-2);
+    recorder.stop();
+
+    expect(first?.headers.get('Accept')).toBe('application/json');
+    expect(first?.headers.get(HEADER_API_VERSION)).toBe(API_VERSION);
+    expect(first?.headers.get(HEADER_REQUEST_ID)).toBeTruthy();
+    expect(second?.headers.get(HEADER_REQUEST_ID)).not.toBe(
+      first?.headers.get(HEADER_REQUEST_ID),
+    );
+  });
+
+  it('does not send a CSRF header on a read, even when the cookie is present', async () => {
+    setCsrfCookie('csrf-token-read');
     const recorder = recordRequests();
 
     await new ApiClient().get('/charges');
@@ -208,6 +222,17 @@ describe('ApiClient transport retry', () => {
   });
 
   it('gives up after `retries` attempts and surfaces the upstream error', async () => {
+    let calls = 0;
+    server.use(
+      http.get(url('/charges'), () => {
+        calls += 1;
+        return HttpResponse.json(
+          { error: { code: 'processor_unavailable', message: 'still down', request_id: 'r' } },
+          { status: 502 },
+        );
+      }),
+    );
+
     const thrown = await new ApiClient({ retries: 1 })
       .get('/charges')
       .catch((err: unknown) => err);
@@ -234,6 +259,31 @@ describe('ApiClient transport retry', () => {
   });
 
   it('reuses one idempotency key across the retries of a single attempt', async () => {
+    let calls = 0;
+
+    server.use(
+      http.post(url('/payouts'), ({ request }) => {
+        seen.push(request.headers.get(HEADER_IDEMPOTENCY_KEY));
+        calls += 1;
+        if (calls === 1) {
+          return HttpResponse.json(
+            { error: { code: 'processor_unavailable', message: 'x', request_id: 'r' } },
+            { status: 503 },
+          );
+        }
+        return HttpResponse.json({ ok: true }, { status: 201 });
+      }),
+    );
+
+    await new ApiClient().post('/payouts', { currency: 'GBP' }, 'attempt-key-42');
+
+    expect(calls).toBe(2);
+    expect(seen).toEqual(['attempt-key-42', 'attempt-key-42']);
+  });
+
+  it('turns a transport-level failure into an UpstreamUnavailableApiError', async () => {
+    server.use(http.get(url('/charges'), () => HttpResponse.error()));
+
     const client = new ApiClient();
     const first = client.newAttempt();
   });

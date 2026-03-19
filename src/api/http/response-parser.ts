@@ -40,3 +40,9 @@ function tryParseJson(text: string | undefined): unknown {
   } catch {
     return undefined;
   }
+}
+
+export function parseResponse<T>(response: RawResponse): ParseResult<T> {
+  const requestId = readRequestId(response.headers);
+  const parsed = tryParseJson(response.text);
+
