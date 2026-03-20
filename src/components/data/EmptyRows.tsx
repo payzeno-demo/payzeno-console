@@ -39,3 +39,11 @@ function EmptyMessage({ title, body, action, children }: Omit<EmptyRowsProps, 'c
   if (children) return <>{children}</>;
 
   return (
+    <div
+      className={pz('empty-rows')}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: space[2],
+        padding: `${space[10]} ${space[4]}`,

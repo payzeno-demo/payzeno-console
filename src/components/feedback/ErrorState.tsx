@@ -41,3 +41,12 @@ export function explain(error: unknown): string {
   if (error instanceof ForbiddenError) {
     return 'Your role does not include access to this. Ask an account owner to change it.';
   }
+  if (error instanceof UpstreamUnavailableApiError) {
+    return 'One of our upstream providers is not responding. This usually clears in a minute.';
+  }
+  if (isConsoleApiError(error)) {
+    if (error.status >= 500) return 'Something went wrong on our side. Retrying often works.';
+    return error.message;
+  }
+  if (isConsoleClientError(error)) {
+    return error.displayMessage;
