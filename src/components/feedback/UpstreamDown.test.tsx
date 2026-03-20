@@ -25,6 +25,12 @@ describe('the message', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows the request id when there is one to quote at support', () => {
+    renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} requestId="req_502_abc" />);
+
+    expect(screen.getByText('Reference req_502_abc')).toBeInTheDocument();
+  });
+
   it('switches the status line to "Retrying…" once pressed', async () => {
     const { user } = renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} />);
 
@@ -35,6 +41,31 @@ describe('the message', () => {
 });
 
 describe('the automatic retry', () => {
+  it('counts down from the interval it was given', () => {
+    vi.useFakeTimers();
+    renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={10} />);
+
+    expect(screen.getByText('Retrying in 10s')).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(3_000);
+    });
+
+    expect(screen.getByText('Retrying in 7s')).toBeInTheDocument();
+  });
+
+  it('fires onRetry exactly once when the countdown reaches zero', () => {
+    vi.useFakeTimers();
+    const onRetry = vi.fn();
+    renderBare(<UpstreamDown onRetry={onRetry} autoRetryAfter={3} />);
+
+    act(() => {
+      vi.advanceTimersByTime(10_000);
+    });
+
+    expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
   it('announces the wait politely without spamming the live region every second', () => {
     vi.useFakeTimers();
     renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={10} />);

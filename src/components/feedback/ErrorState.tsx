@@ -33,3 +33,11 @@ export interface ErrorStateProps {
   action?: ReactNode;
 }
 
+/**
+ * One sentence explaining the failure. Never `error.message` for a 5xx: those are written for
+ * engineers and say things like "upstream connect error or disconnect/reset before headers".
+ */
+export function explain(error: unknown): string {
+  if (error instanceof ForbiddenError) {
+    return 'Your role does not include access to this. Ask an account owner to change it.';
+  }

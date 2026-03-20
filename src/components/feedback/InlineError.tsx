@@ -45,3 +45,9 @@ export function InlineError({ id, children, severity = 'alert', tone = 'danger' 
         color: tone === 'danger' ? color.danger : color.warning,
       }}
     >
+      <span aria-hidden="true">{tone === 'danger' ? '⚠' : 'ⓘ'}</span>
+      <span>{children}</span>
+    </p>
+  );
+}
+
