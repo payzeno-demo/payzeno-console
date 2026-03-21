@@ -50,3 +50,12 @@ export function explain(error: unknown): string {
   }
   if (isConsoleClientError(error)) {
     return error.displayMessage;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'An unexpected problem stopped this from loading.';
+}
+
+/** Correlation id, when there is one. Support asks for it every single time. */
+function referenceOf(error: unknown): string | null {

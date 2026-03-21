@@ -21,3 +21,50 @@ export interface UpstreamDownProps {
   onRetry: () => void;
   /** Seconds before the automatic retry. Set to 0 to disable it. */
   autoRetryAfter?: number;
+  requestId?: string;
+  /** Which upstream, when we know: "the ledger", "Worldflow". */
+  upstream?: string;
+}
+
+export function UpstreamDown({
+  onRetry,
+  autoRetryAfter = 10,
+  requestId,
+  upstream,
+}: UpstreamDownProps) {
+  const [remaining, setRemaining] = useState(autoRetryAfter);
+  const [retrying, setRetrying] = useState(false);
+
+  useEffect(() => {
+    if (autoRetryAfter <= 0) return undefined;
+
+    const timer = setInterval(() => {
+      setRemaining((current) => (current <= 1 ? 0 : current - 1));
+    }, 1_000);
+
+    return () => clearInterval(timer);
+  }, [autoRetryAfter]);
+
+  useEffect(() => {
+    if (autoRetryAfter <= 0 || remaining > 0 || retrying) return;
+    setRetrying(true);
+    onRetry();
+  }, [autoRetryAfter, remaining, retrying, onRetry]);
+
+  return (
+    <section
+      aria-labelledby="upstream-down-heading"
+      className={pz('upstream-down')}
+      style={{
+        display: 'grid',
+        gap: space[3],
+        maxWidth: '60ch',
+        padding: space[6],
+        fontFamily: font.family,
+        color: color.textPrimary,
+        background: color.infoSubtle,
+        border: `1px solid ${color.info}`,
+        borderRadius: radius.lg,
+      }}
+    >
+      <h2
