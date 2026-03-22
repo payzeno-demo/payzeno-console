@@ -59,3 +59,12 @@ export function explain(error: unknown): string {
 
 /** Correlation id, when there is one. Support asks for it every single time. */
 function referenceOf(error: unknown): string | null {
+  return error instanceof ConsoleApiError ? error.requestId : null;
+}
+
+export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
+  const reference = referenceOf(error);
+  const retryable = onRetry !== undefined && !(error instanceof ForbiddenError);
+
+  return (
+    <div
