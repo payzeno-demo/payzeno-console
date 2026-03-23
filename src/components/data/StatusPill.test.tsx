@@ -76,6 +76,13 @@ describe('toneForStatus', () => {
 });
 
 describe('rendering', () => {
+  it('labelises the status rather than printing the wire value', () => {
+    renderBare(<StatusPill status="partially_reconciled" />);
+
+    expect(screen.getByText('Partially Reconciled')).toBeInTheDocument();
+    expect(screen.queryByText('partially_reconciled')).not.toBeInTheDocument();
+  });
+
   it('prefixes the pill for a screen reader, so "Captured" is announced as a status', () => {
     renderBare(<StatusPill status="captured" />);
 

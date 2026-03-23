@@ -58,6 +58,18 @@ describe('the request it sends', () => {
     expect(request?.url).not.toContain('cursor=');
   });
 
+  it('adds the status filter when the URL carries one', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<ChargesPage />, { route: '/charges?status=settled' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('status=settled'))).toBe(
+        true,
+      );
+    });
+    recorder.stop();
+  });
+
   it('adds the cursor when the URL carries one', async () => {
     const recorder = recordRequests();
     renderWithProviders(<ChargesPage />, { route: '/charges?cursor=cur_two' });
