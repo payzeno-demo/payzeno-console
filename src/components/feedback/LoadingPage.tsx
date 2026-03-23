@@ -63,3 +63,19 @@ export function LoadingPage({ label, variant = 'skeleton', delayMs = 200 }: Load
           {/* the card grid a detail page usually opens with */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: space[4] }}>
             <Skeleton height="88px" />
+            <Skeleton height="88px" />
+            <Skeleton height="88px" />
+          </div>
+
+          {/* the detail list underneath it */}
+          <div style={{ display: 'grid', gap: space[2] }}>
+            <Skeleton width="70%" height="14px" />
+            <Skeleton width="55%" height="14px" />
+            <Skeleton width="85%" height="14px" />
+            <Skeleton width="40%" height="14px" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

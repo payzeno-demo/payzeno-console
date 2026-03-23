@@ -68,3 +68,11 @@ export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
 
   return (
     <div
+      role="status"
+      className={pz('error-state')}
+      style={{
+        display: 'grid',
+        gap: space[3],
+        padding: space[6],
+        fontFamily: font.family,
+        color: color.textPrimary,
