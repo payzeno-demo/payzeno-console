@@ -47,3 +47,7 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
         <IdCell value={row.id} />
       </Link>
     ),
+    exportValue: (row) => row.id,
+    width: '18rem',
+  },
+  {
