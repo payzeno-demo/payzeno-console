@@ -132,3 +132,15 @@ export function ChargeDetailPage() {
 
           <dt>Risk score</dt>
           <dd>{charge.risk_score}</dd>
+        </dl>
+      </Card>
+
+      <Card as="section" aria-label="Processing references">
+        <dl>
+          <dt>Payment</dt>
+          <dd>
+            <Link to={ROUTES.payments.detail(charge.payment_intent_id)}>
+              <IdCell value={charge.payment_intent_id} />
+            </Link>
+          </dd>
+

@@ -43,3 +43,7 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
     id: 'id',
     header: 'Payment',
     cell: (row) => (
+      <Link to={ROUTES.payments.detail(row.id)}>
+        <IdCell value={row.id} />
+      </Link>
+    ),
