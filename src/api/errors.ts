@@ -44,3 +44,7 @@ export class ConsoleApiError extends PayzenoError {
   fieldErrorMap(): Record<string, string> {
     const out: Record<string, string> = {};
     for (const fe of this.fieldErrors) out[fe.path] = fe.message;
+    return out;
+  }
+
+  /** True when a retry of the same request could plausibly succeed. */
