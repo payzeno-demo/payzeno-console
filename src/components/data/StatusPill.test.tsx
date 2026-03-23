@@ -76,6 +76,12 @@ describe('toneForStatus', () => {
 });
 
 describe('rendering', () => {
+  it('prefixes the pill for a screen reader, so "Captured" is announced as a status', () => {
+    renderBare(<StatusPill status="captured" />);
+
+    expect(screen.getByText('Status:')).toBeInTheDocument();
+  });
+
   it('uppercases known acronyms through `labelise`', () => {
     renderBare(<StatusPill status={'sepa_pending' as AnyStatus} />);
 
