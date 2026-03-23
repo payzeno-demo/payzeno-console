@@ -120,3 +120,15 @@ export function ChargeDetailPage() {
           <dt>3-D Secure</dt>
           <dd>
             {charge.three_d_secure
+              ? `${charge.three_d_secure.result} (${charge.three_d_secure.authentication_flow})`
+              : 'Not authenticated'}
+          </dd>
+
+          <dt>Liability</dt>
+          <dd>{liabilityShifted ? 'Shifted to the issuer' : 'Yours'}</dd>
+
+          <dt>SCA exemption</dt>
+          <dd>{charge.sca_exemption ? humanise(charge.sca_exemption) : '—'}</dd>
+
+          <dt>Risk score</dt>
+          <dd>{charge.risk_score}</dd>
