@@ -90,6 +90,11 @@ describe('rendering', () => {
 });
 
 describe('statusExportValue', () => {
+  it('exports the raw wire value, not the human label', () => {
+    expect(statusExportValue('partially_reconciled')).toBe('partially_reconciled');
+    expect(statusExportValue('needs_response')).toBe('needs_response');
+  });
+
   it('round-trips through toneForStatus without losing the status', () => {
     const status: AnyStatus = 'variance_exceeded';
 

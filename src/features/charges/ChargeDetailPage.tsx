@@ -96,3 +96,27 @@ export function ChargeDetailPage() {
           <dd>
             <MoneyCell amountMinor={charge.amount_minor} currency={charge.currency} />
           </dd>
+
+          <dt>Captured</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.captured_amount_minor} currency={charge.currency} />
+          </dd>
+
+          <dt>Refunded</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.refunded_amount_minor} currency={charge.currency} />
+          </dd>
+
+          <dt>Refundable</dt>
+          <dd>{formatMinor(refundableMinor, charge.currency)}</dd>
+        </dl>
+      </Card>
+
+      <Card as="section" aria-label="Card and authentication">
+        <dl>
+          <dt>Card</dt>
+          <dd>{card ? <CardBrandCell card={card} /> : '—'}</dd>
+
+          <dt>3-D Secure</dt>
+          <dd>
+            {charge.three_d_secure

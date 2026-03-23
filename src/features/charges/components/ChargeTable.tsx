@@ -44,3 +44,15 @@ export function ChargeTable({
             title="No charges match"
             body="A charge appears once a payment intent is authorised."
           />
+        }
+      />
+
+      <DataTablePagination
+        hasMore={hasMore}
+        onNext={() => onCursorChange(nextCursor)}
+        onReset={() => onCursorChange(null)}
+        isBusy={isLoading}
+      />
+    </>
+  );
+}
