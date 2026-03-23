@@ -96,3 +96,63 @@ export function ChargeDetailPage() {
           <dd>
             <MoneyCell amountMinor={charge.amount_minor} currency={charge.currency} />
           </dd>
+
+          <dt>Captured</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.captured_amount_minor} currency={charge.currency} />
+          </dd>
+
+          <dt>Refunded</dt>
+          <dd>
+            <MoneyCell amountMinor={charge.refunded_amount_minor} currency={charge.currency} />
+          </dd>
+
+          <dt>Refundable</dt>
+          <dd>{formatMinor(refundableMinor, charge.currency)}</dd>
+        </dl>
+      </Card>
+
+      <Card as="section" aria-label="Card and authentication">
+        <dl>
+          <dt>Card</dt>
+          <dd>{card ? <CardBrandCell card={card} /> : '—'}</dd>
+
+          <dt>3-D Secure</dt>
+          <dd>
+            {charge.three_d_secure
+              ? `${charge.three_d_secure.result} (${charge.three_d_secure.authentication_flow})`
+              : 'Not authenticated'}
+          </dd>
+
+          <dt>Liability</dt>
+          <dd>{liabilityShifted ? 'Shifted to the issuer' : 'Yours'}</dd>
+
+          <dt>SCA exemption</dt>
+          <dd>{charge.sca_exemption ? humanise(charge.sca_exemption) : '—'}</dd>
+
+          <dt>Risk score</dt>
+          <dd>{charge.risk_score}</dd>
+        </dl>
+      </Card>
+
+      <Card as="section" aria-label="Processing references">
+        <dl>
+          <dt>Payment</dt>
+          <dd>
+            <Link to={ROUTES.payments.detail(charge.payment_intent_id)}>
+              <IdCell value={charge.payment_intent_id} />
+            </Link>
+          </dd>
+
+          <dt>Authorization code</dt>
+          <dd>{charge.authorization_code ?? '—'}</dd>
+
+          <dt>Network transaction</dt>
+          <dd>{charge.network_transaction_id ?? '—'}</dd>
+
+          <dt>Processor reference</dt>
+          <dd>{charge.processor_reference ?? '—'}</dd>
+
+          <dt>Settlement batch</dt>
+          <dd>
+            {charge.settlement_batch_id ? (

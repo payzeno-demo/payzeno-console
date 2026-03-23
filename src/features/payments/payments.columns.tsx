@@ -43,3 +43,16 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
     id: 'id',
     header: 'Payment',
     cell: (row) => (
+      <Link to={ROUTES.payments.detail(row.id)}>
+        <IdCell value={row.id} />
+      </Link>
+    ),
+    exportValue: (row) => row.id,
+    width: '18rem',
+  },
+  {
+    id: 'amount_minor',
+    header: 'Amount',
+    align: 'end',
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),

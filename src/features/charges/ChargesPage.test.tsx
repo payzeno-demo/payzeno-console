@@ -42,6 +42,34 @@ describe('the page', () => {
 });
 
 describe('the request it sends', () => {
+  it('asks for the default page size and nothing else by default', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<ChargesPage />, { route: '/charges' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('/v1/charges'))).toBe(true);
+    });
+
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/v1/charges'));
+    recorder.stop();
+
+    expect(request?.url).toContain(`limit=${DEFAULT_PAGE_SIZE}`);
+    expect(request?.url).not.toContain('status=');
+    expect(request?.url).not.toContain('cursor=');
+  });
+
+  it('adds the status filter when the URL carries one', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<ChargesPage />, { route: '/charges?status=settled' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('status=settled'))).toBe(
+        true,
+      );
+    });
+    recorder.stop();
+  });
+
   it('adds the cursor when the URL carries one', async () => {
     const recorder = recordRequests();
     renderWithProviders(<ChargesPage />, { route: '/charges?cursor=cur_two' });

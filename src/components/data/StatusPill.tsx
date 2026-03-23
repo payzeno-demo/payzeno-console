@@ -90,3 +90,9 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   draft: 'neutral',
   uncollectible: 'danger',
   void: 'neutral',
+};
+
+export type AnyStatus =
+  | PaymentIntentStatus
+  | ChargeStatus
+  | RefundStatus
