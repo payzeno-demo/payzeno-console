@@ -33,3 +33,38 @@ export interface ErrorStateProps {
   action?: ReactNode;
 }
 
+/**
+ * One sentence explaining the failure. Never `error.message` for a 5xx: those are written for
+ * engineers and say things like "upstream connect error or disconnect/reset before headers".
+ */
+export function explain(error: unknown): string {
+  if (error instanceof ForbiddenError) {
+    return 'Your role does not include access to this. Ask an account owner to change it.';
+  }
+  if (error instanceof UpstreamUnavailableApiError) {
+    return 'One of our upstream providers is not responding. This usually clears in a minute.';
+  }
+  if (isConsoleApiError(error)) {
+    if (error.status >= 500) return 'Something went wrong on our side. Retrying often works.';
+    return error.message;
+  }
+  if (isConsoleClientError(error)) {
+    return error.displayMessage;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'An unexpected problem stopped this from loading.';
+}
+
+/** Correlation id, when there is one. Support asks for it every single time. */
+function referenceOf(error: unknown): string | null {
+  return error instanceof ConsoleApiError ? error.requestId : null;
+}
+
+export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
+  const reference = referenceOf(error);
+  const retryable = onRetry !== undefined && !(error instanceof ForbiddenError);
+
+  return (
+    <div

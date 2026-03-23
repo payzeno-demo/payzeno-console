@@ -31,3 +31,19 @@ export interface EmptyRowsProps {
   body?: string;
   /** Shape 2: a call to action — "Create your first payout". */
   action?: ReactNode;
+  children?: ReactNode;
+}
+
+/** The message block, without any table markup around it. */
+function EmptyMessage({ title, body, action, children }: Omit<EmptyRowsProps, 'columnCount'>) {
+  if (children) return <>{children}</>;
+
+  return (
+    <div
+      className={pz('empty-rows')}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: space[2],
+        padding: `${space[10]} ${space[4]}`,

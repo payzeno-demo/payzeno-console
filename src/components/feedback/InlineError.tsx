@@ -45,3 +45,16 @@ export function InlineError({ id, children, severity = 'alert', tone = 'danger' 
         color: tone === 'danger' ? color.danger : color.warning,
       }}
     >
+      <span aria-hidden="true">{tone === 'danger' ? '⚠' : 'ⓘ'}</span>
+      <span>{children}</span>
+    </p>
+  );
+}
+
+/**
+ * Group of messages for one field — 422 responses can carry several `field_errors` against the
+ * same path. Rendered as a list so the count is announced.
+ */
+export function InlineErrorList({ id, messages }: { id: string; messages: ReadonlyArray<string> }) {
+  if (messages.length === 0) return null;
+  if (messages.length === 1) return <InlineError id={id}>{messages[0]}</InlineError>;
