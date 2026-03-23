@@ -51,3 +51,8 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
     width: '18rem',
   },
   {
+    id: 'amount_minor',
+    header: 'Amount',
+    align: 'end',
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),

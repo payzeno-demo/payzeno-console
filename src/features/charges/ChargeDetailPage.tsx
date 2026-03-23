@@ -144,3 +144,15 @@ export function ChargeDetailPage() {
             </Link>
           </dd>
 
+          <dt>Authorization code</dt>
+          <dd>{charge.authorization_code ?? '—'}</dd>
+
+          <dt>Network transaction</dt>
+          <dd>{charge.network_transaction_id ?? '—'}</dd>
+
+          <dt>Processor reference</dt>
+          <dd>{charge.processor_reference ?? '—'}</dd>
+
+          <dt>Settlement batch</dt>
+          <dd>
+            {charge.settlement_batch_id ? (
