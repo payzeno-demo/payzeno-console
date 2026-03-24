@@ -92,3 +92,15 @@ export function DevelopersPage() {
               placeholder="Checkout service"
               value={keyName}
               disabled={!canWrite}
+              aria-describedby={fieldErrors.name ? 'key-name-error' : undefined}
+              onChange={(event) => setKeyName(event.target.value)}
+            />
+            {fieldErrors.name ? (
+              <InlineError id="key-name-error">{fieldErrors.name}</InlineError>
+            ) : null}
+
+            <Select
+              id="key-mode"
+              label="Mode"
+              value={keyMode}
+              onValueChange={(next) => setKeyMode(next as ApiKeyMode)}

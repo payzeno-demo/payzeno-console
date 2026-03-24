@@ -25,3 +25,9 @@ import { createApiKeyMutation } from './developers.queries';
 export interface CreateApiKeyArgs {
   name: string;
   mode: ApiKeyMode;
+  scopes?: ApiKeyScope[];
+}
+
+export interface UseCreateApiKeyResult {
+  createApiKey: (args: CreateApiKeyArgs) => void;
+  isPending: boolean;

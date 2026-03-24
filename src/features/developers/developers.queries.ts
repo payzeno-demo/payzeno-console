@@ -29,3 +29,8 @@ export function apiKeysQuery(e: EndpointRegistry, q?: ListQuery) {
     queryKey: queryKeys.apiKeys.list(),
     queryFn: () => e.apiKeys.list(q),
     staleTime: 60_000,
+  });
+}
+
+export function apiKeyQuery(e: EndpointRegistry, apiKeyId: string) {
+  return queryOptions<ApiKey>({
