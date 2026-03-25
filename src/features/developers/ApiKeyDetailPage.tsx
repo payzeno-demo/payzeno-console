@@ -45,3 +45,10 @@ export function ApiKeyDetailPage() {
   if (isLoading || !apiKey) {
     return <LoadingPage label="Loading API key" />;
   }
+
+  return (
+    <PageContainer as="main">
+      <PageHeader title={apiKey.name} description={displayLabel}>
+        <StatusPill status={apiKey.mode} label={isLive ? 'Live' : 'Test'} />
+        {!isRevoked && can('developers:write') ? (
+          <Button
