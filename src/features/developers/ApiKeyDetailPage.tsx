@@ -38,3 +38,17 @@ export function ApiKeyDetailPage() {
 
   if (isMissing) {
     return <NotFound title="No such key" body="It may have been created on another account." />;
+  }
+  if (error) {
+    return <ErrorState error={error} title="We could not load this key" />;
+  }
+  if (isLoading || !apiKey) {
+    return <LoadingPage label="Loading API key" />;
+  }
+
+  return (
+    <PageContainer as="main">
+      <PageHeader title={apiKey.name} description={displayLabel}>
+        <StatusPill status={apiKey.mode} label={isLive ? 'Live' : 'Test'} />
+        {!isRevoked && can('developers:write') ? (
+          <Button

@@ -31,3 +31,8 @@ export interface UseApiKeysResult {
 function toRow(key: ApiKey): ApiKeyRow {
   return { ...key, _selected: false };
 }
+
+export function useApiKeys(): UseApiKeysResult {
+  const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
