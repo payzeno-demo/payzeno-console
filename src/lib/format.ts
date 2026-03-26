@@ -76,3 +76,9 @@ export function labelise(value: string): string {
     )
     .join(' ');
 }
+
+/** `•••• 4242`. The only representation of a card or bank account this repo ever renders. */
+export function maskLastFour(lastFour: string | null | undefined): string {
+  if (!lastFour) return '••••';
+  return `•••• ${lastFour}`;
+}
