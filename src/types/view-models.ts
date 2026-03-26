@@ -65,3 +65,7 @@ export interface DisputeRow extends Dispute, RowSelection {
 
 export interface PayoutRow extends Payout, RowSelection {
   /** Resolved from `bank_account_id` against the merchant's accounts. */
+  _bankLabel: string;
+}
+
+export interface SettlementRow extends MerchantSettlementBatch, RowSelection {
