@@ -21,6 +21,10 @@ describe('the locale', () => {
     expect(formatter('de-DE').current.locale).toBe('de-DE');
   });
 
+  it('falls back to the browser locale when given none', () => {
+    expect(formatter().current.locale).toBeTruthy();
+  });
+
   it('produces different output for different locales', () => {
     const en = formatter('en-GB').current.format(money(123_456, 'GBP'));
     const de = formatter('de-DE').current.format(money(123_456, 'GBP'));
@@ -48,6 +52,13 @@ describe('formatMinor', () => {
     expect(result.formatMinor(12_500, 'GBP')).toBe(result.format(money(12_500, 'GBP')));
   });
 
+  it('does not divide JPY by a hundred', () => {
+    const rendered = formatter('en-GB').current.formatMinor(1_200, 'JPY');
+
+    expect(rendered).toContain('1,200');
+    expect(rendered).not.toContain('12.00');
+  });
+
   it('keeps a two-decimal currency at two decimals', () => {
     expect(formatter('en-GB').current.formatMinor(1_200, 'GBP')).toContain('12.00');
   });
@@ -70,4 +81,12 @@ describe('formatMinor', () => {
 });
 
 describe('formatCompact', () => {
+  it('returns the same object across renders, so a memoised cell does not re-render', () => {
+    const { result, rerender } = renderHookWithProviders(() => useMoneyFormat('en-GB'));
+    const first = result.current;
+
+    rerender();
+
+    expect(result.current).toBe(first);
+  });
 });

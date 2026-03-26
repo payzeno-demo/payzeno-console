@@ -48,3 +48,8 @@ export class ConsoleApiError extends PayzenoError {
   }
 
   /** True when a retry of the same request could plausibly succeed. */
+  isTransient(): boolean {
+    return this.status === 429 || this.status === 502 || this.status >= 503;
+  }
+}
+
