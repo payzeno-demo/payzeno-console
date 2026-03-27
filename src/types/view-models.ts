@@ -65,3 +65,12 @@ export interface DisputeRow extends Dispute, RowSelection {
 
 export interface PayoutRow extends Payout, RowSelection {
   /** Resolved from `bank_account_id` against the merchant's accounts. */
+  _bankLabel: string;
+}
+
+export interface SettlementRow extends MerchantSettlementBatch, RowSelection {
+  /**
+   * Only a `funded` batch has actually released money. Everything before that is an
+   * accounting position, and merchants read the two as the same thing.
+   */
+  _isFunded: boolean;

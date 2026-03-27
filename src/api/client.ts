@@ -58,3 +58,8 @@ export class ApiClient implements HttpTransport {
       attempt += 1;
       try {
         const raw = await fetchTransport(built, { timeoutMs });
+        const parsed = parseResponse<TRes>(raw);
+
+        if (parsed.ok) {
+          return parsed.data;
+        }

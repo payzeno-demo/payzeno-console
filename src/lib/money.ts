@@ -73,3 +73,7 @@ export function isNegative(value: Money): boolean {
 export function formatSigned(value: Money, locale?: string): string {
   const formatted = formatMoney(money(Math.abs(value.amount_minor), value.currency), locale);
   return value.amount_minor < 0 ? `−${formatted}` : `+${formatted}`;
+}
+
+/**
+ * Compact form for chart axes and dense cells: `$12.4k`, `¥1.2M`.

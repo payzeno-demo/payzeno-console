@@ -63,3 +63,7 @@ export function MoneyCell({
               ? color.textMuted
               : color.textPrimary,
       }}
+    >
+      {text}
+    </span>
+  );
