@@ -82,3 +82,9 @@ export function maskLastFour(lastFour: string | null | undefined): string {
   if (!lastFour) return '••••';
   return `•••• ${lastFour}`;
 }
+
+/** Clamp a long free-text field (dispute evidence, failure messages) for a table cell. */
+export function ellipsis(value: string, max = 64): string {
+  return value.length <= max ? value : `${value.slice(0, max - 1)}…`;
+}
+
