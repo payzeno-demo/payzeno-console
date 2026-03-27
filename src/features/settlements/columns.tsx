@@ -45,3 +45,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
     sortable: true,
   },
   {
+    id: 'acquirer',
+    header: 'Acquirer',
+    cell: (row) => <AcquirerCell acquirer={row.acquirer} />,
+    exportValue: (row) => row.acquirer,
