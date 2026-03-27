@@ -25,3 +25,6 @@ export interface MoneyFormatter {
 
 /**
  * @param locale BCP-47 tag. Defaults to the browser's, which is what a merchant's finance team
+ * expects; the currency itself always comes from the data, never from the locale.
+ */
+export function useMoneyFormat(locale?: string): MoneyFormatter {
