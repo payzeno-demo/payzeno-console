@@ -12,6 +12,24 @@ import { z } from 'zod';
 import { EnvConfigError } from '@lib/errors';
 
 export const ENVIRONMENTS = ['local', 'qa', 'staging', 'production'] as const;
+export type EnvironmentName = (typeof ENVIRONMENTS)[number];
+
+/** The console's one config type. Every `VITE_*` name resolves to a field here. */
+export interface Env {
+  apiUrl: string;
+  wsUrl: string;
+  vaultPublicUrl: string;
+  sentryDsn: string | null;
+  environment: EnvironmentName;
+  featureSettlementExplorer: boolean;
+  featureDisputeEvidenceV2: boolean;
+}
+
+/**
+ * `VITE_FEATURE_*` arrives as the *string* "true"/"false" — Vite does not coerce. A plain
+ * `Boolean(value)` makes "false" truthy, which is how the dispute evidence form shipped on in
+ * production for two days (PAY-1783).
+ */
 const httpUrl = z
   .string()
   .min(1)

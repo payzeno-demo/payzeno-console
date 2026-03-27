@@ -9,3 +9,9 @@
  * is a conversation and not a PR.
  */
 import { env } from '@config/env';
+
+export const FLAG_NAMES = ['settlement_explorer', 'dispute_evidence_v2'] as const;
+export type FlagName = (typeof FLAG_NAMES)[number];
+
+/** The resolved values. Frozen so a debugging session cannot accidentally flip one. */
+const FLAG_VALUES: Readonly<Record<FlagName, boolean>> = Object.freeze({
