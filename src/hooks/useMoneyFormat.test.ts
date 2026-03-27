@@ -63,6 +63,14 @@ describe('formatMinor', () => {
     expect(formatter('en-GB').current.formatMinor(1_200, 'GBP')).toContain('12.00');
   });
 
+  it('renders the same minor amount differently across exponents', () => {
+    const result = formatter('en-GB').current;
+
+    expect(result.formatMinor(1_200, 'JPY')).not.toBe(result.formatMinor(1_200, 'GBP'));
+  });
+});
+
+describe('formatSigned', () => {
   it('prefixes a positive amount with a plus', () => {
     expect(formatter('en-GB').current.formatSigned(money(2_500, 'GBP')).startsWith('+')).toBe(
       true,
@@ -81,6 +89,20 @@ describe('formatMinor', () => {
 });
 
 describe('formatCompact', () => {
+  it('leaves a small amount in full', () => {
+    const result = formatter('en-US').current;
+
+    expect(result.formatCompact(money(12_500, 'USD'))).toBe(result.format(money(12_500, 'USD')));
+  });
+
+  it('compacts a large amount', () => {
+    const rendered = formatter('en-US').current.formatCompact(money(4_812_400, 'USD'));
+
+    expect(rendered).toMatch(/K|M/);
+  });
+});
+
+describe('stability', () => {
   it('returns the same object across renders, so a memoised cell does not re-render', () => {
     const { result, rerender } = renderHookWithProviders(() => useMoneyFormat('en-GB'));
     const first = result.current;
