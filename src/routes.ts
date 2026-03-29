@@ -100,3 +100,10 @@ export const ROUTE_PATTERNS = {
   charges: '/charges',
   chargeDetail: ':chargeId',
 
+  refunds: '/refunds',
+
+  disputes: '/disputes',
+  disputeDetail: ':disputeId',
+
+  payouts: '/payouts',
+  payoutDetail: ':payoutId',
