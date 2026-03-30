@@ -50,3 +50,5 @@ export function SettlementDetailPage() {
 
   return (
     <PageContainer as="main">
+      <PageHeader
+        title={`Settlement ${batch.id}`}
