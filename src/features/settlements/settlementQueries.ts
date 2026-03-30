@@ -51,3 +51,6 @@ export function settlementItemsQuery(
   batchId: string,
   q?: SettlementItemListQuery,
 ) {
+  const query: SettlementItemListQuery = { limit: SETTLEMENT_ITEM_PAGE_SIZE, ...(q ?? {}) };
+  return queryOptions<Paginated<ReconciliationItem>>({
+    queryKey: queryKeys.settlements.items(batchId, query),
