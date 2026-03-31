@@ -42,6 +42,28 @@ describe('useStringParam', () => {
   });
 
   it('removes the parameter when set back to the fallback', () => {
+    const { result } = renderHookWithProviders(() => useEnumParam('status', STATUSES), {
+      route: '/settlements?status=funded',
+    });
+
+    act(() => {
+      result.current[1](null);
+    });
+
+    expect(result.current[0]).toBeNull();
+  });
+});
+
+describe('useBooleanParam', () => {
+  it('is false when absent', () => {
+    const { result } = renderHookWithProviders(() => useBooleanParam('livemode'), {
+      route: '/payments',
+    });
+
+    expect(result.current[0]).toBe(false);
+  });
+
+  it.each(['1', 'true'])('is true for %s', (raw) => {
     const { result } = renderHookWithProviders(() => useBooleanParam('livemode'), {
       route: '/payments?livemode=1',
     });
@@ -56,5 +78,13 @@ describe('useStringParam', () => {
 
 describe('useNumberParam', () => {
   it('parses an integer', () => {
+    const { result } = renderHookWithProviders(() => useNumberParam('limit', 25), {
+      route: '/charges?limit=lots',
+    });
+
+    expect(result.current[0]).toBe(25);
+  });
+
+  it('falls back for a value below the minimum', () => {
   });
 });
