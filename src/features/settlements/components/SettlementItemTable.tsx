@@ -43,3 +43,5 @@ export function SettlementItemTable({
   status,
   onStatusChange,
 }: SettlementItemTableProps) {
+  const columns = settlementItemColumns(batchId);
+
