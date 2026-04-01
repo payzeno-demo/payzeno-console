@@ -107,3 +107,9 @@ export const ROUTE_PATTERNS = {
 
   payouts: '/payouts',
   payoutDetail: ':payoutId',
+
+  settlements: '/settlements',
+  settlementDetail: ':batchId',
+
+  invoices: '/invoices',
+  invoiceDetail: ':invoiceId',
