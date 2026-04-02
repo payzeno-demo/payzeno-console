@@ -54,3 +54,7 @@ export function settlementItemsQuery(
   const query: SettlementItemListQuery = { limit: SETTLEMENT_ITEM_PAGE_SIZE, ...(q ?? {}) };
   return queryOptions<Paginated<ReconciliationItem>>({
     queryKey: queryKeys.settlements.items(batchId, query),
+    queryFn: () => e.settlements.listItems(batchId, query),
+    staleTime: 15_000,
+  });
+}
