@@ -160,3 +160,13 @@ export function AppRoutes() {
       </Route>
 
       {/* Everything below needs a session. */}
+      <Route element={<RequireSession />}>
+        <Route
+          path={ROUTE_PATTERNS.reporting}
+          element={
+            <QueryErrorBoundary feature="reporting">
+              <ReportingPage />
+            </QueryErrorBoundary>
+          }
+        />
+

@@ -100,3 +100,22 @@ export const ROUTE_PATTERNS = {
   charges: '/charges',
   chargeDetail: ':chargeId',
 
+  refunds: '/refunds',
+
+  disputes: '/disputes',
+  disputeDetail: ':disputeId',
+
+  payouts: '/payouts',
+  payoutDetail: ':payoutId',
+
+  settlements: '/settlements',
+  settlementDetail: ':batchId',
+
+  invoices: '/invoices',
+  invoiceDetail: ':invoiceId',
+
+  developers: '/developers',
+  apiKeyDetail: 'api-keys/:apiKeyId',
+  webhookEventDetail: 'webhook-events/:eventId',
+
+  settings: '/settings',

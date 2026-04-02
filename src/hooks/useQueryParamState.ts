@@ -66,3 +66,8 @@ export function useStringParam(key: string, fallback = ''): [string, (next: stri
   return useQueryParamState<string>(key, {
     parse: (raw) => raw,
     serialise: (value) => (value === fallback ? null : value),
+    fallback,
+  });
+}
+
+/** Parameter constrained to a known set — every contracts enum filter uses this. */
