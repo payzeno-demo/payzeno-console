@@ -113,3 +113,9 @@ export const ROUTE_PATTERNS = {
 
   invoices: '/invoices',
   invoiceDetail: ':invoiceId',
+
+  developers: '/developers',
+  apiKeyDetail: 'api-keys/:apiKeyId',
+  webhookEventDetail: 'webhook-events/:eventId',
+
+  settings: '/settings',
