@@ -6,3 +6,7 @@
  *   v2 (month 6)  "…moving to the ledger. Some invoices are already generated there."
  *   v3 (current)  distinguishes per invoice, because during the `ledger_owns_invoices`
  *                 dry-run a merchant can genuinely have both in one list, and support could
+ *                 not explain why two invoices for the same month looked different.
+ *
+ * When the cutover finishes this component gets deleted, not edited. It is a migration
+ * artefact and it should die with the migration.

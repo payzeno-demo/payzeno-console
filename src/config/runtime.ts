@@ -17,6 +17,7 @@ import type { Env, EnvironmentName } from './env';
  */
 export { API_VERSION };
 
+declare const __CONSOLE_VERSION__: string;
 declare const __FORCE_MOCK_TRANSPORT__: boolean;
 
 /**
@@ -39,3 +40,7 @@ export const runtime: RuntimeConfig = runtimeConfig;
  * only the *default* toggle position for a fresh session, which is "live everywhere except
  * local".
  */
+export function defaultLivemode(config: RuntimeConfig = runtimeConfig): boolean {
+  return config.environment !== 'local';
+}
+

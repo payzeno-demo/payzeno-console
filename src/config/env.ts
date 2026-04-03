@@ -67,3 +67,4 @@ export function readEnv(raw: Record<string, unknown> = import.meta.env): Env {
  * Evaluated once, at module load. `main.tsx` imports `config/runtime.ts`, which imports this,
  * so a misconfigured bundle throws `EnvConfigError` before React mounts.
  */
+export const env: Env = readEnv();

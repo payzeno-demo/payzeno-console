@@ -15,3 +15,8 @@ export type FlagName = (typeof FLAG_NAMES)[number];
 
 /** The resolved values. Frozen so a debugging session cannot accidentally flip one. */
 const FLAG_VALUES: Readonly<Record<FlagName, boolean>> = Object.freeze({
+  settlement_explorer: env.featureSettlementExplorer,
+  dispute_evidence_v2: env.featureDisputeEvidenceV2,
+});
+
+/**
