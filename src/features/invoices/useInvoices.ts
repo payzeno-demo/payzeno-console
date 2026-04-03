@@ -6,3 +6,7 @@
  *  - there is no cache, no dedupe and no background refresh;
  *  - `refetch()` is the only way to see a change;
  *  - errors are bare `Error`s from `legacy-errors.ts`, not `ConsoleApiError`s.
+ *
+ * TODO(rrefactor): swap for `InvoicesEndpoint` + `queryOptions`. The endpoint class has been
+ * sitting there since ADR 0004 landed. PAY-1902.
+ */
