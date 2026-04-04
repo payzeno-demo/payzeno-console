@@ -6,3 +6,7 @@
  * list is driven by `src/api/legacy/legacy-query.ts`, a pre-TanStack `useEffect` fetch with
  * its own loading state.
  *
+ * `InvoicesEndpoint` exists, works, and has tests. Nothing is blocking the migration except
+ * that the invoice shape is owned by payzeno-billing-legacy, which is arc MIG's problem, which
+ * is not the Web team's problem. Four quarters running.
+ *

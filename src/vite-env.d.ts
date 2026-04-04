@@ -19,6 +19,11 @@ interface ImportMetaEnv {
   readonly VITE_WS_URL: string;
   /** Card vault origin. Card data goes here and never to payzeno-api (ADR 0003, arc PCI). */
   readonly VITE_VAULT_PUBLIC_URL: string;
+  /** One of `local` | `qa` | `staging` | `production`. Drives `<EnvironmentBanner/>`. */
+  readonly VITE_ENVIRONMENT: string;
+  /** `"true"` | `"false"`. Flag `settlement_explorer`. */
+  readonly VITE_FEATURE_SETTLEMENT_EXPLORER: string;
+  readonly env: ImportMetaEnv;
 }
 
 /**

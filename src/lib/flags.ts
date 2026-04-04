@@ -20,3 +20,9 @@ const FLAG_VALUES: Readonly<Record<FlagName, boolean>> = Object.freeze({
 });
 
 /**
+ * The one flag accessor.
+ *
+ * It is spelled as a hook, and it must be called as one, so that when flags eventually become
+ * a context (`FlagsProvider` already exists for it) no call site changes.
+ */
+export function useFlag(name: FlagName): boolean {
