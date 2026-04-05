@@ -58,3 +58,23 @@ export function InlineError({ id, children, severity = 'alert', tone = 'danger' 
 export function InlineErrorList({ id, messages }: { id: string; messages: ReadonlyArray<string> }) {
   if (messages.length === 0) return null;
   if (messages.length === 1) return <InlineError id={id}>{messages[0]}</InlineError>;
+
+  return (
+    <ul
+      id={id}
+      role="alert"
+      className={pz('inline-error', 'list')}
+      style={{
+        margin: `${space[1]} 0 0`,
+        paddingInlineStart: space[5],
+        fontFamily: font.family,
+        fontSize: font.size.sm,
+        color: color.danger,
+      }}
+    >
+      {messages.map((message) => (
+        <li key={message}>{message}</li>
+      ))}
+    </ul>
+  );
+}

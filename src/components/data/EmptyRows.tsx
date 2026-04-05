@@ -47,3 +47,44 @@ function EmptyMessage({ title, body, action, children }: Omit<EmptyRowsProps, 'c
         alignItems: 'center',
         gap: space[2],
         padding: `${space[10]} ${space[4]}`,
+        textAlign: 'center',
+        fontFamily: font.family,
+      }}
+    >
+      <p
+        style={{
+          margin: 0,
+          fontSize: font.size.lg,
+          fontWeight: font.weight.semibold,
+          color: color.textPrimary,
+        }}
+      >
+        {title ?? 'Nothing here yet'}
+      </p>
+
+      {body ? (
+        <p style={{ margin: 0, maxWidth: '46ch', fontSize: font.size.md, color: color.textSecondary }}>
+          {body}
+        </p>
+      ) : null}
+
+      {action ? <div style={{ marginTop: space[2] }}>{action}</div> : null}
+    </div>
+  );
+}
+
+export function EmptyRows({ columnCount, title, body, action, children }: EmptyRowsProps) {
+  const message = <EmptyMessage title={title} body={body} action={action}>{children}</EmptyMessage>;
+
+  if (columnCount === undefined) {
+    return message;
+  }
+
+  return (
+    <tr className={pz('empty-rows', 'row')}>
+      <td colSpan={columnCount} style={{ padding: 0, borderBottom: 'none' }}>
+        {message}
+      </td>
+    </tr>
+  );
+}

@@ -32,3 +32,53 @@ export function NotFound({
   return (
     <main
       className={pz('not-found')}
+      style={{
+        display: 'grid',
+        gap: space[4],
+        justifyItems: 'start',
+        maxWidth: '60ch',
+        padding: space[8],
+        fontFamily: font.family,
+        color: color.textPrimary,
+      }}
+    >
+      <p
+        aria-hidden="true"
+        style={{ margin: 0, fontSize: font.size.xxl, color: color.textMuted }}
+      >
+        404
+      </p>
+
+      <h1 style={{ margin: 0, fontSize: font.size.xl, fontWeight: font.weight.semibold }}>{title}</h1>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>{body}</p>
+
+      {reference ? (
+        <p
+          style={{
+            margin: 0,
+            padding: `${space[1]} ${space[2]}`,
+            fontFamily: font.familyMono,
+            fontSize: font.size.sm,
+            color: color.textSecondary,
+            background: color.surfaceSunken,
+            borderRadius: radius.sm,
+          }}
+        >
+          {reference}
+        </p>
+      ) : null}
+
+      <Link
+        to={homeTo}
+        style={{
+          color: color.textLink,
+          fontSize: font.size.md,
+          textDecoration: 'underline',
+        }}
+      >
+        Back to the dashboard
+      </Link>
+    </main>
+  );
+}

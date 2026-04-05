@@ -22,6 +22,19 @@ describe('defaults', () => {
     ).toBeInTheDocument();
   });
 
+  it('shows a decorative 404 that is hidden from assistive technology', () => {
+    renderWithRouter(<NotFound />);
+
+    const marker = screen.getByText('404');
+    expect(marker).toHaveAttribute('aria-hidden', 'true');
+  });
+
+  it('mentions the live/test-mode trap in the default copy', () => {
+    renderWithRouter(<NotFound />);
+
+    expect(screen.getByText(/live or test mode/)).toBeInTheDocument();
+  });
+
   it('links home', () => {
     renderWithRouter(<NotFound />);
 
@@ -67,4 +80,22 @@ describe('customisation', () => {
 });
 
 describe('as the settlements-flag fallback', () => {
+  it('renders the flag-off copy the router hands it and links to payouts instead', () => {
+    renderWithRouter(
+      <NotFound
+        title="Settlements are not available"
+        body="The settlement explorer is turned off for this account. Your payouts page still shows when money arrived."
+        homeTo={ROUTES.payouts.index}
+      />,
+    );
+
+    expect(
+      screen.getByRole('heading', { name: 'Settlements are not available' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/turned off for this account/)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Back to the dashboard' })).toHaveAttribute(
+      'href',
+      '/payouts',
+    );
+  });
 });

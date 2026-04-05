@@ -76,3 +76,38 @@ export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
         padding: space[6],
         fontFamily: font.family,
         color: color.textPrimary,
+        background: color.dangerSubtle,
+        border: `1px solid ${color.danger}`,
+        borderRadius: radius.lg,
+      }}
+    >
+      <h2 style={{ margin: 0, fontSize: font.size.lg, fontWeight: font.weight.semibold }}>{title}</h2>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>{explain(error)}</p>
+
+      {reference ? (
+        <p
+          style={{
+            margin: 0,
+            fontFamily: font.familyMono,
+            fontSize: font.size.sm,
+            color: color.textMuted,
+          }}
+        >
+          Reference {reference}
+        </p>
+      ) : null}
+
+      {retryable || action ? (
+        <div style={{ display: 'flex', gap: space[2] }}>
+          {retryable ? (
+            <Button size="sm" variant="secondary" onClick={onRetry}>
+              Try again
+            </Button>
+          ) : null}
+          {action}
+        </div>
+      ) : null}
+    </div>
+  );
+}
