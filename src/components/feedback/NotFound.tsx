@@ -65,3 +65,20 @@ export function NotFound({
             borderRadius: radius.sm,
           }}
         >
+          {reference}
+        </p>
+      ) : null}
+
+      <Link
+        to={homeTo}
+        style={{
+          color: color.textLink,
+          fontSize: font.size.md,
+          textDecoration: 'underline',
+        }}
+      >
+        Back to the dashboard
+      </Link>
+    </main>
+  );
+}

@@ -80,3 +80,11 @@ export function EmptyRows({ columnCount, title, body, action, children }: EmptyR
     return message;
   }
 
+  return (
+    <tr className={pz('empty-rows', 'row')}>
+      <td colSpan={columnCount} style={{ padding: 0, borderBottom: 'none' }}>
+        {message}
+      </td>
+    </tr>
+  );
+}
