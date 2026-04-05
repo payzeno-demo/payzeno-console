@@ -48,3 +48,20 @@ export function NotFound({
       >
         404
       </p>
+
+      <h1 style={{ margin: 0, fontSize: font.size.xl, fontWeight: font.weight.semibold }}>{title}</h1>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>{body}</p>
+
+      {reference ? (
+        <p
+          style={{
+            margin: 0,
+            padding: `${space[1]} ${space[2]}`,
+            fontFamily: font.familyMono,
+            fontSize: font.size.sm,
+            color: color.textSecondary,
+            background: color.surfaceSunken,
+            borderRadius: radius.sm,
+          }}
+        >

@@ -102,3 +102,12 @@ export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
         <div style={{ display: 'flex', gap: space[2] }}>
           {retryable ? (
             <Button size="sm" variant="secondary" onClick={onRetry}>
+              Try again
+            </Button>
+          ) : null}
+          {action}
+        </div>
+      ) : null}
+    </div>
+  );
+}

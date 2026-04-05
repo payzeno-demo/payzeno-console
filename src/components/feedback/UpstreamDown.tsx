@@ -92,3 +92,26 @@ export function UpstreamDown({
             margin: 0,
             fontFamily: font.familyMono,
             fontSize: font.size.sm,
+            color: color.textMuted,
+          }}
+        >
+          Reference {requestId}
+        </p>
+      ) : null}
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: space[2] }}>
+        <Button
+          size="sm"
+          variant="secondary"
+          onClick={() => {
+            setRetrying(true);
+            onRetry();
+          }}
+        >
+          Retry now
+        </Button>
+        {retrying ? <Spinner size="sm" label="" /> : null}
+      </div>
+    </section>
+  );
+}
