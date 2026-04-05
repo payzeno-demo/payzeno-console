@@ -71,3 +71,10 @@ export function InlineErrorList({ id, messages }: { id: string; messages: Readon
         fontSize: font.size.sm,
         color: color.danger,
       }}
+    >
+      {messages.map((message) => (
+        <li key={message}>{message}</li>
+      ))}
+    </ul>
+  );
+}

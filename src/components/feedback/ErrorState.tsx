@@ -94,3 +94,11 @@ export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
             color: color.textMuted,
           }}
         >
+          Reference {reference}
+        </p>
+      ) : null}
+
+      {retryable || action ? (
+        <div style={{ display: 'flex', gap: space[2] }}>
+          {retryable ? (
+            <Button size="sm" variant="secondary" onClick={onRetry}>
