@@ -10,3 +10,8 @@
  *
  * When the cutover finishes this component gets deleted, not edited. It is a migration
  * artefact and it should die with the migration.
+ */
+import { Alert } from '@components/ui/Alert';
+
+export interface LegacyInvoiceNoticeProps {
+  /** True when the current list contains invoices from both systems. */

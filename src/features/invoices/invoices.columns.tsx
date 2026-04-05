@@ -24,3 +24,12 @@ export function outstandingMinor(row: InvoiceRow): number {
   return Math.max(0, row.total_minor - row.amount_paid_minor);
 }
 
+export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
+  {
+    id: 'number',
+    header: 'Invoice',
+    cell: (row) => (
+      <Link to={ROUTES.invoices.detail(row.id)}>
+        <span>{row.number}</span>
+      </Link>
+    ),
