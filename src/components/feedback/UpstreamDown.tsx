@@ -68,3 +68,27 @@ export function UpstreamDown({
       }}
     >
       <h2
+        id="upstream-down-heading"
+        style={{ margin: 0, fontSize: font.size.lg, fontWeight: font.weight.semibold }}
+      >
+        {upstream ? `${upstream} is not responding` : 'One of our services is not responding'}
+      </h2>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>
+        Nothing you did caused this and nothing has been lost. We are retrying automatically.
+      </p>
+
+      <p aria-hidden="true" style={{ margin: 0, fontSize: font.size.sm, color: color.textMuted }}>
+        {retrying ? 'Retrying…' : `Retrying in ${remaining}s`}
+      </p>
+
+      <span aria-live="polite" style={visuallyHidden as React.CSSProperties}>
+        {retrying ? 'Retrying now' : `Retrying in ${autoRetryAfter} seconds`}
+      </span>
+
+      {requestId ? (
+        <p
+          style={{
+            margin: 0,
+            fontFamily: font.familyMono,
+            fontSize: font.size.sm,

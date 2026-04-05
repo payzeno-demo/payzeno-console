@@ -72,3 +72,11 @@ function EmptyMessage({ title, body, action, children }: Omit<EmptyRowsProps, 'c
     </div>
   );
 }
+
+export function EmptyRows({ columnCount, title, body, action, children }: EmptyRowsProps) {
+  const message = <EmptyMessage title={title} body={body} action={action}>{children}</EmptyMessage>;
+
+  if (columnCount === undefined) {
+    return message;
+  }
+

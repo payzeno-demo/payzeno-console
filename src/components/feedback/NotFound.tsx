@@ -32,3 +32,19 @@ export function NotFound({
   return (
     <main
       className={pz('not-found')}
+      style={{
+        display: 'grid',
+        gap: space[4],
+        justifyItems: 'start',
+        maxWidth: '60ch',
+        padding: space[8],
+        fontFamily: font.family,
+        color: color.textPrimary,
+      }}
+    >
+      <p
+        aria-hidden="true"
+        style={{ margin: 0, fontSize: font.size.xxl, color: color.textMuted }}
+      >
+        404
+      </p>

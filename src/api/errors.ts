@@ -53,3 +53,7 @@ export class ConsoleApiError extends PayzenoError {
   }
 }
 
+export class BadRequestApiError extends ConsoleApiError {}
+
+export class UnauthorizedError extends ConsoleApiError {}
+
