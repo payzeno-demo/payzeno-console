@@ -76,3 +76,12 @@ export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
         padding: space[6],
         fontFamily: font.family,
         color: color.textPrimary,
+        background: color.dangerSubtle,
+        border: `1px solid ${color.danger}`,
+        borderRadius: radius.lg,
+      }}
+    >
+      <h2 style={{ margin: 0, fontSize: font.size.lg, fontWeight: font.weight.semibold }}>{title}</h2>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>{explain(error)}</p>
+

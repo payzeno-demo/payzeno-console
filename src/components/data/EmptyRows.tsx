@@ -47,3 +47,11 @@ function EmptyMessage({ title, body, action, children }: Omit<EmptyRowsProps, 'c
         alignItems: 'center',
         gap: space[2],
         padding: `${space[10]} ${space[4]}`,
+        textAlign: 'center',
+        fontFamily: font.family,
+      }}
+    >
+      <p
+        style={{
+          margin: 0,
+          fontSize: font.size.lg,
