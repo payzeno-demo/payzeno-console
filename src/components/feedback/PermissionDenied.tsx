@@ -25,6 +25,13 @@ export interface PermissionDeniedProps {
   onBack?: () => void;
 }
 
+/** `settlements:retry` → "retry settlements". Good enough for a sentence, not for a label. */
+export function describePermission(permission: string): string {
+  const [resource, verb] = permission.split(':');
+  if (!resource || !verb) return permission;
+  return `${verb.replace(/_/g, ' ')} ${resource.replace(/_/g, ' ')}`;
+}
+
 export function PermissionDenied({ permission, action, requestId, onBack }: PermissionDeniedProps) {
   const what = action ?? (permission ? describePermission(permission) : 'view this');
 
