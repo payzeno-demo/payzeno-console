@@ -63,3 +63,12 @@ function EmptyMessage({ title, body, action, children }: Omit<EmptyRowsProps, 'c
       </p>
 
       {body ? (
+        <p style={{ margin: 0, maxWidth: '46ch', fontSize: font.size.md, color: color.textSecondary }}>
+          {body}
+        </p>
+      ) : null}
+
+      {action ? <div style={{ marginTop: space[2] }}>{action}</div> : null}
+    </div>
+  );
+}

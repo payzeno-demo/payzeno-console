@@ -85,3 +85,12 @@ export function ErrorState({ error, title, onRetry, action }: ErrorStateProps) {
 
       <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>{explain(error)}</p>
 
+      {reference ? (
+        <p
+          style={{
+            margin: 0,
+            fontFamily: font.familyMono,
+            fontSize: font.size.sm,
+            color: color.textMuted,
+          }}
+        >

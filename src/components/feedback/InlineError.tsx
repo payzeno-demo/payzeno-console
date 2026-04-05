@@ -65,3 +65,9 @@ export function InlineErrorList({ id, messages }: { id: string; messages: Readon
       role="alert"
       className={pz('inline-error', 'list')}
       style={{
+        margin: `${space[1]} 0 0`,
+        paddingInlineStart: space[5],
+        fontFamily: font.family,
+        fontSize: font.size.sm,
+        color: color.danger,
+      }}
