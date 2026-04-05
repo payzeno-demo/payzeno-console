@@ -31,6 +31,14 @@ describe('the message', () => {
     expect(screen.getByText('Reference req_502_abc')).toBeInTheDocument();
   });
 
+  it('omits the reference line when there is no request id', () => {
+    renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} />);
+
+    expect(screen.queryByText(/^Reference/)).not.toBeInTheDocument();
+  });
+});
+
+describe('the manual retry', () => {
   it('switches the status line to "Retrying…" once pressed', async () => {
     const { user } = renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} />);
 
@@ -92,4 +100,30 @@ describe('the automatic retry', () => {
     expect(onRetry).not.toHaveBeenCalled();
   });
 
+  it('stops its timer on unmount, so a route change leaves nothing running', () => {
+    vi.useFakeTimers();
+    const onRetry = vi.fn();
+    const { unmount } = renderBare(<UpstreamDown onRetry={onRetry} autoRetryAfter={5} />);
+
+    unmount();
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+
+    expect(onRetry).not.toHaveBeenCalled();
+  });
+
+  it('does not fire twice when the user also presses the button', async () => {
+    vi.useFakeTimers();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const onRetry = vi.fn();
+    renderBare(<UpstreamDown onRetry={onRetry} autoRetryAfter={5} />);
+
+    await user.click(screen.getByRole('button', { name: 'Retry now' }));
+    act(() => {
+      vi.advanceTimersByTime(20_000);
+    });
+
+    expect(onRetry).toHaveBeenCalledTimes(1);
+  });
 });

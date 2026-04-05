@@ -55,3 +55,11 @@ function EmptyMessage({ title, body, action, children }: Omit<EmptyRowsProps, 'c
         style={{
           margin: 0,
           fontSize: font.size.lg,
+          fontWeight: font.weight.semibold,
+          color: color.textPrimary,
+        }}
+      >
+        {title ?? 'Nothing here yet'}
+      </p>
+
+      {body ? (
