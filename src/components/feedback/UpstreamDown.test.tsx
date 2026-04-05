@@ -25,6 +25,20 @@ describe('the message', () => {
     ).toBeInTheDocument();
   });
 
+  it('names the upstream when the caller knows which one it was', () => {
+    renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} upstream="The ledger" />);
+
+    expect(
+      screen.getByRole('heading', { name: 'The ledger is not responding' }),
+    ).toBeInTheDocument();
+  });
+
+  it('reassures that nothing was lost', () => {
+    renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} />);
+
+    expect(screen.getByText(/nothing has been lost/i)).toBeInTheDocument();
+  });
+
   it('shows the request id when there is one to quote at support', () => {
     renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} requestId="req_502_abc" />);
 
@@ -39,6 +53,15 @@ describe('the message', () => {
 });
 
 describe('the manual retry', () => {
+  it('calls onRetry immediately', async () => {
+    const onRetry = vi.fn();
+    const { user } = renderBare(<UpstreamDown onRetry={onRetry} autoRetryAfter={0} />);
+
+    await user.click(screen.getByRole('button', { name: 'Retry now' }));
+
+    expect(onRetry).toHaveBeenCalledTimes(1);
+  });
+
   it('switches the status line to "Retrying…" once pressed', async () => {
     const { user } = renderBare(<UpstreamDown onRetry={vi.fn()} autoRetryAfter={0} />);
 
