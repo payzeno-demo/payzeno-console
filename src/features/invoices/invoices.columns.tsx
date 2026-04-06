@@ -33,3 +33,11 @@ export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
         <span>{row.number}</span>
       </Link>
     ),
+    exportValue: (row) => row.number,
+    width: '12rem',
+  },
+  {
+    id: 'id',
+    header: 'Id',
+    cell: (row) => <IdCell value={row.id} />,
+    exportValue: (row) => row.id,
