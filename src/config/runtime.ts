@@ -18,6 +18,7 @@ import type { Env, EnvironmentName } from './env';
 export { API_VERSION };
 
 declare const __CONSOLE_VERSION__: string;
+declare const __BUILD_SHA__: string;
 declare const __FORCE_MOCK_TRANSPORT__: boolean;
 
 /**
@@ -42,5 +43,11 @@ export const runtime: RuntimeConfig = runtimeConfig;
  */
 export function defaultLivemode(config: RuntimeConfig = runtimeConfig): boolean {
   return config.environment !== 'local';
+}
+
+/** Absolute URL for an API path. The single place `apiBaseUrl` is concatenated. */
+export function apiUrl(path: string, config: RuntimeConfig = runtimeConfig): string {
+  const suffix = path.startsWith('/') ? path : `/${path}`;
+  return `${config.apiBaseUrl}${suffix}`;
 }
 

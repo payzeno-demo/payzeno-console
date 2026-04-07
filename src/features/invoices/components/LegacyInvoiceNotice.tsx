@@ -15,3 +15,7 @@ import { Alert } from '@components/ui/Alert';
 
 export interface LegacyInvoiceNoticeProps {
   /** True when the current list contains invoices from both systems. */
+  isMixedSource: boolean;
+  /** True when the billing-legacy circuit breaker has tripped (502 from payzeno-api). */
+  isUpstreamDown: boolean;
+}
