@@ -19,3 +19,7 @@ export interface LegacyInvoiceNoticeProps {
   /** True when the billing-legacy circuit breaker has tripped (502 from payzeno-api). */
   isUpstreamDown: boolean;
 }
+
+export function LegacyInvoiceNotice({ isMixedSource, isUpstreamDown }: LegacyInvoiceNoticeProps) {
+  if (isUpstreamDown) {
+    return (
