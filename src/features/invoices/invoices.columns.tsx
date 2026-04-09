@@ -41,3 +41,12 @@ export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
     header: 'Id',
     cell: (row) => <IdCell value={row.id} />,
     exportValue: (row) => row.id,
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => <StatusPill status={row.status} label={humanise(row.status)} />,
+    exportValue: (row) => row.status,
+  },
+  {
+    /**
