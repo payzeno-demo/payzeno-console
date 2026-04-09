@@ -23,3 +23,7 @@ export interface LegacyInvoiceNoticeProps {
 export function LegacyInvoiceNotice({ isMixedSource, isUpstreamDown }: LegacyInvoiceNoticeProps) {
   if (isUpstreamDown) {
     return (
+      <Alert tone="warning" title="Invoices are temporarily unavailable" role="status">
+        Our billing service is not responding. Your payments, payouts and balance are
+        unaffected — only this list is. It usually recovers within a few minutes.
+      </Alert>
