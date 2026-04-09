@@ -156,3 +156,16 @@ export function ChargeDetailPage() {
           <dt>Settlement batch</dt>
           <dd>
             {charge.settlement_batch_id ? (
+              <Link to={ROUTES.settlements.detail(charge.settlement_batch_id)}>
+                <IdCell value={charge.settlement_batch_id} />
+              </Link>
+            ) : (
+              '—'
+            )}
+          </dd>
+
+          <dt>Authorised at</dt>
+          <dd>
+            <DateCell value={charge.authorized_at} precision="minute" />
+          </dd>
+

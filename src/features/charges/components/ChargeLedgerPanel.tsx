@@ -45,3 +45,32 @@ export function ChargeLedgerPanel({ chargeId, currency }: ChargeLedgerPanelProps
   return (
     <Card as="section" aria-label="Ledger detail">
       <h2>Ledger</h2>
+
+      {hasDuplicateSettlement ? (
+        <Alert tone="critical" title="This charge has more than one settlement posting">
+          Contact support with this charge id. A duplicate settlement is internally balanced,
+          so it will not show up as a discrepancy in your totals.
+        </Alert>
+      ) : null}
+
+      {groups.length === 0 ? (
+        <p>Nothing has been posted against this charge yet.</p>
+      ) : (
+        groups.map((group) => (
+          <section key={group.purpose} aria-label={`${group.purpose} transactions`}>
+            <h3>{group.purpose.replace(/_/g, ' ')}</h3>
+
+            {group.transactions.map((transaction) => (
+              <article key={transaction.id}>
+                <header>
+                  <IdCell value={transaction.id} />
+                  <DateCell value={transaction.posted_at} precision="second" />
+                </header>
+
+                <ul>
+                  {transaction.entries.map((entry) => (
+                    <li key={entry.id}>
+                      <span>{entryLabel(entry)}</span>
+                      <MoneyCell amountMinor={entry.amount_minor} currency={currency} />
+                    </li>
+                  ))}
