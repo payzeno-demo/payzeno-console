@@ -19,6 +19,18 @@ interface ImportMetaEnv {
   readonly VITE_WS_URL: string;
   /** Card vault origin. Card data goes here and never to payzeno-api (ADR 0003, arc PCI). */
   readonly VITE_VAULT_PUBLIC_URL: string;
+  /** Empty string disables Sentry entirely. */
+  readonly VITE_SENTRY_DSN: string;
+  /** One of `local` | `qa` | `staging` | `production`. Drives `<EnvironmentBanner/>`. */
+  readonly VITE_ENVIRONMENT: string;
+  /** `"true"` | `"false"`. Flag `settlement_explorer`. */
+  readonly VITE_FEATURE_SETTLEMENT_EXPLORER: string;
+  /** `"true"` | `"false"`. Flag `dispute_evidence_v2`. */
+  readonly VITE_FEATURE_DISPUTE_EVIDENCE_V2: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
 }
 
 /**

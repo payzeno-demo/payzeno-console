@@ -15,3 +15,14 @@ export type FlagName = (typeof FLAG_NAMES)[number];
 
 /** The resolved values. Frozen so a debugging session cannot accidentally flip one. */
 const FLAG_VALUES: Readonly<Record<FlagName, boolean>> = Object.freeze({
+  settlement_explorer: env.featureSettlementExplorer,
+  dispute_evidence_v2: env.featureDisputeEvidenceV2,
+});
+
+/**
+ * The one flag accessor.
+ *
+ * It is spelled as a hook, and it must be called as one, so that when flags eventually become
+ * a context (`FlagsProvider` already exists for it) no call site changes.
+ */
+export function useFlag(name: FlagName): boolean {

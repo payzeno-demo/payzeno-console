@@ -6,3 +6,24 @@
  *   v2 (month 6)  "…moving to the ledger. Some invoices are already generated there."
  *   v3 (current)  distinguishes per invoice, because during the `ledger_owns_invoices`
  *                 dry-run a merchant can genuinely have both in one list, and support could
+ *                 not explain why two invoices for the same month looked different.
+ *
+ * When the cutover finishes this component gets deleted, not edited. It is a migration
+ * artefact and it should die with the migration.
+ */
+import { Alert } from '@components/ui/Alert';
+
+export interface LegacyInvoiceNoticeProps {
+  /** True when the current list contains invoices from both systems. */
+  isMixedSource: boolean;
+  /** True when the billing-legacy circuit breaker has tripped (502 from payzeno-api). */
+  isUpstreamDown: boolean;
+}
+
+export function LegacyInvoiceNotice({ isMixedSource, isUpstreamDown }: LegacyInvoiceNoticeProps) {
+  if (isUpstreamDown) {
+    return (
+      <Alert tone="warning" title="Invoices are temporarily unavailable" role="status">
+        Our billing service is not responding. Your payments, payouts and balance are
+        unaffected — only this list is. It usually recovers within a few minutes.
+      </Alert>

@@ -15,3 +15,38 @@ import { IdCell } from '@components/data/IdCell';
 import { StatusPill } from '@components/data/StatusPill';
 import { formatAmount, humanise } from '@lib/format';
 import { ROUTES } from '@/routes';
+import type { InvoiceRow } from '@/types/view-models';
+
+/** Statuses that still owe Payzeno money. Anything else is closed. */
+export const OUTSTANDING_STATUSES: ReadonlySet<InvoiceStatus> = new Set(['draft', 'open']);
+
+export function outstandingMinor(row: InvoiceRow): number {
+  return Math.max(0, row.total_minor - row.amount_paid_minor);
+}
+
+export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
+  {
+    id: 'number',
+    header: 'Invoice',
+    cell: (row) => (
+      <Link to={ROUTES.invoices.detail(row.id)}>
+        <span>{row.number}</span>
+      </Link>
+    ),
+    exportValue: (row) => row.number,
+    width: '12rem',
+  },
+  {
+    id: 'id',
+    header: 'Id',
+    cell: (row) => <IdCell value={row.id} />,
+    exportValue: (row) => row.id,
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => <StatusPill status={row.status} label={humanise(row.status)} />,
+    exportValue: (row) => row.status,
+  },
+  {
+    /**

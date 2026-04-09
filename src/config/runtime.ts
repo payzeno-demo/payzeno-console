@@ -17,6 +17,25 @@ import type { Env, EnvironmentName } from './env';
  */
 export { API_VERSION };
 
+export interface RuntimeConfig {
+  apiBaseUrl: string;
+  wsUrl: string;
+  vaultPublicUrl: string;
+  environment: EnvironmentName;
+  apiVersion: string;
+  /** Bundle version, injected by vite `define` from `npm_package_version`. */
+  consoleVersion: string;
+  /** Short git sha of the build, or `local`. */
+  buildSha: string;
+  sentryDsn: string | null;
+  /** True on every environment except production — drives `<EnvironmentBanner />`. */
+  showEnvironmentBanner: boolean;
+  /** `?mock=1` or `pnpm dev:mock`. Read by `TransportProvider`. */
+  forceMockTransport: boolean;
+}
+
+declare const __CONSOLE_VERSION__: string;
+declare const __BUILD_SHA__: string;
 declare const __FORCE_MOCK_TRANSPORT__: boolean;
 
 /**
@@ -39,3 +58,18 @@ export const runtime: RuntimeConfig = runtimeConfig;
  * only the *default* toggle position for a fresh session, which is "live everywhere except
  * local".
  */
+export function defaultLivemode(config: RuntimeConfig = runtimeConfig): boolean {
+  return config.environment !== 'local';
+}
+
+/** Absolute URL for an API path. The single place `apiBaseUrl` is concatenated. */
+export function apiUrl(path: string, config: RuntimeConfig = runtimeConfig): string {
+  const suffix = path.startsWith('/') ? path : `/${path}`;
+  return `${config.apiBaseUrl}${suffix}`;
+}
+
+/** Absolute URL for a vault public path (arc PCI — the browser posts here directly). */
+export function vaultUrl(path: string, config: RuntimeConfig = runtimeConfig): string {
+  const suffix = path.startsWith('/') ? path : `/${path}`;
+  return `${config.vaultPublicUrl}${suffix}`;
+}
