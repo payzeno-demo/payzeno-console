@@ -39,6 +39,28 @@ describe('the header', () => {
     expect(screen.getByText(/Captured · worldflow/)).toBeInTheDocument();
   });
 
+  it('renders the not-found screen for an unknown id, mentioning test mode', async () => {
+    server.use(errorHandler('get', '/charges/:chargeId', 404, 'not_found'));
+
+    renderPage();
+
+    expect(await screen.findByRole('heading', { name: 'No such charge' })).toBeInTheDocument();
+    expect(screen.getByText(/id may be from test mode/)).toBeInTheDocument();
+  });
+});
+
+describe('the amounts card', () => {
+  it('renders authorised, captured, refunded and refundable', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Authorised')).toBeInTheDocument();
+    expect(screen.getByText('Captured')).toBeInTheDocument();
+    expect(screen.getByText('Refunded')).toBeInTheDocument();
+    expect(screen.getByText('Refundable')).toBeInTheDocument();
+  });
+});
+
+describe('the card summary (arc PCI)', () => {
   it('renders only the last four digits', async () => {
     const { container } = renderPage();
 
@@ -54,6 +76,14 @@ describe('the header', () => {
     expect(screen.getByText('Yours')).toBeInTheDocument();
   });
 
+  it('says "Not authenticated" rather than leaving 3-D Secure blank', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Not authenticated')).toBeInTheDocument();
+  });
+});
+
+describe('alerts', () => {
   it('explains a decline with the issuer message', async () => {
     chargeReturning({
       status: 'failed',
@@ -68,6 +98,14 @@ describe('the header', () => {
     expect(screen.getByText('The issuer declined this card.')).toBeInTheDocument();
   });
 
+  it('explains that a captured charge is pending until its batch reconciles', async () => {
+    chargeReturning({ status: 'captured', settlement_batch_id: null });
+
+    renderPage();
+
+    expect(await screen.findByText('Not settled yet')).toBeInTheDocument();
+  });
+
   it('does not show the settlement notice once the charge has a batch', async () => {
     renderPage();
 
@@ -77,6 +115,20 @@ describe('the header', () => {
 });
 
 describe('the refund action', () => {
+  it('is enabled for a captured charge with headroom', async () => {
+    renderPage();
+
+    expect(await screen.findByRole('button', { name: 'Refund' })).toBeEnabled();
+  });
+
+  it('is disabled once the charge is fully refunded', async () => {
+    chargeReturning({ refunded_amount_minor: 12_500 });
+
+    renderPage();
+
+    expect(await screen.findByRole('button', { name: 'Refund' })).toBeDisabled();
+  });
+
   it('is disabled for a read-only session', async () => {
     renderWithProviders(<ChargeDetailPage />, {
       route: `/charges/${CHARGE_ID}`,
@@ -99,6 +151,20 @@ describe('cross-links', () => {
         .some(
           (link) =>
             link.getAttribute('href') === '/payments/pi_01HW0RTPAYMENTINTENT0001',
+        ),
+    ).toBe(true);
+  });
+
+  it('links to the settlement batch when there is one', async () => {
+    renderPage();
+
+    await screen.findByText('Settlement batch');
+    expect(
+      screen
+        .getAllByRole('link')
+        .some(
+          (link) =>
+            link.getAttribute('href') === '/settlements/sb_01HW0RTBATCH000000001',
         ),
     ).toBe(true);
   });
