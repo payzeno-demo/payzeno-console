@@ -34,3 +34,24 @@ export function useChargeLedger(chargeId: string): UseChargeLedgerResult {
   const endpoints = useEndpoints();
   const query = useQuery({
     ...chargeLedgerQuery(endpoints, chargeId),
+    enabled: chargeId.length > 0,
+  });
+
+  const transactions = useMemo(() => query.data?.transactions ?? [], [query.data]);
+
+  const groups = useMemo(() => {
+    const byPurpose = new Map<LedgerPurpose, LedgerTransaction[]>();
+    for (const transaction of transactions) {
+      const bucket = byPurpose.get(transaction.purpose) ?? [];
+      bucket.push(transaction);
+      byPurpose.set(transaction.purpose, bucket);
+    }
+    return [...byPurpose.entries()].map(([purpose, list]) => ({ purpose, transactions: list }));
+  }, [transactions]);
+
+  const hasDuplicateSettlement = useMemo(
+    () => transactions.filter((t) => t.purpose === 'settle').length > 1,
+    [transactions],
+  );
+
+  return {

@@ -48,12 +48,29 @@ describe('the request', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/ledger'));
+    recorder.stop();
+
+    expect(request?.url).toBe(`http://localhost/v1/charges/${CHARGE_ID}/ledger`);
+  });
+
+  it('does not fire without a charge id', async () => {
+    const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useChargeLedger(''));
 
     await waitFor(() => {
       expect(result.current.transactions).toEqual([]);
     });
 
+    const requests = recorder.requests.filter((candidate) => candidate.url.includes('/ledger'));
+    recorder.stop();
+
+    expect(requests).toHaveLength(0);
+  });
+});
+
+describe('the transactions', () => {
+  it('returns them in the order the ledger posted them', async () => {
     const { result } = renderHookWithProviders(() => useChargeLedger(CHARGE_ID));
 
     await waitFor(() => {
@@ -113,5 +130,52 @@ describe('hasDuplicateSettlement — the arc-INC detector', () => {
   it('is false for a healthy authorize/capture/settle charge', async () => {
     ledgerReturning('authorize', 'capture', 'settle');
 
+    const { result } = renderHookWithProviders(() => useChargeLedger(CHARGE_ID));
+
+    await waitFor(() => {
+      expect(result.current.transactions).toHaveLength(3);
+    });
+    expect(result.current.hasDuplicateSettlement).toBe(false);
+  });
+
+  it('is true when the same charge settled twice', async () => {
+    ledgerReturning('authorize', 'capture', 'settle', 'settle');
+
+    const { result } = renderHookWithProviders(() => useChargeLedger(CHARGE_ID));
+
+    await waitFor(() => {
+      expect(result.current.transactions).toHaveLength(4);
+    });
+    expect(result.current.hasDuplicateSettlement).toBe(true);
+  });
+
+  it('is not confused by two captures — only `settle` counts', async () => {
+    ledgerReturning('authorize', 'capture', 'capture', 'settle');
+
+    const { result } = renderHookWithProviders(() => useChargeLedger(CHARGE_ID));
+
+    await waitFor(() => {
+      expect(result.current.transactions).toHaveLength(4);
+    });
+    expect(result.current.hasDuplicateSettlement).toBe(false);
+  });
+
+  it('is false before anything has loaded', () => {
+    const { result } = renderHookWithProviders(() => useChargeLedger(CHARGE_ID));
+
+    expect(result.current.hasDuplicateSettlement).toBe(false);
+  });
+});
+
+describe('failure', () => {
+  it('surfaces a ledger outage rather than showing an empty posting list', async () => {
+    server.use(errorHandler('get', '/charges/:chargeId/ledger', 502, 'processor_unavailable'));
+
+    const { result } = renderHookWithProviders(() => useChargeLedger(CHARGE_ID));
+
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
+    expect(result.current.transactions).toEqual([]);
   });
 });

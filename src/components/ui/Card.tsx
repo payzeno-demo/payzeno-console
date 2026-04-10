@@ -17,6 +17,8 @@ export type HeadingLevel = 2 | 3 | 4;
  * The element the card renders as. `section` needs an accessible name (`aria-label` or
  * `aria-labelledby`); `article` is for a self-contained tile in a grid of tiles.
  */
+export type CardElement = 'section' | 'article' | 'div';
+
 export interface CardProps {
   children: ReactNode;
   as?: CardElement;
