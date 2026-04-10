@@ -169,3 +169,15 @@ export function ChargeDetailPage() {
             <DateCell value={charge.authorized_at} precision="minute" />
           </dd>
 
+          <dt>Captured at</dt>
+          <dd>
+            <DateCell value={charge.captured_at} precision="minute" />
+          </dd>
+
+          <dt>Settled at</dt>
+          <dd>
+            <DateCell value={charge.settled_at} precision="minute" />
+          </dd>
+        </dl>
+      </Card>
+

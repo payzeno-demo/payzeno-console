@@ -48,3 +48,10 @@ export function useChargeLedger(chargeId: string): UseChargeLedgerResult {
     }
     return [...byPurpose.entries()].map(([purpose, list]) => ({ purpose, transactions: list }));
   }, [transactions]);
+
+  const hasDuplicateSettlement = useMemo(
+    () => transactions.filter((t) => t.purpose === 'settle').length > 1,
+    [transactions],
+  );
+
+  return {
