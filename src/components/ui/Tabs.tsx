@@ -21,6 +21,15 @@ export interface TabSpec {
   disabled?: boolean;
 }
 
+export interface TabsProps {
+  tabs: ReadonlyArray<TabSpec>;
+  value: string;
+  onValueChange: (value: string) => void;
+  /** Accessible name for the tab list. */
+  label: string;
+  className?: string;
+}
+
 export function Tabs({ tabs, value, onValueChange, label, className }: TabsProps) {
   return (
     <RadixTabs.Root value={value} onValueChange={onValueChange} className={cn(pz('tabs'), className)}>
