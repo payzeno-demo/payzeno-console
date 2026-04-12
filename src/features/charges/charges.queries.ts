@@ -44,3 +44,7 @@ export function chargeLedgerQuery(e: EndpointRegistry, chargeId: string) {
   return queryOptions<ChargeLedgerResponse>({
     queryKey: queryKeys.charges.ledger(chargeId),
     queryFn: () => e.charges.ledger(chargeId),
+    // Double-entry postings are immutable once written; nothing here goes stale quickly.
+    staleTime: 5 * 60 * 1000,
+  });
+}
