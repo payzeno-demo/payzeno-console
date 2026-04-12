@@ -74,3 +74,12 @@ export function ChargeLedgerPanel({ chargeId, currency }: ChargeLedgerPanelProps
                       <MoneyCell amountMinor={entry.amount_minor} currency={currency} />
                     </li>
                   ))}
+                </ul>
+              </article>
+            ))}
+          </section>
+        ))
+      )}
+    </Card>
+  );
+}

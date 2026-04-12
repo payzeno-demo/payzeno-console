@@ -21,6 +21,15 @@ export interface TabSpec {
   disabled?: boolean;
 }
 
+export interface TabsProps {
+  tabs: ReadonlyArray<TabSpec>;
+  value: string;
+  onValueChange: (value: string) => void;
+  /** Accessible name for the tab list. */
+  label: string;
+  className?: string;
+}
+
 export function Tabs({ tabs, value, onValueChange, label, className }: TabsProps) {
   return (
     <RadixTabs.Root value={value} onValueChange={onValueChange} className={cn(pz('tabs'), className)}>
@@ -75,3 +84,7 @@ export function Tabs({ tabs, value, onValueChange, label, className }: TabsProps
   );
 }
 
+/** First enabled tab id — the fallback when a URL names a tab that no longer exists. */
+export function defaultTabId(tabs: ReadonlyArray<TabSpec>): string {
+  return tabs.find((tab) => !tab.disabled)?.id ?? tabs[0]?.id ?? '';
+}

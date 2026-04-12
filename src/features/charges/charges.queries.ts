@@ -40,3 +40,11 @@ export function chargeQuery(e: EndpointRegistry, chargeId: string) {
  * off the legacy biller. payzeno-api reads through to the ledger's
  * `GET /internal/v1/transactions?reference_type=charge&reference_id=…`.
  */
+export function chargeLedgerQuery(e: EndpointRegistry, chargeId: string) {
+  return queryOptions<ChargeLedgerResponse>({
+    queryKey: queryKeys.charges.ledger(chargeId),
+    queryFn: () => e.charges.ledger(chargeId),
+    // Double-entry postings are immutable once written; nothing here goes stale quickly.
+    staleTime: 5 * 60 * 1000,
+  });
+}

@@ -55,3 +55,10 @@ export function useChargeLedger(chargeId: string): UseChargeLedgerResult {
   );
 
   return {
+    transactions,
+    groups,
+    hasDuplicateSettlement,
+    isLoading: query.isLoading,
+    error: (query.error as Error | null) ?? null,
+  };
+}
