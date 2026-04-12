@@ -181,3 +181,15 @@ export function ChargeDetailPage() {
         </dl>
       </Card>
 
+      <ChargeLedgerPanel chargeId={charge.id} currency={charge.currency} />
+
+      <RefundDialog
+        open={refundOpen}
+        onOpenChange={setRefundOpen}
+        chargeId={charge.id}
+        currency={charge.currency}
+        refundableMinor={refundableMinor}
+      />
+    </PageContainer>
+  );
+}
