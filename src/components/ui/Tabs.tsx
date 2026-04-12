@@ -84,3 +84,7 @@ export function Tabs({ tabs, value, onValueChange, label, className }: TabsProps
   );
 }
 
+/** First enabled tab id — the fallback when a URL names a tab that no longer exists. */
+export function defaultTabId(tabs: ReadonlyArray<TabSpec>): string {
+  return tabs.find((tab) => !tab.disabled)?.id ?? tabs[0]?.id ?? '';
+}
