@@ -37,3 +37,9 @@ export function DataTableHeader<TRow>({
               scope="col"
               aria-sort={column.sortable ? sortState : undefined}
               style={{
+                position: 'sticky',
+                top: 0,
+                width: column.width,
+                textAlign: column.align === 'end' ? 'right' : 'left',
+                padding: `${space[2]} ${space[4]}`,
+                fontSize: font.size.sm,

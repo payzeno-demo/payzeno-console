@@ -34,3 +34,8 @@ export interface DataTableProps<TRow> {
 /** Stable row identity. Every payzeno resource has `id`; this is the escape hatch for the rest. */
 export type RowKey<TRow> = (row: TRow) => string;
 
+export function defaultRowKey<TRow extends { id: string }>(row: TRow): string {
+  return row.id;
+}
+
+/** Column ids that never appear in an export. */
