@@ -43,3 +43,10 @@ export function DataTableHeader<TRow>({
                 textAlign: column.align === 'end' ? 'right' : 'left',
                 padding: `${space[2]} ${space[4]}`,
                 fontSize: font.size.sm,
+                fontWeight: font.weight.semibold,
+                color: color.textSecondary,
+                background: color.surfaceMuted,
+                borderBottom: `1px solid ${color.border}`,
+                whiteSpace: 'nowrap',
+              }}
+            >

@@ -63,3 +63,9 @@ export class ApiClient implements HttpTransport {
         if (parsed.ok) {
           return parsed.data;
         }
+
+        throw toConsoleApiError(parsed, raw.headers);
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') throw err;
+
+        const decision = decideRetry(err, attempt, {
