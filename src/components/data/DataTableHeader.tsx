@@ -50,3 +50,9 @@ export function DataTableHeader<TRow>({
                 whiteSpace: 'nowrap',
               }}
             >
+              {column.sortable ? (
+                <button
+                  type="button"
+                  onClick={() => onSort(column.id)}
+                  className={pz('data-table', 'sort')}
+                  style={{

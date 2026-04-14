@@ -23,3 +23,16 @@ export interface LabelProps {
   className?: string;
 }
 
+export function Label({
+  htmlFor,
+  children,
+  required = false,
+  hint,
+  disabled = false,
+  className,
+}: LabelProps) {
+  return (
+    <RadixLabel.Root
+      htmlFor={htmlFor}
+      className={cn(pz('label'), className)}
+      style={{

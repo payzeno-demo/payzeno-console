@@ -85,3 +85,18 @@ export function DataTablePagination({
           <label htmlFor="page-size" style={{ color: color.textSecondary }}>
             Rows per page
           </label>
+          <Select
+            id="page-size"
+            ariaLabel="Rows per page"
+            value={String(pageSize)}
+            onValueChange={(next) => changePageSize(Number.parseInt(next, 10))}
+            options={PAGE_SIZE_OPTIONS.map((size) => ({ value: String(size), label: String(size) }))}
+          />
+        </div>
+      ) : (
+        <span />
+      )}
+
+      <p aria-live="polite" style={{ margin: 0 }}>
+        Page {pageNumber}
+        {rowsOnPage > 0 ? ` — showing ${pluralise(rowsOnPage, resourceLabel.replace(/s$/, ''))}` : ''}
