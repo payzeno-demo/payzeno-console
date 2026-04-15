@@ -100,3 +100,17 @@ export function DataTablePagination({
       <p aria-live="polite" style={{ margin: 0 }}>
         Page {pageNumber}
         {rowsOnPage > 0 ? ` — showing ${pluralise(rowsOnPage, resourceLabel.replace(/s$/, ''))}` : ''}
+        {busy ? ' (updating…)' : ''}
+      </p>
+
+      <div style={{ display: 'flex', gap: space[2] }}>
+        <Button size="sm" onClick={goBack} disabled={!back}>
+          Previous
+        </Button>
+        <Button size="sm" onClick={onNext} disabled={!forward} isLoading={busy && forward}>
+          Next
+        </Button>
+      </div>
+    </nav>
+  );
+}

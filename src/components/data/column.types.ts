@@ -39,3 +39,9 @@ export function defaultRowKey<TRow extends { id: string }>(row: TRow): string {
 }
 
 /** Column ids that never appear in an export. */
+export const NON_EXPORTABLE_COLUMN_IDS: ReadonlyArray<string> = ['select', 'actions'];
+
+export function isExportable<TRow>(column: ColumnDef<TRow>): boolean {
+  return !NON_EXPORTABLE_COLUMN_IDS.includes(column.id);
+}
+
