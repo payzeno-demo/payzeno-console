@@ -56,3 +56,10 @@ export function DataTableHeader<TRow>({
                   onClick={() => onSort(column.id)}
                   className={pz('data-table', 'sort')}
                   style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: space[1],
+                    padding: 0,
+                    background: 'transparent',
+                    border: 'none',
+                    font: 'inherit',
