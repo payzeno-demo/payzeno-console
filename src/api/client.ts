@@ -69,3 +69,9 @@ export class ApiClient implements HttpTransport {
         if (err instanceof DOMException && err.name === 'AbortError') throw err;
 
         const decision = decideRetry(err, attempt, {
+          maxAttempts: this.options.retries + 1,
+          baseDelayMs: TRANSPORT_RETRY_BASE_MS,
+          method: spec.method,
+          hasIdempotencyKey: spec.idempotencyKey !== undefined,
+          noRetry: spec.noRetry,
+        });
