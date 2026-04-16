@@ -76,3 +76,10 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
               </button>
             ) : (
               content
+            )}
+          </td>
+        );
+      })}
+    </tr>
+  );
+}
