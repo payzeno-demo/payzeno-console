@@ -45,3 +45,8 @@ export function isExportable<TRow>(column: ColumnDef<TRow>): boolean {
   return !NON_EXPORTABLE_COLUMN_IDS.includes(column.id);
 }
 
+/**
+ * Build a column with less ceremony. Most columns are "read a field, render it as text", and
+ * spelling out `cell` and `exportValue` for those is how columns files got to 200 lines.
+ */
+export function textColumn<TRow>(

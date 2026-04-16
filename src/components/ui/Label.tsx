@@ -36,3 +36,15 @@ export function Label({
       htmlFor={htmlFor}
       className={cn(pz('label'), className)}
       style={{
+        display: 'inline-flex',
+        alignItems: 'baseline',
+        gap: space[1],
+        fontFamily: font.family,
+        fontSize: font.size.sm,
+        fontWeight: font.weight.medium,
+        color: disabled ? color.textMuted : color.textPrimary,
+        marginBottom: space[1],
+      }}
+    >
+      <span>{children}</span>
+      {required ? (
