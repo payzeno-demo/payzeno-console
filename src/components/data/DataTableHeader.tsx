@@ -63,3 +63,9 @@ export function DataTableHeader<TRow>({
                     background: 'transparent',
                     border: 'none',
                     font: 'inherit',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {column.header}
+                  <span aria-hidden="true" style={{ opacity: isSorted ? 1 : 0.3 }}>
