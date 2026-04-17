@@ -69,3 +69,10 @@ export function DataTableHeader<TRow>({
                 >
                   {column.header}
                   <span aria-hidden="true" style={{ opacity: isSorted ? 1 : 0.3 }}>
+                    {sortState === 'descending' ? '▾' : '▴'}
+                  </span>
+                </button>
+              ) : (
+                column.header
+              )}
+            </th>
