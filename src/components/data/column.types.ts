@@ -50,3 +50,8 @@ export function isExportable<TRow>(column: ColumnDef<TRow>): boolean {
  * spelling out `cell` and `exportValue` for those is how columns files got to 200 lines.
  */
 export function textColumn<TRow>(
+  id: string,
+  header: string,
+  read: (row: TRow) => string | null,
+  options: Partial<Pick<ColumnDef<TRow>, 'align' | 'width' | 'sortable'>> = {},
+): ColumnDef<TRow> {
