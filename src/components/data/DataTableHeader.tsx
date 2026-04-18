@@ -37,3 +37,42 @@ export function DataTableHeader<TRow>({
               scope="col"
               aria-sort={column.sortable ? sortState : undefined}
               style={{
+                position: 'sticky',
+                top: 0,
+                width: column.width,
+                textAlign: column.align === 'end' ? 'right' : 'left',
+                padding: `${space[2]} ${space[4]}`,
+                fontSize: font.size.sm,
+                fontWeight: font.weight.semibold,
+                color: color.textSecondary,
+                background: color.surfaceMuted,
+                borderBottom: `1px solid ${color.border}`,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {column.sortable ? (
+                <button
+                  type="button"
+                  onClick={() => onSort(column.id)}
+                  className={pz('data-table', 'sort')}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: space[1],
+                    padding: 0,
+                    background: 'transparent',
+                    border: 'none',
+                    font: 'inherit',
+                    color: 'inherit',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {column.header}
+                  <span aria-hidden="true" style={{ opacity: isSorted ? 1 : 0.3 }}>
+                    {sortState === 'descending' ? '▾' : '▴'}
+                  </span>
+                </button>
+              ) : (
+                column.header
+              )}
+            </th>

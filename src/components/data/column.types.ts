@@ -34,3 +34,24 @@ export interface DataTableProps<TRow> {
 /** Stable row identity. Every payzeno resource has `id`; this is the escape hatch for the rest. */
 export type RowKey<TRow> = (row: TRow) => string;
 
+export function defaultRowKey<TRow extends { id: string }>(row: TRow): string {
+  return row.id;
+}
+
+/** Column ids that never appear in an export. */
+export const NON_EXPORTABLE_COLUMN_IDS: ReadonlyArray<string> = ['select', 'actions'];
+
+export function isExportable<TRow>(column: ColumnDef<TRow>): boolean {
+  return !NON_EXPORTABLE_COLUMN_IDS.includes(column.id);
+}
+
+/**
+ * Build a column with less ceremony. Most columns are "read a field, render it as text", and
+ * spelling out `cell` and `exportValue` for those is how columns files got to 200 lines.
+ */
+export function textColumn<TRow>(
+  id: string,
+  header: string,
+  read: (row: TRow) => string | null,
+  options: Partial<Pick<ColumnDef<TRow>, 'align' | 'width' | 'sortable'>> = {},
+): ColumnDef<TRow> {

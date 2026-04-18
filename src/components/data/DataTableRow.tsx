@@ -70,3 +70,16 @@ export function DataTableRow<TRow>({ row, columns, onRowClick }: DataTableRowPro
                   color: color.textLink,
                   textAlign: 'inherit',
                   cursor: 'pointer',
+                }}
+              >
+                {content}
+              </button>
+            ) : (
+              content
+            )}
+          </td>
+        );
+      })}
+    </tr>
+  );
+}
