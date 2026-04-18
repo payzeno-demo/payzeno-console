@@ -116,3 +116,11 @@ export function DataTable<TRow extends { id: string }>({
         <DataTableHeader
           columns={columns}
           sortedColumnId={sort?.columnId ?? null}
+          ariaSortFor={(columnId) => ariaSort(columnId, activeSort)}
+          onSort={onSort}
+        />
+
+        <tbody>
+          {isLoading ? (
+            <RowSkeleton columnCount={columns.length} rowCount={SKELETON_ROW_COUNT} />
+          ) : isEmpty ? (
