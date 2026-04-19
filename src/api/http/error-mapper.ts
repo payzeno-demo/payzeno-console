@@ -28,3 +28,11 @@ const FALLBACK_MESSAGES: Readonly<Record<number, string>> = {
   401: 'Your session has expired. Sign in again.',
   403: 'You do not have permission to do that.',
   404: 'We could not find that.',
+  409: 'That conflicts with the current state.',
+  422: 'Some fields need attention.',
+  429: 'Too many requests. Slow down for a moment.',
+  502: 'An upstream service is unavailable.',
+};
+
+function fallbackMessage(status: number): string {
+  return FALLBACK_MESSAGES[status] ?? 'Something went wrong on our side.';
