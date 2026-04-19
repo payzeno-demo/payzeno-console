@@ -75,3 +75,9 @@ export class ApiClient implements HttpTransport {
           hasIdempotencyKey: spec.idempotencyKey !== undefined,
           noRetry: spec.noRetry,
         });
+
+        if (!decision.retry) {
+          if (err instanceof RequestTimeoutError || err instanceof NetworkError) {
+            throw transportFailureToApiError(built.url, 'client');
+          }
+          throw err;

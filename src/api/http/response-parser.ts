@@ -46,3 +46,9 @@ export function parseResponse<T>(response: RawResponse): ParseResult<T> {
   const requestId = readRequestId(response.headers);
   const parsed = tryParseJson(response.text);
 
+  if (response.status >= 200 && response.status < 300) {
+    return {
+      ok: true,
+      status: response.status,
+      // 204 has no body. `delete()` returns void, so `undefined as T` is honest here.
+      data: (parsed === undefined ? undefined : parsed) as T,

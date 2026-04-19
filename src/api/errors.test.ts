@@ -59,6 +59,12 @@ describe('the inheritance chain', () => {
     }
   });
 
+  it('declares all nine subclasses — the count is the contract', () => {
+    expect(SUBCLASSES).toHaveLength(9);
+  });
+});
+
+describe('ConsoleApiError', () => {
   it('carries status under both `status` and `httpStatus`', () => {
     const error = new ConsoleApiError(init({ status: 404 }));
     expect(error.status).toBe(404);
@@ -83,6 +89,20 @@ describe('the inheritance chain', () => {
     });
   });
 
+  it('treats 429 and 5xx-from-503-up as transient, and 4xx as not', () => {
+    expect(new RateLimitedApiError(init({ status: 429 })).isTransient()).toBe(true);
+    expect(new UpstreamUnavailableApiError(init({ status: 502 })).isTransient()).toBe(true);
+    expect(new UpstreamUnavailableApiError(init({ status: 504 })).isTransient()).toBe(true);
+    expect(new NotFoundApiError(init({ status: 404 })).isTransient()).toBe(false);
+    expect(new ForbiddenError(init({ status: 403 })).isTransient()).toBe(false);
+  });
+
+  it('recognises settlement_locked, the code the retry hook treats as a no-op', () => {
+    const locked = new ConflictApiError(init({ status: 409, code: 'settlement_locked' }));
+    expect(locked.isSettlementLocked()).toBe(true);
+    expect(locked.isIdempotencyInProgress()).toBe(false);
+  });
+
   it('recognises idempotency_in_progress separately — that one is worth retrying', () => {
     const inProgress = new ConflictApiError(
       init({ status: 409, code: 'idempotency_in_progress' }),
@@ -97,6 +117,13 @@ describe('the inheritance chain', () => {
 });
 
 describe('narrowing helpers', () => {
+  it('isConsoleApiError accepts the whole tree and rejects a bare Error', () => {
+    expect(isConsoleApiError(new ForbiddenError(init({ status: 403 })))).toBe(true);
+    expect(isConsoleApiError(new Error('plain'))).toBe(false);
+    expect(isConsoleApiError(null)).toBe(false);
+    expect(isConsoleApiError('403')).toBe(false);
+  });
+
   it('isClientError is true only for 4xx — this is the retry gate', () => {
     expect(isClientError(new NotFoundApiError(init({ status: 404 })))).toBe(true);
     expect(isClientError(new RateLimitedApiError(init({ status: 429 })))).toBe(true);
@@ -104,4 +131,11 @@ describe('narrowing helpers', () => {
     expect(isClientError(new Error('plain'))).toBe(false);
   });
 
+  it('isApiErrorBody recognises the wire envelope and nothing else', () => {
+    expect(isApiErrorBody({ error: { code: 'not_found', message: 'no' } })).toBe(true);
+    expect(isApiErrorBody({ error: { message: 'no code' } })).toBe(false);
+    expect(isApiErrorBody({ code: 'not_found' })).toBe(false);
+    expect(isApiErrorBody('not json')).toBe(false);
+    expect(isApiErrorBody(null)).toBe(false);
+  });
 });

@@ -14,3 +14,35 @@
  *  - always retry `UpstreamUnavailableApiError` (502) — that is the ledger redeploying or an
  *    acquirer breaker tripping, and it clears in seconds;
  *  - honour `Retry-After` on 429 instead of backing off blindly;
+ *  - mutations never retry automatically. `ApiClient` mints one idempotency key per attempt;
+ *    a query-layer retry would be a second attempt with a second key, i.e. a second charge.
+ */
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
+
+import {
+  RateLimitedApiError,
+  UpstreamUnavailableApiError,
+  isClientError,
+  isConsoleApiError,
+} from '@api/errors';
+import { LONG_STALE_TIME_MS, MAX_TRANSPORT_RETRIES, STALE_TIME_MS } from '@config/constants';
+import { captureError } from '@lib/telemetry';
+
+export interface QueryProviderProps {
+  children: ReactNode;
+  /** Injected by tests, which want `retry: false` and no cache between cases. */
+  client?: QueryClient;
+}
+
+/** How long to wait before attempt `attempt + 1`. Exported so the test can assert 429. */
+export function retryDelayFor(attempt: number, error: unknown): number {
+  if (error instanceof RateLimitedApiError) {
+    return error.retryAfter * 1_000;
+  }
+  // 500ms, 1s, 2s — capped, because a user staring at a spinner is not helped by minute six.
+  return Math.min(500 * 2 ** attempt, 8_000);
+}
+
+/** The policy itself, pulled out so `QueryProvider.test.tsx` can drive it directly. */

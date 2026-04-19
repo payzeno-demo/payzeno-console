@@ -16,3 +16,30 @@ import { Button } from '../ui/Button';
 import { color, font, radius, space, visuallyHidden } from '../ui/tokens';
 
 export interface RateLimitCountdownProps {
+  /** Seconds to wait. From `RateLimitedApiError.retryAfter`. */
+  seconds: number;
+  /** Fired once, when the countdown reaches zero. */
+  onExpire: () => void;
+  /** Shown above the countdown — "Too many settlement retries". */
+  title?: string;
+}
+
+/** `95` → `1:35`. Under a minute stays as plain seconds, which reads better. */
+export function formatCountdown(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return `${minutes}:${String(rest).padStart(2, '0')}`;
+}
+
+export function RateLimitCountdown({
+  seconds,
+  onExpire,
+  title = 'Too many requests',
+}: RateLimitCountdownProps) {
+  const [remaining, setRemaining] = useState(Math.max(0, Math.ceil(seconds)));
+  const fired = useRef(false);
+
+  useEffect(() => {
+    if (remaining <= 0) return undefined;
+    const timer = setTimeout(() => setRemaining((current) => current - 1), 1_000);

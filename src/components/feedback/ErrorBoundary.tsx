@@ -52,6 +52,36 @@ export interface ErrorFallbackProps {
  * the same branching, and two copies of this ladder is how the 429 branch went missing for a
  * month (PAY-1854).
  */
+export function ErrorFallback({ error, onRetry }: ErrorFallbackProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+
+  const body = renderError(error, onRetry);
+
+  return (
+    <div
+      ref={ref}
+      role="alert"
+      tabIndex={-1}
+      className={pz('error-boundary')}
+      style={{
+        padding: space[6],
+        fontFamily: font.family,
+        color: color.textPrimary,
+        background: color.surface,
+        border: `1px solid ${color.border}`,
+        borderRadius: radius.lg,
+        outline: 'none',
+      }}
+    >
+      {body}
+    </div>
+  );
+}
+
 /** One branch per subclass. Order matters: subclasses are checked before their base. */
 function renderError(error: unknown, onRetry: () => void): ReactNode {
   if (error instanceof UnauthorizedError) {
