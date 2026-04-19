@@ -25,3 +25,12 @@ export interface RateLimitCountdownProps {
 }
 
 /** `95` → `1:35`. Under a minute stays as plain seconds, which reads better. */
+export function formatCountdown(seconds: number): string {
+  if (seconds < 60) return `${seconds}s`;
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  return `${minutes}:${String(rest).padStart(2, '0')}`;
+}
+
+export function RateLimitCountdown({
+  seconds,
