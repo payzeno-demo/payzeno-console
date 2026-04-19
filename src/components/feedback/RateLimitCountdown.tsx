@@ -34,3 +34,12 @@ export function formatCountdown(seconds: number): string {
 
 export function RateLimitCountdown({
   seconds,
+  onExpire,
+  title = 'Too many requests',
+}: RateLimitCountdownProps) {
+  const [remaining, setRemaining] = useState(Math.max(0, Math.ceil(seconds)));
+  const fired = useRef(false);
+
+  useEffect(() => {
+    if (remaining <= 0) return undefined;
+    const timer = setTimeout(() => setRemaining((current) => current - 1), 1_000);

@@ -6,6 +6,8 @@ import { runtime } from '@config/runtime';
 import { newRequestId } from '@lib/ids';
 
 export const HEADER_REQUEST_ID = 'X-Request-Id';
+export const HEADER_CORRELATION_ID = 'X-Correlation-Id';
+export const HEADER_RATE_LIMIT_REMAINING = 'X-RateLimit-Remaining';
 /** `Idempotent-Replay: true` means payzeno-api served a stored response, not a fresh one. */
 export function wasIdempotentReplay(headers: Headers): boolean {
   return headers.get(HEADER_IDEMPOTENT_REPLAY) === 'true';
