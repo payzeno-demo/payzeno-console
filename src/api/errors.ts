@@ -62,3 +62,7 @@ export class ForbiddenError extends ConsoleApiError {}
 export class NotFoundApiError extends ConsoleApiError {}
 
 /**
+ * 409. `code` is the discriminator `features/settlements/useRetrySettlementItem.ts` reads:
+ * `settlement_locked` is a no-op, not a failure (the-incident.md §8, PAY-2043).
+ */
+export class ConflictApiError extends ConsoleApiError {

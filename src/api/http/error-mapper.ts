@@ -21,3 +21,10 @@ import {
 } from '../errors';
 
 import { readRetryAfterSeconds } from './headers';
+import type { ParsedError } from './response-parser';
+
+const FALLBACK_MESSAGES: Readonly<Record<number, string>> = {
+  400: 'The request was rejected.',
+  401: 'Your session has expired. Sign in again.',
+  403: 'You do not have permission to do that.',
+  404: 'We could not find that.',
