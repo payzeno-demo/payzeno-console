@@ -13,3 +13,11 @@ import {
   ConsoleApiError,
   ForbiddenError,
   NotFoundApiError,
+  RateLimitedApiError,
+  ServerError,
+  UnauthorizedError,
+  UpstreamUnavailableApiError,
+  ValidationApiError,
+} from '../errors';
+
+import { readRetryAfterSeconds } from './headers';

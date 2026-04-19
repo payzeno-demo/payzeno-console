@@ -16,3 +16,12 @@ import { Button } from '../ui/Button';
 import { color, font, radius, space, visuallyHidden } from '../ui/tokens';
 
 export interface RateLimitCountdownProps {
+  /** Seconds to wait. From `RateLimitedApiError.retryAfter`. */
+  seconds: number;
+  /** Fired once, when the countdown reaches zero. */
+  onExpire: () => void;
+  /** Shown above the countdown — "Too many settlement retries". */
+  title?: string;
+}
+
+/** `95` → `1:35`. Under a minute stays as plain seconds, which reads better. */

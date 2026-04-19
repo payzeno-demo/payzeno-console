@@ -10,3 +10,9 @@ import type { HttpMethod } from '../transport';
 
 import { NetworkError } from './fetch-transport';
 import { RequestTimeoutError } from './timeout';
+
+/** Idempotent by HTTP semantics. POST is added per-call when the key makes it safe. */
+const IDEMPOTENT_METHODS: ReadonlySet<HttpMethod> = new Set<HttpMethod>(['GET', 'DELETE']);
+
+export const RETRYABLE_STATUSES: ReadonlyArray<number> = [502, 503, 504];
+

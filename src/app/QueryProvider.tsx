@@ -14,3 +14,19 @@
  *  - always retry `UpstreamUnavailableApiError` (502) — that is the ledger redeploying or an
  *    acquirer breaker tripping, and it clears in seconds;
  *  - honour `Retry-After` on 429 instead of backing off blindly;
+ *  - mutations never retry automatically. `ApiClient` mints one idempotency key per attempt;
+ *    a query-layer retry would be a second attempt with a second key, i.e. a second charge.
+ */
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useState } from 'react';
+import type { ReactNode } from 'react';
+
+import {
+  RateLimitedApiError,
+  UpstreamUnavailableApiError,
+  isClientError,
+  isConsoleApiError,
+} from '@api/errors';
+import { LONG_STALE_TIME_MS, MAX_TRANSPORT_RETRIES, STALE_TIME_MS } from '@config/constants';
+import { captureError } from '@lib/telemetry';
+

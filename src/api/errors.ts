@@ -57,3 +57,8 @@ export class BadRequestApiError extends ConsoleApiError {}
 
 export class UnauthorizedError extends ConsoleApiError {}
 
+export class ForbiddenError extends ConsoleApiError {}
+
+export class NotFoundApiError extends ConsoleApiError {}
+
+/**
