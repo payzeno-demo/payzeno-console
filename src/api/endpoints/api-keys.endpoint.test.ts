@@ -39,6 +39,16 @@ describe('GET /v1/api-keys', () => {
     const request = recorder.requests.at(-1);
     recorder.stop();
 
+    expect(request?.method).toBe('POST');
+    expect(request?.url).toBe('http://localhost/v1/api-keys');
+    expect(created.name).toBe('Checkout server');
+    expect(created.secret).toBe('sk_live_01HW0RTAPIKEYCREATED01_shown_once');
+  });
+
+  it('sends an idempotency key so a double submit does not mint two keys', async () => {
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
     expect(request?.headers.get(HEADER_IDEMPOTENCY_KEY)).toBe('create-key-attempt-1');
   });
 

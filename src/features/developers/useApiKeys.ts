@@ -41,3 +41,8 @@ export function useApiKeys(): UseApiKeysResult {
   const query = useQuery(apiKeysQuery(endpoints));
   const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
 
+  const mutation = useMutation({
+    ...revokeApiKeyMutation(endpoints),
+    onSuccess: async () => {
+      toast.success('Key revoked. Any request using it now fails immediately.');
+      await queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
