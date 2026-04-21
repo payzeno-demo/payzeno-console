@@ -45,3 +45,9 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
   const queryClient = useQueryClient();
   const toast = useToast();
 
+  const [createdKey, setCreatedKey] = useState<ApiKey | null>(null);
+  const [secret, setSecret] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const mutation = useMutation({

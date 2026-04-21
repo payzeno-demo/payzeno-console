@@ -25,3 +25,8 @@ export function scopeSummary(scopes: ReadonlyArray<ApiKeyScope>): string {
   const writes = writeScopesOf(scopes);
   if (writes.length === 0) return `${pluralise(scopes.length, 'read scope')}`;
   return listSentence(writes.map((scope) => scope.replace(':write', '')));
+}
+
+export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
+  {
+    id: 'name',
