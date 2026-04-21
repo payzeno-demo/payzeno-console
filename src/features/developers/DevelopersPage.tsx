@@ -104,3 +104,73 @@ export function DevelopersPage() {
               label="Mode"
               value={keyMode}
               onValueChange={(next) => setKeyMode(next as ApiKeyMode)}
+              options={[
+                { value: 'test', label: 'Test' },
+                { value: 'live', label: 'Live' },
+              ]}
+            />
+
+            {errorMessage ? <InlineError id="key-error">{errorMessage}</InlineError> : null}
+
+            <Button
+              type="button"
+              disabled={!canWrite || isPending || keyName.trim().length === 0}
+              onClick={() => createApiKey({ name: keyName, mode: keyMode, scopes: defaultScopes })}
+            >
+              {isPending ? 'Creating…' : 'Create key'}
+            </Button>
+            <p>New keys get read scopes only. Ask support to widen them.</p>
+          </Card>
+
+          {keysError ? <ErrorState error={keysError} title="We could not load your keys" /> : null}
+          {revokeError ? <InlineError id="revoke-error">{revokeError}</InlineError> : null}
+
+          <DataTable
+            caption="Live API keys"
+            columns={apiKeyColumns}
+            rows={liveKeys}
+            isLoading={keysLoading}
+            rowActions={(row) =>
+              canWrite ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  aria-label={`Revoke ${row.name}`}
+                  onClick={() => revoke(row.id)}
+                >
+                  Revoke
+                </Button>
+              ) : null
+            }
+            emptyState={
+              <EmptyRows title="No live keys" body="Create one when you are ready to go live." />
+            }
+          />
+
+          <DataTable
+            caption="Test API keys"
+            columns={apiKeyColumns}
+            rows={testKeys}
+            isLoading={keysLoading}
+            emptyState={<EmptyRows title="No test keys" body="Create one to start integrating." />}
+          />
+
+          {revokedKeys.length > 0 ? (
+            <DataTable
+              caption="Revoked API keys"
+              columns={apiKeyColumns}
+              rows={revokedKeys}
+              isLoading={false}
+              emptyState={<EmptyRows title="None" body="" />}
+            />
+          ) : null}
+        </>
+      ) : null}
+
+      {tab === 'webhooks' ? (
+        <>
+          {deadCount > 0 ? (
+            <Alert tone="warning" title="Some events were given up on" role="status">
+              {pluralise(deadCount, 'event')} exhausted every retry. Fix the endpoint, then
+              redeliver them individually.
+            </Alert>

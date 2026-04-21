@@ -31,3 +31,30 @@ export interface CreateApiKeyArgs {
 export interface UseCreateApiKeyResult {
   createApiKey: (args: CreateApiKeyArgs) => void;
   isPending: boolean;
+  /** The metadata of the key just created. Safe to render anywhere. */
+  createdKey: ApiKey | null;
+  /** The plaintext secret. Shown once, then dropped. Never cached. */
+  secret: string | null;
+  clearSecret: () => void;
+  errorMessage: string | null;
+  fieldErrors: Record<string, string>;
+}
+
+export function useCreateApiKey(): UseCreateApiKeyResult {
+  const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const [createdKey, setCreatedKey] = useState<ApiKey | null>(null);
+  const [secret, setSecret] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const mutation = useMutation({
+    ...createApiKeyMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (response) => {
+      // Split the response: metadata one way, secret the other. Only the metadata may be

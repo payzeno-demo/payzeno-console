@@ -44,3 +44,8 @@ export function apiKeyQuery(e: EndpointRegistry, apiKeyId: string) {
 export function webhookEventsQuery(e: EndpointRegistry, q?: WebhookEventListQuery) {
   const query: WebhookEventListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
   return queryOptions<Paginated<WebhookEvent>>({
+    queryKey: queryKeys.webhookEvents.list(query),
+    queryFn: () => e.webhookEvents.list(query),
+    // Delivery attempts retry on a backoff, so this list genuinely moves while you watch it.
+    staleTime: 10_000,
+  });

@@ -52,3 +52,9 @@ export function ApiKeyDetailPage() {
         <StatusPill status={apiKey.mode} label={isLive ? 'Live' : 'Test'} />
         {!isRevoked && can('developers:write') ? (
           <Button
+            type="button"
+            variant="secondary"
+            disabled={isRevoking}
+            onClick={() => revoke(apiKey.id)}
+          >
+            {isRevoking ? 'Revoking…' : 'Revoke key'}

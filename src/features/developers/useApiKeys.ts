@@ -36,3 +36,17 @@ export function useApiKeys(): UseApiKeysResult {
   const endpoints = useEndpoints();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [revokeError, setRevokeError] = useState<string | null>(null);
+
+  const query = useQuery(apiKeysQuery(endpoints));
+  const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
+
+  const mutation = useMutation({
+    ...revokeApiKeyMutation(endpoints),
+    onSuccess: async () => {
+      toast.success('Key revoked. Any request using it now fails immediately.');
+      await queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
+    },
+    onError: (error: unknown) => {
+      if (error instanceof ForbiddenError) {
+        setRevokeError('Revoking a key needs an admin role.');

@@ -35,7 +35,38 @@ describe('GET /v1/api-keys', () => {
   });
 
   it('uses the hyphenated path — api-keys, not api_keys', async () => {
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.url).toContain('/v1/api-keys');
+  });
+
+  it('never returns a plaintext secret on a read', async () => {
+    const page = await endpoint().list();
+
+    for (const key of page.data) {
+      expect(key).not.toHaveProperty('secret');
+      expect(key.last_four).toHaveLength(4);
+    }
+  });
+});
+
+describe('GET /v1/api-keys/:apiKeyId', () => {
+  it('reads one key by id', async () => {
     const recorder = recordRequests();
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.method).toBe('POST');
+    expect(request?.url).toBe('http://localhost/v1/api-keys');
+    expect(created.name).toBe('Checkout server');
+    expect(created.secret).toBe('sk_live_01HW0RTAPIKEYCREATED01_shown_once');
+  });
+
+  it('sends an idempotency key so a double submit does not mint two keys', async () => {
+    const recorder = recordRequests();
+    await endpoint().create({ name: 'Batch worker', mode: 'test' }, 'create-key-attempt-1');
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 

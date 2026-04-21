@@ -24,6 +24,14 @@ describe('the page', () => {
     ).toBeInTheDocument();
   });
 
+  it('sets the document title', async () => {
+    renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    await waitFor(() => {
+      expect(document.title).toContain('Developers');
+    });
+  });
+
   it('shows the masked key label rather than anything secret', async () => {
     const { container } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
 
@@ -31,6 +39,14 @@ describe('the page', () => {
 
     expect(container.innerHTML).toContain('9f2c');
     expect(container.innerHTML).not.toContain('sk_live_01HW0RTAPIKEYCREATED01_shown_once');
+  });
+
+  it('offers a labelled revoke control per key', async () => {
+    renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    expect(
+      await screen.findByRole('button', { name: 'Revoke Checkout server' }),
+    ).toBeInTheDocument();
   });
 
   it('shows an empty state when there are no live keys', async () => {
@@ -43,6 +59,25 @@ describe('the page', () => {
     renderWithProviders(<DevelopersPage />, { route: '/developers' });
 
     expect(await screen.findByText('No live keys')).toBeInTheDocument();
+  });
+
+  it('is reachable from the tab list', async () => {
+    const { user } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    const tab = await screen.findByRole('tab', { name: /Webhook/ });
+    await user.click(tab);
+
+    expect(
+      await screen.findByRole('table', { name: /Webhook deliveries, most recent first/ }),
+    ).toBeInTheDocument();
+  });
+
+  it('warns when some events were given up on', async () => {
+    const { user } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    await user.click(await screen.findByRole('tab', { name: /Webhook/ }));
+
+    expect(await screen.findByText('Some events were given up on')).toBeInTheDocument();
   });
 
   it('does not warn when every delivery landed', async () => {
@@ -59,4 +94,28 @@ describe('the page', () => {
     expect(screen.queryByText('Some events were given up on')).not.toBeInTheDocument();
   });
 
+  it('lists the configured endpoints', async () => {
+    const { user } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    await user.click(await screen.findByRole('tab', { name: /Webhook/ }));
+
+    expect(
+      await screen.findByRole('region', { name: 'Webhook endpoints' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/northwind\.example\/hooks\/payzeno/)).toBeInTheDocument();
+  });
+});
+
+describe('the build-info panel', () => {
+  it('shows the console version the browser is running', async () => {
+    const { user } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    const tabs = await screen.findAllByRole('tab');
+    const last = tabs.at(-1);
+    if (last) await user.click(last);
+
+    await waitFor(() => {
+      expect(screen.getByRole('main').textContent).toMatch(/1\.34\.0-test|Build info/);
+    });
+  });
 });

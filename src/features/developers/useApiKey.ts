@@ -9,3 +9,8 @@ import { useQuery } from '@tanstack/react-query';
 import type { ApiKey, ApiKeyScope } from '@payzeno/contracts';
 
 import { NotFoundApiError } from '@api/errors';
+import { useEndpoints } from '@app/ApiContext';
+
+import { apiKeyQuery } from './developers.queries';
+
+export interface UseApiKeyResult {
