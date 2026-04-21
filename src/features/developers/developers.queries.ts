@@ -39,3 +39,8 @@ export function apiKeyQuery(e: EndpointRegistry, apiKeyId: string) {
     enabled: apiKeyId.length > 0,
     staleTime: 60_000,
   });
+}
+
+export function webhookEventsQuery(e: EndpointRegistry, q?: WebhookEventListQuery) {
+  const query: WebhookEventListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
+  return queryOptions<Paginated<WebhookEvent>>({
