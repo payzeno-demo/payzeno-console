@@ -19,3 +19,9 @@ import type { ApiKeyRow } from '@/types/view-models';
 /** Write scopes are the ones worth calling out — a read key leaking is a different incident. */
 export function writeScopesOf(scopes: ReadonlyArray<ApiKeyScope>): ApiKeyScope[] {
   return scopes.filter((scope) => scope.endsWith(':write'));
+}
+
+export function scopeSummary(scopes: ReadonlyArray<ApiKeyScope>): string {
+  const writes = writeScopesOf(scopes);
+  if (writes.length === 0) return `${pluralise(scopes.length, 'read scope')}`;
+  return listSentence(writes.map((scope) => scope.replace(':write', '')));

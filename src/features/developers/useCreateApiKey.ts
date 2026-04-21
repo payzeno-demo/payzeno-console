@@ -31,3 +31,10 @@ export interface CreateApiKeyArgs {
 export interface UseCreateApiKeyResult {
   createApiKey: (args: CreateApiKeyArgs) => void;
   isPending: boolean;
+  /** The metadata of the key just created. Safe to render anywhere. */
+  createdKey: ApiKey | null;
+  /** The plaintext secret. Shown once, then dropped. Never cached. */
+  secret: string | null;
+  clearSecret: () => void;
+  errorMessage: string | null;
+  fieldErrors: Record<string, string>;

@@ -104,3 +104,15 @@ export function DevelopersPage() {
               label="Mode"
               value={keyMode}
               onValueChange={(next) => setKeyMode(next as ApiKeyMode)}
+              options={[
+                { value: 'test', label: 'Test' },
+                { value: 'live', label: 'Live' },
+              ]}
+            />
+
+            {errorMessage ? <InlineError id="key-error">{errorMessage}</InlineError> : null}
+
+            <Button
+              type="button"
+              disabled={!canWrite || isPending || keyName.trim().length === 0}
+              onClick={() => createApiKey({ name: keyName, mode: keyMode, scopes: defaultScopes })}
