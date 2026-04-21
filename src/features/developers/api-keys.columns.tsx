@@ -30,3 +30,9 @@ export function scopeSummary(scopes: ReadonlyArray<ApiKeyScope>): string {
 export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
   {
     id: 'name',
+    header: 'Name',
+    cell: (row) => <Link to={ROUTES.developers.apiKey(row.id)}>{row.name}</Link>,
+    exportValue: (row) => row.name,
+  },
+  {
+    id: 'key',
