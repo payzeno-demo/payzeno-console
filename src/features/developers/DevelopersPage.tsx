@@ -116,3 +116,14 @@ export function DevelopersPage() {
               type="button"
               disabled={!canWrite || isPending || keyName.trim().length === 0}
               onClick={() => createApiKey({ name: keyName, mode: keyMode, scopes: defaultScopes })}
+            >
+              {isPending ? 'Creating…' : 'Create key'}
+            </Button>
+            <p>New keys get read scopes only. Ask support to widen them.</p>
+          </Card>
+
+          {keysError ? <ErrorState error={keysError} title="We could not load your keys" /> : null}
+          {revokeError ? <InlineError id="revoke-error">{revokeError}</InlineError> : null}
+
+          <DataTable
+            caption="Live API keys"
