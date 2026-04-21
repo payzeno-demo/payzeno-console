@@ -38,3 +38,10 @@ export interface UseCreateApiKeyResult {
   clearSecret: () => void;
   errorMessage: string | null;
   fieldErrors: Record<string, string>;
+}
+
+export function useCreateApiKey(): UseCreateApiKeyResult {
+  const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+

@@ -127,3 +127,15 @@ export function DevelopersPage() {
 
           <DataTable
             caption="Live API keys"
+            columns={apiKeyColumns}
+            rows={liveKeys}
+            isLoading={keysLoading}
+            rowActions={(row) =>
+              canWrite ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  aria-label={`Revoke ${row.name}`}
+                  onClick={() => revoke(row.id)}
+                >
+                  Revoke
