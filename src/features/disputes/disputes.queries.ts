@@ -43,3 +43,11 @@ export function disputesNeedingResponseQuery(e: EndpointRegistry) {
   return queryOptions<Paginated<Dispute>>({
     queryKey: queryKeys.disputes.list({ status: 'needs_response' }),
     queryFn: () => e.disputes.listNeedingResponse({ limit: 5 }),
+    staleTime: 60_000,
+  });
+}
+
+export interface SubmitEvidenceInput {
+  disputeId: string;
+  request: SubmitDisputeEvidenceRequest;
+}

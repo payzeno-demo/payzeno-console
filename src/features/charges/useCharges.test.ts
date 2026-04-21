@@ -25,7 +25,39 @@ describe('the request', () => {
       expect(result.current.rows).toHaveLength(3);
     });
 
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/v1/charges'));
+    recorder.stop();
+
+    expect(request?.url).toContain(`limit=${DEFAULT_PAGE_SIZE}`);
+  });
+
+  it('passes a status filter through', async () => {
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useCharges({ status: 'captured' }));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/v1/charges'));
+    recorder.stop();
+
+    expect(request?.url).toContain('status=captured');
+  });
+});
+
+describe('_refundableMinor', () => {
+  it('is captured minus already refunded', async () => {
+    server.use(
+      http.get(url('/charges'), () =>
+        HttpResponse.json(
+          makePage([
+            makeCharge({ captured_amount_minor: 12_500, refunded_amount_minor: 2_500 }),
+          ]),
+        ),
+      ),
+    );
+
     const { result } = renderHookWithProviders(() => useCharges());
 
     await waitFor(() => {
@@ -115,6 +147,12 @@ describe('_isRefundable', () => {
 
 describe('currency handling', () => {
   it('leaves a JPY charge in minor units — the console does no money arithmetic', async () => {
+    const { result } = renderHookWithProviders(() => useCharges());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
     const jpy = result.current.rows.find((row) => row.currency === 'JPY');
     expect(jpy?.amount_minor).toBe(1_200);
     expect(jpy?._refundableMinor).toBe(1_200);
