@@ -163,3 +163,14 @@ export function DevelopersPage() {
               isLoading={false}
               emptyState={<EmptyRows title="None" body="" />}
             />
+          ) : null}
+        </>
+      ) : null}
+
+      {tab === 'webhooks' ? (
+        <>
+          {deadCount > 0 ? (
+            <Alert tone="warning" title="Some events were given up on" role="status">
+              {pluralise(deadCount, 'event')} exhausted every retry. Fix the endpoint, then
+              redeliver them individually.
+            </Alert>
