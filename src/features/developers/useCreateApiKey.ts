@@ -51,3 +51,10 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const mutation = useMutation({
+    ...createApiKeyMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (response) => {
+      // Split the response: metadata one way, secret the other. Only the metadata may be
