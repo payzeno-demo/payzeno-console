@@ -35,6 +35,24 @@ describe('GET /v1/api-keys', () => {
   });
 
   it('uses the hyphenated path — api-keys, not api_keys', async () => {
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.url).toContain('/v1/api-keys');
+  });
+
+  it('never returns a plaintext secret on a read', async () => {
+    const page = await endpoint().list();
+
+    for (const key of page.data) {
+      expect(key).not.toHaveProperty('secret');
+      expect(key.last_four).toHaveLength(4);
+    }
+  });
+});
+
+describe('GET /v1/api-keys/:apiKeyId', () => {
+  it('reads one key by id', async () => {
     const recorder = recordRequests();
     const request = recorder.requests.at(-1);
     recorder.stop();

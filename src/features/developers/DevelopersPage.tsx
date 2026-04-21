@@ -139,3 +139,15 @@ export function DevelopersPage() {
                   onClick={() => revoke(row.id)}
                 >
                   Revoke
+                </Button>
+              ) : null
+            }
+            emptyState={
+              <EmptyRows title="No live keys" body="Create one when you are ready to go live." />
+            }
+          />
+
+          <DataTable
+            caption="Test API keys"
+            columns={apiKeyColumns}
+            rows={testKeys}
