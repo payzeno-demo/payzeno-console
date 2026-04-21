@@ -58,6 +58,18 @@ describe('creating a key', () => {
     const { result } = renderHookWithProviders(() => useCreateApiKey());
 
     act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.secret).toBe('sk_live_01HW0RTAPIKEYCREATED01_shown_once');
+    });
+  });
+
+  it('invalidates the key list so the new key appears', async () => {
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
       result.current.createApiKey({
         name: 'Read only',
         mode: 'test',

@@ -151,3 +151,15 @@ export function DevelopersPage() {
             caption="Test API keys"
             columns={apiKeyColumns}
             rows={testKeys}
+            isLoading={keysLoading}
+            emptyState={<EmptyRows title="No test keys" body="Create one to start integrating." />}
+          />
+
+          {revokedKeys.length > 0 ? (
+            <DataTable
+              caption="Revoked API keys"
+              columns={apiKeyColumns}
+              rows={revokedKeys}
+              isLoading={false}
+              emptyState={<EmptyRows title="None" body="" />}
+            />
