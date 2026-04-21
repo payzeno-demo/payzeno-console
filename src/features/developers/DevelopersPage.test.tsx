@@ -24,6 +24,14 @@ describe('the page', () => {
     ).toBeInTheDocument();
   });
 
+  it('sets the document title', async () => {
+    renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    await waitFor(() => {
+      expect(document.title).toContain('Developers');
+    });
+  });
+
   it('shows the masked key label rather than anything secret', async () => {
     const { container } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
 
@@ -31,6 +39,14 @@ describe('the page', () => {
 
     expect(container.innerHTML).toContain('9f2c');
     expect(container.innerHTML).not.toContain('sk_live_01HW0RTAPIKEYCREATED01_shown_once');
+  });
+
+  it('offers a labelled revoke control per key', async () => {
+    renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    expect(
+      await screen.findByRole('button', { name: 'Revoke Checkout server' }),
+    ).toBeInTheDocument();
   });
 
   it('shows an empty state when there are no live keys', async () => {
@@ -54,6 +70,14 @@ describe('the page', () => {
     expect(
       await screen.findByRole('table', { name: /Webhook deliveries, most recent first/ }),
     ).toBeInTheDocument();
+  });
+
+  it('warns when some events were given up on', async () => {
+    const { user } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    await user.click(await screen.findByRole('tab', { name: /Webhook/ }));
+
+    expect(await screen.findByText('Some events were given up on')).toBeInTheDocument();
   });
 
   it('does not warn when every delivery landed', async () => {

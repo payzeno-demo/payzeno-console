@@ -46,3 +46,7 @@ export function useApiKeys(): UseApiKeysResult {
     onSuccess: async () => {
       toast.success('Key revoked. Any request using it now fails immediately.');
       await queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
+    },
+    onError: (error: unknown) => {
+      if (error instanceof ForbiddenError) {
+        setRevokeError('Revoking a key needs an admin role.');

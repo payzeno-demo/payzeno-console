@@ -64,6 +64,9 @@ describe('GET /v1/api-keys/:apiKeyId', () => {
   });
 
   it('sends an idempotency key so a double submit does not mint two keys', async () => {
+    const recorder = recordRequests();
+    await endpoint().create({ name: 'Batch worker', mode: 'test' }, 'create-key-attempt-1');
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 
