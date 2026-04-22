@@ -55,3 +55,8 @@ export function textColumn<TRow>(
   read: (row: TRow) => string | null,
   options: Partial<Pick<ColumnDef<TRow>, 'align' | 'width' | 'sortable'>> = {},
 ): ColumnDef<TRow> {
+  return {
+    id,
+    header,
+    cell: (row) => read(row) ?? '—',
+    exportValue: (row) => read(row) ?? '',
