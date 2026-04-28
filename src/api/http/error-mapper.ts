@@ -36,3 +36,11 @@ const FALLBACK_MESSAGES: Readonly<Record<number, string>> = {
 
 function fallbackMessage(status: number): string {
   return FALLBACK_MESSAGES[status] ?? 'Something went wrong on our side.';
+}
+
+function fallbackCode(status: number): ErrorCode {
+  switch (status) {
+    case 400:
+      return 'invalid_request';
+    case 401:
+      return 'authentication_required';

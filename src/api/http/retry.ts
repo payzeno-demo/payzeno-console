@@ -16,3 +16,9 @@ const IDEMPOTENT_METHODS: ReadonlySet<HttpMethod> = new Set<HttpMethod>(['GET', 
 
 export const RETRYABLE_STATUSES: ReadonlyArray<number> = [502, 503, 504];
 
+export interface RetryDecision {
+  retry: boolean;
+  delayMs: number;
+  reason: string;
+}
+

@@ -52,3 +52,9 @@ export function parseResponse<T>(response: RawResponse): ParseResult<T> {
       status: response.status,
       // 204 has no body. `delete()` returns void, so `undefined as T` is honest here.
       data: (parsed === undefined ? undefined : parsed) as T,
+      requestId,
+      replayed: wasIdempotentReplay(response.headers),
+    };
+  }
+
+  return {

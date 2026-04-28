@@ -180,6 +180,50 @@ interface ErrorMessageProps {
   onAction?: () => void;
 }
 
+function ErrorMessage({ title, body, details, requestId, actionLabel, onAction }: ErrorMessageProps) {
+  return (
+    <div style={{ display: 'grid', gap: space[3] }}>
+      <h2 style={{ margin: 0, fontSize: font.size.xl, fontWeight: font.weight.semibold }}>{title}</h2>
+      <p style={{ margin: 0, color: color.textSecondary }}>{body}</p>
+
+      {details && details.length > 0 ? (
+        <ul style={{ margin: 0, paddingInlineStart: space[5], color: color.textSecondary }}>
+          {details.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      ) : null}
+
+      {requestId ? (
+        <p style={{ margin: 0, fontFamily: font.familyMono, fontSize: font.size.sm, color: color.textMuted }}>
+          Reference {requestId}
+        </p>
+      ) : null}
+
+      {actionLabel && onAction ? (
+        <div>
+          <button
+            type="button"
+            onClick={onAction}
+            style={{
+              padding: `${space[2]} ${space[4]}`,
+              fontFamily: font.family,
+              fontSize: font.size.md,
+              color: color.textInverse,
+              background: color.brand,
+              border: 'none',
+              borderRadius: radius.md,
+              cursor: 'pointer',
+            }}
+          >
+            {actionLabel}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 interface ErrorBoundaryState {
   error: unknown;
 }
