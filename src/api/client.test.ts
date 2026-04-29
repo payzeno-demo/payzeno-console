@@ -84,6 +84,11 @@ describe('ApiClient.get', () => {
 
   it('sends Accept, the pinned API version and a fresh request id on every call', async () => {
     const recorder = recordRequests();
+    const client = new ApiClient();
+
+    await client.get('/charges');
+    await client.get('/charges');
+
     const [first, second] = recorder.requests.slice(-2);
     recorder.stop();
 
@@ -100,6 +105,19 @@ describe('ApiClient.get', () => {
     const recorder = recordRequests();
 
     await new ApiClient().get('/charges');
+
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.headers.get(HEADER_CSRF)).toBeNull();
+  });
+});
+
+describe('ApiClient mutations', () => {
+  it('sends the idempotency key it was given, verbatim', async () => {
+    const recorder = recordRequests();
+
+    await new ApiClient().post('/refunds', { charge_id: 'ch_1' }, 'idem-key-0001');
 
     const request = recorder.requests.at(-1);
     recorder.stop();
@@ -259,6 +277,7 @@ describe('ApiClient transport retry', () => {
   });
 
   it('reuses one idempotency key across the retries of a single attempt', async () => {
+    const seen: Array<string | null> = [];
     let calls = 0;
 
     server.use(
