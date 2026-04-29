@@ -233,3 +233,43 @@ interface ErrorBoundaryState {
  * one of exactly two class components in the repo (the other is nothing — this is the only
  * one).
  */
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  override state: ErrorBoundaryState = { error: null };
+
+  static getDerivedStateFromError(error: unknown): ErrorBoundaryState {
+    return { error };
+  }
+
+  override componentDidCatch(error: unknown, info: ErrorInfo): void {
+    const context: { feature?: string; code?: string; requestId?: string } = {};
+    if (this.props.feature) context.feature = this.props.feature;
+    if (error instanceof ConsoleApiError) {
+      context.code = error.code;
+      context.requestId = error.requestId;
+    } else if (error instanceof ConsoleClientError) {
+      context.code = error.clientCode;
+    }
+
+    captureError(error, context);
+    // The component stack is genuinely useful and carries no user data. `import.meta.env` is
+    // off-limits outside `config/env.ts`, so the environment comes from the runtime config.
+    if (runtimeConfig.environment === 'local') console.error(error, info.componentStack);
+  }
+
+  private readonly reset = (): void => {
+    this.setState({ error: null });
+    this.props.onReset?.();
+  };
+
+  override render(): ReactNode {
+    if (this.state.error !== null) {
+      return <ErrorFallback error={this.state.error} onRetry={this.reset} />;
+    }
+    return this.props.children;
+  }
+}
+
+/**
+ * The boundary `App.tsx` mounts. Resetting it also resets every query that errored inside it,
+ * which is what makes the retry button do something.
+ */

@@ -74,3 +74,11 @@ export function toConsoleApiError(parsed: ParsedError, headers?: Headers): Conso
     requestId: envelope?.request_id ?? parsed.requestId,
     fieldErrors: envelope?.field_errors,
     retryAfterSeconds:
+      envelope?.retry_after ?? (headers ? readRetryAfterSeconds(headers) : undefined),
+    details: envelope?.details,
+  };
+
+  switch (parsed.status) {
+    case 400:
+      return new BadRequestApiError(init);
+    case 401:

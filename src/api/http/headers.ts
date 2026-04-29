@@ -8,8 +8,21 @@ import { newRequestId } from '@lib/ids';
 export const HEADER_REQUEST_ID = 'X-Request-Id';
 export const HEADER_CORRELATION_ID = 'X-Correlation-Id';
 export const HEADER_API_VERSION = 'Payzeno-Version';
+export const HEADER_IDEMPOTENCY_KEY = 'Idempotency-Key';
 export const HEADER_RATE_LIMIT_REMAINING = 'X-RateLimit-Remaining';
 export const HEADER_RETRY_AFTER = 'Retry-After';
+export interface BaseHeaderOptions {
+  /** Only set when there is a body to describe. */
+  hasBody: boolean;
+  idempotencyKey?: string;
+  correlationId?: string;
+  extra?: Record<string, string>;
+}
+
+/**
+ * Builds the header bag for one request. `X-Request-Id` is minted per request and echoed by
+ * payzeno-api, which is how a console error and a server log line get correlated in Sentry.
+ */
 export function buildHeaders(options: BaseHeaderOptions): Record<string, string> {
   const headers: Record<string, string> = {
     Accept: 'application/json',
