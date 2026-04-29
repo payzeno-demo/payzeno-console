@@ -51,3 +51,11 @@ function fallbackCode(status: number): ErrorCode {
     case 409:
       return 'conflict';
     case 422:
+      return 'validation_failed';
+    case 429:
+      return 'rate_limited';
+    case 502:
+      return 'processor_unavailable';
+    default:
+      return 'internal_error';
+  }

@@ -22,3 +22,9 @@ export interface RetryDecision {
   reason: string;
 }
 
+export interface RetryPolicyOptions {
+  maxAttempts: number;
+  baseDelayMs: number;
+  method: HttpMethod;
+  /** True when the request carries an `Idempotency-Key`; makes POST/PATCH safe to repeat. */
+  hasIdempotencyKey: boolean;
