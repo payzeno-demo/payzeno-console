@@ -52,3 +52,6 @@ export function SettlementDetailPage() {
     <PageContainer as="main">
       <PageHeader
         title={`Settlement ${batch.id}`}
+        description={`${batch.acquirer} · processing date ${batch.processing_date}`}
+        isBusy={items.isFetching}
+      >

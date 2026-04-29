@@ -25,3 +25,7 @@ export interface UseSettlementResult {
 }
 
 export function useSettlement(batchId: string): UseSettlementResult {
+  const endpoints = useEndpoints();
+  const query = useQuery({ ...settlementQuery(endpoints, batchId), enabled: batchId.length > 0 });
+
+  const isMissing = query.error instanceof NotFoundApiError;

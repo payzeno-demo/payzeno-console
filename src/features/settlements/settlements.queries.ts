@@ -58,3 +58,7 @@ export function settlementItemsQuery(
     staleTime: 15_000,
   });
 }
+
+export interface RetryItemInput {
+  batchId: string;
+  itemId: string;
