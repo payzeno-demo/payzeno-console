@@ -16,3 +16,11 @@ import type { SettlementRow } from '@types/view-models';
 
 import { settlementsListQuery } from './settlements.queries';
 
+export interface UseSettlementsResult {
+  rows: SettlementRow[];
+  nextCursor: string | null;
+  hasMore: boolean;
+  isLoading: boolean;
+  isFetching: boolean;
+  error: Error | null;
+}

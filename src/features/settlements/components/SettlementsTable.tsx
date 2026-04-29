@@ -23,3 +23,8 @@ export function SettlementTable({ rows, isLoading }: SettlementTableProps) {
   const navigate = useNavigate();
 
   return (
+    <DataTable<SettlementRow>
+      caption="Settlement batches, most recent processing date first"
+      columns={settlementColumns}
+      rows={rows}
+      isLoading={isLoading}

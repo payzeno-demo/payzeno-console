@@ -41,3 +41,11 @@ export function SettlementsPage() {
   );
 
   const { rows, isLoading, isFetching, error } = useSettlements({
+    currency,
+    ...(status === 'all' ? {} : { status }),
+  });
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Settlements"
