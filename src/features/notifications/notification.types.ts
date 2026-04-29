@@ -68,3 +68,6 @@ export function isConsoleNotification(value: unknown): value is ConsoleNotificat
   );
 }
 
+export function isSurfaced(type: PublicEventType): type is SurfacedNotificationType {
+  return (SURFACED_NOTIFICATION_TYPES as ReadonlyArray<string>).includes(type);
+}
