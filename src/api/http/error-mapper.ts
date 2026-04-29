@@ -66,3 +66,11 @@ function fallbackCode(status: number): ErrorCode {
  * synthesised failure without fabricating a `Headers` object.
  */
 export function toConsoleApiError(parsed: ParsedError, headers?: Headers): ConsoleApiError {
+  const envelope = parsed.body?.error;
+  const init = {
+    status: parsed.status,
+    code: envelope?.code ?? fallbackCode(parsed.status),
+    message: envelope?.message ?? fallbackMessage(parsed.status),
+    requestId: envelope?.request_id ?? parsed.requestId,
+    fieldErrors: envelope?.field_errors,
+    retryAfterSeconds:
