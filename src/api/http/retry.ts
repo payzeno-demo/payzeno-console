@@ -28,3 +28,9 @@ export interface RetryPolicyOptions {
   method: HttpMethod;
   /** True when the request carries an `Idempotency-Key`; makes POST/PATCH safe to repeat. */
   hasIdempotencyKey: boolean;
+  noRetry?: boolean;
+}
+
+function backoff(attempt: number, baseDelayMs: number): number {
+  const exponential = baseDelayMs * 2 ** (attempt - 1);
+  // Full jitter. Without it every open console tab retries the same 503 in lockstep.

@@ -59,3 +59,10 @@ function fallbackCode(status: number): ErrorCode {
     default:
       return 'internal_error';
   }
+}
+
+/**
+ * Builds the concrete error. `headers` is optional so tests and `MockTransport` can map a
+ * synthesised failure without fabricating a `Headers` object.
+ */
+export function toConsoleApiError(parsed: ParsedError, headers?: Headers): ConsoleApiError {
