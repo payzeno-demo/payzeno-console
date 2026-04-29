@@ -44,3 +44,10 @@ function fallbackCode(status: number): ErrorCode {
       return 'invalid_request';
     case 401:
       return 'authentication_required';
+    case 403:
+      return 'permission_denied';
+    case 404:
+      return 'not_found';
+    case 409:
+      return 'conflict';
+    case 422:

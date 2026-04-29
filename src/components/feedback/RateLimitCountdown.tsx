@@ -52,3 +52,12 @@ export function RateLimitCountdown({
     onExpire();
   }, [remaining, onExpire]);
 
+  const done = remaining <= 0;
+
+  return (
+    <section
+      aria-labelledby="rate-limit-heading"
+      className={pz('rate-limit')}
+      style={{
+        display: 'grid',
+        gap: space[3],
