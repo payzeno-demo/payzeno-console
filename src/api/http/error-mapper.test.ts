@@ -71,6 +71,44 @@ describe('envelope handling', () => {
   });
 
   it('synthesises a code and a human message when nginx answers instead of the API', () => {
+    const error = toConsoleApiError(parsed(502));
+
+    expect(error.code).toBe('processor_unavailable');
+    expect(error.message).toBe('An upstream service is unavailable.');
+    // The request id then comes from the response header, via `parseResponse`.
+    expect(error.requestId).toBe('req_parsed_0001');
+  });
+
+  it.each([
+    [400, 'invalid_request'],
+    [401, 'authentication_required'],
+    [403, 'permission_denied'],
+    [404, 'not_found'],
+    [409, 'conflict'],
+    [422, 'validation_failed'],
+    [429, 'rate_limited'],
+    [500, 'internal_error'],
+  ] as const)('falls back to a sensible code for a bodyless %i', (status, code) => {
+    expect(toConsoleApiError(parsed(status)).code).toBe(code);
+  });
+
+  it('carries field errors through onto a 422', () => {
+    const error = toConsoleApiError(
+      parsed(
+        422,
+        envelope('validation_failed', 'Check the fields.', {
+          field_errors: [{ path: 'amount_minor', message: 'Above the refundable amount.' }],
+        }),
+      ),
+    );
+
+    expect(error.fieldErrors).toHaveLength(1);
+    expect(error.fieldErrorMap()).toEqual({
+      amount_minor: 'Above the refundable amount.',
+    });
+  });
+
+  it('carries `details` through onto the error, for the settlement item id', () => {
     const error = toConsoleApiError(
       parsed(
         409,
@@ -87,6 +125,16 @@ describe('envelope handling', () => {
 
 describe('retry-after resolution', () => {
   it('prefers the envelope value over the header', () => {
+    const headers = new Headers({ 'Retry-After': '60' });
+    const error = toConsoleApiError(
+      parsed(429, envelope('rate_limited', 'Slow down.', { retry_after: 5 })),
+      headers,
+    ) as RateLimitedApiError;
+
+    expect(error.retryAfter).toBe(5);
+  });
+
+  it('reads the header when the envelope is silent', () => {
     const headers = new Headers({ 'Retry-After': '45' });
     const error = toConsoleApiError(parsed(429), headers) as RateLimitedApiError;
 
@@ -94,6 +142,13 @@ describe('retry-after resolution', () => {
   });
 
   it('works with no headers at all — MockTransport passes none', () => {
+    const error = toConsoleApiError(parsed(429)) as RateLimitedApiError;
+    expect(error.retryAfter).toBe(30);
+    expect(error.retryAfterSeconds).toBeNull();
+  });
+
+  it('ignores an unparseable Retry-After rather than producing NaN', () => {
+    const headers = new Headers({ 'Retry-After': 'Wed, 21 Oct 2026 07:28:00 GMT' });
     const error = toConsoleApiError(parsed(429), headers) as RateLimitedApiError;
     expect(error.retryAfter).toBe(30);
   });

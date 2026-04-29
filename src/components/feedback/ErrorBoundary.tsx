@@ -180,6 +180,50 @@ interface ErrorMessageProps {
   onAction?: () => void;
 }
 
+function ErrorMessage({ title, body, details, requestId, actionLabel, onAction }: ErrorMessageProps) {
+  return (
+    <div style={{ display: 'grid', gap: space[3] }}>
+      <h2 style={{ margin: 0, fontSize: font.size.xl, fontWeight: font.weight.semibold }}>{title}</h2>
+      <p style={{ margin: 0, color: color.textSecondary }}>{body}</p>
+
+      {details && details.length > 0 ? (
+        <ul style={{ margin: 0, paddingInlineStart: space[5], color: color.textSecondary }}>
+          {details.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      ) : null}
+
+      {requestId ? (
+        <p style={{ margin: 0, fontFamily: font.familyMono, fontSize: font.size.sm, color: color.textMuted }}>
+          Reference {requestId}
+        </p>
+      ) : null}
+
+      {actionLabel && onAction ? (
+        <div>
+          <button
+            type="button"
+            onClick={onAction}
+            style={{
+              padding: `${space[2]} ${space[4]}`,
+              fontFamily: font.family,
+              fontSize: font.size.md,
+              color: color.textInverse,
+              background: color.brand,
+              border: 'none',
+              borderRadius: radius.md,
+              cursor: 'pointer',
+            }}
+          >
+            {actionLabel}
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 interface ErrorBoundaryState {
   error: unknown;
 }
@@ -188,4 +232,44 @@ interface ErrorBoundaryState {
  * The class component. React still has no hook equivalent of `componentDidCatch`, so this is
  * one of exactly two class components in the repo (the other is nothing — this is the only
  * one).
+ */
+export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  override state: ErrorBoundaryState = { error: null };
+
+  static getDerivedStateFromError(error: unknown): ErrorBoundaryState {
+    return { error };
+  }
+
+  override componentDidCatch(error: unknown, info: ErrorInfo): void {
+    const context: { feature?: string; code?: string; requestId?: string } = {};
+    if (this.props.feature) context.feature = this.props.feature;
+    if (error instanceof ConsoleApiError) {
+      context.code = error.code;
+      context.requestId = error.requestId;
+    } else if (error instanceof ConsoleClientError) {
+      context.code = error.clientCode;
+    }
+
+    captureError(error, context);
+    // The component stack is genuinely useful and carries no user data. `import.meta.env` is
+    // off-limits outside `config/env.ts`, so the environment comes from the runtime config.
+    if (runtimeConfig.environment === 'local') console.error(error, info.componentStack);
+  }
+
+  private readonly reset = (): void => {
+    this.setState({ error: null });
+    this.props.onReset?.();
+  };
+
+  override render(): ReactNode {
+    if (this.state.error !== null) {
+      return <ErrorFallback error={this.state.error} onRetry={this.reset} />;
+    }
+    return this.props.children;
+  }
+}
+
+/**
+ * The boundary `App.tsx` mounts. Resetting it also resets every query that errored inside it,
+ * which is what makes the retry button do something.
  */

@@ -70,6 +70,7 @@ describe('ApiClient.get', () => {
   });
 
   it('serialises query parameters and drops undefined ones', async () => {
+    const recorder = recordRequests();
     const client = new ApiClient();
 
     await client.get('/charges', { limit: 25, status: 'captured', cursor: undefined });
@@ -84,6 +85,11 @@ describe('ApiClient.get', () => {
 
   it('sends Accept, the pinned API version and a fresh request id on every call', async () => {
     const recorder = recordRequests();
+    const client = new ApiClient();
+
+    await client.get('/charges');
+    await client.get('/charges');
+
     const [first, second] = recorder.requests.slice(-2);
     recorder.stop();
 
@@ -100,6 +106,19 @@ describe('ApiClient.get', () => {
     const recorder = recordRequests();
 
     await new ApiClient().get('/charges');
+
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.headers.get(HEADER_CSRF)).toBeNull();
+  });
+});
+
+describe('ApiClient mutations', () => {
+  it('sends the idempotency key it was given, verbatim', async () => {
+    const recorder = recordRequests();
+
+    await new ApiClient().post('/refunds', { charge_id: 'ch_1' }, 'idem-key-0001');
 
     const request = recorder.requests.at(-1);
     recorder.stop();
@@ -215,6 +234,20 @@ describe('ApiClient error mapping', () => {
 
 describe('ApiClient transport retry', () => {
   it('repeats an idempotent GET through a 503 and returns the eventual body', async () => {
+    let calls = 0;
+    server.use(
+      http.get(url('/charges'), () => {
+        calls += 1;
+        if (calls === 1) {
+          return HttpResponse.json(
+            { error: { code: 'processor_unavailable', message: 'nope', request_id: 'r' } },
+            { status: 503 },
+          );
+        }
+        return HttpResponse.json(makePage([makeCharge()]));
+      }),
+    );
+
     const page = await new ApiClient().get<{ data: unknown[] }>('/charges');
 
     expect(calls).toBe(2);
@@ -259,6 +292,7 @@ describe('ApiClient transport retry', () => {
   });
 
   it('reuses one idempotency key across the retries of a single attempt', async () => {
+    const seen: Array<string | null> = [];
     let calls = 0;
 
     server.use(
@@ -284,7 +318,33 @@ describe('ApiClient transport retry', () => {
   it('turns a transport-level failure into an UpstreamUnavailableApiError', async () => {
     server.use(http.get(url('/charges'), () => HttpResponse.error()));
 
+    const thrown = await new ApiClient({ retries: 0 })
+      .get('/charges')
+      .catch((err: unknown) => err);
+
+    expect(thrown).toBeInstanceOf(UpstreamUnavailableApiError);
+    expect((thrown as UpstreamUnavailableApiError).message).toContain('http://localhost/v1/charges');
+  });
+});
+
+describe('ApiClient.newAttempt', () => {
+  it('mints a distinct key per attempt', () => {
     const client = new ApiClient();
     const first = client.newAttempt();
+    const second = client.newAttempt();
+
+    expect(first.key).not.toBe(second.key);
+    expect(first.isStale()).toBe(false);
+  });
+
+  it('reports an attempt older than the retention window as stale', () => {
+    vi.useFakeTimers();
+    try {
+      const attempt = new ApiClient().newAttempt();
+      vi.advanceTimersByTime(25 * 60 * 60 * 1000);
+      expect(attempt.isStale()).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 });

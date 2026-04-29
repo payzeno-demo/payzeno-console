@@ -43,3 +43,21 @@ export function RateLimitCountdown({
   useEffect(() => {
     if (remaining <= 0) return undefined;
     const timer = setTimeout(() => setRemaining((current) => current - 1), 1_000);
+    return () => clearTimeout(timer);
+  }, [remaining]);
+
+  useEffect(() => {
+    if (remaining > 0 || fired.current) return;
+    fired.current = true;
+    onExpire();
+  }, [remaining, onExpire]);
+
+  const done = remaining <= 0;
+
+  return (
+    <section
+      aria-labelledby="rate-limit-heading"
+      className={pz('rate-limit')}
+      style={{
+        display: 'grid',
+        gap: space[3],

@@ -36,3 +36,49 @@ const FALLBACK_MESSAGES: Readonly<Record<number, string>> = {
 
 function fallbackMessage(status: number): string {
   return FALLBACK_MESSAGES[status] ?? 'Something went wrong on our side.';
+}
+
+function fallbackCode(status: number): ErrorCode {
+  switch (status) {
+    case 400:
+      return 'invalid_request';
+    case 401:
+      return 'authentication_required';
+    case 403:
+      return 'permission_denied';
+    case 404:
+      return 'not_found';
+    case 409:
+      return 'conflict';
+    case 422:
+      return 'validation_failed';
+    case 429:
+      return 'rate_limited';
+    case 502:
+      return 'processor_unavailable';
+    default:
+      return 'internal_error';
+  }
+}
+
+/**
+ * Builds the concrete error. `headers` is optional so tests and `MockTransport` can map a
+ * synthesised failure without fabricating a `Headers` object.
+ */
+export function toConsoleApiError(parsed: ParsedError, headers?: Headers): ConsoleApiError {
+  const envelope = parsed.body?.error;
+  const init = {
+    status: parsed.status,
+    code: envelope?.code ?? fallbackCode(parsed.status),
+    message: envelope?.message ?? fallbackMessage(parsed.status),
+    requestId: envelope?.request_id ?? parsed.requestId,
+    fieldErrors: envelope?.field_errors,
+    retryAfterSeconds:
+      envelope?.retry_after ?? (headers ? readRetryAfterSeconds(headers) : undefined),
+    details: envelope?.details,
+  };
+
+  switch (parsed.status) {
+    case 400:
+      return new BadRequestApiError(init);
+    case 401:

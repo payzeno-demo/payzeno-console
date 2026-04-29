@@ -46,3 +46,18 @@ export function retryDelayFor(attempt: number, error: unknown): number {
 }
 
 /** The policy itself, pulled out so `QueryProvider.test.tsx` can drive it directly. */
+export function shouldRetry(failureCount: number, error: unknown): boolean {
+  if (error instanceof UpstreamUnavailableApiError) {
+    return failureCount < MAX_TRANSPORT_RETRIES + 1;
+  }
+  if (error instanceof RateLimitedApiError) {
+    return failureCount < 1;
+  }
+  if (isClientError(error)) {
+    return false;
+  }
+  return failureCount < MAX_TRANSPORT_RETRIES;
+}
+
+export function createQueryClient(): QueryClient {
+  return new QueryClient({

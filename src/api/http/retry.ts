@@ -16,3 +16,21 @@ const IDEMPOTENT_METHODS: ReadonlySet<HttpMethod> = new Set<HttpMethod>(['GET', 
 
 export const RETRYABLE_STATUSES: ReadonlyArray<number> = [502, 503, 504];
 
+export interface RetryDecision {
+  retry: boolean;
+  delayMs: number;
+  reason: string;
+}
+
+export interface RetryPolicyOptions {
+  maxAttempts: number;
+  baseDelayMs: number;
+  method: HttpMethod;
+  /** True when the request carries an `Idempotency-Key`; makes POST/PATCH safe to repeat. */
+  hasIdempotencyKey: boolean;
+  noRetry?: boolean;
+}
+
+function backoff(attempt: number, baseDelayMs: number): number {
+  const exponential = baseDelayMs * 2 ** (attempt - 1);
+  // Full jitter. Without it every open console tab retries the same 503 in lockstep.
