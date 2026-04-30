@@ -157,3 +157,15 @@ describe('the item table', () => {
         ),
       ),
     );
+
+    renderPage();
+
+    await screen.findByRole('table');
+    expect(screen.queryByText('Check duplicate')).not.toBeInTheDocument();
+  });
+
+  it('renders an unmatched item without a charge link', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Unmatched')).toBeInTheDocument();
+  });

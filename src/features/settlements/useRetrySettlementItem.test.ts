@@ -45,6 +45,21 @@ describe('the happy path', () => {
   });
 
   it('leaves no error message and no locked marker behind', async () => {
+    const { result } = renderHookWithProviders(() => useRetrySettlementItem());
+
+    act(() => {
+      result.current.retry({ batchId: BATCH_ID, itemId: ITEM_ID });
+    });
+
+    await waitFor(() => {
+      expect(result.current.isPending).toBe(false);
+    });
+
+    expect(result.current.errorMessage).toBeNull();
+    expect(result.current.lockedItemId).toBeNull();
+  });
+
+  it('invalidates the batch and its items, so the row shows its new state', async () => {
     const { result, queryClient } = renderHookWithProviders(() => useRetrySettlementItem());
 
     queryClient.setQueryData(queryKeys.settlements.items(BATCH_ID, { limit: 50 }), {
@@ -84,6 +99,19 @@ describe('409 settlement_locked — the no-op branch (PAY-2043)', () => {
     const { result } = renderHookWithProviders(() => useRetrySettlementItem());
 
     act(() => {
+      result.current.retry({ batchId: BATCH_ID, itemId: ITEM_ID });
+    });
+
+    await waitFor(() => {
+      expect(result.current.lockedItemId).toBe(ITEM_ID);
+    });
+  });
+
+  it('raises no error message — this outcome is normal after PAY-2043', async () => {
+    lockTheBatch();
+    const { result } = renderHookWithProviders(() => useRetrySettlementItem());
+
+    act(() => {
       result.current.retry({ batchId: BATCH_ID, itemId: 'ri_01HW0RTITEM00000000009' });
     });
 
@@ -95,6 +123,44 @@ describe('409 settlement_locked — the no-op branch (PAY-2043)', () => {
   it('does not repeat the request — a lock is an answer', async () => {
     lockTheBatch();
     const recorder = recordRequests();
+    const retries = recorder.requests.filter((request) => request.url.includes('/retry'));
+    recorder.stop();
+
+    expect(retries).toHaveLength(1);
+  });
+});
+
+describe('the other failure branches', () => {
+  it('explains a 403 in terms of the role, not the status code', async () => {
+    server.use(
+      errorHandler('post', '/settlements/:batchId/items/:itemId/retry', 403, 'permission_denied'),
+    );
+    const { result } = renderHookWithProviders(() => useRetrySettlementItem(), {
+      session: makeViewerSession(),
+    });
+
+    act(() => {
+      result.current.retry({ batchId: BATCH_ID, itemId: ITEM_ID });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toBe(
+        'Retrying a settlement item needs the finance role.',
+      );
+    });
+    expect(result.current.lockedItemId).toBeNull();
+  });
+
+  it('surfaces the server message for any other ConsoleApiError', async () => {
+    server.use(
+      errorHandler(
+        'post',
+        '/settlements/:batchId/items/:itemId/retry',
+        400,
+        'invalid_request',
+        'That item is not retryable.',
+      ),
+    );
     const { result } = renderHookWithProviders(() => useRetrySettlementItem());
 
     act(() => {
