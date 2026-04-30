@@ -62,3 +62,7 @@ export function settlementItemsQuery(
 export interface RetryItemInput {
   batchId: string;
   itemId: string;
+  request: RetryReconciliationItemRequest;
+}
+
+/**

@@ -16,3 +16,20 @@ import type { SettlementRow } from '@types/view-models';
 
 import { settlementsListQuery } from './settlements.queries';
 
+export interface UseSettlementsResult {
+  rows: SettlementRow[];
+  nextCursor: string | null;
+  hasMore: boolean;
+  isLoading: boolean;
+  isFetching: boolean;
+  error: Error | null;
+}
+
+function toRow(batch: MerchantSettlementBatch): SettlementRow {
+  return {
+    ...batch,
+    _selected: false,
+    // Only a funded batch has actually released money to the merchant; everything before
+    // that is an accounting position, and merchants read the two as the same thing.
+    _isFunded: batch.status === 'funded',
+    _needsAttention: batch.status === 'failed' || batch.status === 'partially_reconciled',
