@@ -22,6 +22,43 @@ describe('the page frame', () => {
     expect(await screen.findByRole('heading', { name: 'Settlements' })).toBeInTheDocument();
   });
 
+  it('explains what a batch is, because merchants ask', async () => {
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    expect(
+      await screen.findByText(/one acquirer settlement file, filtered to your items/),
+    ).toBeInTheDocument();
+  });
+
+  it('sets the document title', async () => {
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    await waitFor(() => {
+      expect(document.title).toContain('Settlements');
+    });
+  });
+});
+
+describe('the table', () => {
+  it('renders one row per batch, with a caption', async () => {
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    const table = await screen.findByRole('table', {
+      name: /Settlement batches, most recent processing date first/,
+    });
+
+    await waitFor(() => {
+      expect(within(table).getAllByRole('row')).toHaveLength(3);
+    });
+  });
+
+  it('shows the batch status as a pill with a screen-reader prefix', async () => {
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    expect(await screen.findByText('partially reconciled')).toBeInTheDocument();
+    expect(screen.getAllByText('Status:').length).toBeGreaterThan(0);
+  });
+
   it('links each batch to its detail route', async () => {
     renderWithProviders(<SettlementsPage />, { route: '/settlements' });
 
@@ -46,6 +83,38 @@ describe('the page frame', () => {
 });
 
 describe('the filters', () => {
+  it('renders a labelled search region', async () => {
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    expect(
+      await screen.findByRole('search', { name: 'Settlement filters' }),
+    ).toBeInTheDocument();
+  });
+
+  it('reads the status filter out of the URL', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<SettlementsPage />, { route: '/settlements?status=funded' });
+
+    await waitFor(() => {
+      expect(
+        recorder.requests.some((request) => request.url.includes('status=funded')),
+      ).toBe(true);
+    });
+    recorder.stop();
+  });
+
+  it('sends the merchant default currency when the URL says nothing', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('currency=GBP'))).toBe(
+        true,
+      );
+    });
+    recorder.stop();
+  });
+
   it('does not send a status parameter for "all"', async () => {
     const recorder = recordRequests();
     renderWithProviders(<SettlementsPage />, { route: '/settlements?status=all' });
@@ -66,6 +135,36 @@ describe('the filters', () => {
 });
 
 describe('when the list fails', () => {
+  it('renders an error state instead of an empty table', async () => {
+    server.use(errorHandler('get', '/settlements', 500, 'internal_error', 'Boom'));
+
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    expect(
+      await screen.findByRole('heading', { name: 'We could not load your settlements' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+
+  it('offers a retry', async () => {
+    server.use(errorHandler('get', '/settlements', 500, 'internal_error'));
+
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    expect(await screen.findByRole('button', { name: 'Try again' })).toBeInTheDocument();
+  });
+
+  it('explains a 403 in terms of the role and offers no retry', async () => {
+    server.use(errorHandler('get', '/settlements', 403, 'permission_denied'));
+
+    renderWithProviders(<SettlementsPage />, { route: '/settlements' });
+
+    expect(await screen.findByText(/Your role does not include access/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Try again' })).not.toBeInTheDocument();
+  });
+});
+
+describe('a funded batch', () => {
   it('shows its funded date rather than an em dash', async () => {
     server.use(
       http.get(url('/settlements'), () =>

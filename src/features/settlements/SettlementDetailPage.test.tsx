@@ -145,3 +145,27 @@ describe('the item table', () => {
 
   it('shows the duplicate badge on an item that settled after two attempts', async () => {
     renderPage();
+
+    expect(await screen.findByText('Check duplicate')).toBeInTheDocument();
+  });
+
+  it('shows no duplicate badge when every item settled first time', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([makeReconciliationItem({ status: 'settled', attempt_count: 1 })]),
+        ),
+      ),
+    );
+
+    renderPage();
+
+    await screen.findByRole('table');
+    expect(screen.queryByText('Check duplicate')).not.toBeInTheDocument();
+  });
+
+  it('renders an unmatched item without a charge link', async () => {
+    renderPage();
+
+    expect(await screen.findByText('Unmatched')).toBeInTheDocument();
+  });

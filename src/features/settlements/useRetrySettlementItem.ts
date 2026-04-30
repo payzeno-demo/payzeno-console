@@ -44,4 +44,24 @@ export function useRetrySettlementItem(): UseRetrySettlementItemResult {
   const queryClient = useQueryClient();
   const toast = useToast();
 
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const invalidateBatch = useCallback(
+    async (batchId: string) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.settlements.items(batchId) }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.settlements.detail(batchId) }),
+      ]);
+    },
+    [queryClient],
+  );
+
+  const retry = useCallback(
+    ({ batchId, itemId, reason }: RetryItemArgs) => {
+      mutation.mutate({ batchId, itemId, request: reason ? { reason } : {} });
+    },
+    [mutation],
+  );
+
+  return { retry, isPending: mutation.isPending, lockedItemId, errorMessage };
 }

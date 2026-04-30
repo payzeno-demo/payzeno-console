@@ -27,3 +27,6 @@ export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItem
   const allowed = can('settlements:retry');
   const wasLocked = lockedItemId === itemId;
 
+  if (!allowed) {
+    return <span title="Retrying an item needs the finance role.">—</span>;
+  }

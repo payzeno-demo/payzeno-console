@@ -73,3 +73,8 @@ export function settlementItemColumns(
       header: 'Charge',
       cell: (row) => (row.charge_id ? <IdCell value={row.charge_id} /> : <span>Unmatched</span>),
       exportValue: (row) => row.charge_id ?? '',
+    },
+    {
+      id: 'gross_minor',
+      header: 'Gross',
+      align: 'end',

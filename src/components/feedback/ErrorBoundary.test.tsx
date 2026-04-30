@@ -80,11 +80,78 @@ describe('the boundary itself', () => {
     expect(screen.getByRole('alert')).toHaveFocus();
   });
 
+  it('recovers when reset, rendering the children again', async () => {
+    const onReset = vi.fn();
+    let shouldThrow = true;
+
+    function Child() {
+      if (shouldThrow) throw new ServerError(init());
+      return <p>Recovered</p>;
+    }
+
+    const { user } = renderWithRouter(
+      <ErrorBoundary onReset={onReset}>
+        <Child />
+      </ErrorBoundary>,
+    );
+
+    shouldThrow = false;
+    await user.click(screen.getByRole('button', { name: 'Try again' }));
+
+    expect(onReset).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('Recovered')).toBeInTheDocument();
+  });
+});
+
+describe('one branch per ConsoleApiError subclass', () => {
+  it('401 offers a route back to sign in', () => {
+    renderWithRouter(<ErrorFallback error={new UnauthorizedError(init({ status: 401 }))} onRetry={vi.fn()} />);
+
+    expect(screen.getByText('Your session has expired')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reload' })).toBeInTheDocument();
+  });
+
+  it('403 renders the permission-denied screen with the request id', () => {
+    renderWithRouter(
+      <ErrorFallback
+        error={new ForbiddenError(init({ status: 403, requestId: 'req_403' }))}
+        onRetry={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/req_403/)).toBeInTheDocument();
+  });
+
   it('404 renders the not-found screen, and says why an id might be missing', () => {
     renderWithRouter(<ErrorFallback error={new NotFoundApiError(init({ status: 404 }))} onRetry={vi.fn()} />);
 
     expect(screen.getByText('Not found')).toBeInTheDocument();
     expect(screen.getByText(/belongs to another account/)).toBeInTheDocument();
+  });
+
+  it('429 renders the countdown and retries when it expires', () => {
+    const onRetry = vi.fn();
+    renderWithRouter(
+      <ErrorFallback
+        error={new RateLimitedApiError(init({ status: 429, retryAfterSeconds: 3 }))}
+        onRetry={onRetry}
+      />,
+    );
+
+    expect(screen.getByRole('heading', { name: 'Too many requests' })).toBeInTheDocument();
+    expect(screen.getByText('3s')).toBeInTheDocument();
+  });
+
+  it('502 renders the upstream-down screen with a retry', () => {
+    renderWithRouter(
+      <ErrorFallback
+        error={new UpstreamUnavailableApiError(init({ status: 502, requestId: 'req_502' }))}
+        onRetry={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Retry now' })).toBeInTheDocument();
+    expect(screen.getByText(/req_502/)).toBeInTheDocument();
   });
 
   it('422 lists the field errors rather than swallowing them', () => {
@@ -111,6 +178,23 @@ describe('the boundary itself', () => {
     expect(screen.getByText('reason: Not a known reason.')).toBeInTheDocument();
   });
 
+  it('409 settlement_locked reads as a no-op, not as a failure (arc INC)', () => {
+    renderWithRouter(
+      <ErrorFallback
+        error={
+          new ConflictApiError(
+            init({ status: 409, code: 'settlement_locked', message: 'Locked.' }),
+          )
+        }
+        onRetry={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Already being settled')).toBeInTheDocument();
+    expect(screen.getByText(/A sweep is working on this batch right now/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Refresh' })).toBeInTheDocument();
+  });
+
   it('409 with any other code reads as a stale-view conflict', () => {
     renderWithRouter(
       <ErrorFallback
@@ -127,6 +211,32 @@ describe('the boundary itself', () => {
     expect(screen.getByText('It moved on.')).toBeInTheDocument();
   });
 
+  it('400 shows the server message verbatim', () => {
+    renderWithRouter(
+      <ErrorFallback
+        error={new BadRequestApiError(init({ status: 400, message: 'cursor is malformed' }))}
+        onRetry={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('We could not process that')).toBeInTheDocument();
+    expect(screen.getByText('cursor is malformed')).toBeInTheDocument();
+  });
+
+  it('anything else in the tree falls back to the generic screen with a reference', () => {
+    renderWithRouter(
+      <ErrorFallback
+        error={new ServerError(init({ status: 500, requestId: 'req_500' }))}
+        onRetry={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Something went wrong on our side')).toBeInTheDocument();
+    expect(screen.getByText('Reference req_500')).toBeInTheDocument();
+  });
+});
+
+describe('the client-side error branch', () => {
   it('renders a recoverable ConsoleClientError with a retry', () => {
     renderWithRouter(<ErrorFallback error={new NotificationStreamError(8)} onRetry={vi.fn()} />);
 
@@ -155,4 +265,9 @@ describe('errors from outside both hierarchies', () => {
     expect(screen.getByText('undefined is not a function')).toBeInTheDocument();
   });
 
+  it('copes with a thrown string', () => {
+    renderWithRouter(<ErrorFallback error={'oh no'} onRetry={vi.fn()} />);
+
+    expect(screen.getByText(/An unexpected problem stopped this from loading/)).toBeInTheDocument();
+  });
 });

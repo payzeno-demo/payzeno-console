@@ -23,3 +23,13 @@ export function SettlementTable({ rows, isLoading }: SettlementTableProps) {
   const navigate = useNavigate();
 
   return (
+    <DataTable<SettlementRow>
+      caption="Settlement batches, most recent processing date first"
+      columns={settlementColumns}
+      rows={rows}
+      isLoading={isLoading}
+      onRowClick={(row) => navigate(ROUTES.settlements.detail(row.id))}
+      emptyState={
+        <EmptyRows
+          title="No settlement batches yet"
+          body="Batches appear the day after your acquirer produces a settlement file."

@@ -273,3 +273,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
  * The boundary `App.tsx` mounts. Resetting it also resets every query that errored inside it,
  * which is what makes the retry button do something.
  */
+export function QueryErrorBoundary({ children, feature }: { children: ReactNode; feature?: string }) {
+  return (
+    <QueryErrorResetBoundary>
+      {({ reset }) => (
+        <ErrorBoundary onReset={reset} feature={feature}>
+          {children}
+        </ErrorBoundary>
+      )}
+    </QueryErrorResetBoundary>
+  );
+}

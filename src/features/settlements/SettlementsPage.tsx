@@ -41,3 +41,20 @@ export function SettlementsPage() {
   );
 
   const { rows, isLoading, isFetching, error } = useSettlements({
+    currency,
+    ...(status === 'all' ? {} : { status }),
+  });
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Settlements"
+        description="Each batch is one acquirer settlement file, filtered to your items."
+        isBusy={isFetching}
+      />
+
+      <FilterBar label="Settlement filters">
+        <CurrencySelect id="settlement-currency" value={currency} onChange={setCurrency} />
+        <Select
+          id="settlement-status"
+          label="Status"
