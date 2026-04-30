@@ -59,6 +59,11 @@ describe('the inheritance chain', () => {
     }
   });
 
+  it('names each instance after its own constructor, so a stack reads honestly', () => {
+    expect(new NotFoundApiError(init({ status: 404 })).name).toBe('NotFoundApiError');
+    expect(new ConflictApiError(init({ status: 409 })).name).toBe('ConflictApiError');
+  });
+
   it('declares all nine subclasses — the count is the contract', () => {
     expect(SUBCLASSES).toHaveLength(9);
   });
@@ -69,6 +74,11 @@ describe('ConsoleApiError', () => {
     const error = new ConsoleApiError(init({ status: 404 }));
     expect(error.status).toBe(404);
     expect(error.httpStatus).toBe(404);
+  });
+
+  it('defaults fieldErrors to an empty array so a form can map unconditionally', () => {
+    expect(new ConsoleApiError(init()).fieldErrors).toEqual([]);
+    expect(new ConsoleApiError(init()).fieldErrorMap()).toEqual({});
   });
 
   it('indexes field errors by their dotted path', () => {
@@ -97,6 +107,12 @@ describe('ConsoleApiError', () => {
     expect(new ForbiddenError(init({ status: 403 })).isTransient()).toBe(false);
   });
 
+  it('keeps the request id, because it is the only thing support can search on', () => {
+    expect(new ServerError(init({ requestId: 'req_abc' })).requestId).toBe('req_abc');
+  });
+});
+
+describe('ConflictApiError — the arc-INC discriminator', () => {
   it('recognises settlement_locked, the code the retry hook treats as a no-op', () => {
     const locked = new ConflictApiError(init({ status: 409, code: 'settlement_locked' }));
     expect(locked.isSettlementLocked()).toBe(true);
@@ -109,6 +125,19 @@ describe('ConsoleApiError', () => {
     );
     expect(inProgress.isIdempotencyInProgress()).toBe(true);
     expect(inProgress.isSettlementLocked()).toBe(false);
+  });
+
+  it('does not confuse a generic conflict for either', () => {
+    const generic = new ConflictApiError(init({ status: 409, code: 'conflict' }));
+    expect(generic.isSettlementLocked()).toBe(false);
+    expect(generic.isIdempotencyInProgress()).toBe(false);
+  });
+});
+
+describe('RateLimitedApiError.retryAfter', () => {
+  it('uses the parsed Retry-After when the header was present', () => {
+    const error = new RateLimitedApiError(init({ status: 429, retryAfterSeconds: 12 }));
+    expect(error.retryAfter).toBe(12);
   });
 
   it('falls back to 30 seconds rather than to NaN', () => {
