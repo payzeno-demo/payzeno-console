@@ -38,6 +38,12 @@ describe('the signed-in tree', () => {
     expect(await screen.findByRole('heading', { name: 'Balance' })).toBeInTheDocument();
   });
 
+  it('renders the payments index', async () => {
+    renderAt(ROUTES.payments.index);
+
+    expect(await screen.findByRole('heading', { name: 'Payments' })).toBeInTheDocument();
+  });
+
   it('renders a payment detail route as a child of payments', async () => {
     renderAt(ROUTES.payments.detail('pi_01HW0RTPAYMENTINTENT0001'));
 
@@ -52,6 +58,14 @@ describe('the signed-in tree', () => {
     renderAt(ROUTES.charges.index);
 
     expect(await screen.findByRole('heading', { name: 'Charges' })).toBeInTheDocument();
+  });
+
+  it('renders a charge detail route', async () => {
+    renderAt(ROUTES.charges.detail('ch_01HW0RTCHARGE00000001'));
+
+    expect(
+      await screen.findByRole('heading', { name: 'Charge ch_01HW0RTCHARGE00000001' }),
+    ).toBeInTheDocument();
   });
 
   it('redirects the legacy /dashboard bookmark to the landing route', async () => {
