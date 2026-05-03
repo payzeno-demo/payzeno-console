@@ -50,3 +50,10 @@ export function DataTableToolbar({
   label,
 }: DataTableToolbarProps) {
   const hasSelection = selectedCount > 0;
+  const resource = resourceLabel ?? 'rows';
+  const regionLabel = label ?? `Filter ${resource}`;
+  const rightSlot = actions ?? children;
+
+  return (
+    <div className={pz('toolbar')} style={{ marginBottom: space[3] }}>
+      <div

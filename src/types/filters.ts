@@ -60,3 +60,8 @@ export interface SettlementItemFilters extends ListQuery {
 
 /** Keys that are UI-only and must be stripped before the object becomes a request. */
 const UI_ONLY_KEYS: ReadonlyArray<string> = ['search', 'dueSoon', 'duplicatesOnly'];
+
+/**
+ * Drop UI-only keys and anything undefined/empty.
+ *
+ * Sending `status=` to the API is not the same as omitting it — the former is a validation

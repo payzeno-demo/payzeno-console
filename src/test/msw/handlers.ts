@@ -362,3 +362,27 @@ const settlementHandlers = [
       }),
     ]);
     return ok(rows);
+  }),
+
+  http.post(url('/settlements/:batchId/items/:itemId/retry'), ({ params }) =>
+    ok(
+      makeReconciliationItem({
+        id: String(params.itemId),
+        batch_id: String(params.batchId),
+        status: 'settling',
+        attempt_count: 2,
+      }),
+      202,
+    ),
+  ),
+];
+
+// ---------------------------------------------------------------------------
+// §9 invoices, developers, reporting
+// ---------------------------------------------------------------------------
+
+const invoiceHandlers = [
+  http.get(url('/invoices'), () =>
+    ok(makePage([makeInvoice(), makeInvoice({ id: 'inv_01HW0RTINVOICE00000002', status: 'paid' })])),
+  ),
+

@@ -60,3 +60,8 @@ export function FilterBar({
         borderRadius: radius.lg,
         fontFamily: font.family,
       }}
+    >
+      {children}
+
+      <div
+        style={{

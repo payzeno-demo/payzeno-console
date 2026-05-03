@@ -104,3 +104,10 @@ export function AppShell({
   if (!currentUser || !currentMerchant) {
     return <>{children}</>;
   }
+
+  return (
+    <div
+      className={pz('app-shell')}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',

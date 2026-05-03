@@ -78,3 +78,8 @@ export function settlementItemColumns(
       id: 'gross_minor',
       header: 'Gross',
       align: 'end',
+      cell: (row) => <MoneyCell amountMinor={row.gross_minor} currency={row.currency} />,
+      exportValue: (row) => String(row.gross_minor),
+    },
+    {
+      id: 'fee_minor',

@@ -51,4 +51,15 @@ describe('the region', () => {
     expect(screen.getByRole('button', { name: 'Clear all' })).toBeInTheDocument();
   });
 
+  it('is typeable through its label, which is the point of the association', async () => {
+    const { user } = renderBare(
+      <FilterField id="charge-reference" label="Reference">
+        <Input id="charge-reference" />
+      </FilterField>,
+    );
+
+    await user.type(screen.getByLabelText('Reference'), 'ch_123');
+
+    expect(screen.getByLabelText('Reference')).toHaveValue('ch_123');
+  });
 });
