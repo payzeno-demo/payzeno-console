@@ -86,3 +86,8 @@ export function FilterBar({
           </Button>
         ) : null}
 
+        {trailing}
+      </div>
+    </section>
+  );
+}
