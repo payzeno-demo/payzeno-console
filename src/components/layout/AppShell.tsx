@@ -104,3 +104,17 @@ export function AppShell({
   if (!currentUser || !currentMerchant) {
     return <>{children}</>;
   }
+
+  return (
+    <div
+      className={pz('app-shell')}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: '100vh',
+        background: color.surfaceMuted,
+        fontFamily: font.family,
+        color: color.textPrimary,
+      }}
+    >
+      {/* Keyframes for the two animated primitives. One style element, not one per instance. */}

@@ -45,3 +45,6 @@ export function SettlementItemTable({
 }: SettlementItemTableProps) {
   const columns = settlementItemColumns(batchId);
 
+  return (
+    <>
+      <DataTableToolbar label="Item filters">

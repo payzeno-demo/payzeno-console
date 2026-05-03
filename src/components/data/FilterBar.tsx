@@ -60,3 +60,39 @@ export function FilterBar({
         borderRadius: radius.lg,
         fontFamily: font.family,
       }}
+    >
+      {children}
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: space[3],
+          marginLeft: 'auto',
+        }}
+      >
+        {hasActive ? (
+          <span
+            aria-live="polite"
+            style={{ fontSize: font.size.sm, color: color.textSecondary }}
+          >
+            {pluralise(activeCount, 'filter')} active
+          </span>
+        ) : null}
+
+        {hasActive && onClear ? (
+          <Button size="sm" variant="ghost" onClick={onClear}>
+            Clear all
+          </Button>
+        ) : null}
+
+        {trailing}
+      </div>
+    </section>
+  );
+}
+
+/**
+ * A labelled slot inside the bar. Keeps the label/control pairing consistent when a feature
+ * needs something that is not a `<Select>` — a date range, a free-text search.
+ */

@@ -60,3 +60,24 @@ export interface SettlementItemFilters extends ListQuery {
 
 /** Keys that are UI-only and must be stripped before the object becomes a request. */
 const UI_ONLY_KEYS: ReadonlyArray<string> = ['search', 'dueSoon', 'duplicatesOnly'];
+
+/**
+ * Drop UI-only keys and anything undefined/empty.
+ *
+ * Sending `status=` to the API is not the same as omitting it — the former is a validation
+ * error on some routes and an empty result on others.
+ */
+export function toRequestQuery<TFilters extends object>(filters: TFilters): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (UI_ONLY_KEYS.includes(key)) continue;
+    if (value === undefined || value === null || value === '') continue;
+    out[key] = value;
+  }
+
+  return out;
+}
+
+/** How many filters are actually applied — rendered as a count on the "Filters" button. */
+export function activeFilterCount(filters: object): number {
