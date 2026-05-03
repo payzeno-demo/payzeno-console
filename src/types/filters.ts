@@ -77,3 +77,7 @@ export function toRequestQuery<TFilters extends object>(filters: TFilters): Reco
   }
 
   return out;
+}
+
+/** How many filters are actually applied — rendered as a count on the "Filters" button. */
+export function activeFilterCount(filters: object): number {
