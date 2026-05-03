@@ -83,3 +83,7 @@ export function settlementItemColumns(
     },
     {
       id: 'fee_minor',
+      header: 'Acquirer fee',
+      align: 'end',
+      cell: (row) => <MoneyCell amountMinor={row.fee_minor} currency={row.currency} />,
+      exportValue: (row) => String(row.fee_minor),

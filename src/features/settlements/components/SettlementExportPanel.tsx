@@ -29,3 +29,13 @@ export interface SettlementExportPanelProps {
 
 interface ExportOptions {
   includeFees: boolean;
+  includeUnmatched: boolean;
+  includeVariance: boolean;
+}
+
+export function SettlementExportPanel({ batchId, currency, rows }: SettlementExportPanelProps) {
+  const [options, setOptions] = useState<ExportOptions>({
+    includeFees: true,
+    includeUnmatched: false,
+    includeVariance: true,
+  });

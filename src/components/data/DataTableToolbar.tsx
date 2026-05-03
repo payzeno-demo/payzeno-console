@@ -57,3 +57,10 @@ export function DataTableToolbar({
   return (
     <div className={pz('toolbar')} style={{ marginBottom: space[3] }}>
       <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: space[4],
+          flexWrap: 'wrap',
+        }}
