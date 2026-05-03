@@ -92,3 +92,8 @@ export function settlementItemColumns(
       id: 'variance_minor',
       header: 'Variance',
       align: 'end',
+      cell: (row) =>
+        row.variance_minor === 0 ? (
+          <span>—</span>
+        ) : (
+          <MoneyCell amountMinor={row.variance_minor} currency={row.currency} tone="warning" />
