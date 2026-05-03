@@ -70,3 +70,9 @@ export function FilterBar({
           gap: space[3],
           marginLeft: 'auto',
         }}
+      >
+        {hasActive ? (
+          <span
+            aria-live="polite"
+            style={{ fontSize: font.size.sm, color: color.textSecondary }}
+          >
