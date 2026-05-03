@@ -76,3 +76,8 @@ export function FilterBar({
             aria-live="polite"
             style={{ fontSize: font.size.sm, color: color.textSecondary }}
           >
+            {pluralise(activeCount, 'filter')} active
+          </span>
+        ) : null}
+
+        {hasActive && onClear ? (
