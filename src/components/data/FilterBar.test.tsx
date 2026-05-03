@@ -51,6 +51,19 @@ describe('the region', () => {
     expect(screen.getByRole('button', { name: 'Clear all' })).toBeInTheDocument();
   });
 
+  it('calls onClear when pressed', async () => {
+    const onClear = vi.fn();
+    const { user } = renderBare(
+      <FilterBar label="Charge filters" activeCount={2} onClear={onClear}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Clear all' }));
+
+    expect(onClear).toHaveBeenCalledTimes(1);
+  });
+
   it('is typeable through its label, which is the point of the association', async () => {
     const { user } = renderBare(
       <FilterField id="charge-reference" label="Reference">

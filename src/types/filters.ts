@@ -69,3 +69,7 @@ const UI_ONLY_KEYS: ReadonlyArray<string> = ['search', 'dueSoon', 'duplicatesOnl
  */
 export function toRequestQuery<TFilters extends object>(filters: TFilters): Record<string, unknown> {
   const out: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(filters)) {
+    if (UI_ONLY_KEYS.includes(key)) continue;
+    if (value === undefined || value === null || value === '') continue;
