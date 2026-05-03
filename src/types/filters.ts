@@ -65,3 +65,7 @@ const UI_ONLY_KEYS: ReadonlyArray<string> = ['search', 'dueSoon', 'duplicatesOnl
  * Drop UI-only keys and anything undefined/empty.
  *
  * Sending `status=` to the API is not the same as omitting it — the former is a validation
+ * error on some routes and an empty result on others.
+ */
+export function toRequestQuery<TFilters extends object>(filters: TFilters): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
