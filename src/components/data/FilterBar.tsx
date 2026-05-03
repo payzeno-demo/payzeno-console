@@ -65,3 +65,8 @@ export function FilterBar({
 
       <div
         style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: space[3],
+          marginLeft: 'auto',
+        }}
