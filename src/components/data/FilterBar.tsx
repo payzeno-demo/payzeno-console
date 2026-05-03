@@ -81,3 +81,8 @@ export function FilterBar({
         ) : null}
 
         {hasActive && onClear ? (
+          <Button size="sm" variant="ghost" onClick={onClear}>
+            Clear all
+          </Button>
+        ) : null}
+

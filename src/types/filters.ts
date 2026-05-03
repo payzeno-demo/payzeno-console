@@ -73,3 +73,7 @@ export function toRequestQuery<TFilters extends object>(filters: TFilters): Reco
   for (const [key, value] of Object.entries(filters)) {
     if (UI_ONLY_KEYS.includes(key)) continue;
     if (value === undefined || value === null || value === '') continue;
+    out[key] = value;
+  }
+
+  return out;
