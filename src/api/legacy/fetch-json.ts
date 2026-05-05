@@ -12,3 +12,7 @@ import { runtime } from '@config/runtime';
 
 import { throwLegacyError } from './legacy-errors';
 
+export interface FetchJsonOptions {
+  method?: 'GET' | 'POST';
+  body?: unknown;
+  query?: Record<string, string | number | undefined>;

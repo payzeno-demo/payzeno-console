@@ -5,3 +5,6 @@ import type { HttpTransport } from '../transport';
 import { ResourceEndpoint } from './base';
 
 export interface InvoiceListQuery extends ListQuery {
+  status?: InvoiceStatus;
+}
+
