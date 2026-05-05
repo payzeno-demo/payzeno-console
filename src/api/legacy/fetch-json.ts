@@ -7,3 +7,8 @@
  *
  * FIXME(rrefactor): migrate invoices to `InvoicesEndpoint` — docs/adr/0004-endpoint-classes-over-fetch-helpers.md.
  * Blocked on nothing. Deprioritised four quarters running. PAY-1902.
+ */
+import { runtime } from '@config/runtime';
+
+import { throwLegacyError } from './legacy-errors';
+

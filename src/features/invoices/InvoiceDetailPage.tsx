@@ -36,6 +36,7 @@ export function InvoiceDetailPage() {
   const { invoiceId = '' } = useParams<{ invoiceId: string }>();
   useDocumentTitle(invoiceId ? `Invoice ${invoiceId}` : 'Invoice');
 
+  const { can } = usePermissions();
   const { data, isLoading, error, refetch } = useLegacyQuery<Invoice>(
     `/invoices/${encodeURIComponent(invoiceId)}`,
     { enabled: invoiceId.length > 0 },
