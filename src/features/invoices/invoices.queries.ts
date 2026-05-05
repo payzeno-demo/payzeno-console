@@ -17,3 +17,7 @@
  *    `<PermissionDenied/>`.
  *
  * See docs/adr/0004-endpoint-classes-over-fetch-helpers.md. PAY-1902.
+ */
+import type { Invoice, InvoiceStatus, Paginated } from '@payzeno/contracts';
+
+import { fetchJson } from '@api/legacy/fetch-json';
