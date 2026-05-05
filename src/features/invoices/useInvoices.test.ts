@@ -32,5 +32,25 @@ describe('the legacy read', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._source).toBe('ledger');
+  });
+
+  it('flags a mixed page — the state the ledger_owns_invoices dry-run produces', async () => {
+    server.use(
+      http.get(url('/invoices'), () =>
+        HttpResponse.json(
+          makePage([
+            makeInvoice({ id: 'inv_legacy', migrated_to_ledger: false }),
+            makeInvoice({ id: 'inv_ledger', migrated_to_ledger: true }),
+          ]),
+        ),
+      ),
+    );
+
   });
 });

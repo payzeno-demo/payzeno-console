@@ -21,3 +21,7 @@ import type { InvoiceRow } from '@/types/view-models';
 import { toLegacyParams } from './invoices.queries';
 import type { LegacyInvoiceQuery } from './invoices.queries';
 
+export interface UseInvoicesResult {
+  rows: InvoiceRow[];
+  hasMore: boolean;
+  /** True while the `ledger_owns_invoices` dry-run has both sources in the same list. */

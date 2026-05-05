@@ -24,6 +24,14 @@ describe('the page', () => {
     expect(screen.getByText('Your monthly Payzeno processing fees.')).toBeInTheDocument();
   });
 
+  it('sets the document title', async () => {
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    await waitFor(() => {
+      expect(document.title).toContain('Invoices');
+    });
+  });
+
   it('renders the error state — and it is the generic one, because the legacy path bypasses the mapper', async () => {
     server.use(errorHandler('get', '/invoices', 500, 'internal_error', 'Biller exploded'));
 
