@@ -14,3 +14,6 @@
  *  - invoices never participate in `queryClient.invalidateQueries`;
  *  - the CSRF header is built here, slightly differently from `api/http/csrf.ts`;
  *  - a 403 throws a bare `Error`, so the page renders the generic fallback rather than
+ *    `<PermissionDenied/>`.
+ *
+ * See docs/adr/0004-endpoint-classes-over-fetch-helpers.md. PAY-1902.
