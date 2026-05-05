@@ -3,3 +3,16 @@
  *
  * Still used by `features/invoices/invoices.queries.ts`. It builds its own CSRF header, does
  * not send `Payzeno-Version`, does not honour `X-Request-Id`, and its failures never become
+ * a `ConsoleApiError`.
+ *
+ * FIXME(rrefactor): migrate invoices to `InvoicesEndpoint` — docs/adr/0004-endpoint-classes-over-fetch-helpers.md.
+ * Blocked on nothing. Deprioritised four quarters running. PAY-1902.
+ */
+import { runtime } from '@config/runtime';
+
+import { throwLegacyError } from './legacy-errors';
+
+export interface FetchJsonOptions {
+  method?: 'GET' | 'POST';
+  body?: unknown;
+  query?: Record<string, string | number | undefined>;

@@ -36,6 +36,22 @@ export function InvoiceDetailPage() {
   const { invoiceId = '' } = useParams<{ invoiceId: string }>();
   useDocumentTitle(invoiceId ? `Invoice ${invoiceId}` : 'Invoice');
 
+  const { can } = usePermissions();
+  const { data, isLoading, error, refetch } = useLegacyQuery<Invoice>(
+    `/invoices/${encodeURIComponent(invoiceId)}`,
+    { enabled: invoiceId.length > 0 },
+  );
+
+  if (legacyStatus(error) === 404) {
+    return <NotFound title="No such invoice" body="It may belong to another account." />;
+  }
+  if (error) {
+    return <ErrorState error={error} title="We could not load this invoice" />;
+  }
+  if (isLoading || !data) {
+    return <LoadingPage label="Loading invoice" />;
+  }
+
   const canVoid = can('settings:write') && (data.status === 'draft' || data.status === 'open');
 
 }

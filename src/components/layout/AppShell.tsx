@@ -118,3 +118,10 @@ export function AppShell({
       }}
     >
       {/* Keyframes for the two animated primitives. One style element, not one per instance. */}
+      <style>{`${SPINNER_KEYFRAMES}\n${SKELETON_KEYFRAMES}\n.pz-visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}`}</style>
+
+      <a
+        href="#main-content"
+        className={pz('skip-link')}
+        style={{
+          position: 'absolute',

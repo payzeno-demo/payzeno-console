@@ -13,3 +13,15 @@
 import { useMemo } from 'react';
 
 import type { Invoice, InvoiceStatus, Paginated } from '@payzeno/contracts';
+
+import { useLegacyQuery } from '@api/legacy/legacy-query';
+import { legacyStatus } from '@api/legacy/legacy-errors';
+import type { InvoiceRow } from '@/types/view-models';
+
+import { toLegacyParams } from './invoices.queries';
+import type { LegacyInvoiceQuery } from './invoices.queries';
+
+export interface UseInvoicesResult {
+  rows: InvoiceRow[];
+  hasMore: boolean;
+  /** True while the `ledger_owns_invoices` dry-run has both sources in the same list. */
