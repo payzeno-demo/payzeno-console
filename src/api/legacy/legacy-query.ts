@@ -28,4 +28,7 @@ export interface LegacyQueryOptions {
 
 export function useLegacyQuery<T>(path: string, options: LegacyQueryOptions = {}): LegacyQueryState<T> {
   const { enabled = true } = options;
+  const refetch = useCallback(() => setNonce((n) => n + 1), []);
+
+  return { data, isLoading, error, refetch };
 }

@@ -6,3 +6,6 @@
  */
 import { INVOICE_STATUSES } from '@payzeno/contracts';
 import type { InvoiceStatus } from '@payzeno/contracts';
+
+import { DataTable } from '@components/data/DataTable';
+import { EmptyRows } from '@components/data/EmptyRows';
