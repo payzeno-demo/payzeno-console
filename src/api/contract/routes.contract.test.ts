@@ -85,4 +85,69 @@ async function buildEveryPath(): Promise<Built[]> {
     expect((openapi as { info: { version: string } }).info.version).toBe('2026-01-15');
   });
 
+  it('builds at least one path per endpoint method', async () => {
+    const built = await buildEveryPath();
+
+    expect(built.length).toBeGreaterThanOrEqual(40);
+  });
+
+  it('finds each built path in the document', async () => {
+    const built = await buildEveryPath();
+    const missing = built
+      .map((call) => ({ ...call, normalised: normalise(call.path) }))
+      .filter((call) => !DOCUMENTED.has(call.normalised));
+
+    expect(missing.map((call) => `${call.method} ${call.path}`)).toEqual([]);
+  });
+
+  it('covers the whole registry, not a lucky subset', async () => {
+    const built = await buildEveryPath();
+    const roots = new Set(built.map((call) => normalise(call.path).split('/')[1]));
+
+    expect([...roots].sort()).toEqual([
+      'api-keys',
+      'auth',
+      'balance',
+      'bank-accounts',
+      'charges',
+      'disputes',
+      'invoices',
+      'payment_intents',
+      'payouts',
+      'refunds',
+      'reporting',
+      'settlements',
+      'webhook_endpoints',
+      'webhook_events',
+    ]);
+  });
+});
+
+describe('the MSW handler set tracks the same routes', () => {
+  it('registers a handler for every path an endpoint builds', async () => {
+    const handled = new Set(HANDLED_PATHS.map(normalise));
+    const built = await buildEveryPath();
+
+    // Four routes are deliberately unhandled: they are reachable from an endpoint class but
+    // no feature calls them, so no test needs a fixture. Everything else must be answerable,
+    // or a hook test would hit `onUnhandledRequest: 'error'` for reasons that look unrelated.
+    const knownGaps = new Set(
+      [
+        '/auth/password/reset',
+        '/api-keys/*',
+        '/bank-accounts/*/default',
+        '/webhook_endpoints/*',
+        '/webhook_events/*/redeliver',
+      ].map(normalise),
+    );
+
+    const unhandled = [
+      ...new Set(built.map((call) => normalise(call.path))),
+    ].filter((path) => !handled.has(path) && !knownGaps.has(path));
+
+    expect(unhandled).toEqual([]);
+  });
+});
+
+describe('dead code stays dead', () => {
 });
