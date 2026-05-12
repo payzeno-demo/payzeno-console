@@ -82,3 +82,10 @@ export function toConsoleApiError(parsed: ParsedError, headers?: Headers): Conso
     case 400:
       return new BadRequestApiError(init);
     case 401:
+      return new UnauthorizedError(init);
+    case 403:
+      return new ForbiddenError(init);
+    case 404:
+      return new NotFoundApiError(init);
+    case 409:
+      return new ConflictApiError(init);

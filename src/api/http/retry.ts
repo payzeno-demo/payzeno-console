@@ -34,3 +34,9 @@ export interface RetryPolicyOptions {
 function backoff(attempt: number, baseDelayMs: number): number {
   const exponential = baseDelayMs * 2 ** (attempt - 1);
   // Full jitter. Without it every open console tab retries the same 503 in lockstep.
+  return Math.round(exponential * (0.5 + Math.random() * 0.5));
+}
+
+export function isSafeToRepeat(options: RetryPolicyOptions): boolean {
+  if (options.noRetry) return false;
+  if (IDEMPOTENT_METHODS.has(options.method)) return true;

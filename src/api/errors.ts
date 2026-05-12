@@ -66,3 +66,8 @@ export class NotFoundApiError extends ConsoleApiError {}
  * `settlement_locked` is a no-op, not a failure (the-incident.md §8, PAY-2043).
  */
 export class ConflictApiError extends ConsoleApiError {
+  isSettlementLocked(): boolean {
+    return this.code === 'settlement_locked';
+  }
+
+  isIdempotencyInProgress(): boolean {

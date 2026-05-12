@@ -224,6 +224,14 @@ function ErrorMessage({ title, body, details, requestId, actionLabel, onAction }
   );
 }
 
+export interface ErrorBoundaryProps {
+  children: ReactNode;
+  /** Called after the error is reported. `QueryErrorBoundary` passes the query reset. */
+  onReset?: () => void;
+  /** Feature name for the telemetry tag. */
+  feature?: string;
+}
+
 interface ErrorBoundaryState {
   error: unknown;
 }

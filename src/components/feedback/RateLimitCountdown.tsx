@@ -61,3 +61,12 @@ export function RateLimitCountdown({
       style={{
         display: 'grid',
         gap: space[3],
+        maxWidth: '60ch',
+        padding: space[6],
+        fontFamily: font.family,
+        color: color.textPrimary,
+        background: color.warningSubtle,
+        border: `1px solid ${color.warning}`,
+        borderRadius: radius.lg,
+      }}
+    >

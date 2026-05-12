@@ -58,3 +58,9 @@ export function parseResponse<T>(response: RawResponse): ParseResult<T> {
   }
 
   return {
+    ok: false,
+    status: response.status,
+    requestId,
+    body: isApiErrorBody(parsed) ? parsed : null,
+    raw: response.text,
+  };
