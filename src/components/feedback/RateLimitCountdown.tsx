@@ -70,3 +70,12 @@ export function RateLimitCountdown({
         borderRadius: radius.lg,
       }}
     >
+      <h2
+        id="rate-limit-heading"
+        style={{ margin: 0, fontSize: font.size.lg, fontWeight: font.weight.semibold }}
+      >
+        {title}
+      </h2>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>
+        You have gone past the dashboard rate limit. Everything you have already submitted is

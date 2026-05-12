@@ -40,3 +40,8 @@ function backoff(attempt: number, baseDelayMs: number): number {
 export function isSafeToRepeat(options: RetryPolicyOptions): boolean {
   if (options.noRetry) return false;
   if (IDEMPOTENT_METHODS.has(options.method)) return true;
+  return options.hasIdempotencyKey;
+}
+
+/**
+ * Decides whether attempt `attempt` (1-based) should be followed by another. A timeout

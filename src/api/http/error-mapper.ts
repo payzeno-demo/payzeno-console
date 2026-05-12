@@ -89,3 +89,11 @@ export function toConsoleApiError(parsed: ParsedError, headers?: Headers): Conso
       return new NotFoundApiError(init);
     case 409:
       return new ConflictApiError(init);
+    case 422:
+      return new ValidationApiError(init);
+    case 429:
+      return new RateLimitedApiError(init);
+    case 502:
+    case 503:
+    case 504:
+      return new UpstreamUnavailableApiError(init);
