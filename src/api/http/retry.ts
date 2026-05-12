@@ -45,3 +45,9 @@ export function isSafeToRepeat(options: RetryPolicyOptions): boolean {
 
 /**
  * Decides whether attempt `attempt` (1-based) should be followed by another. A timeout
+ * carries no status code and is exactly the case that most needs a retry — a predicate of
+ * "502/503/504" alone never fires on it (api-surface.md §11 makes the same point about
+ * `LedgerHttpClient`).
+ */
+export function decideRetry(
+  err: unknown,

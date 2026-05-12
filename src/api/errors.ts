@@ -71,3 +71,8 @@ export class ConflictApiError extends ConsoleApiError {
   }
 
   isIdempotencyInProgress(): boolean {
+    return this.code === 'idempotency_in_progress';
+  }
+}
+
+export class ValidationApiError extends ConsoleApiError {}
