@@ -57,3 +57,9 @@ export function decideRetry(
   const noMore = { retry: false, delayMs: 0 };
 
   if (attempt >= options.maxAttempts) {
+    return { ...noMore, reason: 'attempts exhausted' };
+  }
+  if (!isSafeToRepeat(options)) {
+    return { ...noMore, reason: `${options.method} is not safe to repeat` };
+  }
+

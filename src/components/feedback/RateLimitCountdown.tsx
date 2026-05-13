@@ -79,3 +79,12 @@ export function RateLimitCountdown({
 
       <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>
         You have gone past the dashboard rate limit. Everything you have already submitted is
+        safe — this only affects loading more.
+      </p>
+
+      <p
+        aria-hidden="true"
+        style={{
+          margin: 0,
+          fontFamily: font.familyMono,
+          fontSize: font.size.xl,

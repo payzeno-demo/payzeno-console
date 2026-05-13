@@ -76,3 +76,7 @@ export class ConflictApiError extends ConsoleApiError {
 }
 
 export class ValidationApiError extends ConsoleApiError {}
+
+export class RateLimitedApiError extends ConsoleApiError {
+  /** Seconds until the bucket refills. Defaults to 30 when the header was absent. */
+  get retryAfter(): number {
