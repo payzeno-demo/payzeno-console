@@ -63,3 +63,9 @@ export function decideRetry(
     return { ...noMore, reason: `${options.method} is not safe to repeat` };
   }
 
+  if (err instanceof RequestTimeoutError) {
+    return { retry: true, delayMs: backoff(attempt, options.baseDelayMs), reason: 'read timeout' };
+  }
+  if (err instanceof NetworkError) {
+    return { retry: true, delayMs: backoff(attempt, options.baseDelayMs), reason: 'network error' };
+  }
