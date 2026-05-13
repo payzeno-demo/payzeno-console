@@ -116,3 +116,20 @@ export function EvidenceForm({
       <Label htmlFor={fieldId(FORM, 'shipping_tracking_number')}>Tracking number</Label>
       <Input
         id={fieldId(FORM, 'shipping_tracking_number')}
+        name="shipping_tracking_number"
+        value={evidence.shipping_tracking_number ?? ''}
+        disabled={disabled}
+        onChange={(event) => set('shipping_tracking_number', event.target.value)}
+      />
+
+      <Label htmlFor={fieldId(FORM, 'uncategorized_text')}>Anything else</Label>
+      <Textarea
+        id={fieldId(FORM, 'uncategorized_text')}
+        name="uncategorized_text"
+        rows={4}
+        value={evidence.uncategorized_text ?? ''}
+        disabled={disabled}
+        onChange={(event) => set('uncategorized_text', event.target.value)}
+      />
+
+      <div role="group" aria-label="Evidence actions">

@@ -45,6 +45,8 @@ export function useSubmitEvidence(): UseSubmitEvidenceResult {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [windowClosed, setWindowClosed] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
   const submitEvidence = useCallback(
     ({ disputeId, evidence, submit }: SubmitEvidenceArgs) => {
       mutation.mutate({ disputeId, request: { evidence, submit } });

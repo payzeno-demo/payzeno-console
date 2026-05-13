@@ -57,4 +57,101 @@ export function DisputeDetailPage() {
     return <LoadingPage label="Loading dispute" />;
   }
 
+  const mayRespond = canSubmitEvidence && can('disputes:write') && !closedOnSubmit;
+  const onSave = (evidence: Parameters<typeof submitEvidence>[0]['evidence'], submit: boolean) => {
+    submitEvidence({ disputeId: dispute.id, evidence, submit });
+  };
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title={`Dispute ${dispute.id}`}
+        description={`${humanise(dispute.reason)} · network code ${dispute.network_reason_code}`}
+      >
+        <StatusPill status={dispute.status} label={humanise(dispute.status)} />
+      </PageHeader>
+
+      {windowClosed || closedOnSubmit ? (
+        <Alert tone="warning" title="The response window has closed">
+          The network is deciding this dispute without further evidence.
+        </Alert>
+      ) : (
+        <Alert tone="info" title={`Respond ${formatRemaining(hoursRemaining)}`}>
+          Evidence must reach the network before{' '}
+          <DateCell value={dispute.evidence_due_by} precision="minute" />.
+        </Alert>
+      )}
+
+      {liabilityShifted ? (
+        <Alert tone="info" title="Liability has shifted to the issuer">
+          This charge was authenticated with 3-D Secure and the dispute reason is fraud, so the
+          issuer bears the loss. You may still respond, but you are not on the hook for it.
+        </Alert>
+      ) : null}
+
+      <Card as="section" aria-label="Dispute details">
+        <dl>
+          <dt>Charge</dt>
+          <dd>
+            <Link to={ROUTES.charges.detail(dispute.charge_id)}>
+              <IdCell value={dispute.charge_id} />
+            </Link>
+          </dd>
+
+          <dt>Disputed amount</dt>
+          <dd>
+            <MoneyCell amountMinor={dispute.amount_minor} currency={dispute.currency} />
+          </dd>
+
+          <dt>Dispute fee</dt>
+          <dd>
+            <MoneyCell amountMinor={dispute.fee_minor} currency={dispute.currency} />
+          </dd>
+
+          <dt>Refundable</dt>
+          <dd>{dispute.is_charge_refundable ? 'Yes' : 'No — the funds are already held'}</dd>
+
+          <dt>Opened</dt>
+          <dd>
+            <DateCell value={dispute.created_at} precision="minute" />
+          </dd>
+
+          <dt>Submitted</dt>
+          <dd>
+            <DateCell value={dispute.submitted_at} precision="minute" />
+          </dd>
+
+          <dt>Resolved</dt>
+          <dd>
+            <DateCell value={dispute.resolved_at} precision="minute" />
+          </dd>
+        </dl>
+      </Card>
+
+      {evidenceV2 ? (
+        <EvidenceFormV2
+          disputeId={dispute.id}
+          reason={dispute.reason}
+          initialEvidence={dispute.evidence}
+          disabled={!mayRespond}
+          isPending={isPending}
+          isSubmitted={isSubmitted}
+          errorMessage={errorMessage}
+          fieldErrors={fieldErrors}
+          onSave={onSave}
+        />
+      ) : (
+        <EvidenceForm
+          disputeId={dispute.id}
+          initialEvidence={dispute.evidence}
+          disabled={!mayRespond}
+          isPending={isPending}
+          isSubmitted={isSubmitted}
+          errorMessage={errorMessage}
+          fieldErrors={fieldErrors}
+          onSave={onSave}
+        />
+      )}
+    </PageContainer>
+  );
 }
