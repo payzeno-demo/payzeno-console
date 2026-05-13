@@ -51,3 +51,9 @@ export function isSafeToRepeat(options: RetryPolicyOptions): boolean {
  */
 export function decideRetry(
   err: unknown,
+  attempt: number,
+  options: RetryPolicyOptions,
+): RetryDecision {
+  const noMore = { retry: false, delayMs: 0 };
+
+  if (attempt >= options.maxAttempts) {

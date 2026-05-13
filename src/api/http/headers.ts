@@ -9,6 +9,10 @@ export const HEADER_REQUEST_ID = 'X-Request-Id';
 export const HEADER_CORRELATION_ID = 'X-Correlation-Id';
 export const HEADER_API_VERSION = 'Payzeno-Version';
 export const HEADER_IDEMPOTENCY_KEY = 'Idempotency-Key';
+export const HEADER_CSRF = 'X-Payzeno-CSRF';
+
+/** Response headers the console actually reads. */
+export const HEADER_RATE_LIMIT_RESET = 'X-RateLimit-Reset';
 export const HEADER_RATE_LIMIT_REMAINING = 'X-RateLimit-Remaining';
 export const HEADER_RETRY_AFTER = 'Retry-After';
 export interface BaseHeaderOptions {
@@ -61,3 +65,9 @@ export function readRetryAfterSeconds(headers: Headers): number | undefined {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
 }
 
+export function readRateLimitRemaining(headers: Headers): number | null {
+  const raw = headers.get(HEADER_RATE_LIMIT_REMAINING);
+  if (!raw) return null;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}
