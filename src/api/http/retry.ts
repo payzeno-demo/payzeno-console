@@ -69,3 +69,9 @@ export function decideRetry(
   if (err instanceof NetworkError) {
     return { retry: true, delayMs: backoff(attempt, options.baseDelayMs), reason: 'network error' };
   }
+
+  const status = (err as { status?: number }).status;
+  if (typeof status === 'number' && RETRYABLE_STATUSES.includes(status)) {
+    return { retry: true, delayMs: backoff(attempt, options.baseDelayMs), reason: `status ${status}` };
+  }
+

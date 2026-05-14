@@ -97,3 +97,10 @@ export function toConsoleApiError(parsed: ParsedError, headers?: Headers): Conso
     case 503:
     case 504:
       return new UpstreamUnavailableApiError(init);
+    default:
+      // 402 card_declined, 500 internal_error, 418, anything nginx invents. One home.
+      return new ServerError(init);
+  }
+}
+
+/** Wraps a transport-level failure (no HTTP status at all) as an upstream outage. */
