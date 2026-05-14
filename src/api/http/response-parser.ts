@@ -64,3 +64,9 @@ export function parseResponse<T>(response: RawResponse): ParseResult<T> {
     body: isApiErrorBody(parsed) ? parsed : null,
     raw: response.text,
   };
+}
+
+/** True when the response carries no entity at all — used by `ApiClient.delete`. */
+export function isEmptyResponse(response: RawResponse): boolean {
+  return response.status === 204 || response.text === undefined || response.text.length === 0;
+}

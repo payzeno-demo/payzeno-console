@@ -89,3 +89,8 @@ export class UpstreamUnavailableApiError extends ConsoleApiError {}
 export class ServerError extends ConsoleApiError {}
 
 /** Narrowing helper used by query retry policy, hooks and the error boundary. */
+export function isConsoleApiError(err: unknown): err is ConsoleApiError {
+  return err instanceof ConsoleApiError;
+}
+
+export function isApiErrorBody(body: unknown): body is ApiError {

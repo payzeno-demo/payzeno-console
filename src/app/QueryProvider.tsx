@@ -61,3 +61,19 @@ export function shouldRetry(failureCount: number, error: unknown): boolean {
 
 export function createQueryClient(): QueryClient {
   return new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: STALE_TIME_MS,
+        gcTime: LONG_STALE_TIME_MS,
+        retry: shouldRetry,
+        retryDelay: retryDelayFor,
+        // A merchant leaving the tab open all afternoon should see fresh numbers when they
+        // come back, but not a refetch storm every time they alt-tab.
+        refetchOnWindowFocus: 'always',
+        refetchOnReconnect: true,
+        throwOnError: (error) => isConsoleApiError(error) && error.status >= 500,
+      },
+      mutations: {
+        retry: false,
+        onError: (error) => {
+          captureError(error, {
