@@ -26,3 +26,9 @@ const FLAG_VALUES: Readonly<Record<FlagName, boolean>> = Object.freeze({
  * a context (`FlagsProvider` already exists for it) no call site changes.
  */
 export function useFlag(name: FlagName): boolean {
+  return FLAG_VALUES[name];
+}
+
+/** Non-hook read, for module scope and for the router's lazy-route guard. */
+export function isFlagEnabled(name: FlagName): boolean {
+  return FLAG_VALUES[name];

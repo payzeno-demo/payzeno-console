@@ -61,6 +61,22 @@ describe('saving a draft', () => {
     const { result } = renderHookWithProviders(() => useSubmitEvidence());
 
     act(() => {
+      result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: false });
+    });
+
+    await waitFor(() => {
+      expect(result.current.isPending).toBe(false);
+    });
+    expect(result.current.isSubmitted).toBe(false);
+  });
+});
+
+describe('submitting to the network', () => {
+  it('sends submit: true', async () => {
+    const box = captureBody();
+    const { result } = renderHookWithProviders(() => useSubmitEvidence());
+
+    act(() => {
       result.current.submitEvidence({ disputeId: DISPUTE_ID, evidence: EVIDENCE, submit: true });
     });
 
