@@ -75,3 +75,9 @@ export function decideRetry(
     return { retry: true, delayMs: backoff(attempt, options.baseDelayMs), reason: `status ${status}` };
   }
 
+  return { ...noMore, reason: 'not retryable' };
+}
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

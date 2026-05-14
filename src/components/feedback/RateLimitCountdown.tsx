@@ -88,3 +88,12 @@ export function RateLimitCountdown({
           margin: 0,
           fontFamily: font.familyMono,
           fontSize: font.size.xl,
+          color: color.textPrimary,
+        }}
+      >
+        {done ? 'Ready' : formatCountdown(remaining)}
+      </p>
+
+      <span aria-live="polite" style={visuallyHidden as React.CSSProperties}>
+        {done ? 'You can retry now' : `Please wait ${formatCountdown(remaining)}`}
+      </span>
