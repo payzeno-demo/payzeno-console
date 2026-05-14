@@ -51,3 +51,18 @@ export interface SubmitEvidenceInput {
   disputeId: string;
   request: SubmitDisputeEvidenceRequest;
 }
+
+/**
+ * `POST /v1/disputes/:disputeId/evidence`.
+ *
+ * `submit: false` stages the packet without sending it to the network — that is the "save
+ * draft" button, and it is the only reason this mutation is called more than once per
+ * dispute.
+ */
+export function submitEvidenceMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['disputes', 'submit-evidence'] as const,
+    mutationFn: ({ disputeId, request }: SubmitEvidenceInput): Promise<Dispute> =>
+      e.disputes.submitEvidence(disputeId, request),
+  };
+}

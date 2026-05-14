@@ -52,3 +52,39 @@ export const disputeColumns: ReadonlyArray<ColumnDef<DisputeRow>> = [
     id: 'charge_id',
     header: 'Charge',
     cell: (row) => (
+      <Link to={ROUTES.charges.detail(row.charge_id)}>
+        <IdCell value={row.charge_id} />
+      </Link>
+    ),
+    exportValue: (row) => row.charge_id,
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => <StatusPill status={row.status} label={humanise(row.status)} />,
+    exportValue: (row) => row.status,
+  },
+  {
+    id: 'reason',
+    header: 'Reason',
+    cell: (row) => <span>{reasonLabel(row.reason)}</span>,
+    exportValue: (row) => row.reason,
+  },
+  {
+    id: 'amount_minor',
+    header: 'Disputed',
+    align: 'end',
+    sortable: true,
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),
+  },
+  {
+    id: 'fee_minor',
+    header: 'Fee',
+    align: 'end',
+    cell: (row) => <MoneyCell amountMinor={row.fee_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.fee_minor),
+  },
+  {
+    id: 'liability',
+    header: 'Liability',
