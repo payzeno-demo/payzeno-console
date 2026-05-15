@@ -61,3 +61,48 @@ export function RateLimitCountdown({
       style={{
         display: 'grid',
         gap: space[3],
+        maxWidth: '60ch',
+        padding: space[6],
+        fontFamily: font.family,
+        color: color.textPrimary,
+        background: color.warningSubtle,
+        border: `1px solid ${color.warning}`,
+        borderRadius: radius.lg,
+      }}
+    >
+      <h2
+        id="rate-limit-heading"
+        style={{ margin: 0, fontSize: font.size.lg, fontWeight: font.weight.semibold }}
+      >
+        {title}
+      </h2>
+
+      <p style={{ margin: 0, fontSize: font.size.md, color: color.textSecondary }}>
+        You have gone past the dashboard rate limit. Everything you have already submitted is
+        safe — this only affects loading more.
+      </p>
+
+      <p
+        aria-hidden="true"
+        style={{
+          margin: 0,
+          fontFamily: font.familyMono,
+          fontSize: font.size.xl,
+          color: color.textPrimary,
+        }}
+      >
+        {done ? 'Ready' : formatCountdown(remaining)}
+      </p>
+
+      <span aria-live="polite" style={visuallyHidden as React.CSSProperties}>
+        {done ? 'You can retry now' : `Please wait ${formatCountdown(remaining)}`}
+      </span>
+
+      <div>
+        <Button size="sm" variant="secondary" disabled={!done} onClick={onExpire}>
+          Retry
+        </Button>
+      </div>
+    </section>
+  );
+}

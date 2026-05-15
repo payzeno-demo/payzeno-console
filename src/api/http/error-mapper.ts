@@ -82,3 +82,33 @@ export function toConsoleApiError(parsed: ParsedError, headers?: Headers): Conso
     case 400:
       return new BadRequestApiError(init);
     case 401:
+      return new UnauthorizedError(init);
+    case 403:
+      return new ForbiddenError(init);
+    case 404:
+      return new NotFoundApiError(init);
+    case 409:
+      return new ConflictApiError(init);
+    case 422:
+      return new ValidationApiError(init);
+    case 429:
+      return new RateLimitedApiError(init);
+    case 502:
+    case 503:
+    case 504:
+      return new UpstreamUnavailableApiError(init);
+    default:
+      // 402 card_declined, 500 internal_error, 418, anything nginx invents. One home.
+      return new ServerError(init);
+  }
+}
+
+/** Wraps a transport-level failure (no HTTP status at all) as an upstream outage. */
+export function transportFailureToApiError(url: string, requestId: string): ConsoleApiError {
+  return new UpstreamUnavailableApiError({
+    status: 502,
+    code: 'processor_unavailable',
+    message: `Could not reach ${url}. Check your connection and try again.`,
+    requestId,
+  });
+}

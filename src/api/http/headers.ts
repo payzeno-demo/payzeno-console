@@ -9,8 +9,14 @@ export const HEADER_REQUEST_ID = 'X-Request-Id';
 export const HEADER_CORRELATION_ID = 'X-Correlation-Id';
 export const HEADER_API_VERSION = 'Payzeno-Version';
 export const HEADER_IDEMPOTENCY_KEY = 'Idempotency-Key';
+export const HEADER_CSRF = 'X-Payzeno-CSRF';
+
+/** Response headers the console actually reads. */
+export const HEADER_RATE_LIMIT_RESET = 'X-RateLimit-Reset';
 export const HEADER_RATE_LIMIT_REMAINING = 'X-RateLimit-Remaining';
 export const HEADER_RETRY_AFTER = 'Retry-After';
+export const HEADER_IDEMPOTENT_REPLAY = 'Idempotent-Replay';
+
 export interface BaseHeaderOptions {
   /** Only set when there is a body to describe. */
   hasBody: boolean;
@@ -54,6 +60,14 @@ export function wasIdempotentReplay(headers: Headers): boolean {
   return headers.get(HEADER_IDEMPOTENT_REPLAY) === 'true';
 }
 
+export function readRequestId(headers: Headers): string {
+  return headers.get(HEADER_REQUEST_ID) ?? 'unknown';
+}
+
+/**
+ * Seconds until the caller may retry. Present on 429 and on `409 idempotency_in_progress`.
+ * A missing or unparseable value is not an error — callers fall back to their own backoff.
+ */
 export function readRetryAfterSeconds(headers: Headers): number | undefined {
   const raw = headers.get(HEADER_RETRY_AFTER);
   if (!raw) return undefined;
@@ -61,3 +75,9 @@ export function readRetryAfterSeconds(headers: Headers): number | undefined {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : undefined;
 }
 
+export function readRateLimitRemaining(headers: Headers): number | null {
+  const raw = headers.get(HEADER_RATE_LIMIT_REMAINING);
+  if (!raw) return null;
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : null;
+}

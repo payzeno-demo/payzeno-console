@@ -66,3 +66,31 @@ export class NotFoundApiError extends ConsoleApiError {}
  * `settlement_locked` is a no-op, not a failure (the-incident.md §8, PAY-2043).
  */
 export class ConflictApiError extends ConsoleApiError {
+  isSettlementLocked(): boolean {
+    return this.code === 'settlement_locked';
+  }
+
+  isIdempotencyInProgress(): boolean {
+    return this.code === 'idempotency_in_progress';
+  }
+}
+
+export class ValidationApiError extends ConsoleApiError {}
+
+export class RateLimitedApiError extends ConsoleApiError {
+  /** Seconds until the bucket refills. Defaults to 30 when the header was absent. */
+  get retryAfter(): number {
+    return this.retryAfterSeconds ?? 30;
+  }
+}
+
+export class UpstreamUnavailableApiError extends ConsoleApiError {}
+
+export class ServerError extends ConsoleApiError {}
+
+/** Narrowing helper used by query retry policy, hooks and the error boundary. */
+export function isConsoleApiError(err: unknown): err is ConsoleApiError {
+  return err instanceof ConsoleApiError;
+}
+
+export function isApiErrorBody(body: unknown): body is ApiError {
