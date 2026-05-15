@@ -97,3 +97,12 @@ export function RateLimitCountdown({
       <span aria-live="polite" style={visuallyHidden as React.CSSProperties}>
         {done ? 'You can retry now' : `Please wait ${formatCountdown(remaining)}`}
       </span>
+
+      <div>
+        <Button size="sm" variant="secondary" disabled={!done} onClick={onExpire}>
+          Retry
+        </Button>
+      </div>
+    </section>
+  );
+}
