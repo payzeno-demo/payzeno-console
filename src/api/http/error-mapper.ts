@@ -104,3 +104,11 @@ export function toConsoleApiError(parsed: ParsedError, headers?: Headers): Conso
 }
 
 /** Wraps a transport-level failure (no HTTP status at all) as an upstream outage. */
+export function transportFailureToApiError(url: string, requestId: string): ConsoleApiError {
+  return new UpstreamUnavailableApiError({
+    status: 502,
+    code: 'processor_unavailable',
+    message: `Could not reach ${url}. Check your connection and try again.`,
+    requestId,
+  });
+}
