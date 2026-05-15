@@ -27,3 +27,12 @@ export class WebhookEventsEndpoint extends ResourceEndpoint<WebhookEvent, Webhoo
   protected readonly basePath = '/webhook_events';
 
   constructor(client: HttpTransport) {
+    super(client);
+  }
+
+  /** `admin` for the merchant's own events. Returns the event with a fresh attempt queued. */
+  redeliver(
+    eventId: string,
+    idempotencyKey: string = newIdempotencyKey(),
+  ): Promise<WebhookEvent> {
+    return this.client.post<WebhookEvent, Record<string, never>>(
