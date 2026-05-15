@@ -77,3 +77,19 @@ export function createQueryClient(): QueryClient {
         retry: false,
         onError: (error) => {
           captureError(error, {
+            code: isConsoleApiError(error) ? error.code : undefined,
+            requestId: isConsoleApiError(error) ? error.requestId : undefined,
+          });
+        },
+      },
+    },
+  });
+}
+
+export function QueryProvider({ children, client }: QueryProviderProps) {
+  // `useState` rather than a module constant: two tests in the same file must not share a
+  // cache, and neither must two roots in a Storybook page.
+  const [queryClient] = useState(() => client ?? createQueryClient());
+
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+}
