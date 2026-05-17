@@ -40,12 +40,61 @@ export interface UseSubmitEvidenceResult {
 
 export function useSubmitEvidence(): UseSubmitEvidenceResult {
   const endpoints = useEndpoints();
+  const queryClient = useQueryClient();
   const toast = useToast();
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [windowClosed, setWindowClosed] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const mutation = useMutation({
+    ...submitEvidenceMutation(endpoints),
+    onMutate: () => {
+      setErrorMessage(null);
+      setFieldErrors({});
+    },
+    onSuccess: async (dispute: Dispute, variables) => {
+      if (variables.request.submit) {
+        setIsSubmitted(true);
+        toast.success('Evidence submitted to the card network.');
+        trackEvent('dispute_evidence_submitted', { reason: dispute.reason });
+      } else {
+        toast.info('Draft saved.');
+      }
+
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.disputes.detail(dispute.id) }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.disputes.all }),
+      ]);
+    },
+    onError: async (error: unknown, variables) => {
+      if (error instanceof ValidationApiError) {
+        if (error.code === 'dispute_window_closed') {
+          setWindowClosed(true);
+          setErrorMessage('The response window closed before this reached the network.');
+          await queryClient.invalidateQueries({
+            queryKey: queryKeys.disputes.detail(variables.disputeId),
+          });
+          return;
+        }
+        setFieldErrors(error.fieldErrorMap());
+        setErrorMessage('Some of the evidence fields need attention.');
+        return;
+      }
+
+      if (error instanceof ForbiddenError) {
+        setErrorMessage('Responding to a dispute needs the disputes:write permission.');
+        return;
+      }
+
+      setErrorMessage(
+        error instanceof ConsoleApiError
+          ? error.message
+          : 'The evidence could not be saved. Try again in a moment.',
+      );
+    },
+  });
 
   const submitEvidence = useCallback(
     ({ disputeId, evidence, submit }: SubmitEvidenceArgs) => {

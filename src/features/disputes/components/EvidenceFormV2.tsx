@@ -25,6 +25,32 @@ import { fieldErrorId, fieldId } from '@lib/ids';
 
 type EvidenceField = keyof DisputeEvidence;
 
+/** Which fields the network weighs for each reason. Ordered strongest-first. */
+const FIELDS_BY_REASON: Readonly<Record<DisputeReason, ReadonlyArray<EvidenceField>>> = {
+  fraudulent: ['customer_name', 'customer_email', 'shipping_tracking_number', 'uncategorized_text'],
+  product_not_received: [
+    'shipping_tracking_number',
+    'product_description',
+    'customer_email',
+    'receipt_file_id',
+  ],
+  product_unacceptable: [
+    'product_description',
+    'service_documentation_file_id',
+    'customer_email',
+    'uncategorized_text',
+  ],
+  duplicate: ['receipt_file_id', 'product_description', 'uncategorized_text'],
+  subscription_canceled: [
+    'service_documentation_file_id',
+    'customer_email',
+    'product_description',
+    'uncategorized_text',
+  ],
+  credit_not_processed: ['receipt_file_id', 'product_description', 'uncategorized_text'],
+  general: ['product_description', 'customer_email', 'uncategorized_text'],
+};
+
 const LABELS: Readonly<Record<EvidenceField, string>> = {
   product_description: 'What was sold',
   customer_name: 'Customer name',
