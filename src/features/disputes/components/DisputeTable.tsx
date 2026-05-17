@@ -22,3 +22,25 @@ export interface DisputeTableProps {
   pagination?: Pagination;
 }
 
+export function DisputeTable({ rows, isLoading, pagination }: DisputeTableProps) {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <DataTable<DisputeRow>
+        caption="Disputes, soonest response deadline first"
+        columns={disputeColumns}
+        rows={rows}
+        isLoading={isLoading}
+        onRowClick={(row) => navigate(ROUTES.disputes.detail(row.id))}
+        emptyState={
+          <EmptyRows
+            title="No disputes"
+            body="Chargebacks raised by an issuer appear here, with the deadline to respond."
+          />
+        }
+      />
+      {pagination ? <DataTablePagination pagination={pagination} label="Dispute pages" /> : null}
+    </>
+  );
+}

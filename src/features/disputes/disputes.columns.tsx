@@ -88,3 +88,21 @@ export const disputeColumns: ReadonlyArray<ColumnDef<DisputeRow>> = [
   {
     id: 'liability',
     header: 'Liability',
+    cell: (row) => <span>{row.liability_shifted ? 'Issuer' : 'You'}</span>,
+    exportValue: (row) => (row.liability_shifted ? 'issuer' : 'merchant'),
+  },
+  {
+    id: 'evidence_due_by',
+    header: 'Respond by',
+    sortable: true,
+    cell: (row) =>
+      ACTIONABLE_STATUSES.has(row.status) ? (
+        <span data-urgent={row._hoursRemaining !== null && row._hoursRemaining <= 48}>
+          {formatRemaining(row._hoursRemaining)}
+        </span>
+      ) : (
+        <DateCell value={row.resolved_at} precision="day" />
+      ),
+    exportValue: (row) => row.evidence_due_by ?? '',
+  },
+];
