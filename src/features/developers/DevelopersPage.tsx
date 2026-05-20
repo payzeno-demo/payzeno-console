@@ -198,3 +198,15 @@ export function DevelopersPage() {
               id="webhook-type"
               label="Event type"
               value={eventType}
+              onValueChange={setEventType}
+              options={[
+                { value: '', label: 'All events' },
+                ...COMMON_EVENT_TYPES.map((value) => ({ value, label: value })),
+              ]}
+            />
+          </FilterBar>
+
+          {eventsError ? (
+            <ErrorState error={eventsError} title="We could not load webhook deliveries" />
+          ) : (
+            <>
