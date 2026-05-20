@@ -186,3 +186,15 @@ export function DevelopersPage() {
                   <li key={endpoint.id}>
                     <code>{endpoint.url}</code> — {endpoint.status},{' '}
                     {pluralise(endpoint.enabled_events.length, 'event type')}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p>{enabledCount} enabled.</p>
+          </Card>
+
+          <FilterBar label="Webhook filters">
+            <Select
+              id="webhook-type"
+              label="Event type"
+              value={eventType}

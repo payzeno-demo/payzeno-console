@@ -71,3 +71,10 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
 
       await queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
     },
+    onError: (error: unknown) => {
+      if (error instanceof ValidationApiError) {
+        setFieldErrors(error.fieldErrorMap());
+        setErrorMessage('Check the key name and scopes.');
+        return;
+      }
+      if (error instanceof ForbiddenError) {
