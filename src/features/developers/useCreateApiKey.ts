@@ -64,3 +64,10 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
       setSecret(plaintext);
 
       toast.success('Key created. Copy it now — it is not shown again.');
+      trackEvent('api_key_created', {
+        mode: metadata.mode,
+        scope_count: metadata.scopes.length,
+      });
+
+      await queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
+    },

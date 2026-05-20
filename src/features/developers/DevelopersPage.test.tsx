@@ -32,6 +32,23 @@ describe('the page', () => {
     });
   });
 
+  it('renders a labelled tab list', async () => {
+    renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    expect(
+      await screen.findByRole('tablist', { name: 'Developer sections' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('the keys tab', () => {
+  it('renders live and test keys in separate captioned tables', async () => {
+    renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    expect(await screen.findByRole('table', { name: /Live API keys/ })).toBeInTheDocument();
+    expect(screen.getByRole('table', { name: /Test API keys/ })).toBeInTheDocument();
+  });
+
   it('shows the masked key label rather than anything secret', async () => {
     const { container } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
 
@@ -61,6 +78,18 @@ describe('the page', () => {
     expect(await screen.findByText('No live keys')).toBeInTheDocument();
   });
 
+  it('renders an error state when the key list fails', async () => {
+    server.use(errorHandler('get', '/api-keys', 500, 'internal_error'));
+
+    renderWithProviders(<DevelopersPage />, { route: '/developers' });
+
+    expect(
+      await screen.findByRole('heading', { name: 'We could not load your keys' }),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('the webhooks tab', () => {
   it('is reachable from the tab list', async () => {
     const { user } = renderWithProviders(<DevelopersPage />, { route: '/developers' });
 
