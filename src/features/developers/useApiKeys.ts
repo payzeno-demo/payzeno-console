@@ -55,3 +55,8 @@ export function useApiKeys(): UseApiKeysResult {
       setRevokeError(
         error instanceof ConsoleApiError ? error.message : 'The key could not be revoked.',
       );
+    },
+  });
+
+  const revoke = useCallback(
+    (apiKeyId: string) => {

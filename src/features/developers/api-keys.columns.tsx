@@ -41,3 +41,8 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
       <code>
         {row.prefix}…{row.last_four}
       </code>
+    ),
+    exportValue: (row) => `${row.prefix}...${row.last_four}`,
+  },
+  {
+    id: 'mode',
