@@ -119,3 +119,10 @@ export const ROUTE_PATTERNS = {
   webhookEventDetail: 'webhook-events/:eventId',
 
   settings: '/settings',
+
+  catchAll: '*',
+} as const;
+
+/** Every top-level path, for the "is this a known route" check in `NotFoundPage`. */
+export const TOP_LEVEL_PATHS: ReadonlyArray<string> = [
+  ROUTES.reporting.index,
