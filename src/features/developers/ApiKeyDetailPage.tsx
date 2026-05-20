@@ -79,3 +79,9 @@ export function ApiKeyDetailPage() {
         <Alert tone="critical" title="Revocation failed">
           {revokeError}
         </Alert>
+      ) : null}
+
+      <Card as="section" aria-label="Key details">
+        <dl>
+          <dt>Key</dt>
+          <dd>

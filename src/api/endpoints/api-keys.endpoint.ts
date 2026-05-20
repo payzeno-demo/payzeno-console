@@ -22,3 +22,9 @@ export class ApiKeysEndpoint extends ResourceEndpoint<ApiKey, ListQuery> {
   protected readonly basePath = '/api-keys';
 
   constructor(client: HttpTransport) {
+    super(client);
+  }
+
+  create(
+    req: CreateApiKeyRequest,
+    idempotencyKey: string = newIdempotencyKey(),
