@@ -60,3 +60,8 @@ export function useApiKeys(): UseApiKeysResult {
 
   const revoke = useCallback(
     (apiKeyId: string) => {
+      setRevokeError(null);
+      mutation.mutate({ apiKeyId });
+    },
+    [mutation],
+  );

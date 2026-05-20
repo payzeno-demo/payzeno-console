@@ -59,3 +59,8 @@ export function webhookEventQuery(e: EndpointRegistry, eventId: string) {
     staleTime: 10_000,
   });
 }
+
+export function webhookEndpointsQuery(e: EndpointRegistry) {
+  return queryOptions<Paginated<WebhookEndpoint>>({
+    queryKey: queryKeys.webhookEndpoints.list(),
+    queryFn: () => e.webhookEndpoints.list(),
