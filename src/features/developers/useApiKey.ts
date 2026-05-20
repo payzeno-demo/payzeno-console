@@ -19,3 +19,8 @@ export interface UseApiKeyResult {
   displayLabel: string;
   isRevoked: boolean;
   isLive: boolean;
+  writeScopes: ApiKeyScope[];
+  isLoading: boolean;
+  isMissing: boolean;
+  error: Error | null;
+}

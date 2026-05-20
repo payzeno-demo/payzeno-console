@@ -78,3 +78,9 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
         return;
       }
       if (error instanceof ForbiddenError) {
+        setErrorMessage('Creating an API key needs an admin role.');
+        return;
+      }
+      setErrorMessage(
+        error instanceof ConsoleApiError ? error.message : 'The key could not be created.',
+      );
