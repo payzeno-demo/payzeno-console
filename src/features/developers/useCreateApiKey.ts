@@ -58,3 +58,29 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
     },
     onSuccess: async (response) => {
       // Split the response: metadata one way, secret the other. Only the metadata may be
+      // held anywhere a devtools snapshot can reach.
+      const { secret: plaintext, ...metadata } = response;
+      setCreatedKey(metadata);
+      setSecret(plaintext);
+
+      toast.success('Key created. Copy it now — it is not shown again.');
+      trackEvent('api_key_created', {
+        mode: metadata.mode,
+        scope_count: metadata.scopes.length,
+      });
+
+      await queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
+    },
+    onError: (error: unknown) => {
+      if (error instanceof ValidationApiError) {
+        setFieldErrors(error.fieldErrorMap());
+        setErrorMessage('Check the key name and scopes.');
+        return;
+      }
+      if (error instanceof ForbiddenError) {
+        setErrorMessage('Creating an API key needs an admin role.');
+        return;
+      }
+      setErrorMessage(
+        error instanceof ConsoleApiError ? error.message : 'The key could not be created.',
+      );

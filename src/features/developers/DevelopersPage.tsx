@@ -174,3 +174,50 @@ export function DevelopersPage() {
               {pluralise(deadCount, 'event')} exhausted every retry. Fix the endpoint, then
               redeliver them individually.
             </Alert>
+          ) : null}
+
+          <Card as="section" aria-label="Webhook endpoints">
+            <h2>Endpoints</h2>
+            {endpointsLoading ? (
+              <p>Loading endpoints…</p>
+            ) : (
+              <ul>
+                {endpoints.map((endpoint) => (
+                  <li key={endpoint.id}>
+                    <code>{endpoint.url}</code> — {endpoint.status},{' '}
+                    {pluralise(endpoint.enabled_events.length, 'event type')}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p>{enabledCount} enabled.</p>
+          </Card>
+
+          <FilterBar label="Webhook filters">
+            <Select
+              id="webhook-type"
+              label="Event type"
+              value={eventType}
+              onValueChange={setEventType}
+              options={[
+                { value: '', label: 'All events' },
+                ...COMMON_EVENT_TYPES.map((value) => ({ value, label: value })),
+              ]}
+            />
+          </FilterBar>
+
+          {eventsError ? (
+            <ErrorState error={eventsError} title="We could not load webhook deliveries" />
+          ) : (
+            <>
+              <DataTable
+                caption="Webhook deliveries, most recent first"
+                columns={webhookEventColumns}
+                rows={events}
+                isLoading={eventsLoading}
+                emptyState={
+                  <EmptyRows
+                    title="No deliveries yet"
+                    body="Events appear here as soon as something happens on your account."
+                  />
+                }

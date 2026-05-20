@@ -58,3 +58,30 @@ export function ApiKeyDetailPage() {
             onClick={() => revoke(apiKey.id)}
           >
             {isRevoking ? 'Revoking…' : 'Revoke key'}
+          </Button>
+        ) : null}
+      </PageHeader>
+
+      {isRevoked ? (
+        <Alert tone="info" title="This key is revoked">
+          Requests using it fail immediately with <code>401 invalid_api_key</code>.
+        </Alert>
+      ) : null}
+
+      {isLive && writeScopes.length > 0 ? (
+        <Alert tone="warning" title="This key can move money">
+          It holds {listSentence(writeScopes)}. Treat it like a password: rotate it if it has
+          ever been in a repository, a log line or a support ticket.
+        </Alert>
+      ) : null}
+
+      {revokeError ? (
+        <Alert tone="critical" title="Revocation failed">
+          {revokeError}
+        </Alert>
+      ) : null}
+
+      <Card as="section" aria-label="Key details">
+        <dl>
+          <dt>Key</dt>
+          <dd>

@@ -17,3 +17,16 @@ import type { ApiKey } from '@payzeno/contracts';
 import { Alert } from '@components/ui/Alert';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
+import { Label } from '@components/ui/Label';
+import { useCopyToClipboard } from '@hooks/useCopyToClipboard';
+
+export interface SecretRevealOnceProps {
+  apiKey: ApiKey;
+  secret: string;
+  onDismiss: () => void;
+}
+
+export function SecretRevealOnce({ apiKey, secret, onDismiss }: SecretRevealOnceProps) {
+  const { copy, status, announcement } = useCopyToClipboard();
+
+  // Belt and braces: whatever happens to the parent, the secret goes when this unmounts.

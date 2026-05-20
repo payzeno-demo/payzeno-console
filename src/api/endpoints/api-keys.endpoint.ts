@@ -16,3 +16,15 @@ import { ResourceEndpoint } from './base';
  *
  * The plaintext secret comes back exactly once, on create. `SecretRevealOnce` is the only
  * component that ever holds it and it never enters the query cache — see
+ * `developers.queries.ts`.
+ */
+export class ApiKeysEndpoint extends ResourceEndpoint<ApiKey, ListQuery> {
+  protected readonly basePath = '/api-keys';
+
+  constructor(client: HttpTransport) {
+    super(client);
+  }
+
+  create(
+    req: CreateApiKeyRequest,
+    idempotencyKey: string = newIdempotencyKey(),

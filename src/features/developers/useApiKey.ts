@@ -14,3 +14,13 @@ import { useEndpoints } from '@app/ApiContext';
 import { apiKeyQuery } from './developers.queries';
 
 export interface UseApiKeyResult {
+  apiKey: ApiKey | undefined;
+  /** `sk_live_…1a2b` — the only representation of a key this console ever renders. */
+  displayLabel: string;
+  isRevoked: boolean;
+  isLive: boolean;
+  writeScopes: ApiKeyScope[];
+  isLoading: boolean;
+  isMissing: boolean;
+  error: Error | null;
+}
