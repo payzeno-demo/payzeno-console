@@ -35,6 +35,9 @@ describe('GET /v1/api-keys', () => {
   });
 
   it('uses the hyphenated path — api-keys, not api_keys', async () => {
+    const recorder = recordRequests();
+    await endpoint().list();
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 
@@ -54,6 +57,8 @@ describe('GET /v1/api-keys', () => {
 describe('GET /v1/api-keys/:apiKeyId', () => {
   it('reads one key by id', async () => {
     const recorder = recordRequests();
+    const created = await endpoint().create({ name: 'Checkout server', mode: 'live' });
+
     const request = recorder.requests.at(-1);
     recorder.stop();
 

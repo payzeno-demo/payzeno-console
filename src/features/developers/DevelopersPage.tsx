@@ -174,3 +174,15 @@ export function DevelopersPage() {
               {pluralise(deadCount, 'event')} exhausted every retry. Fix the endpoint, then
               redeliver them individually.
             </Alert>
+          ) : null}
+
+          <Card as="section" aria-label="Webhook endpoints">
+            <h2>Endpoints</h2>
+            {endpointsLoading ? (
+              <p>Loading endpoints…</p>
+            ) : (
+              <ul>
+                {endpoints.map((endpoint) => (
+                  <li key={endpoint.id}>
+                    <code>{endpoint.url}</code> — {endpoint.status},{' '}
+                    {pluralise(endpoint.enabled_events.length, 'event type')}

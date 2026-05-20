@@ -58,3 +58,10 @@ export function ApiKeyDetailPage() {
             onClick={() => revoke(apiKey.id)}
           >
             {isRevoking ? 'Revoking…' : 'Revoke key'}
+          </Button>
+        ) : null}
+      </PageHeader>
+
+      {isRevoked ? (
+        <Alert tone="info" title="This key is revoked">
+          Requests using it fail immediately with <code>401 invalid_api_key</code>.

@@ -170,3 +170,13 @@ export function AppRoutes() {
           }
         />
 
+        <Route
+          path={ROUTE_PATTERNS.balance}
+          element={<FeatureRoute permission="balance:read" label="balance" />}
+        >
+          <Route index element={<BalancePage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.payments}
+          element={<FeatureRoute permission="payments:read" label="payments" />}

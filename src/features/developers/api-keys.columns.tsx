@@ -36,3 +36,8 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
   },
   {
     id: 'key',
+    header: 'Key',
+    cell: (row) => (
+      <code>
+        {row.prefix}…{row.last_four}
+      </code>

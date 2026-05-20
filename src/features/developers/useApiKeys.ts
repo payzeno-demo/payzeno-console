@@ -50,3 +50,8 @@ export function useApiKeys(): UseApiKeysResult {
     onError: (error: unknown) => {
       if (error instanceof ForbiddenError) {
         setRevokeError('Revoking a key needs an admin role.');
+        return;
+      }
+      setRevokeError(
+        error instanceof ConsoleApiError ? error.message : 'The key could not be revoked.',
+      );

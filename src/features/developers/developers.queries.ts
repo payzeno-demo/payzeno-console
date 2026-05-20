@@ -49,3 +49,8 @@ export function webhookEventsQuery(e: EndpointRegistry, q?: WebhookEventListQuer
     // Delivery attempts retry on a backoff, so this list genuinely moves while you watch it.
     staleTime: 10_000,
   });
+}
+
+export function webhookEventQuery(e: EndpointRegistry, eventId: string) {
+  return queryOptions<WebhookEvent>({
+    queryKey: queryKeys.webhookEvents.detail(eventId),
