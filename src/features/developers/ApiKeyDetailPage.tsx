@@ -65,3 +65,10 @@ export function ApiKeyDetailPage() {
       {isRevoked ? (
         <Alert tone="info" title="This key is revoked">
           Requests using it fail immediately with <code>401 invalid_api_key</code>.
+        </Alert>
+      ) : null}
+
+      {isLive && writeScopes.length > 0 ? (
+        <Alert tone="warning" title="This key can move money">
+          It holds {listSentence(writeScopes)}. Treat it like a password: rotate it if it has
+          ever been in a repository, a log line or a support ticket.
