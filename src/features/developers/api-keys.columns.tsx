@@ -46,3 +46,9 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
   },
   {
     id: 'mode',
+    header: 'Mode',
+    cell: (row) => (
+      <StatusPill status={row.mode} label={row.mode === 'live' ? 'Live' : 'Test'} />
+    ),
+    exportValue: (row) => row.mode,
+  },

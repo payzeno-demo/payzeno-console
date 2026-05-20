@@ -54,3 +54,8 @@ export function webhookEventsQuery(e: EndpointRegistry, q?: WebhookEventListQuer
 export function webhookEventQuery(e: EndpointRegistry, eventId: string) {
   return queryOptions<WebhookEvent>({
     queryKey: queryKeys.webhookEvents.detail(eventId),
+    queryFn: () => e.webhookEvents.get(eventId),
+    enabled: eventId.length > 0,
+    staleTime: 10_000,
+  });
+}

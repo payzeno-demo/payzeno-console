@@ -180,3 +180,12 @@ export function AppRoutes() {
         <Route
           path={ROUTE_PATTERNS.payments}
           element={<FeatureRoute permission="payments:read" label="payments" />}
+        >
+          <Route index element={<PaymentsPage />} />
+          <Route path={ROUTE_PATTERNS.paymentDetail} element={<PaymentIntentDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.charges}
+          element={<FeatureRoute permission="payments:read" label="charges" />}
+        >

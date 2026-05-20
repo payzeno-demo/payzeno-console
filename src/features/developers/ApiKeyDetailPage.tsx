@@ -72,3 +72,10 @@ export function ApiKeyDetailPage() {
         <Alert tone="warning" title="This key can move money">
           It holds {listSentence(writeScopes)}. Treat it like a password: rotate it if it has
           ever been in a repository, a log line or a support ticket.
+        </Alert>
+      ) : null}
+
+      {revokeError ? (
+        <Alert tone="critical" title="Revocation failed">
+          {revokeError}
+        </Alert>
