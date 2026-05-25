@@ -25,6 +25,11 @@ describe('route helpers', () => {
     expect(new Set(TOP_LEVEL_PATHS).size).toBe(TOP_LEVEL_PATHS.length);
   });
 
+  it('names the feature a pathname belongs to', () => {
+    expect(featureOf('/settlements/sb_1')).toBe('settlements');
+    expect(featureOf('/')).toBe('reporting');
+  });
+
   it('builds detail paths with encoded ids', () => {
     expect(ROUTES.settlements.detail('set/1')).toBe('/settlements/set%2F1');
     expect(ROUTES.developers.apiKey('key_1')).toBe('/developers/api-keys/key_1');
@@ -66,6 +71,12 @@ describe('the signed-in tree', () => {
     expect(
       await screen.findByRole('heading', { name: 'Charge ch_01HW0RTCHARGE00000001' }),
     ).toBeInTheDocument();
+  });
+
+  it('renders the settlements index behind its flag', async () => {
+    renderAt(ROUTES.settlements.index);
+
+    expect(await screen.findByRole('heading', { name: 'Settlements' })).toBeInTheDocument();
   });
 
   it('redirects the legacy /dashboard bookmark to the landing route', async () => {

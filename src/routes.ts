@@ -126,3 +126,9 @@ export const ROUTE_PATTERNS = {
 /** Every top-level path, for the "is this a known route" check in `NotFoundPage`. */
 export const TOP_LEVEL_PATHS: ReadonlyArray<string> = [
   ROUTES.reporting.index,
+  ROUTES.balance.index,
+  ROUTES.payments.index,
+  ROUTES.charges.index,
+  ROUTES.refunds.index,
+  ROUTES.disputes.index,
+  ROUTES.payouts.index,
