@@ -132,3 +132,9 @@ export const TOP_LEVEL_PATHS: ReadonlyArray<string> = [
   ROUTES.refunds.index,
   ROUTES.disputes.index,
   ROUTES.payouts.index,
+  ROUTES.settlements.index,
+  ROUTES.invoices.index,
+  ROUTES.developers.index,
+  ROUTES.settings.index,
+];
+
