@@ -26,6 +26,7 @@ import { HttpResponse, http } from 'msw';
 describe('the legacy read', () => {
   it('fetches /v1/invoices and returns the rows', async () => {
     const recorder = recordRequests();
+    const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useInvoices({ status: 'open', limit: 10 }));
 
     await waitFor(() => {
@@ -52,5 +53,16 @@ describe('the legacy read', () => {
       ),
     );
 
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
+    expect(result.current.isUpstreamDown).toBe(false);
+  });
+});
+
+describe('openInvoiceCount', () => {
+  it('counts only the open invoices', async () => {
   });
 });

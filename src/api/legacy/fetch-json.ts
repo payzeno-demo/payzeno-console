@@ -16,3 +16,8 @@ export interface FetchJsonOptions {
   method?: 'GET' | 'POST';
   body?: unknown;
   query?: Record<string, string | number | undefined>;
+  signal?: AbortSignal;
+}
+
+function buildUrl(path: string, query?: FetchJsonOptions['query']): string {
+  const base = runtime.apiBaseUrl.replace(/\/$/, '');

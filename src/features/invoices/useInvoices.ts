@@ -25,3 +25,7 @@ export interface UseInvoicesResult {
   rows: InvoiceRow[];
   hasMore: boolean;
   /** True while the `ledger_owns_invoices` dry-run has both sources in the same list. */
+  isMixedSource: boolean;
+  isLoading: boolean;
+  error: Error | null;
+  isUpstreamDown: boolean;

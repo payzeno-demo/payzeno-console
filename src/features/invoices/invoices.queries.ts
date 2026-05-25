@@ -21,3 +21,7 @@
 import type { Invoice, InvoiceStatus, Paginated } from '@payzeno/contracts';
 
 import { fetchJson } from '@api/legacy/fetch-json';
+import { DEFAULT_PAGE_SIZE } from '@config/constants';
+
+export interface LegacyInvoiceQuery {
+  status?: InvoiceStatus;
