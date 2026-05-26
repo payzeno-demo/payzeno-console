@@ -33,4 +33,10 @@ describe('GET /v1/invoices', () => {
     expect(endpoint().isLedgerOwned(invoice)).toBe(false);
   });
 
+  it('is true once the ledger dry-run has claimed it', () => {
+    const invoice = makeInvoice({ migrated_to_ledger: true });
+
+    expect(endpoint().isLedgerOwned(invoice)).toBe(true);
+  });
+
 });

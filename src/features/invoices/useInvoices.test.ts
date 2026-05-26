@@ -26,6 +26,12 @@ import { HttpResponse, http } from 'msw';
 describe('the legacy read', () => {
   it('fetches /v1/invoices and returns the rows', async () => {
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+
     const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useInvoices({ status: 'open', limit: 10 }));
 

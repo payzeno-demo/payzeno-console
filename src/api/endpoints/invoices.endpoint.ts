@@ -15,3 +15,7 @@ export interface InvoiceListQuery extends ListQuery {
  *
  * arc MIG: this class **exists and works**, and `features/invoices` still does not use it.
  * That feature is the last holdout on `src/api/legacy/fetch-json.ts`; migrating it is a
+ * ticket that has been deprioritised four quarters running. See ADR 0004.
+ */
+export class InvoicesEndpoint extends ResourceEndpoint<Invoice, InvoiceListQuery> {
+  protected readonly basePath = '/invoices';
