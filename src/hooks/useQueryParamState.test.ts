@@ -51,6 +51,23 @@ describe('useStringParam', () => {
 
   it('removes the parameter when set back to the fallback', () => {
     const { result } = renderHookWithProviders(
+      () => [useStringParam('customer'), useStringParam('cursor')] as const,
+      { route: '/payments?customer=a&cursor=cur_page_three' },
+    );
+
+    expect(result.current[1][0]).toBe('cur_page_three');
+
+    act(() => {
+      result.current[0][1]('b');
+    });
+
+    expect(result.current[1][0]).toBe('');
+  });
+});
+
+describe('useEnumParam', () => {
+  it('accepts a value from the allowed set', () => {
+    const { result } = renderHookWithProviders(
       () => useEnumParam('window', ['24h', '7d', '30d'] as const, '7d'),
       { route: '/' },
     );
@@ -96,6 +113,14 @@ describe('useBooleanParam', () => {
 describe('useNumberParam', () => {
   it('parses an integer', () => {
     const { result } = renderHookWithProviders(() => useNumberParam('limit', 25), {
+      route: '/charges?limit=100',
+    });
+
+    expect(result.current[0]).toBe(100);
+  });
+
+  it('falls back for a non-numeric value', () => {
+    const { result } = renderHookWithProviders(() => useNumberParam('limit', 25), {
       route: '/charges?limit=lots',
     });
 
@@ -103,5 +128,25 @@ describe('useNumberParam', () => {
   });
 
   it('falls back for a value below the minimum', () => {
+    const { result } = renderHookWithProviders(
+      () =>
+        useQueryParamState<string[]>('tags', {
+          parse: (raw) => raw.split(','),
+          serialise: (value) => (value.length > 0 ? value.join(',') : null),
+          fallback: [],
+        }),
+      { route: '/charges?tags=a,b,c' },
+    );
+
+    expect(result.current[0]).toEqual(['a', 'b', 'c']);
+
+    act(() => {
+      result.current[1](['x']);
+    });
+
+    expect(result.current[0]).toEqual(['x']);
+  });
+
+  it('falls back when parse returns null', () => {
   });
 });

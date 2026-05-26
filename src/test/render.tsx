@@ -143,3 +143,13 @@ export interface RenderWithProvidersResult extends RenderResult {
   /** Pre-bound `userEvent`, so no case forgets `userEvent.setup()`. */
   user: UserEvent;
   queryClient: QueryClient;
+}
+
+/**
+ * Render `ui` inside the whole console stack.
+ *
+ * ```tsx
+ * const { user } = renderWithProviders(<SettlementDetailPage />, {
+ *   route: ROUTES.settlements.detail('sb_01HW0RTBATCH000000001'),
+ *   path: '/settlements/:batchId',
+ * });

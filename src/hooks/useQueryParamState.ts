@@ -71,3 +71,7 @@ export function useStringParam(key: string, fallback = ''): [string, (next: stri
 }
 
 /** Parameter constrained to a known set — every contracts enum filter uses this. */
+export function useEnumParam<T extends string>(
+  key: string,
+  allowed: ReadonlyArray<T>,
+  fallback: T | null = null,

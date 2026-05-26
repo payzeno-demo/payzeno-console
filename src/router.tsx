@@ -189,3 +189,22 @@ export function AppRoutes() {
           path={ROUTE_PATTERNS.charges}
           element={<FeatureRoute permission="payments:read" label="charges" />}
         >
+          <Route index element={<ChargesPage />} />
+          <Route path={ROUTE_PATTERNS.chargeDetail} element={<ChargeDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.refunds}
+          element={<FeatureRoute permission="payments:read" label="refunds" />}
+        >
+          <Route index element={<RefundsPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.disputes}
+          element={<FeatureRoute permission="disputes:read" label="disputes" />}
+        >
+          <Route index element={<DisputesPage />} />
+          <Route path={ROUTE_PATTERNS.disputeDetail} element={<DisputeDetailPage />} />
+        </Route>
+

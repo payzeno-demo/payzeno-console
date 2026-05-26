@@ -126,3 +126,28 @@ export const ROUTE_PATTERNS = {
 /** Every top-level path, for the "is this a known route" check in `NotFoundPage`. */
 export const TOP_LEVEL_PATHS: ReadonlyArray<string> = [
   ROUTES.reporting.index,
+  ROUTES.balance.index,
+  ROUTES.payments.index,
+  ROUTES.charges.index,
+  ROUTES.refunds.index,
+  ROUTES.disputes.index,
+  ROUTES.payouts.index,
+  ROUTES.settlements.index,
+  ROUTES.invoices.index,
+  ROUTES.developers.index,
+  ROUTES.settings.index,
+];
+
+/**
+ * Which feature a pathname belongs to. Used by the telemetry breadcrumb and by
+ * `QueryErrorBoundary`'s `feature` tag, so a Sentry issue says "settlements" rather than
+ * "/settlements/sb_01HX…" and groups across ids.
+ */
+export function featureOf(pathname: string): string {
+  const first = pathname.split('/').filter(Boolean)[0];
+  return first ?? 'reporting';
+}
+
+/**
+ * Strip the id out of a pathname so it can be used as an analytics label.
+ * `/charges/ch_01HX…` → `/charges/:id`.

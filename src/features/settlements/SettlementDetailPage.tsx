@@ -57,3 +57,6 @@ export function SettlementDetailPage() {
       >
         <Badge tone={batch.status === 'failed' ? 'critical' : 'neutral'}>
           {batch.status.replace(/_/g, ' ')}
+        </Badge>
+        {batch.funded_at ? (
+          <span>
