@@ -199,3 +199,12 @@ export function AppRoutes() {
         >
           <Route index element={<RefundsPage />} />
         </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.disputes}
+          element={<FeatureRoute permission="disputes:read" label="disputes" />}
+        >
+          <Route index element={<DisputesPage />} />
+          <Route path={ROUTE_PATTERNS.disputeDetail} element={<DisputeDetailPage />} />
+        </Route>
+
