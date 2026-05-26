@@ -25,3 +25,7 @@ import { DEFAULT_PAGE_SIZE } from '@config/constants';
 
 export interface LegacyInvoiceQuery {
   status?: InvoiceStatus;
+  limit?: number;
+  cursor?: string;
+}
+
