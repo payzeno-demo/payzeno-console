@@ -138,3 +138,10 @@ export const TOP_LEVEL_PATHS: ReadonlyArray<string> = [
   ROUTES.settings.index,
 ];
 
+/**
+ * Which feature a pathname belongs to. Used by the telemetry breadcrumb and by
+ * `QueryErrorBoundary`'s `feature` tag, so a Sentry issue says "settlements" rather than
+ * "/settlements/sb_01HX…" and groups across ids.
+ */
+export function featureOf(pathname: string): string {
+  const first = pathname.split('/').filter(Boolean)[0];
