@@ -29,3 +29,7 @@ export interface LegacyInvoiceQuery {
   cursor?: string;
 }
 
+/** The query-string shape `fetch-json.ts` accepts — flat, string|number|undefined. */
+export function toLegacyParams(q?: LegacyInvoiceQuery): Record<string, string | number | undefined> {
+  return {
+    limit: q?.limit ?? DEFAULT_PAGE_SIZE,

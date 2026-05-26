@@ -29,3 +29,7 @@ export interface UseInvoicesResult {
   isLoading: boolean;
   error: Error | null;
   isUpstreamDown: boolean;
+  refetch: () => void;
+}
+
+/**
