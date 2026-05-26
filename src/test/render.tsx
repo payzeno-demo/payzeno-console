@@ -153,3 +153,13 @@ export interface RenderWithProvidersResult extends RenderResult {
  *   route: ROUTES.settlements.detail('sb_01HW0RTBATCH000000001'),
  *   path: '/settlements/:batchId',
  * });
+ * await user.click(await screen.findByRole('button', { name: /retry/i }));
+ * ```
+ */
+export function renderWithProviders(
+  ui: ReactElement,
+  options: RenderOptionsWithProviders = {},
+): RenderWithProvidersResult {
+  const { route, path, transport, session, flags, queryClient, ...renderOptions } = options;
+  const client = queryClient ?? createTestQueryClient();
+

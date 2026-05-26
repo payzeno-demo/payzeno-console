@@ -386,3 +386,27 @@ const invoiceHandlers = [
     ok(makePage([makeInvoice(), makeInvoice({ id: 'inv_01HW0RTINVOICE00000002', status: 'paid' })])),
   ),
 
+  http.get(url('/invoices/:invoiceId'), ({ params }) =>
+    ok(makeInvoice({ id: String(params.invoiceId) })),
+  ),
+];
+
+const developerHandlers = [
+  http.get(url('/api-keys'), () =>
+    ok(
+      makePage([
+        makeApiKey(),
+        makeApiKey({ id: 'key_01HW0RTAPIKEY000000002', mode: 'test', prefix: 'sk_test_' }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/api-keys/:apiKeyId'), ({ params }) =>
+    ok(makeApiKey({ id: String(params.apiKeyId) })),
+  ),
+
+  /** The plaintext secret comes back exactly once, here. `SecretRevealOnce` is its only holder. */
+  http.post(url('/api-keys'), async ({ request }) => {
+    const body = (await request.json()) as { name: string; mode: 'test' | 'live' };
+    return ok(
+      {

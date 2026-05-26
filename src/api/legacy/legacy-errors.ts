@@ -24,3 +24,14 @@ export function readLegacyError(status: number, text: string): LegacyErrorShape 
 
   try {
     const parsed = JSON.parse(text) as { error?: { code?: string; message?: string } };
+    if (!parsed.error) return fallback;
+    return {
+      status,
+      code: parsed.error.code ?? 'unknown',
+      message: parsed.error.message ?? fallback.message,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
