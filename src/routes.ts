@@ -145,3 +145,9 @@ export const TOP_LEVEL_PATHS: ReadonlyArray<string> = [
  */
 export function featureOf(pathname: string): string {
   const first = pathname.split('/').filter(Boolean)[0];
+  return first ?? 'reporting';
+}
+
+/**
+ * Strip the id out of a pathname so it can be used as an analytics label.
+ * `/charges/ch_01HX…` → `/charges/:id`.
