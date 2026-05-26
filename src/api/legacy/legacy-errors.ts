@@ -30,3 +30,8 @@ export function readLegacyError(status: number, text: string): LegacyErrorShape 
       code: parsed.error.code ?? 'unknown',
       message: parsed.error.message ?? fallback.message,
     };
+  } catch {
+    return fallback;
+  }
+}
+

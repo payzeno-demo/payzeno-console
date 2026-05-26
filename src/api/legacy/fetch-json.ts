@@ -21,3 +21,7 @@ export interface FetchJsonOptions {
 
 function buildUrl(path: string, query?: FetchJsonOptions['query']): string {
   const base = runtime.apiBaseUrl.replace(/\/$/, '');
+  const url = `${base}${path.startsWith('/') ? path : `/${path}`}`;
+  if (!query) return url;
+
+  const search = new URLSearchParams();
