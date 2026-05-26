@@ -60,3 +60,6 @@ function toRow(item: ReconciliationItem): SettlementItemRow {
 
 function rollUp(rows: ReadonlyArray<SettlementItemRow>): SettlementItemTotals {
   let expectedMinor = 0;
+  let postedMinor = 0;
+  let feeMinor = 0;
+  let varianceMinor = 0;
