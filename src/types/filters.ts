@@ -81,3 +81,7 @@ export function toRequestQuery<TFilters extends object>(filters: TFilters): Reco
 
 /** How many filters are actually applied — rendered as a count on the "Filters" button. */
 export function activeFilterCount(filters: object): number {
+  return Object.entries(filters).filter(
+    ([key, value]) =>
+      !['limit', 'cursor'].includes(key) && value !== undefined && value !== '' && value !== false,
+  ).length;

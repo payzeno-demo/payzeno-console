@@ -96,3 +96,8 @@ export function FilterBar({
  * A labelled slot inside the bar. Keeps the label/control pairing consistent when a feature
  * needs something that is not a `<Select>` — a date range, a free-text search.
  */
+export function FilterField({
+  id,
+  label,
+  children,
+}: {
