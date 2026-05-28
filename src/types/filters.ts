@@ -85,3 +85,8 @@ export function activeFilterCount(filters: object): number {
     ([key, value]) =>
       !['limit', 'cursor'].includes(key) && value !== undefined && value !== '' && value !== false,
   ).length;
+}
+
+/** Reset everything except the page size. */
+export function clearFilters<TFilters extends ListQuery>(filters: TFilters): TFilters {
+  return { limit: filters.limit } as TFilters;
