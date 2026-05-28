@@ -101,3 +101,9 @@ export function FilterField({
   label,
   children,
 }: {
+  id: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={pz('filter-bar', 'field')} style={{ display: 'grid', gap: space[1] }}>
