@@ -97,3 +97,7 @@ export function settlementItemColumns(
           <span>—</span>
         ) : (
           <MoneyCell amountMinor={row.variance_minor} currency={row.currency} tone="warning" />
+        ),
+      exportValue: (row) => String(row.variance_minor),
+    },
+    {
