@@ -101,3 +101,8 @@ export function settlementItemColumns(
       exportValue: (row) => String(row.variance_minor),
     },
     {
+      id: 'status',
+      header: 'Status',
+      cell: (row) => (
+        <StatusPill
+          status={row.status}
