@@ -64,3 +64,11 @@ export function DataTableToolbar({
           gap: space[4],
           flexWrap: 'wrap',
         }}
+      >
+        <div role="search" aria-label={regionLabel} style={{ flex: 1, minWidth: '240px' }}>
+          {filters}
+        </div>
+        <div style={{ display: 'flex', gap: space[2] }}>{rightSlot}</div>
+      </div>
+
+      {hasSelection ? (
