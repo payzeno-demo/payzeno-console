@@ -22,3 +22,7 @@ export class InvoicesEndpoint extends ResourceEndpoint<Invoice, InvoiceListQuery
 
   constructor(client: HttpTransport) {
     super(client);
+  }
+
+  listOpen(q?: ListQuery) {
+    return this.list({ ...(q ?? {}), status: 'open' });
