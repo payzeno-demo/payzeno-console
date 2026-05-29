@@ -40,3 +40,7 @@ export interface UseInvoicesResult {
 function toRow(invoice: Invoice): InvoiceRow {
   return {
     ...invoice,
+    _selected: false,
+    _source: invoice.migrated_to_ledger ? 'ledger' : 'legacy',
+  };
+}
