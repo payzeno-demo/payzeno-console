@@ -32,6 +32,18 @@ describe('the region', () => {
     expect(screen.queryByText(/filter/i)).not.toBeInTheDocument();
   });
 
+  it('puts the summary in a polite live region', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={2}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByText('2 filters active')).toHaveAttribute('aria-live', 'polite');
+  });
+});
+
+describe('clearing', () => {
   it('offers "Clear all" only when there is something to clear', () => {
     const onClear = vi.fn();
     const { rerender } = renderBare(

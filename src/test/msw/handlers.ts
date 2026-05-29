@@ -410,3 +410,28 @@ const developerHandlers = [
     const body = (await request.json()) as { name: string; mode: 'test' | 'live' };
     return ok(
       {
+        ...makeApiKey({ id: 'key_01HW0RTAPIKEYCREATED01', name: body.name, mode: body.mode }),
+        secret: 'sk_live_01HW0RTAPIKEYCREATED01_shown_once',
+      },
+      201,
+    );
+  }),
+
+  http.get(url('/webhook_events'), () =>
+    ok(
+      makePage([
+        makeWebhookEvent(),
+        makeWebhookEvent({
+          id: 'evt_01HW0RTWEBHOOKEVENT002',
+          type: 'payout.failed',
+          status: 'dead',
+          attempt_count: 8,
+          last_response_status: 500,
+          last_error: 'connect ETIMEDOUT',
+          delivered_at: null,
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/webhook_events/:eventId'), ({ params }) =>
