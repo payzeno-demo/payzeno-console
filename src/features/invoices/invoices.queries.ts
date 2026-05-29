@@ -33,3 +33,7 @@ export interface LegacyInvoiceQuery {
 export function toLegacyParams(q?: LegacyInvoiceQuery): Record<string, string | number | undefined> {
   return {
     limit: q?.limit ?? DEFAULT_PAGE_SIZE,
+    status: q?.status,
+    cursor: q?.cursor,
+  };
+}

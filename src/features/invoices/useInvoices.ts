@@ -36,3 +36,7 @@ export interface UseInvoicesResult {
  * arc MIG: `_source` is derived from `migrated_to_ledger`, not sent by the API. The column it
  * drives was added for the dry-run, removed when the dry-run was rolled back, and added again
  * when it restarted.
+ */
+function toRow(invoice: Invoice): InvoiceRow {
+  return {
+    ...invoice,

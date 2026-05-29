@@ -19,3 +19,6 @@ export interface InvoiceListQuery extends ListQuery {
  */
 export class InvoicesEndpoint extends ResourceEndpoint<Invoice, InvoiceListQuery> {
   protected readonly basePath = '/invoices';
+
+  constructor(client: HttpTransport) {
+    super(client);
