@@ -72,3 +72,10 @@ export function DataTableToolbar({
       </div>
 
       {hasSelection ? (
+        <div
+          aria-live="polite"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: space[3],
+            marginTop: space[3],

@@ -39,3 +39,14 @@ export function SettlementExportPanel({ batchId, currency, rows }: SettlementExp
     includeUnmatched: false,
     includeVariance: true,
   });
+
+  const toggle = (key: keyof ExportOptions) =>
+    setOptions((current) => ({ ...current, [key]: !current[key] }));
+
+  const handleExport = () => {
+    const selected = rows.filter((row) => options.includeUnmatched || row.charge_id !== null);
+
+    const csv = toCsv(
+      selected.map((row) => ({
+        item_id: row.id,
+        charge_id: row.charge_id ?? '',
