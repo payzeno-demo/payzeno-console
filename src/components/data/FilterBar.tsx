@@ -107,3 +107,8 @@ export function FilterField({
 }) {
   return (
     <div className={pz('filter-bar', 'field')} style={{ display: 'grid', gap: space[1] }}>
+      <label
+        htmlFor={id}
+        style={{ fontSize: font.size.sm, fontWeight: font.weight.medium, color: color.textSecondary }}
+      >
+        {label}
