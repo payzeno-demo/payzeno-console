@@ -44,3 +44,7 @@ function toRow(invoice: Invoice): InvoiceRow {
     _source: invoice.migrated_to_ledger ? 'ledger' : 'legacy',
   };
 }
+
+export function useInvoices(q?: LegacyInvoiceQuery): UseInvoicesResult {
+  const params = toLegacyParams(q);
+  const { data, isLoading, error, refetch } = useLegacyQuery<Paginated<Invoice>>('/invoices', {
