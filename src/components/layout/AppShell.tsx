@@ -125,3 +125,10 @@ export function AppShell({
         className={pz('skip-link')}
         style={{
           position: 'absolute',
+          insetInlineStart: space[2],
+          insetBlockStart: '-48px',
+          zIndex: 100,
+          padding: `${space[2]} ${space[4]}`,
+          background: color.surface,
+          color: color.textLink,
+          border: `1px solid ${color.borderFocus}`,
