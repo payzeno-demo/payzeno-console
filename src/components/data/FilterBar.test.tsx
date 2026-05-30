@@ -76,6 +76,18 @@ describe('clearing', () => {
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
+  it('hides the control when the feature did not supply a handler', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={2}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.queryByRole('button', { name: 'Clear all' })).not.toBeInTheDocument();
+  });
+});
+
+describe('FilterField', () => {
   it('is typeable through its label, which is the point of the association', async () => {
     const { user } = renderBare(
       <FilterField id="charge-reference" label="Reference">
