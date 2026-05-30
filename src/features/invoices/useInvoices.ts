@@ -48,3 +48,7 @@ function toRow(invoice: Invoice): InvoiceRow {
 export function useInvoices(q?: LegacyInvoiceQuery): UseInvoicesResult {
   const params = toLegacyParams(q);
   const { data, isLoading, error, refetch } = useLegacyQuery<Paginated<Invoice>>('/invoices', {
+    query: params,
+  });
+
+  const rows = useMemo(() => (data?.data ?? []).map(toRow), [data]);
