@@ -132,3 +132,10 @@ export function AppShell({
           background: color.surface,
           color: color.textLink,
           border: `1px solid ${color.borderFocus}`,
+        }}
+        onFocus={(event) => {
+          event.currentTarget.style.insetBlockStart = space[2];
+        }}
+        onBlur={(event) => {
+          event.currentTarget.style.insetBlockStart = '-48px';
+        }}
