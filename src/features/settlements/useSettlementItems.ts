@@ -63,3 +63,6 @@ function rollUp(rows: ReadonlyArray<SettlementItemRow>): SettlementItemTotals {
   let postedMinor = 0;
   let feeMinor = 0;
   let varianceMinor = 0;
+  let duplicateCount = 0;
+
+  for (const row of rows) {
