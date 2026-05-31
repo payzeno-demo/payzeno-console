@@ -62,6 +62,15 @@ describe('the legacy read', () => {
     const { result } = renderHookWithProviders(() => useInvoices());
 
     await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+    expect(result.current.isMixedSource).toBe(true);
+  });
+
+  it('is not mixed when every row comes from the same side', async () => {
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
       expect(result.current.error).not.toBeNull();
     });
     expect(result.current.isUpstreamDown).toBe(false);

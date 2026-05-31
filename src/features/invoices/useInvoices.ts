@@ -52,3 +52,7 @@ export function useInvoices(q?: LegacyInvoiceQuery): UseInvoicesResult {
   });
 
   const rows = useMemo(() => (data?.data ?? []).map(toRow), [data]);
+
+  const isMixedSource = useMemo(() => {
+    const sources = new Set(rows.map((row) => row._source));
+    return sources.size > 1;
