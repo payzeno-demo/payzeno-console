@@ -30,3 +30,7 @@ export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItem
   if (!allowed) {
     return <span title="Retrying an item needs the finance role.">—</span>;
   }
+
+  return (
+    <>
+      <Button
