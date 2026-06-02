@@ -33,3 +33,8 @@ export function SettlementTable({ rows, isLoading }: SettlementTableProps) {
         <EmptyRows
           title="No settlement batches yet"
           body="Batches appear the day after your acquirer produces a settlement file."
+        />
+      }
+    />
+  );
+}
