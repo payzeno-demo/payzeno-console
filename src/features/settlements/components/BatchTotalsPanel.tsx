@@ -51,3 +51,6 @@ export function BatchTotalsPanel({ totals, currency, isLoading }: BatchTotalsPan
 
         <dt>Acquirer fees</dt>
         <dd>
+          <MoneyCell amountMinor={totals.feeMinor} currency={currency} />
+        </dd>
+
