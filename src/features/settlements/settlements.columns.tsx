@@ -53,3 +53,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
   {
     id: 'status',
     header: 'Status',
+    cell: (row) => <StatusPill status={row.status} label={row.status.replace(/_/g, ' ')} />,
+    exportValue: (row) => row.status,
+  },
+  {

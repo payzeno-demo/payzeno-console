@@ -58,3 +58,11 @@ export function SettlementsPage() {
         <Select
           id="settlement-status"
           label="Status"
+          value={status}
+          onValueChange={(next) => setStatus(next as SettlementBatchStatus | 'all')}
+          options={STATUS_OPTIONS.map((value) => ({
+            value,
+            label: value === 'all' ? 'All statuses' : value.replace(/_/g, ' '),
+          }))}
+        />
+      </FilterBar>

@@ -33,3 +33,12 @@ function toRow(batch: MerchantSettlementBatch): SettlementRow {
     // that is an accounting position, and merchants read the two as the same thing.
     _isFunded: batch.status === 'funded',
     _needsAttention: batch.status === 'failed' || batch.status === 'partially_reconciled',
+  };
+}
+
+export function useSettlements(q?: SettlementListQuery): UseSettlementsResult {
+  const endpoints = useEndpoints();
+  const query = useQuery(settlementsListQuery(endpoints, q));
+
+  const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
+
