@@ -60,3 +60,5 @@ export function SettlementDetailPage() {
         </Badge>
         {batch.funded_at ? (
           <span>
+            Funded <DateCell value={batch.funded_at} precision="minute" />
+          </span>
