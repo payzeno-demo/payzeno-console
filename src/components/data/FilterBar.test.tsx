@@ -32,6 +32,28 @@ describe('the region', () => {
     expect(screen.queryByText(/filter/i)).not.toBeInTheDocument();
   });
 
+  it('pluralises past one', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={3}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByText('3 filters active')).toBeInTheDocument();
+  });
+
+  it('puts the summary in a polite live region', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={2}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByText('2 filters active')).toHaveAttribute('aria-live', 'polite');
+  });
+});
+
+describe('clearing', () => {
   it('offers "Clear all" only when there is something to clear', () => {
     const onClear = vi.fn();
     const { rerender } = renderBare(
@@ -64,6 +86,18 @@ describe('the region', () => {
     expect(onClear).toHaveBeenCalledTimes(1);
   });
 
+  it('hides the control when the feature did not supply a handler', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={2}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.queryByRole('button', { name: 'Clear all' })).not.toBeInTheDocument();
+  });
+});
+
+describe('FilterField', () => {
   it('is typeable through its label, which is the point of the association', async () => {
     const { user } = renderBare(
       <FilterField id="charge-reference" label="Reference">
