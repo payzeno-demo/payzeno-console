@@ -81,3 +81,9 @@ export class ApiClient implements HttpTransport {
             throw transportFailureToApiError(built.url, 'client');
           }
           throw err;
+        }
+
+        await sleep(decision.delayMs);
+      }
+    }
+  }
