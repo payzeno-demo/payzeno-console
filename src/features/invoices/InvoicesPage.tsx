@@ -21,3 +21,10 @@ import { humanise } from '@lib/format';
 
 import { LegacyInvoiceNotice } from './components/LegacyInvoiceNotice';
 import { invoiceColumns } from './invoices.columns';
+import { useInvoices } from './useInvoices';
+
+export function InvoicesPage() {
+  useDocumentTitle('Invoices');
+
+  const [status, setStatus] = useEnumParam<InvoiceStatus>('status', INVOICE_STATUSES);
+  const { rows, isMixedSource, isLoading, error, isUpstreamDown, refetch } = useInvoices({
