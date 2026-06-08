@@ -172,3 +172,13 @@ export function renderWithProviders(
         transport={transport}
         session={session}
         flags={flags}
+        queryClient={client}
+      >
+        {children}
+      </Providers>
+    ),
+  });
+
+  return { ...result, user: userEvent.setup(), queryClient: client };
+}
+

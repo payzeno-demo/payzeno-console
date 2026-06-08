@@ -22,6 +22,16 @@ describe('the region', () => {
     expect(screen.getByRole('search', { name: 'Settlement filters' })).toBeInTheDocument();
   });
 
+  it('renders its children', () => {
+    renderBare(
+      <FilterBar label="Charge filters">
+        <button type="button">Status</button>
+      </FilterBar>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Status' })).toBeInTheDocument();
+  });
+
   it('says nothing when no filter is applied', () => {
     renderBare(
       <FilterBar label="Charge filters" activeCount={0}>
