@@ -81,3 +81,16 @@ export function toRequestQuery<TFilters extends object>(filters: TFilters): Reco
 
 /** How many filters are actually applied — rendered as a count on the "Filters" button. */
 export function activeFilterCount(filters: object): number {
+  return Object.entries(filters).filter(
+    ([key, value]) =>
+      !['limit', 'cursor'].includes(key) && value !== undefined && value !== '' && value !== false,
+  ).length;
+}
+
+/** Reset everything except the page size. */
+export function clearFilters<TFilters extends ListQuery>(filters: TFilters): TFilters {
+  return { limit: filters.limit } as TFilters;
+}
+
+/** True when two filter states would produce the same request (used to skip refetches). */
+export function sameQuery(a: object, b: object): boolean {
