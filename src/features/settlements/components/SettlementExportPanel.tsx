@@ -70,3 +70,14 @@ export function SettlementExportPanel({ batchId, currency, rows }: SettlementExp
         id="export-fees"
         label="Include acquirer fees"
         checked={options.includeFees}
+        onCheckedChange={() => toggle('includeFees')}
+      />
+      <Checkbox
+        id="export-unmatched"
+        label="Include unmatched lines"
+        checked={options.includeUnmatched}
+        onCheckedChange={() => toggle('includeUnmatched')}
+      />
+      <Checkbox
+        id="export-variance"
+        label="Include variance"
