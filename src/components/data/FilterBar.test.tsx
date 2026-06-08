@@ -118,6 +118,16 @@ describe('clearing', () => {
 });
 
 describe('FilterField', () => {
+  it('associates its label with the control by id', () => {
+    renderBare(
+      <FilterField id="charge-status" label="Status">
+        <Input id="charge-status" />
+      </FilterField>,
+    );
+
+    expect(screen.getByLabelText('Status')).toHaveAttribute('id', 'charge-status');
+  });
+
   it('is typeable through its label, which is the point of the association', async () => {
     const { user } = renderBare(
       <FilterField id="charge-reference" label="Reference">
