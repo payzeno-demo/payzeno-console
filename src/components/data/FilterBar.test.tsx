@@ -32,6 +32,16 @@ describe('the region', () => {
     expect(screen.queryByText(/filter/i)).not.toBeInTheDocument();
   });
 
+  it('announces a single filter in the singular', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={1}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByText('1 filter active')).toBeInTheDocument();
+  });
+
   it('pluralises past one', () => {
     renderBare(
       <FilterBar label="Charge filters" activeCount={3}>
