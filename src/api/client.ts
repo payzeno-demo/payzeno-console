@@ -87,3 +87,9 @@ export class ApiClient implements HttpTransport {
       }
     }
   }
+
+  get<TRes>(path: string, query?: QueryParams): Promise<TRes> {
+    return this.request<TRes>({ method: 'GET', path, query });
+  }
+
+  /**
