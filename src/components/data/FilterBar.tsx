@@ -96,3 +96,24 @@ export function FilterBar({
  * A labelled slot inside the bar. Keeps the label/control pairing consistent when a feature
  * needs something that is not a `<Select>` — a date range, a free-text search.
  */
+export function FilterField({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className={pz('filter-bar', 'field')} style={{ display: 'grid', gap: space[1] }}>
+      <label
+        htmlFor={id}
+        style={{ fontSize: font.size.sm, fontWeight: font.weight.medium, color: color.textSecondary }}
+      >
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}

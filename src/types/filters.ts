@@ -94,3 +94,7 @@ export function clearFilters<TFilters extends ListQuery>(filters: TFilters): TFi
 
 /** True when two filter states would produce the same request (used to skip refetches). */
 export function sameQuery(a: object, b: object): boolean {
+  const left = toRequestQuery(a);
+  const right = toRequestQuery(b);
+  const keys = new Set([...Object.keys(left), ...Object.keys(right)]);
+  for (const key of keys) {

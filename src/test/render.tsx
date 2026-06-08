@@ -163,3 +163,22 @@ export function renderWithProviders(
   const { route, path, transport, session, flags, queryClient, ...renderOptions } = options;
   const client = queryClient ?? createTestQueryClient();
 
+  const result = render(ui, {
+    ...renderOptions,
+    wrapper: ({ children }) => (
+      <Providers
+        route={route}
+        path={path}
+        transport={transport}
+        session={session}
+        flags={flags}
+        queryClient={client}
+      >
+        {children}
+      </Providers>
+    ),
+  });
+
+  return { ...result, user: userEvent.setup(), queryClient: client };
+}
+

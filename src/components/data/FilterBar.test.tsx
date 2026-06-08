@@ -22,6 +22,28 @@ describe('the region', () => {
     expect(screen.getByRole('search', { name: 'Settlement filters' })).toBeInTheDocument();
   });
 
+  it('renders its children', () => {
+    renderBare(
+      <FilterBar label="Charge filters">
+        <button type="button">Status</button>
+      </FilterBar>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Status' })).toBeInTheDocument();
+  });
+
+  it('renders trailing content after the controls', () => {
+    renderBare(
+      <FilterBar label="Payout filters" trailing={<button type="button">Export CSV</button>}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Export CSV' })).toBeInTheDocument();
+  });
+});
+
+describe('the active-filter summary', () => {
   it('says nothing when no filter is applied', () => {
     renderBare(
       <FilterBar label="Charge filters" activeCount={0}>
@@ -30,6 +52,16 @@ describe('the region', () => {
     );
 
     expect(screen.queryByText(/filter/i)).not.toBeInTheDocument();
+  });
+
+  it('announces a single filter in the singular', () => {
+    renderBare(
+      <FilterBar label="Charge filters" activeCount={1}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByText('1 filter active')).toBeInTheDocument();
   });
 
   it('pluralises past one', () => {
@@ -98,6 +130,16 @@ describe('clearing', () => {
 });
 
 describe('FilterField', () => {
+  it('associates its label with the control by id', () => {
+    renderBare(
+      <FilterField id="charge-status" label="Status">
+        <Input id="charge-status" />
+      </FilterField>,
+    );
+
+    expect(screen.getByLabelText('Status')).toHaveAttribute('id', 'charge-status');
+  });
+
   it('is typeable through its label, which is the point of the association', async () => {
     const { user } = renderBare(
       <FilterField id="charge-reference" label="Reference">

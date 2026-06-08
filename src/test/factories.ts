@@ -393,6 +393,21 @@ export function makeDashboardSummary(
   };
 }
 
+export function makeNotification(
+  overrides: Partial<ConsoleNotification> = {},
+): ConsoleNotification {
+  return {
+    id: 'ntf_01HW0RTNOTIFICATION001',
+    type: 'payout.failed',
+    merchant_id: MERCHANT_ID,
+    title: 'Payout failed',
+    body: 'Your £9,843.00 payout was rejected by the bank.',
+    occurred_at: NOW,
+    resource_id: 'po_01HW0RTPAYOUT00000001',
+    ...overrides,
+  };
+}
+
 /** Wrap rows in the envelope every list route returns. */
 export function makePage<T>(rows: ReadonlyArray<T>, hasMore = false): Paginated<T> {
   return {

@@ -111,3 +111,8 @@ export function settlementItemColumns(
         />
       ),
       exportValue: (row) => row.status,
+    },
+    {
+      id: 'attempts',
+      header: 'Attempts',
+      align: 'end',
