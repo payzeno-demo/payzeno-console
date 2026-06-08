@@ -97,3 +97,17 @@ export function settlementItemColumns(
           <span>—</span>
         ) : (
           <MoneyCell amountMinor={row.variance_minor} currency={row.currency} tone="warning" />
+        ),
+      exportValue: (row) => String(row.variance_minor),
+    },
+    {
+      id: 'status',
+      header: 'Status',
+      cell: (row) => (
+        <StatusPill
+          status={row.status}
+          label={row.status.replace(/_/g, ' ')}
+          title={explainStatus(row.status, row.line_type)}
+        />
+      ),
+      exportValue: (row) => row.status,
