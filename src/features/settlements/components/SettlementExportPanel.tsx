@@ -39,3 +39,24 @@ export function SettlementExportPanel({ batchId, currency, rows }: SettlementExp
     includeUnmatched: false,
     includeVariance: true,
   });
+
+  const toggle = (key: keyof ExportOptions) =>
+    setOptions((current) => ({ ...current, [key]: !current[key] }));
+
+  const handleExport = () => {
+    const selected = rows.filter((row) => options.includeUnmatched || row.charge_id !== null);
+
+    const csv = toCsv(
+      selected.map((row) => ({
+        item_id: row.id,
+        charge_id: row.charge_id ?? '',
+        line_type: row.line_type,
+        gross_minor: row.gross_minor,
+        currency,
+        ...(options.includeFees ? { fee_minor: row.fee_minor } : {}),
+        ...(options.includeVariance ? { variance_minor: row.variance_minor } : {}),
+        status: row.status,
+      })),
+    );
+
+    downloadBlob(csv, `settlement-${batchId}-explorer.csv`, 'text/csv');
