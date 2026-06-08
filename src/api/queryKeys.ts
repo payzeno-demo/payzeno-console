@@ -104,3 +104,8 @@ export const queryKeys = {
   reporting: {
     all: ['reporting'] as const,
     summary: (window: ReportingWindow, currency: CurrencyCode) =>
+      ['reporting', 'summary', window, currency] as const,
+    volume: (interval: TimeseriesInterval, from: string, to: string, currency: CurrencyCode) =>
+      ['reporting', 'volume', interval, from, to, currency] as const,
+    balanceHistory: (
+      interval: TimeseriesInterval,
