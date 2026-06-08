@@ -32,6 +32,18 @@ describe('the region', () => {
     expect(screen.getByRole('button', { name: 'Status' })).toBeInTheDocument();
   });
 
+  it('renders trailing content after the controls', () => {
+    renderBare(
+      <FilterBar label="Payout filters" trailing={<button type="button">Export CSV</button>}>
+        <span>controls</span>
+      </FilterBar>,
+    );
+
+    expect(screen.getByRole('button', { name: 'Export CSV' })).toBeInTheDocument();
+  });
+});
+
+describe('the active-filter summary', () => {
   it('says nothing when no filter is applied', () => {
     renderBare(
       <FilterBar label="Charge filters" activeCount={0}>
