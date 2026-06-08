@@ -50,3 +50,5 @@ export function SettlementItemTable({
       <DataTableToolbar label="Item filters">
         <Select
           id="settlement-item-status"
+          label="Status"
+          value={status}
