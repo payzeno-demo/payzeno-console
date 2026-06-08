@@ -60,3 +60,13 @@ export function SettlementExportPanel({ batchId, currency, rows }: SettlementExp
     );
 
     downloadBlob(csv, `settlement-${batchId}-explorer.csv`, 'text/csv');
+  };
+
+  return (
+    <Card as="section" aria-label="Export settlement items">
+      <h2>Export</h2>
+
+      <Checkbox
+        id="export-fees"
+        label="Include acquirer fees"
+        checked={options.includeFees}
