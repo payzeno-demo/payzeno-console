@@ -44,3 +44,7 @@ export function fetchInvoices(q?: LegacyInvoiceQuery): Promise<Paginated<Invoice
 }
 
 /** `GET /v1/invoices/:invoiceId`. */
+export function fetchInvoice(invoiceId: string): Promise<Invoice> {
+  return fetchJson<Invoice>(`/invoices/${encodeURIComponent(invoiceId)}`);
+}
+
