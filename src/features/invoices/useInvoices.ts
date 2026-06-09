@@ -36,3 +36,27 @@ export interface UseInvoicesResult {
  * arc MIG: `_source` is derived from `migrated_to_ledger`, not sent by the API. The column it
  * drives was added for the dry-run, removed when the dry-run was rolled back, and added again
  * when it restarted.
+ */
+function toRow(invoice: Invoice): InvoiceRow {
+  return {
+    ...invoice,
+    _selected: false,
+    _source: invoice.migrated_to_ledger ? 'ledger' : 'legacy',
+  };
+}
+
+export function useInvoices(q?: LegacyInvoiceQuery): UseInvoicesResult {
+  const params = toLegacyParams(q);
+  const { data, isLoading, error, refetch } = useLegacyQuery<Paginated<Invoice>>('/invoices', {
+    query: params,
+  });
+
+  const rows = useMemo(() => (data?.data ?? []).map(toRow), [data]);
+
+  const isMixedSource = useMemo(() => {
+    const sources = new Set(rows.map((row) => row._source));
+    return sources.size > 1;
+  }, [rows]);
+
+  return {
+    rows,
