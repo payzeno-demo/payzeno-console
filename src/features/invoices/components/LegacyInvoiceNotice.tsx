@@ -27,3 +27,12 @@ export function LegacyInvoiceNotice({ isMixedSource, isUpstreamDown }: LegacyInv
         Our billing service is not responding. Your payments, payouts and balance are
         unaffected — only this list is. It usually recovers within a few minutes.
       </Alert>
+    );
+  }
+
+  if (isMixedSource) {
+    return (
+      <Alert tone="info" title="Two invoice formats, briefly" role="status">
+        We are moving invoice generation onto our ledger. Invoices marked{' '}
+        <strong>Ledger</strong> use the new format; those marked{' '}
+        <strong>Billing (legacy)</strong> use the old one. The amounts are identical — only the
