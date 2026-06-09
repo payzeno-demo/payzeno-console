@@ -410,3 +410,52 @@ const developerHandlers = [
     const body = (await request.json()) as { name: string; mode: 'test' | 'live' };
     return ok(
       {
+        ...makeApiKey({ id: 'key_01HW0RTAPIKEYCREATED01', name: body.name, mode: body.mode }),
+        secret: 'sk_live_01HW0RTAPIKEYCREATED01_shown_once',
+      },
+      201,
+    );
+  }),
+
+  http.get(url('/webhook_events'), () =>
+    ok(
+      makePage([
+        makeWebhookEvent(),
+        makeWebhookEvent({
+          id: 'evt_01HW0RTWEBHOOKEVENT002',
+          type: 'payout.failed',
+          status: 'dead',
+          attempt_count: 8,
+          last_response_status: 500,
+          last_error: 'connect ETIMEDOUT',
+          delivered_at: null,
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/webhook_events/:eventId'), ({ params }) =>
+    ok(makeWebhookEvent({ id: String(params.eventId) })),
+  ),
+
+  http.get(url('/webhook_endpoints'), () => ok(makePage([makeWebhookEndpoint()]))),
+];
+
+const reportingHandlers = [
+  http.get(url('/reporting/summary'), ({ request }) => {
+    const params = new URL(request.url).searchParams;
+    return ok(
+      makeDashboardSummary({
+        window: (params.get('window') ?? '7d') as '7d',
+        currency: (params.get('currency') ?? 'GBP') as 'GBP',
+      }),
+    );
+  }),
+
+  http.get(url('/reporting/volume'), ({ request }) => {
+    const params = new URL(request.url).searchParams;
+    return ok({
+      object: 'volume_timeseries',
+      merchant_id: makeSession().merchant.id,
+      currency: params.get('currency') ?? 'GBP',
+      interval: params.get('interval') ?? 'day',

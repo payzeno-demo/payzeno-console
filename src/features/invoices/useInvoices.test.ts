@@ -42,6 +42,22 @@ describe('the legacy read', () => {
     const { result } = renderHookWithProviders(() => useInvoices());
 
     await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+
+    expect(result.current.rows.every((row) => row._source === 'legacy')).toBe(true);
+  });
+
+  it('marks a migrated invoice as ledger-owned', async () => {
+    server.use(
+      http.get(url('/invoices'), () =>
+        HttpResponse.json(makePage([makeInvoice({ migrated_to_ledger: true })])),
+      ),
+    );
+
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
       expect(result.current.rows).toHaveLength(1);
     });
     expect(result.current.rows[0]?._source).toBe('ledger');
@@ -58,6 +74,28 @@ describe('the legacy read', () => {
         ),
       ),
     );
+
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+    expect(result.current.isMixedSource).toBe(true);
+  });
+
+  it('is not mixed when every row comes from the same side', async () => {
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+    expect(result.current.isMixedSource).toBe(false);
+  });
+});
+
+describe('errors bypass the ConsoleApiError hierarchy', () => {
+  it('surfaces a bare Error, not a ConsoleApiError subclass', async () => {
+    server.use(errorHandler('get', '/invoices', 500, 'internal_error', 'Biller exploded'));
 
     const { result } = renderHookWithProviders(() => useInvoices());
 

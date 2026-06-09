@@ -28,3 +28,7 @@ export function InvoicesPage() {
 
   const [status, setStatus] = useEnumParam<InvoiceStatus>('status', INVOICE_STATUSES);
   const { rows, isMixedSource, isLoading, error, isUpstreamDown, refetch } = useInvoices({
+    ...(status ? { status } : {}),
+  });
+
+  return (
