@@ -99,6 +99,13 @@ export function makeConsoleSession(overrides: Partial<SessionResponse> = {}): Co
   return toConsoleSession(makeSession(overrides));
 }
 
+/** A session with a narrow role, for `usePermissions` and `RequireRole` assertions. */
+export function makeViewerSession(): ConsoleSession {
+  return toConsoleSession(
+    makeSession({ user: makeUser({ role: 'viewer' }), permissions: [] }),
+  );
+}
+
 export function makePaymentIntent(overrides: Partial<PaymentIntent> = {}): PaymentIntent {
   return {
     id: 'pi_01HW0RTPAYMENTINTENT0001',
@@ -417,3 +424,18 @@ export function makePage<T>(rows: ReadonlyArray<T>, hasMore = false): Paginated<
   };
 }
 
+/** The error envelope payzeno-api returns on every non-2xx. */
+export function makeApiErrorBody(
+  code: string,
+  message: string,
+  extra: Record<string, unknown> = {},
+): Record<string, unknown> {
+  return {
+    error: {
+      code,
+      message,
+      request_id: 'req_01HW0RTREQUEST0000001',
+      ...extra,
+    },
+  };
+}

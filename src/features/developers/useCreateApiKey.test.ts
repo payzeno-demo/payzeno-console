@@ -77,6 +77,24 @@ describe('creating a key', () => {
   });
 
   it('invalidates the key list so the new key appears', async () => {
+    const { result, queryClient } = renderHookWithProviders(() => useCreateApiKey());
+
+    queryClient.setQueryData(queryKeys.apiKeys.list(), {
+      data: [],
+      next_cursor: null,
+      has_more: false,
+    });
+
+    act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
+
+    await waitFor(() => {
+      expect(queryClient.getQueryState(queryKeys.apiKeys.list())?.isInvalidated).toBe(true);
+    });
+  });
+
+  it('sends explicit scopes when the form narrowed them', async () => {
     const { result } = renderHookWithProviders(() => useCreateApiKey());
 
     act(() => {

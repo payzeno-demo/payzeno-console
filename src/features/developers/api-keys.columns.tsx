@@ -68,3 +68,8 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
   {
     id: 'revoked_at',
     header: 'Revoked',
+    cell: (row) =>
+      row.revoked_at ? <DateCell value={row.revoked_at} precision="minute" /> : <span>—</span>,
+    exportValue: (row) => row.revoked_at ?? '',
+  },
+];
