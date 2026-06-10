@@ -32,6 +32,13 @@ describe('the page', () => {
     });
   });
 
+  it('is rendered on the page', async () => {
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    await screen.findByRole('table');
+    expect(screen.getByRole('main').textContent).toMatch(/billing|invoice/i);
+  });
+
   it('renders the error state — and it is the generic one, because the legacy path bypasses the mapper', async () => {
     server.use(errorHandler('get', '/invoices', 500, 'internal_error', 'Biller exploded'));
 
@@ -42,4 +49,13 @@ describe('the page', () => {
     ).toBeInTheDocument();
   });
 
+  it('says the upstream is down on a 502 from the biller circuit breaker', async () => {
+    server.use(errorHandler('get', '/invoices', 502, 'processor_unavailable'));
+
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    await waitFor(() => {
+      expect(screen.getByRole('main').textContent).toMatch(/not responding|unavailable|down/i);
+    });
+  });
 });

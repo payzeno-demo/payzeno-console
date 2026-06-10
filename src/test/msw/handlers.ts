@@ -459,3 +459,27 @@ const reportingHandlers = [
       merchant_id: makeSession().merchant.id,
       currency: params.get('currency') ?? 'GBP',
       interval: params.get('interval') ?? 'day',
+      points: timeseries(7),
+    });
+  }),
+
+  http.get(url('/reporting/balance-history'), ({ request }) => {
+    const params = new URL(request.url).searchParams;
+    return ok({
+      merchant_id: makeSession().merchant.id,
+      currency: params.get('currency') ?? 'GBP',
+      interval: params.get('interval') ?? 'day',
+      points: timeseries(7),
+    });
+  }),
+];
+
+// ---------------------------------------------------------------------------
+// §4 bank accounts (settings)
+// ---------------------------------------------------------------------------
+
+const bankAccountHandlers = [
+  http.get(url('/bank-accounts'), () =>
+    ok(
+      makePage([
+        makeBankAccount(),
