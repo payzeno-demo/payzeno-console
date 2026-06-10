@@ -60,3 +60,6 @@ export function useInvoices(q?: LegacyInvoiceQuery): UseInvoicesResult {
 
   return {
     rows,
+    hasMore: data?.has_more ?? false,
+    isMixedSource,
+    isLoading,
