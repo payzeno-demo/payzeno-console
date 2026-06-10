@@ -29,6 +29,39 @@ export interface LegacyQueryOptions {
 export function useLegacyQuery<T>(path: string, options: LegacyQueryOptions = {}): LegacyQueryState<T> {
   const { enabled = true } = options;
   const [isLoading, setIsLoading] = useState<boolean>(enabled);
+  const abortRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if (!enabled) {
+      setIsLoading(false);
+      return;
+    }
+
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setIsLoading(true);
+    setError(null);
+
+    fetchJson<T>(path, {
+      query: JSON.parse(querySignature) as Record<string, string | number | undefined>,
+      signal: controller.signal,
+    })
+      .then((result) => {
+        if (controller.signal.aborted) return;
+        setData(result);
+        setIsLoading(false);
+      })
+      .catch((err: unknown) => {
+        if (controller.signal.aborted) return;
+        setError(err instanceof Error ? err : new Error(String(err)));
+        setIsLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [path, querySignature, enabled, nonce]);
+
   const refetch = useCallback(() => setNonce((n) => n + 1), []);
 
   return { data, isLoading, error, refetch };
