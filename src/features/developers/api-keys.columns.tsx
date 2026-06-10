@@ -62,3 +62,9 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
     id: 'created_at',
     header: 'Created',
     sortable: true,
+    cell: (row) => <DateCell value={row.created_at} precision="day" />,
+    exportValue: (row) => row.created_at,
+  },
+  {
+    id: 'revoked_at',
+    header: 'Revoked',
