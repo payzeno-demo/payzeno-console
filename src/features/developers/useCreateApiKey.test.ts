@@ -27,6 +27,16 @@ describe('creating a key', () => {
       expect(result.current.createdKey).not.toBeNull();
     });
 
+    const request = recorder.requests.find(
+      (candidate) => candidate.method === 'POST' && candidate.url.endsWith('/v1/api-keys'),
+    );
+    recorder.stop();
+
+    expect(request).toBeDefined();
+    expect(request?.headers.get('Idempotency-Key')).toBeTruthy();
+  });
+
+  it('trims the name — a trailing space in a key name is a support ticket later', async () => {
     const { result } = renderHookWithProviders(() => useCreateApiKey());
 
     act(() => {
@@ -67,6 +77,24 @@ describe('creating a key', () => {
   });
 
   it('invalidates the key list so the new key appears', async () => {
+    const { result, queryClient } = renderHookWithProviders(() => useCreateApiKey());
+
+    queryClient.setQueryData(queryKeys.apiKeys.list(), {
+      data: [],
+      next_cursor: null,
+      has_more: false,
+    });
+
+    act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
+
+    await waitFor(() => {
+      expect(queryClient.getQueryState(queryKeys.apiKeys.list())?.isInvalidated).toBe(true);
+    });
+  });
+
+  it('sends explicit scopes when the form narrowed them', async () => {
     const { result } = renderHookWithProviders(() => useCreateApiKey());
 
     act(() => {
@@ -141,5 +169,16 @@ describe('failure', () => {
   it('leaves no secret behind when the create fails', async () => {
     server.use(errorHandler('post', '/api-keys', 500, 'internal_error'));
 
+    const { result } = renderHookWithProviders(() => useCreateApiKey());
+
+    act(() => {
+      result.current.createApiKey({ name: 'Checkout server', mode: 'live' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).not.toBeNull();
+    });
+    expect(result.current.secret).toBeNull();
+    expect(result.current.createdKey).toBeNull();
   });
 });

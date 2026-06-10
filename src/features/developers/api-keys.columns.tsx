@@ -52,3 +52,24 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
     ),
     exportValue: (row) => row.mode,
   },
+  {
+    id: 'scopes',
+    header: 'Can write',
+    cell: (row) => <span>{scopeSummary(row.scopes)}</span>,
+    exportValue: (row) => row.scopes.join(' '),
+  },
+  {
+    id: 'created_at',
+    header: 'Created',
+    sortable: true,
+    cell: (row) => <DateCell value={row.created_at} precision="day" />,
+    exportValue: (row) => row.created_at,
+  },
+  {
+    id: 'revoked_at',
+    header: 'Revoked',
+    cell: (row) =>
+      row.revoked_at ? <DateCell value={row.revoked_at} precision="minute" /> : <span>—</span>,
+    exportValue: (row) => row.revoked_at ?? '',
+  },
+];

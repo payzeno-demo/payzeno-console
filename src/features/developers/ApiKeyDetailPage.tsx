@@ -85,3 +85,30 @@ export function ApiKeyDetailPage() {
         <dl>
           <dt>Key</dt>
           <dd>
+            <code>{displayLabel}</code>
+          </dd>
+
+          <dt>Mode</dt>
+          <dd>{isLive ? 'Live' : 'Test'}</dd>
+
+          <dt>Scopes</dt>
+          <dd>{pluralise(apiKey.scopes.length, 'scope')}</dd>
+
+          <dt>Created</dt>
+          <dd>
+            <DateCell value={apiKey.created_at} precision="minute" />
+          </dd>
+
+          <dt>Revoked</dt>
+          <dd>
+            <DateCell value={apiKey.revoked_at} precision="minute" />
+          </dd>
+        </dl>
+      </Card>
+
+      <Card as="section" aria-label="Granted scopes">
+        <h2>What this key can do</h2>
+        <ul>
+          {apiKey.scopes.map((scope) => (
+            <li key={scope}>
+              <code>{scope}</code>

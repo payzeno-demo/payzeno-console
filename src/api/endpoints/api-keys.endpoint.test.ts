@@ -56,6 +56,15 @@ describe('GET /v1/api-keys', () => {
 
 describe('GET /v1/api-keys/:apiKeyId', () => {
   it('reads one key by id', async () => {
+    const key = await endpoint().get('key_01HW0RTAPIKEY000000001');
+
+    expect(key.id).toBe('key_01HW0RTAPIKEY000000001');
+    expect(key).not.toHaveProperty('secret');
+  });
+});
+
+describe('POST /v1/api-keys', () => {
+  it('creates a key and returns the plaintext secret exactly once', async () => {
     const recorder = recordRequests();
     const created = await endpoint().create({ name: 'Checkout server', mode: 'live' });
 

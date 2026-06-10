@@ -182,3 +182,13 @@ export function renderWithProviders(
   return { ...result, user: userEvent.setup(), queryClient: client };
 }
 
+export interface RenderHookWithProvidersResult<TResult, TProps>
+  extends RenderHookResult<TResult, TProps> {
+  queryClient: QueryClient;
+}
+
+/**
+ * `renderHook` through the same stack. This is how every `use*.test.ts` drives a contracted
+ * hook against MSW rather than against a mocked endpoint object.
+ */
+export function renderHookWithProviders<TResult, TProps>(

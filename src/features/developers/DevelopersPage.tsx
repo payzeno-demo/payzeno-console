@@ -233,3 +233,15 @@ export function DevelopersPage() {
           <h2>Build info</h2>
           <dl>
             {Object.entries(allFlags()).map(([name, enabled]) => (
+              <div key={name}>
+                <dt>{name}</dt>
+                <dd>{enabled ? 'on' : 'off'}</dd>
+              </div>
+            ))}
+          </dl>
+          <p>Flags are baked in at build time. Changing one needs a redeploy.</p>
+        </Card>
+      ) : null}
+    </PageContainer>
+  );
+}

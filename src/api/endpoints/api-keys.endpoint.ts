@@ -28,3 +28,15 @@ export class ApiKeysEndpoint extends ResourceEndpoint<ApiKey, ListQuery> {
   create(
     req: CreateApiKeyRequest,
     idempotencyKey: string = newIdempotencyKey(),
+  ): Promise<CreateApiKeyResponse> {
+    return this.client.post<CreateApiKeyResponse, CreateApiKeyRequest>(
+      this.basePath,
+      req,
+      idempotencyKey,
+    );
+  }
+
+  /** Revocation is immediate; `ApiKeyGuard` fails closed on `revoked_at != null`. */
+  revoke(apiKeyId: string, idempotencyKey: string = newIdempotencyKey()): Promise<void> {
+    return this.client.delete(this.resourcePath(apiKeyId), idempotencyKey);
+  }

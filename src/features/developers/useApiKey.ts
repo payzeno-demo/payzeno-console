@@ -24,3 +24,19 @@ export interface UseApiKeyResult {
   isMissing: boolean;
   error: Error | null;
 }
+
+/**
+ * `sk_live_…1a2b`. Mirrors `ApiKeysEndpoint.displayLabel`, which takes an instance we do not
+ * have here — the registry hands us the endpoint, not the class.
+ */
+export function keyLabel(apiKey: ApiKey): string {
+  return `${apiKey.prefix}…${apiKey.last_four}`;
+}
+
+export function useApiKey(apiKeyId: string): UseApiKeyResult {
+  const endpoints = useEndpoints();
+  const query = useQuery(apiKeyQuery(endpoints, apiKeyId));
+
+  const apiKey = query.data;
+  const isMissing = query.error instanceof NotFoundApiError;
+

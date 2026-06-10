@@ -84,3 +84,17 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
       setErrorMessage(
         error instanceof ConsoleApiError ? error.message : 'The key could not be created.',
       );
+    },
+  });
+
+  const createApiKey = useCallback(
+    ({ name, mode, scopes }: CreateApiKeyArgs) => {
+      const request: CreateApiKeyRequest = { name: name.trim(), mode };
+      if (scopes && scopes.length > 0) request.scopes = scopes;
+      mutation.mutate({ request });
+    },
+    [mutation],
+  );
+
+  const clearSecret = useCallback(() => {
+    setSecret(null);

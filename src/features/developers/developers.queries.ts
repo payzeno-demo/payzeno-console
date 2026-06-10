@@ -64,3 +64,24 @@ export function webhookEndpointsQuery(e: EndpointRegistry) {
   return queryOptions<Paginated<WebhookEndpoint>>({
     queryKey: queryKeys.webhookEndpoints.list(),
     queryFn: () => e.webhookEndpoints.list(),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export interface CreateApiKeyInput {
+  request: CreateApiKeyRequest;
+}
+
+/** The response carries `secret`. Do not put the result of this into the cache. */
+export function createApiKeyMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['api_keys', 'create'] as const,
+    mutationFn: ({ request }: CreateApiKeyInput): Promise<CreateApiKeyResponse> =>
+      e.apiKeys.create(request),
+  };
+}
+
+export function revokeApiKeyMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['api_keys', 'revoke'] as const,
+    mutationFn: ({ apiKeyId }: { apiKeyId: string }): Promise<void> => e.apiKeys.revoke(apiKeyId),

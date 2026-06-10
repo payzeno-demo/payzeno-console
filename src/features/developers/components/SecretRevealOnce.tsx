@@ -30,3 +30,23 @@ export function SecretRevealOnce({ apiKey, secret, onDismiss }: SecretRevealOnce
   const { copy, status, announcement } = useCopyToClipboard();
 
   // Belt and braces: whatever happens to the parent, the secret goes when this unmounts.
+  useEffect(() => onDismiss, [onDismiss]);
+
+  return (
+    <Alert tone="warning" title={`Copy your ${apiKey.mode} key now`} role="alert">
+      <p>
+        This is the only time <strong>{apiKey.name}</strong> is shown. We store a hash — we
+        cannot show it again, and support cannot recover it. If you lose it, create a new key
+        and revoke this one.
+      </p>
+
+      <Label htmlFor="api-key-secret">Secret key</Label>
+      <Input id="api-key-secret" name="secret" readOnly value={secret} spellCheck={false} />
+
+      <Button type="button" onClick={() => void copy(secret, 'API key')}>
+        {status === 'copied' ? 'Copied' : 'Copy key'}
+      </Button>
+      <Button type="button" variant="ghost" onClick={onDismiss}>
+        I have saved it
+      </Button>
+
