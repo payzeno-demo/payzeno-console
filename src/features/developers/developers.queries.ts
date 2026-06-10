@@ -80,3 +80,8 @@ export function createApiKeyMutation(e: EndpointRegistry) {
       e.apiKeys.create(request),
   };
 }
+
+export function revokeApiKeyMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['api_keys', 'revoke'] as const,
+    mutationFn: ({ apiKeyId }: { apiKeyId: string }): Promise<void> => e.apiKeys.revoke(apiKeyId),

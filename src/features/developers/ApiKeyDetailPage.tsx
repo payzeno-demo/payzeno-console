@@ -106,3 +106,9 @@ export function ApiKeyDetailPage() {
         </dl>
       </Card>
 
+      <Card as="section" aria-label="Granted scopes">
+        <h2>What this key can do</h2>
+        <ul>
+          {apiKey.scopes.map((scope) => (
+            <li key={scope}>
+              <code>{scope}</code>
