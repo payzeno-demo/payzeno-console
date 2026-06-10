@@ -57,3 +57,8 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
     header: 'Can write',
     cell: (row) => <span>{scopeSummary(row.scopes)}</span>,
     exportValue: (row) => row.scopes.join(' '),
+  },
+  {
+    id: 'created_at',
+    header: 'Created',
+    sortable: true,

@@ -91,3 +91,10 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
     ({ name, mode, scopes }: CreateApiKeyArgs) => {
       const request: CreateApiKeyRequest = { name: name.trim(), mode };
       if (scopes && scopes.length > 0) request.scopes = scopes;
+      mutation.mutate({ request });
+    },
+    [mutation],
+  );
+
+  const clearSecret = useCallback(() => {
+    setSecret(null);
