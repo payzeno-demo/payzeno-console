@@ -43,3 +43,10 @@ export function SecretRevealOnce({ apiKey, secret, onDismiss }: SecretRevealOnce
       <Label htmlFor="api-key-secret">Secret key</Label>
       <Input id="api-key-secret" name="secret" readOnly value={secret} spellCheck={false} />
 
+      <Button type="button" onClick={() => void copy(secret, 'API key')}>
+        {status === 'copied' ? 'Copied' : 'Copy key'}
+      </Button>
+      <Button type="button" variant="ghost" onClick={onDismiss}>
+        I have saved it
+      </Button>
+

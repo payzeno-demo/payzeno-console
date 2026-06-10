@@ -99,3 +99,10 @@ export function ApiKeyDetailPage() {
             <DateCell value={apiKey.created_at} precision="minute" />
           </dd>
 
+          <dt>Revoked</dt>
+          <dd>
+            <DateCell value={apiKey.revoked_at} precision="minute" />
+          </dd>
+        </dl>
+      </Card>
+

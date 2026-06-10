@@ -34,3 +34,9 @@ export class ApiKeysEndpoint extends ResourceEndpoint<ApiKey, ListQuery> {
       req,
       idempotencyKey,
     );
+  }
+
+  /** Revocation is immediate; `ApiKeyGuard` fails closed on `revoked_at != null`. */
+  revoke(apiKeyId: string, idempotencyKey: string = newIdempotencyKey()): Promise<void> {
+    return this.client.delete(this.resourcePath(apiKeyId), idempotencyKey);
+  }
