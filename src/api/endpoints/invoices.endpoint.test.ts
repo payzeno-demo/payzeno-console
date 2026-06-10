@@ -27,6 +27,21 @@ describe('shape', () => {
 });
 
 describe('GET /v1/invoices', () => {
+  it('lists invoices', async () => {
+    const page = await endpoint().list();
+
+    expect(page.data).toHaveLength(2);
+    expect(page.data.map((invoice) => invoice.status)).toEqual(['open', 'paid']);
+  });
+
+  it('maps a missing invoice onto NotFoundApiError', async () => {
+    server.use(errorHandler('get', '/invoices/:invoiceId', 404, 'not_found'));
+
+    await expect(endpoint().get('inv_missing')).rejects.toBeInstanceOf(NotFoundApiError);
+  });
+});
+
+describe('isLedgerOwned — the arc-MIG cutover flag', () => {
   it('is false while the legacy biller still owns the invoice', () => {
     const invoice = makeInvoice({ migrated_to_ledger: false });
 

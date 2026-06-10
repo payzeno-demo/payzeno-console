@@ -33,3 +33,18 @@ export interface LegacyInvoiceQuery {
 export function toLegacyParams(q?: LegacyInvoiceQuery): Record<string, string | number | undefined> {
   return {
     limit: q?.limit ?? DEFAULT_PAGE_SIZE,
+    status: q?.status,
+    cursor: q?.cursor,
+  };
+}
+
+/** `GET /v1/invoices` — payzeno-api reads through to billing-legacy. */
+export function fetchInvoices(q?: LegacyInvoiceQuery): Promise<Paginated<Invoice>> {
+  return fetchJson<Paginated<Invoice>>('/invoices', { query: toLegacyParams(q) });
+}
+
+/** `GET /v1/invoices/:invoiceId`. */
+export function fetchInvoice(invoiceId: string): Promise<Invoice> {
+  return fetchJson<Invoice>(`/invoices/${encodeURIComponent(invoiceId)}`);
+}
+
