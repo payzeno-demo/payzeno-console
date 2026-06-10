@@ -28,3 +28,9 @@ export class ApiKeysEndpoint extends ResourceEndpoint<ApiKey, ListQuery> {
   create(
     req: CreateApiKeyRequest,
     idempotencyKey: string = newIdempotencyKey(),
+  ): Promise<CreateApiKeyResponse> {
+    return this.client.post<CreateApiKeyResponse, CreateApiKeyRequest>(
+      this.basePath,
+      req,
+      idempotencyKey,
+    );

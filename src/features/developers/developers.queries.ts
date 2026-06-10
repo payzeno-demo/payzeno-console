@@ -64,3 +64,8 @@ export function webhookEndpointsQuery(e: EndpointRegistry) {
   return queryOptions<Paginated<WebhookEndpoint>>({
     queryKey: queryKeys.webhookEndpoints.list(),
     queryFn: () => e.webhookEndpoints.list(),
+    staleTime: 5 * 60 * 1000,
+  });
+}
+
+export interface CreateApiKeyInput {

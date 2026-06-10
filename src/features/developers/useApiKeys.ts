@@ -65,3 +65,7 @@ export function useApiKeys(): UseApiKeysResult {
     },
     [mutation],
   );
+
+  const active = rows.filter((row) => row.revoked_at === null);
+
+  return {

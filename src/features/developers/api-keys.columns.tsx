@@ -52,3 +52,8 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
     ),
     exportValue: (row) => row.mode,
   },
+  {
+    id: 'scopes',
+    header: 'Can write',
+    cell: (row) => <span>{scopeSummary(row.scopes)}</span>,
+    exportValue: (row) => row.scopes.join(' '),

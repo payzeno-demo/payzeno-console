@@ -85,3 +85,10 @@ export function ApiKeyDetailPage() {
         <dl>
           <dt>Key</dt>
           <dd>
+            <code>{displayLabel}</code>
+          </dd>
+
+          <dt>Mode</dt>
+          <dd>{isLive ? 'Live' : 'Test'}</dd>
+
+          <dt>Scopes</dt>
