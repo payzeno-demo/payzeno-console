@@ -30,3 +30,8 @@ export interface UseApiKeyResult {
  * have here — the registry hands us the endpoint, not the class.
  */
 export function keyLabel(apiKey: ApiKey): string {
+  return `${apiKey.prefix}…${apiKey.last_four}`;
+}
+
+export function useApiKey(apiKeyId: string): UseApiKeyResult {
+  const endpoints = useEndpoints();

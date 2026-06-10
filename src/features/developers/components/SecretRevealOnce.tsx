@@ -37,3 +37,9 @@ export function SecretRevealOnce({ apiKey, secret, onDismiss }: SecretRevealOnce
       <p>
         This is the only time <strong>{apiKey.name}</strong> is shown. We store a hash — we
         cannot show it again, and support cannot recover it. If you lose it, create a new key
+        and revoke this one.
+      </p>
+
+      <Label htmlFor="api-key-secret">Secret key</Label>
+      <Input id="api-key-secret" name="secret" readOnly value={secret} spellCheck={false} />
+
