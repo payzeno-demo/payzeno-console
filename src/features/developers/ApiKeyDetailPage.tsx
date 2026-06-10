@@ -92,3 +92,10 @@ export function ApiKeyDetailPage() {
           <dd>{isLive ? 'Live' : 'Test'}</dd>
 
           <dt>Scopes</dt>
+          <dd>{pluralise(apiKey.scopes.length, 'scope')}</dd>
+
+          <dt>Created</dt>
+          <dd>
+            <DateCell value={apiKey.created_at} precision="minute" />
+          </dd>
+
