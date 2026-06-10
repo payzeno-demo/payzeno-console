@@ -69,3 +69,9 @@ export function webhookEndpointsQuery(e: EndpointRegistry) {
 }
 
 export interface CreateApiKeyInput {
+  request: CreateApiKeyRequest;
+}
+
+/** The response carries `secret`. Do not put the result of this into the cache. */
+export function createApiKeyMutation(e: EndpointRegistry) {
+  return {

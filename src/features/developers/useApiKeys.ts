@@ -69,3 +69,8 @@ export function useApiKeys(): UseApiKeysResult {
   const active = rows.filter((row) => row.revoked_at === null);
 
   return {
+    liveKeys: active.filter((row) => row.mode === 'live'),
+    testKeys: active.filter((row) => row.mode === 'test'),
+    revokedKeys: rows.filter((row) => row.revoked_at !== null),
+    isLoading: query.isLoading,
+    error: (query.error as Error | null) ?? null,
