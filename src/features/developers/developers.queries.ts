@@ -75,3 +75,8 @@ export interface CreateApiKeyInput {
 /** The response carries `secret`. Do not put the result of this into the cache. */
 export function createApiKeyMutation(e: EndpointRegistry) {
   return {
+    mutationKey: ['api_keys', 'create'] as const,
+    mutationFn: ({ request }: CreateApiKeyInput): Promise<CreateApiKeyResponse> =>
+      e.apiKeys.create(request),
+  };
+}

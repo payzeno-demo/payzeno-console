@@ -35,3 +35,8 @@ export function keyLabel(apiKey: ApiKey): string {
 
 export function useApiKey(apiKeyId: string): UseApiKeyResult {
   const endpoints = useEndpoints();
+  const query = useQuery(apiKeyQuery(endpoints, apiKeyId));
+
+  const apiKey = query.data;
+  const isMissing = query.error instanceof NotFoundApiError;
+
