@@ -74,3 +74,7 @@ export interface SettlementRow extends MerchantSettlementBatch, RowSelection {
    * accounting position, and merchants read the two as the same thing.
    */
   _isFunded: boolean;
+  /** `failed` or `partially_reconciled` — the rows the settlements table pulls to the top. */
+  _needsAttention: boolean;
+}
+
