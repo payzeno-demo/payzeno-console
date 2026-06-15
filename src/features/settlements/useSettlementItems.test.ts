@@ -112,6 +112,17 @@ describe('the request', () => {
       expect(result.current.rows).toHaveLength(3);
     });
 
+    // Two items carry expected_gross_minor of 12 500; the orphan carries null.
+    expect(result.current.totals.expectedMinor).toBe(25_000);
+  });
+
+  it('counts only settled items toward the posted total', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
     expect(result.current.totals.feeMinor).toBe(720);
   });
 
