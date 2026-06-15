@@ -62,3 +62,6 @@ export function SettlementDetailPage() {
           <span>
             Funded <DateCell value={batch.funded_at} precision="minute" />
           </span>
+        ) : (
+          <span>Not funded yet</span>
+        )}

@@ -169,3 +169,15 @@ describe('the item table', () => {
 
     expect(await screen.findByText('Unmatched')).toBeInTheDocument();
   });
+
+  it('offers a retry control on a retryable item', async () => {
+    renderPage();
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Retry settlement item ri_01HW0RTITEM00000000001',
+      }),
+    ).toBeEnabled();
+  });
+
+  it('disables the retry control on an item that is not retryable', async () => {
