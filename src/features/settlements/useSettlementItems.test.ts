@@ -119,6 +119,39 @@ describe('the request', () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    expect(result.current.totals.duplicateCount).toBe(1);
+  });
+
+  it('reports a posted total above expected when the batch double-settled (arc INC)', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () =>
+        HttpResponse.json(
+          makePage([
+            makeReconciliationItem({
+              id: 'ri_a',
+              status: 'settled',
+              attempt_count: 2,
+              gross_minor: 12_500,
+              expected_gross_minor: 12_500,
+            }),
+            makeReconciliationItem({
+              id: 'ri_b',
+              status: 'settled',
+              attempt_count: 2,
+              gross_minor: 12_500,
+              expected_gross_minor: null,
+            }),
+          ]),
+        ),
+      ),
+    );
+
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
     });
 
