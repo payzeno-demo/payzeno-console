@@ -52,3 +52,5 @@ export function SettlementItemTable({
           id="settlement-item-status"
           label="Status"
           value={status}
+          onValueChange={(next) => onStatusChange(next as ReconciliationItemStatus | 'all')}
+          options={FILTERABLE_STATUSES.map((value) => ({
