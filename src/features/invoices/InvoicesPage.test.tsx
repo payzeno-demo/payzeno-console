@@ -39,6 +39,26 @@ describe('the page', () => {
     expect(screen.getByRole('main').textContent).toMatch(/billing|invoice/i);
   });
 
+  it('changes when the page holds invoices from both sources', async () => {
+    server.use(
+      http.get(url('/invoices'), () =>
+        HttpResponse.json(
+          makePage([
+            makeInvoice({ id: 'inv_legacy', migrated_to_ledger: false }),
+            makeInvoice({ id: 'inv_ledger', migrated_to_ledger: true }),
+          ]),
+        ),
+      ),
+    );
+
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    await screen.findByRole('table');
+    expect(screen.getByRole('main').textContent).toMatch(/ledger|migrat/i);
+  });
+});
+
+describe('failure', () => {
   it('renders the error state — and it is the generic one, because the legacy path bypasses the mapper', async () => {
     server.use(errorHandler('get', '/invoices', 500, 'internal_error', 'Biller exploded'));
 

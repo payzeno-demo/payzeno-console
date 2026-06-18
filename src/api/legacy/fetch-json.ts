@@ -25,3 +25,8 @@ function buildUrl(path: string, query?: FetchJsonOptions['query']): string {
   if (!query) return url;
 
   const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(query)) {
+    if (value === undefined) continue;
+    search.append(key, String(value));
+  }
+  const serialised = search.toString();

@@ -35,3 +35,8 @@ export function readLegacyError(status: number, text: string): LegacyErrorShape 
   }
 }
 
+/**
+ * The old throw. Deliberately a bare `Error`: reproducing the class hierarchy here was the
+ * work ADR 0004 was supposed to make unnecessary, and nobody has done the migration.
+ */
+export function throwLegacyError(status: number, text: string): never {

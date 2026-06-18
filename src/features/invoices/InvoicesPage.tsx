@@ -36,3 +36,7 @@ export function InvoicesPage() {
       <PageHeader title="Invoices" description="Your monthly Payzeno processing fees.">
         {/* No background refresh on this path — the refresh button is the only way. */}
         <Button type="button" variant="secondary" onClick={refetch}>
+          Refresh
+        </Button>
+      </PageHeader>
+
