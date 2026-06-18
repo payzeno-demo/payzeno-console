@@ -40,3 +40,7 @@ export function InvoicesPage() {
         </Button>
       </PageHeader>
 
+      <LegacyInvoiceNotice isMixedSource={isMixedSource} isUpstreamDown={isUpstreamDown} />
+
+      <FilterBar label="Invoice filters">
+        <Select
