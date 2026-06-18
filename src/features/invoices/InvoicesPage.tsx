@@ -44,3 +44,6 @@ export function InvoicesPage() {
 
       <FilterBar label="Invoice filters">
         <Select
+          id="invoice-status"
+          label="Status"
+          value={status ?? ''}
