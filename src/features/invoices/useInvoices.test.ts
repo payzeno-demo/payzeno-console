@@ -108,5 +108,16 @@ describe('errors bypass the ConsoleApiError hierarchy', () => {
 
 describe('openInvoiceCount', () => {
   it('counts only the open invoices', async () => {
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+
+    expect(openInvoiceCount(result.current.rows)).toBe(1);
+  });
+
+  it('is zero for an empty list', () => {
+    expect(openInvoiceCount([])).toBe(0);
   });
 });

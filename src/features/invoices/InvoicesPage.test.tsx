@@ -32,6 +32,32 @@ describe('the page', () => {
     });
   });
 
+  it('fetches through the legacy path rather than through InvoicesEndpoint', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('/v1/invoices'))).toBe(
+        true,
+      );
+    });
+
+    const request = recorder.requests.find((candidate) =>
+      candidate.url.includes('/v1/invoices'),
+    );
+    recorder.stop();
+
+    // `fetch-json.ts` builds its own headers and does not send `Payzeno-Version`, which is
+    // one of the visible consequences of the stalled migration (blueprint §8.1).
+    expect(request?.headers.get('Payzeno-Version')).toBeNull();
+  });
+
+  it('shows the invoice number', async () => {
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    expect(await screen.findByText('PZ-2026-000412')).toBeInTheDocument();
+  });
+
   it('is rendered on the page', async () => {
     renderWithProviders(<InvoicesPage />, { route: '/invoices' });
 
