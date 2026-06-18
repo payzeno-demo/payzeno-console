@@ -41,6 +41,18 @@ describe('the legacy read', () => {
 
     const { result } = renderHookWithProviders(() => useInvoices());
 
+    expect(result.current.isLoading).toBe(true);
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+  });
+});
+
+describe('_source, the arc-MIG marker', () => {
+  it('marks an unmigrated invoice as legacy', async () => {
+    const { result } = renderHookWithProviders(() => useInvoices());
+
     await waitFor(() => {
       expect(result.current.rows).toHaveLength(2);
     });
