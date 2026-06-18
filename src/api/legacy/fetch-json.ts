@@ -30,3 +30,7 @@ function buildUrl(path: string, query?: FetchJsonOptions['query']): string {
     search.append(key, String(value));
   }
   const serialised = search.toString();
+  return serialised ? `${url}?${serialised}` : url;
+}
+
+/** Reads `pz_csrf` by hand. Slightly different from `api/http/csrf.ts` — it does not
