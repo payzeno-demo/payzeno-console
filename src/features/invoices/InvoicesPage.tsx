@@ -59,3 +59,7 @@ export function InvoicesPage() {
         <ErrorState error={error} title="We could not load your invoices" />
       ) : (
         <DataTable
+          caption="Invoices, most recent period first"
+          columns={invoiceColumns}
+          rows={rows}
+          isLoading={isLoading}
