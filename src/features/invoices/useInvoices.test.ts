@@ -32,6 +32,13 @@ describe('the legacy read', () => {
       expect(result.current.rows).toHaveLength(2);
     });
 
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/v1/invoices'));
+    recorder.stop();
+
+    expect(request?.method).toBe('GET');
+  });
+
+  it('serialises the legacy query parameters', async () => {
     const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useInvoices({ status: 'open', limit: 10 }));
 
@@ -108,6 +115,22 @@ describe('_source, the arc-MIG marker', () => {
 describe('errors bypass the ConsoleApiError hierarchy', () => {
   it('surfaces a bare Error, not a ConsoleApiError subclass', async () => {
     server.use(errorHandler('get', '/invoices', 500, 'internal_error', 'Biller exploded'));
+
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
+
+    // This is the §8.1 debt made visible: because the legacy path never reaches
+    // `error-mapper.ts`, `<ErrorBoundary/>` renders its generic fallback for invoices rather
+    // than the specific screen every other feature gets.
+    expect(result.current.error).toBeInstanceOf(Error);
+    expect(result.current.error).not.toBeInstanceOf(ConsoleApiError);
+  });
+
+  it('recovers the status through legacyStatus, which is how isUpstreamDown works', async () => {
+    server.use(errorHandler('get', '/invoices', 502, 'processor_unavailable', 'Circuit open'));
 
     const { result } = renderHookWithProviders(() => useInvoices());
 
