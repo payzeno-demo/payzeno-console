@@ -34,3 +34,8 @@ function buildUrl(path: string, query?: FetchJsonOptions['query']): string {
 }
 
 /** Reads `pz_csrf` by hand. Slightly different from `api/http/csrf.ts` — it does not
+ * `decodeURIComponent`, which has never mattered because the token is base64url. */
+function csrfHeader(): Record<string, string> {
+  const match = /(?:^|;\s*)pz_csrf=([^;]+)/.exec(document.cookie);
+  return match?.[1] ? { 'X-Payzeno-CSRF': match[1] } : {};
+}

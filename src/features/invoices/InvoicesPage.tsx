@@ -47,3 +47,7 @@ export function InvoicesPage() {
           id="invoice-status"
           label="Status"
           value={status ?? ''}
+          onValueChange={(next) => setStatus(next === '' ? null : (next as InvoiceStatus))}
+          options={[
+            { value: '', label: 'All statuses' },
+            ...INVOICE_STATUSES.map((value) => ({ value, label: humanise(value) })),
