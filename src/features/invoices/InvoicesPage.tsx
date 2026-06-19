@@ -55,3 +55,7 @@ export function InvoicesPage() {
         />
       </FilterBar>
 
+      {error && !isUpstreamDown ? (
+        <ErrorState error={error} title="We could not load your invoices" />
+      ) : (
+        <DataTable
