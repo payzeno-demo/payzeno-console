@@ -40,3 +40,8 @@ export function readLegacyError(status: number, text: string): LegacyErrorShape 
  * work ADR 0004 was supposed to make unnecessary, and nobody has done the migration.
  */
 export function throwLegacyError(status: number, text: string): never {
+  const shape = readLegacyError(status, text);
+  const err = new Error(shape.message);
+  // Attached as loose properties, because that is what the old code did and two call sites
+  // read them.
+  Object.assign(err, { status: shape.status, code: shape.code, legacy: true });
