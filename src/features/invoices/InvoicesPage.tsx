@@ -51,3 +51,7 @@ export function InvoicesPage() {
           options={[
             { value: '', label: 'All statuses' },
             ...INVOICE_STATUSES.map((value) => ({ value, label: humanise(value) })),
+          ]}
+        />
+      </FilterBar>
+

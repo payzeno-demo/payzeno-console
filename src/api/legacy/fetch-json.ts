@@ -39,3 +39,7 @@ function csrfHeader(): Record<string, string> {
   const match = /(?:^|;\s*)pz_csrf=([^;]+)/.exec(document.cookie);
   return match?.[1] ? { 'X-Payzeno-CSRF': match[1] } : {};
 }
+
+export async function fetchJson<T>(path: string, options: FetchJsonOptions = {}): Promise<T> {
+  const method = options.method ?? 'GET';
+  const headers: Record<string, string> = { Accept: 'application/json', ...csrfHeader() };

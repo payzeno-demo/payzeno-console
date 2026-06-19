@@ -45,3 +45,9 @@ export function throwLegacyError(status: number, text: string): never {
   // Attached as loose properties, because that is what the old code did and two call sites
   // read them.
   Object.assign(err, { status: shape.status, code: shape.code, legacy: true });
+  throw err;
+}
+
+/** Callers use this instead of `instanceof`, because there is no class to check against. */
+export function isLegacyError(err: unknown): err is Error & { status: number; code: string } {
+  return err instanceof Error && (err as { legacy?: boolean }).legacy === true;
