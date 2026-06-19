@@ -192,3 +192,13 @@ export interface RenderHookWithProvidersResult<TResult, TProps>
  * hook against MSW rather than against a mocked endpoint object.
  */
 export function renderHookWithProviders<TResult, TProps>(
+  hook: (props: TProps) => TResult,
+  options: RenderOptionsWithProviders & Omit<RenderHookOptions<TProps>, 'wrapper'> = {},
+): RenderHookWithProvidersResult<TResult, TProps> {
+  const { route, path, transport, session, flags, queryClient, ...hookOptions } = options;
+  const client = queryClient ?? createTestQueryClient();
+
+  const result = renderHook(hook, {
+    ...(hookOptions as Omit<RenderHookOptions<TProps>, 'wrapper'>),
+    wrapper: ({ children }) => (
+      <Providers

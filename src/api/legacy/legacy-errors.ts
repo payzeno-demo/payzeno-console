@@ -35,3 +35,19 @@ export function readLegacyError(status: number, text: string): LegacyErrorShape 
   }
 }
 
+/**
+ * The old throw. Deliberately a bare `Error`: reproducing the class hierarchy here was the
+ * work ADR 0004 was supposed to make unnecessary, and nobody has done the migration.
+ */
+export function throwLegacyError(status: number, text: string): never {
+  const shape = readLegacyError(status, text);
+  const err = new Error(shape.message);
+  // Attached as loose properties, because that is what the old code did and two call sites
+  // read them.
+  Object.assign(err, { status: shape.status, code: shape.code, legacy: true });
+  throw err;
+}
+
+/** Callers use this instead of `instanceof`, because there is no class to check against. */
+export function isLegacyError(err: unknown): err is Error & { status: number; code: string } {
+  return err instanceof Error && (err as { legacy?: boolean }).legacy === true;

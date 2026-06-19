@@ -483,3 +483,27 @@ const bankAccountHandlers = [
     ok(
       makePage([
         makeBankAccount(),
+        makeBankAccount({
+          id: 'ba_01HW0RTBANKACCOUNT0002',
+          currency: 'EUR',
+          scheme: 'iban',
+          is_default: false,
+          sort_code_last_four: null,
+          iban_last_four: '3391',
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/bank-accounts/:bankAccountId'), ({ params }) =>
+    ok(makeBankAccount({ id: String(params.bankAccountId) })),
+  ),
+
+  http.post(url('/bank-accounts'), async ({ request }) => {
+    const body = (await request.json()) as { currency: string; scheme: string };
+    return ok(
+      makeBankAccount({
+        id: 'ba_01HW0RTBANKACCOUNTNEW1',
+        currency: body.currency as 'GBP',
+        scheme: body.scheme as 'iban',
+        status: 'new',

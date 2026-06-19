@@ -32,6 +32,13 @@ describe('the legacy read', () => {
       expect(result.current.rows).toHaveLength(2);
     });
 
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/v1/invoices'));
+    recorder.stop();
+
+    expect(request?.method).toBe('GET');
+  });
+
+  it('serialises the legacy query parameters', async () => {
     const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useInvoices({ status: 'open', limit: 10 }));
 
@@ -39,6 +46,18 @@ describe('the legacy read', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    expect(result.current.isLoading).toBe(true);
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+  });
+});
+
+describe('_source, the arc-MIG marker', () => {
+  it('marks an unmigrated invoice as legacy', async () => {
     const { result } = renderHookWithProviders(() => useInvoices());
 
     await waitFor(() => {
@@ -102,11 +121,38 @@ describe('errors bypass the ConsoleApiError hierarchy', () => {
     await waitFor(() => {
       expect(result.current.error).not.toBeNull();
     });
+
+    // This is the §8.1 debt made visible: because the legacy path never reaches
+    // `error-mapper.ts`, `<ErrorBoundary/>` renders its generic fallback for invoices rather
+    // than the specific screen every other feature gets.
+    expect(result.current.error).toBeInstanceOf(Error);
+    expect(result.current.error).not.toBeInstanceOf(ConsoleApiError);
+  });
+
+  it('recovers the status through legacyStatus, which is how isUpstreamDown works', async () => {
+    server.use(errorHandler('get', '/invoices', 502, 'processor_unavailable', 'Circuit open'));
+
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
     expect(result.current.isUpstreamDown).toBe(false);
   });
 });
 
 describe('openInvoiceCount', () => {
   it('counts only the open invoices', async () => {
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+
+    expect(openInvoiceCount(result.current.rows)).toBe(1);
+  });
+
+  it('is zero for an empty list', () => {
+    expect(openInvoiceCount([])).toBe(0);
   });
 });

@@ -28,6 +28,7 @@ export interface LegacyQueryOptions {
 
 export function useLegacyQuery<T>(path: string, options: LegacyQueryOptions = {}): LegacyQueryState<T> {
   const { enabled = true } = options;
+  const [data, setData] = useState<T | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(enabled);
   const abortRef = useRef<AbortController | null>(null);
 

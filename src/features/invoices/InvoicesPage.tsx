@@ -36,3 +36,22 @@ export function InvoicesPage() {
       <PageHeader title="Invoices" description="Your monthly Payzeno processing fees.">
         {/* No background refresh on this path — the refresh button is the only way. */}
         <Button type="button" variant="secondary" onClick={refetch}>
+          Refresh
+        </Button>
+      </PageHeader>
+
+      <LegacyInvoiceNotice isMixedSource={isMixedSource} isUpstreamDown={isUpstreamDown} />
+
+      <FilterBar label="Invoice filters">
+        <Select
+          id="invoice-status"
+          label="Status"
+          value={status ?? ''}
+          onValueChange={(next) => setStatus(next === '' ? null : (next as InvoiceStatus))}
+          options={[
+            { value: '', label: 'All statuses' },
+            ...INVOICE_STATUSES.map((value) => ({ value, label: humanise(value) })),
+          ]}
+        />
+      </FilterBar>
+
