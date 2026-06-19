@@ -36,3 +36,7 @@ export function LegacyInvoiceNotice({ isMixedSource, isUpstreamDown }: LegacyInv
         We are moving invoice generation onto our ledger. Invoices marked{' '}
         <strong>Ledger</strong> use the new format; those marked{' '}
         <strong>Billing (legacy)</strong> use the old one. The amounts are identical — only the
+        layout differs.
+      </Alert>
+    );
+  }
