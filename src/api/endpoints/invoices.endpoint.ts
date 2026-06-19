@@ -29,3 +29,7 @@ export class InvoicesEndpoint extends ResourceEndpoint<Invoice, InvoiceListQuery
   }
 
   /**
+   * True once the ledger owns generation for this invoice's merchant (arc MIG step 4). The
+   * console shows a different notice for each — see `LegacyInvoiceNotice`.
+   */
+  isLedgerOwned(invoice: Invoice): boolean {
