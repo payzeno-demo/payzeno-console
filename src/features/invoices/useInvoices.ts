@@ -63,3 +63,7 @@ export function useInvoices(q?: LegacyInvoiceQuery): UseInvoicesResult {
     hasMore: data?.has_more ?? false,
     isMixedSource,
     isLoading,
+    error,
+    // 502 from payzeno-api means the billing-legacy circuit breaker tripped.
+    isUpstreamDown: legacyStatus(error) === 502,
+    refetch,
