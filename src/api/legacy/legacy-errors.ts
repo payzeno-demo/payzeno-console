@@ -51,3 +51,8 @@ export function throwLegacyError(status: number, text: string): never {
 /** Callers use this instead of `instanceof`, because there is no class to check against. */
 export function isLegacyError(err: unknown): err is Error & { status: number; code: string } {
   return err instanceof Error && (err as { legacy?: boolean }).legacy === true;
+}
+
+export function legacyStatus(err: unknown): number | null {
+  return isLegacyError(err) ? err.status : null;
+}
