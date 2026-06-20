@@ -48,3 +48,7 @@ export function fetchInvoice(invoiceId: string): Promise<Invoice> {
   return fetchJson<Invoice>(`/invoices/${encodeURIComponent(invoiceId)}`);
 }
 
+/**
+ * `POST /v1/invoices/:invoiceId/void` — admin only.
+ *
+ * There is no mutation wrapper and no invalidation: the caller reloads the list through

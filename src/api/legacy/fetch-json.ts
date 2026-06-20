@@ -43,3 +43,8 @@ function csrfHeader(): Record<string, string> {
 export async function fetchJson<T>(path: string, options: FetchJsonOptions = {}): Promise<T> {
   const method = options.method ?? 'GET';
   const headers: Record<string, string> = { Accept: 'application/json', ...csrfHeader() };
+  if (options.body !== undefined) headers['Content-Type'] = 'application/json';
+
+  const response = await fetch(buildUrl(path, options.query), {
+    method,
+    headers,
