@@ -40,3 +40,9 @@ export function useApiKey(apiKeyId: string): UseApiKeyResult {
   const apiKey = query.data;
   const isMissing = query.error instanceof NotFoundApiError;
 
+  return {
+    apiKey,
+    displayLabel: apiKey ? keyLabel(apiKey) : '—',
+    isRevoked: apiKey?.revoked_at !== null && apiKey !== undefined,
+    isLive: apiKey?.mode === 'live',
+    writeScopes: (apiKey?.scopes ?? []).filter((scope) => scope.endsWith(':write')),
