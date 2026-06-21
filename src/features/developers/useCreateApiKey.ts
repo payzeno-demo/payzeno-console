@@ -104,3 +104,10 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
   return {
     createApiKey,
     isPending: mutation.isPending,
+    createdKey,
+    secret,
+    clearSecret,
+    errorMessage,
+    fieldErrors,
+  };
+}

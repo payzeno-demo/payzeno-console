@@ -46,3 +46,8 @@ export function useApiKey(apiKeyId: string): UseApiKeyResult {
     isRevoked: apiKey?.revoked_at !== null && apiKey !== undefined,
     isLive: apiKey?.mode === 'live',
     writeScopes: (apiKey?.scopes ?? []).filter((scope) => scope.endsWith(':write')),
+    isLoading: query.isLoading,
+    isMissing,
+    error: isMissing ? null : ((query.error as Error | null) ?? null),
+  };
+}
