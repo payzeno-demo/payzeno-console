@@ -74,3 +74,8 @@ export function useApiKeys(): UseApiKeysResult {
     revokedKeys: rows.filter((row) => row.revoked_at !== null),
     isLoading: query.isLoading,
     error: (query.error as Error | null) ?? null,
+    revoke,
+    isRevoking: mutation.isPending,
+    revokeError,
+  };
+}

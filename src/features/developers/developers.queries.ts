@@ -85,3 +85,13 @@ export function revokeApiKeyMutation(e: EndpointRegistry) {
   return {
     mutationKey: ['api_keys', 'revoke'] as const,
     mutationFn: ({ apiKeyId }: { apiKeyId: string }): Promise<void> => e.apiKeys.revoke(apiKeyId),
+  };
+}
+
+export function redeliverWebhookEventMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['webhook_events', 'redeliver'] as const,
+    mutationFn: ({ eventId }: { eventId: string }): Promise<WebhookEvent> =>
+      e.webhookEvents.redeliver(eventId),
+  };
+}

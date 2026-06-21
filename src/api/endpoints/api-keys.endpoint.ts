@@ -40,3 +40,9 @@ export class ApiKeysEndpoint extends ResourceEndpoint<ApiKey, ListQuery> {
   revoke(apiKeyId: string, idempotencyKey: string = newIdempotencyKey()): Promise<void> {
     return this.client.delete(this.resourcePath(apiKeyId), idempotencyKey);
   }
+
+  /** `sk_live_…` / `sk_test_…` — never `pk_`, which means *publishable* everywhere else. */
+  displayLabel(key: ApiKey): string {
+    return `${key.prefix}…${key.last_four}`;
+  }
+}

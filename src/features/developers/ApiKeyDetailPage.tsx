@@ -112,3 +112,10 @@ export function ApiKeyDetailPage() {
           {apiKey.scopes.map((scope) => (
             <li key={scope}>
               <code>{scope}</code>
+            </li>
+          ))}
+        </ul>
+      </Card>
+    </PageContainer>
+  );
+}

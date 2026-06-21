@@ -50,3 +50,9 @@ export function SecretRevealOnce({ apiKey, secret, onDismiss }: SecretRevealOnce
         I have saved it
       </Button>
 
+      <p role="status" aria-live="polite">
+        {announcement}
+      </p>
+    </Alert>
+  );
+}

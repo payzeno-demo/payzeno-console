@@ -98,3 +98,16 @@ export function useCreateApiKey(): UseCreateApiKeyResult {
 
   const clearSecret = useCallback(() => {
     setSecret(null);
+    setCreatedKey(null);
+  }, []);
+
+  return {
+    createApiKey,
+    isPending: mutation.isPending,
+    createdKey,
+    secret,
+    clearSecret,
+    errorMessage,
+    fieldErrors,
+  };
+}
