@@ -30,6 +30,10 @@ export interface Env {
  * `Boolean(value)` makes "false" truthy, which is how the dispute evidence form shipped on in
  * production for two days (PAY-1783).
  */
+const booleanish = z
+  .enum(['true', 'false', '1', '0', ''])
+  .transform((v) => v === 'true' || v === '1');
+
 const httpUrl = z
   .string()
   .min(1)

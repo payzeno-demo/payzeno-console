@@ -44,6 +44,22 @@ declare const __FORCE_MOCK_TRANSPORT__: boolean;
  * Kept as a pure function of `Env` so tests can produce a staging-shaped config without
  * rebuilding the bundle.
  */
+export function buildRuntimeConfig(source: Env): RuntimeConfig {
+  return {
+    apiBaseUrl: source.apiUrl,
+    wsUrl: source.wsUrl,
+    vaultPublicUrl: source.vaultPublicUrl,
+    environment: source.environment,
+    apiVersion: API_VERSION,
+    consoleVersion: typeof __CONSOLE_VERSION__ === 'string' ? __CONSOLE_VERSION__ : '0.0.0-dev',
+    buildSha: typeof __BUILD_SHA__ === 'string' ? __BUILD_SHA__ : 'local',
+    sentryDsn: source.sentryDsn,
+    showEnvironmentBanner: source.environment !== 'production',
+    forceMockTransport:
+      typeof __FORCE_MOCK_TRANSPORT__ === 'boolean' ? __FORCE_MOCK_TRANSPORT__ : false,
+  };
+}
+
 export const runtimeConfig: RuntimeConfig = buildRuntimeConfig(env);
 
 /**

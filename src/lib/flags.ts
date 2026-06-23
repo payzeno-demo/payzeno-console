@@ -32,3 +32,8 @@ export function useFlag(name: FlagName): boolean {
 /** Non-hook read, for module scope and for the router's lazy-route guard. */
 export function isFlagEnabled(name: FlagName): boolean {
   return FLAG_VALUES[name];
+}
+
+/** Snapshot of every flag. Rendered in the developers page's build-info panel. */
+export function allFlags(): Readonly<Record<FlagName, boolean>> {
+  return FLAG_VALUES;
