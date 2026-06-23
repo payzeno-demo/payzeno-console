@@ -37,3 +37,9 @@ export function isFlagEnabled(name: FlagName): boolean {
 /** Snapshot of every flag. Rendered in the developers page's build-info panel. */
 export function allFlags(): Readonly<Record<FlagName, boolean>> {
   return FLAG_VALUES;
+}
+
+/** Type guard for a string that came from a URL or a log line. */
+export function isFlagName(value: string): value is FlagName {
+  return (FLAG_NAMES as ReadonlyArray<string>).includes(value);
+}
