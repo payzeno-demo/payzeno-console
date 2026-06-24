@@ -206,3 +206,15 @@ describe('retrying an item', () => {
   });
 
   it('shows "Already being settled" — not an error — on a 409 settlement_locked', async () => {
+    server.use(
+      errorHandler(
+        'post',
+        '/settlements/:batchId/items/:itemId/retry',
+        409,
+        'settlement_locked',
+        'A reconciliation sweep holds this batch.',
+      ),
+    );
+
+    const { user } = renderPage();
+
