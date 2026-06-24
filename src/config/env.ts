@@ -30,12 +30,23 @@ export interface Env {
  * `Boolean(value)` makes "false" truthy, which is how the dispute evidence form shipped on in
  * production for two days (PAY-1783).
  */
+const booleanish = z
+  .enum(['true', 'false', '1', '0', ''])
+  .transform((v) => v === 'true' || v === '1');
+
 const httpUrl = z
   .string()
   .min(1)
   .url()
   .refine((v) => v.startsWith('http://') || v.startsWith('https://'), {
     message: 'must be an http(s) URL',
+  });
+
+const socketUrl = z
+  .string()
+  .min(1)
+  .refine((v) => v.startsWith('ws://') || v.startsWith('wss://'), {
+    message: 'must be a ws(s) URL',
   });
 
 const schema = z.object({
