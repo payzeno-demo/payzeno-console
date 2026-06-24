@@ -47,6 +47,7 @@ describe('the request', () => {
   });
 
   it('does not fire at all without a batch id', async () => {
+    const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useSettlementItems(''));
 
     await waitFor(() => {
