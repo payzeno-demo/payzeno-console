@@ -61,3 +61,5 @@ export function SettlementItemTable({
         <ExportCsvButton
           filename={`settlement-${batchId}-items.csv`}
           columns={columns}
+          rows={rows}
+        />
