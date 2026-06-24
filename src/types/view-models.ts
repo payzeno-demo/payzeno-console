@@ -78,3 +78,8 @@ export interface SettlementRow extends MerchantSettlementBatch, RowSelection {
   _needsAttention: boolean;
 }
 
+export interface SettlementItemRow extends ReconciliationItem, RowSelection {
+  /** `RetryScheduler.retry_item` will only accept a claim for `retryable` and `failed`. */
+  _isRetryable: boolean;
+  /**
+   * arc INC. A `settled` item that took more than one attempt is where a duplicate `settle`

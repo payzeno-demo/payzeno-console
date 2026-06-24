@@ -34,3 +34,6 @@ export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItem
   return (
     <>
       <Button
+        type="button"
+        variant="secondary"
+        size="sm"
