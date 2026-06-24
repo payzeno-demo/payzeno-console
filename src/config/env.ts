@@ -42,6 +42,13 @@ const httpUrl = z
     message: 'must be an http(s) URL',
   });
 
+const socketUrl = z
+  .string()
+  .min(1)
+  .refine((v) => v.startsWith('ws://') || v.startsWith('wss://'), {
+    message: 'must be a ws(s) URL',
+  });
+
 const schema = z.object({
   VITE_PAYZENO_API_URL: httpUrl,
   VITE_WS_URL: socketUrl,
