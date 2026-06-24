@@ -70,3 +70,5 @@ export function SettlementDetailPage() {
       <BatchTotalsPanel
         totals={items.totals}
         currency={batch.currency}
+        isLoading={items.isLoading}
+      />
