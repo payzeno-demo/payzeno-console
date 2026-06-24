@@ -181,3 +181,40 @@ describe('the item table', () => {
   });
 
   it('disables the retry control on an item that is not retryable', async () => {
+    renderPage();
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Retry settlement item ri_01HW0RTITEM00000000002',
+      }),
+    ).toBeDisabled();
+  });
+});
+
+describe('retrying an item', () => {
+  it('sends the retry and leaves no error behind', async () => {
+    const { user } = renderPage();
+
+    const button = await screen.findByRole('button', {
+      name: 'Retry settlement item ri_01HW0RTITEM00000000001',
+    });
+    await user.click(button);
+
+    await waitFor(() => {
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows "Already being settled" — not an error — on a 409 settlement_locked', async () => {
+    server.use(
+      errorHandler(
+        'post',
+        '/settlements/:batchId/items/:itemId/retry',
+        409,
+        'settlement_locked',
+        'A reconciliation sweep holds this batch.',
+      ),
+    );
+
+    const { user } = renderPage();
+

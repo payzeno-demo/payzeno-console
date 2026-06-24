@@ -23,6 +23,12 @@ const BATCH_ID = 'sb_01HW0RTBATCH000000001';
 describe('the request', () => {
   it('asks for 50 items, the page size the PERF fix settled on', async () => {
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
     const request = recorder.requests.find((candidate) => candidate.url.includes('/items'));
     recorder.stop();
 
@@ -47,6 +53,7 @@ describe('the request', () => {
   });
 
   it('does not fire at all without a batch id', async () => {
+    const recorder = recordRequests();
     const { result } = renderHookWithProviders(() => useSettlementItems(''));
 
     await waitFor(() => {
@@ -117,6 +124,16 @@ describe('the request', () => {
   });
 
   it('counts only settled items toward the posted total', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
+    expect(result.current.totals.postedMinor).toBe(12_500);
+  });
+
+  it('sums the acquirer fees over every line', async () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {

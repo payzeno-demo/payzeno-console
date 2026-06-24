@@ -70,3 +70,9 @@ function rollUp(rows: ReadonlyArray<SettlementItemRow>): SettlementItemTotals {
     if (row.status === 'settled') postedMinor += row.gross_minor;
     feeMinor += row.fee_minor;
     varianceMinor += row.variance_minor;
+    if (row._isDuplicateSuspect) duplicateCount += 1;
+  }
+
+  return { expectedMinor, postedMinor, feeMinor, varianceMinor, duplicateCount };
+}
+

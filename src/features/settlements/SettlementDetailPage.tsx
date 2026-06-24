@@ -65,3 +65,10 @@ export function SettlementDetailPage() {
         ) : (
           <span>Not funded yet</span>
         )}
+      </PageHeader>
+
+      <BatchTotalsPanel
+        totals={items.totals}
+        currency={batch.currency}
+        isLoading={items.isLoading}
+      />

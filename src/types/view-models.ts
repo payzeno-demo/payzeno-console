@@ -78,3 +78,12 @@ export interface SettlementRow extends MerchantSettlementBatch, RowSelection {
   _needsAttention: boolean;
 }
 
+export interface SettlementItemRow extends ReconciliationItem, RowSelection {
+  /** `RetryScheduler.retry_item` will only accept a claim for `retryable` and `failed`. */
+  _isRetryable: boolean;
+  /**
+   * arc INC. A `settled` item that took more than one attempt is where a duplicate `settle`
+   * transaction would have come from; this drives `<DuplicateBadge />` on the settlement
+   * detail page. PAY-2054's nightly audit checks the same predicate server-side — this is the
+   * merchant-visible half, and the two must not drift.
+   */

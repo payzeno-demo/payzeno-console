@@ -56,3 +56,10 @@ export function SettlementItemTable({
           options={FILTERABLE_STATUSES.map((value) => ({
             value,
             label: value === 'all' ? 'All statuses' : value.replace(/_/g, ' '),
+          }))}
+        />
+        <ExportCsvButton
+          filename={`settlement-${batchId}-items.csv`}
+          columns={columns}
+          rows={rows}
+        />

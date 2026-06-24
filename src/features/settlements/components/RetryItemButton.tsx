@@ -34,3 +34,10 @@ export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItem
   return (
     <>
       <Button
+        type="button"
+        variant="secondary"
+        size="sm"
+        disabled={disabled || isPending}
+        aria-label={`Retry settlement item ${itemId}`}
+        onClick={() => retry({ batchId, itemId, reason: 'manual retry from console' })}
+      >
