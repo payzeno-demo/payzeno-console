@@ -114,3 +114,7 @@ export const queryKeys = {
       currency: CurrencyCode,
     ) => ['reporting', 'balance_history', interval, from, to, currency] as const,
   },
+
+  bankAccounts: {
+    all: ['bank_accounts'] as const,
+    list: () => ['bank_accounts', 'list'] as const,
