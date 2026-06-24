@@ -73,3 +73,6 @@ function rollUp(rows: ReadonlyArray<SettlementItemRow>): SettlementItemTotals {
     if (row._isDuplicateSuspect) duplicateCount += 1;
   }
 
+  return { expectedMinor, postedMinor, feeMinor, varianceMinor, duplicateCount };
+}
+
