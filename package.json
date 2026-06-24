@@ -6,7 +6,12 @@
   "type": "module",
   "engines": {
     "node": ">=20.11 <21",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@9.1.1",
+  "scripts": {
     "dev": "vite",
+    "dev:mock": "vite --mode mock",
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "preview": "vite preview --port 5173",
     "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
@@ -36,9 +41,13 @@
     "@tanstack/react-table": "8.17.3",
     "clsx": "2.1.1",
     "date-fns": "3.6.0",
+    "react": "18.3.1",
     "react-dom": "18.3.1",
     "recharts": "2.12.7",
     "ulid": "2.3.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
     "@tanstack/react-query-devtools": "5.36.0",
     "@testing-library/react": "15.0.7",
     "@testing-library/user-event": "14.5.2",
