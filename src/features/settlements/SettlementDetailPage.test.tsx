@@ -181,3 +181,16 @@ describe('the item table', () => {
   });
 
   it('disables the retry control on an item that is not retryable', async () => {
+    renderPage();
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Retry settlement item ri_01HW0RTITEM00000000002',
+      }),
+    ).toBeDisabled();
+  });
+});
+
+describe('retrying an item', () => {
+  it('sends the retry and leaves no error behind', async () => {
+    const { user } = renderPage();
