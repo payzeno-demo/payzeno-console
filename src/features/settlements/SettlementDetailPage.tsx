@@ -65,3 +65,5 @@ export function SettlementDetailPage() {
         ) : (
           <span>Not funded yet</span>
         )}
+      </PageHeader>
+
