@@ -123,6 +123,16 @@ describe('the request', () => {
       expect(result.current.rows).toHaveLength(3);
     });
 
+    expect(result.current.totals.postedMinor).toBe(12_500);
+  });
+
+  it('sums the acquirer fees over every line', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
     expect(result.current.totals.feeMinor).toBe(720);
   });
 
