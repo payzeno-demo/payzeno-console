@@ -75,3 +75,8 @@ export function useEnumParam<T extends string>(
   key: string,
   allowed: ReadonlyArray<T>,
   fallback: T | null = null,
+): [T | null, (next: T | null) => void] {
+  return useQueryParamState<T | null>(key, {
+    parse: (raw) => (allowed.includes(raw as T) ? (raw as T) : null),
+    serialise: (value) => value,
+    fallback,
