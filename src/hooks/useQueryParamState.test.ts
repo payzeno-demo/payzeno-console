@@ -50,6 +50,20 @@ describe('useStringParam', () => {
   });
 
   it('removes the parameter when set back to the fallback', () => {
+    const { result } = renderHookWithProviders(() => useStringParam('customer'), {
+      route: '/payments?customer=cust-8814',
+    });
+
+    act(() => {
+      result.current[1]('');
+    });
+
+    expect(result.current[0]).toBe('');
+  });
+});
+
+describe('the cursor rule', () => {
+  it('drops the cursor when any filter changes', () => {
     const { result } = renderHookWithProviders(
       () => [useStringParam('customer'), useStringParam('cursor')] as const,
       { route: '/payments?customer=a&cursor=cur_page_three' },
@@ -67,6 +81,14 @@ describe('useStringParam', () => {
 
 describe('useEnumParam', () => {
   it('accepts a value from the allowed set', () => {
+    const { result } = renderHookWithProviders(() => useEnumParam('status', STATUSES), {
+      route: '/settlements?status=funded',
+    });
+
+    expect(result.current[0]).toBe('funded');
+  });
+
+  it('rejects a value outside the set and falls back', () => {
     const { result } = renderHookWithProviders(
       () => useEnumParam('window', ['24h', '7d', '30d'] as const, '7d'),
       { route: '/' },
@@ -98,6 +120,22 @@ describe('useBooleanParam', () => {
   });
 
   it.each(['1', 'true'])('is true for %s', (raw) => {
+    const { result } = renderHookWithProviders(() => useBooleanParam('livemode'), {
+      route: `/payments?livemode=${raw}`,
+    });
+
+    expect(result.current[0]).toBe(true);
+  });
+
+  it('is false for anything else', () => {
+    const { result } = renderHookWithProviders(() => useBooleanParam('livemode'), {
+      route: '/payments?livemode=yes',
+    });
+
+    expect(result.current[0]).toBe(false);
+  });
+
+  it('removes the parameter when set false rather than writing livemode=0', () => {
     const { result } = renderHookWithProviders(() => useBooleanParam('livemode'), {
       route: '/payments?livemode=1',
     });
@@ -148,5 +186,16 @@ describe('useNumberParam', () => {
   });
 
   it('falls back when parse returns null', () => {
+    const { result } = renderHookWithProviders(
+      () =>
+        useQueryParamState<number>('n', {
+          parse: () => null,
+          serialise: String,
+          fallback: 7,
+        }),
+      { route: '/charges?n=whatever' },
+    );
+
+    expect(result.current[0]).toBe(7);
   });
 });

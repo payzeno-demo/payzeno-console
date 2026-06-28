@@ -118,3 +118,8 @@ export const queryKeys = {
   bankAccounts: {
     all: ['bank_accounts'] as const,
     list: () => ['bank_accounts', 'list'] as const,
+    detail: (id: string) => ['bank_accounts', 'detail', id] as const,
+  },
+
+  users: {
+    all: ['users'] as const,
