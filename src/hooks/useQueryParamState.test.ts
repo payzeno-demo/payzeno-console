@@ -67,6 +67,14 @@ describe('useStringParam', () => {
 
 describe('useEnumParam', () => {
   it('accepts a value from the allowed set', () => {
+    const { result } = renderHookWithProviders(() => useEnumParam('status', STATUSES), {
+      route: '/settlements?status=funded',
+    });
+
+    expect(result.current[0]).toBe('funded');
+  });
+
+  it('rejects a value outside the set and falls back', () => {
     const { result } = renderHookWithProviders(
       () => useEnumParam('window', ['24h', '7d', '30d'] as const, '7d'),
       { route: '/' },
@@ -98,6 +106,14 @@ describe('useBooleanParam', () => {
   });
 
   it.each(['1', 'true'])('is true for %s', (raw) => {
+    const { result } = renderHookWithProviders(() => useBooleanParam('livemode'), {
+      route: `/payments?livemode=${raw}`,
+    });
+
+    expect(result.current[0]).toBe(true);
+  });
+
+  it('is false for anything else', () => {
     const { result } = renderHookWithProviders(() => useBooleanParam('livemode'), {
       route: '/payments?livemode=1',
     });
