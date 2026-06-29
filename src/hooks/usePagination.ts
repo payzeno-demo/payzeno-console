@@ -71,3 +71,11 @@ export function usePagination<T>(
     state,
     query,
     canGoBack: !isFirstPage(state),
+    canGoForward: Boolean(response?.has_more && response.next_cursor),
+    pageNumber: state.history.length + 1,
+    goNext,
+    goBack,
+    setLimit,
+    reset,
+  };
+}
