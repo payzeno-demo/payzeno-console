@@ -318,6 +318,36 @@ export function makeReconciliationItem(
   } as ReconciliationItem;
 }
 
+export function makeInvoice(overrides: Partial<Invoice> = {}): Invoice {
+  return {
+    id: 'inv_01HW0RTINVOICE00000001',
+    object: 'invoice',
+    merchant_id: MERCHANT_ID,
+    subscription_id: null,
+    number: 'PZ-2026-000412',
+    status: 'open',
+    currency: 'GBP',
+    subtotal_minor: 41_200,
+    tax_minor: 8_240,
+    total_minor: 49_440,
+    amount_paid_minor: 0,
+    lines: [
+      {
+        description: 'Processing fees, February 2026',
+        quantity: 1,
+        unit_amount_minor: 41_200,
+        amount_minor: 41_200,
+      },
+    ],
+    period_start: '2026-02-01',
+    period_end: '2026-02-28',
+    due_at: '2026-03-31T23:59:59.000Z',
+    migrated_to_ledger: false,
+    created_at: '2026-03-01T00:05:00.000Z',
+    ...overrides,
+  };
+}
+
 export function makeBankAccount(overrides: Partial<BankAccount> = {}): BankAccount {
   return {
     id: 'ba_01HW0RTBANKACCOUNT0001',

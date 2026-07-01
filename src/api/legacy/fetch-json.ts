@@ -48,3 +48,7 @@ export async function fetchJson<T>(path: string, options: FetchJsonOptions = {})
   const response = await fetch(buildUrl(path, options.query), {
     method,
     headers,
+    credentials: 'include',
+    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    signal: options.signal,
+  });

@@ -135,6 +135,16 @@ describe('errors bypass the ConsoleApiError hierarchy', () => {
     const { result } = renderHookWithProviders(() => useInvoices());
 
     await waitFor(() => {
+      expect(result.current.isUpstreamDown).toBe(true);
+    });
+  });
+
+  it('does not claim the upstream is down for an ordinary 500', async () => {
+    server.use(errorHandler('get', '/invoices', 500, 'internal_error'));
+
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
       expect(result.current.error).not.toBeNull();
     });
     expect(result.current.isUpstreamDown).toBe(false);

@@ -67,3 +67,7 @@ export function useInvoices(q?: LegacyInvoiceQuery): UseInvoicesResult {
     // 502 from payzeno-api means the billing-legacy circuit breaker tripped.
     isUpstreamDown: legacyStatus(error) === 502,
     refetch,
+  };
+}
+
+/** Convenience for the open-invoice count the dashboard shows. */

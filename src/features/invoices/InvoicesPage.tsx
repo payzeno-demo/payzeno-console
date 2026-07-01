@@ -63,3 +63,6 @@ export function InvoicesPage() {
           columns={invoiceColumns}
           rows={rows}
           isLoading={isLoading}
+          emptyState={
+            <EmptyRows
+              title="No invoices yet"
