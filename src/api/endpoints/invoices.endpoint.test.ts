@@ -34,6 +34,19 @@ describe('GET /v1/invoices', () => {
     expect(page.data.map((invoice) => invoice.status)).toEqual(['open', 'paid']);
   });
 
+  it('listOpen pins the status the outstanding-total column sums over', async () => {
+    const recorder = recordRequests();
+    await endpoint().listOpen({ limit: 100 });
+
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.url).toContain('status=open');
+    expect(request?.url).toContain('limit=100');
+  });
+});
+
+describe('GET /v1/invoices/:invoiceId', () => {
   it('maps a missing invoice onto NotFoundApiError', async () => {
     server.use(errorHandler('get', '/invoices/:invoiceId', 404, 'not_found'));
 
