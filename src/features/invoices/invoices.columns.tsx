@@ -67,3 +67,12 @@ export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
         <DateCell value={row.period_start} precision="day" /> —{' '}
         <DateCell value={row.period_end} precision="day" />
       </span>
+    ),
+    exportValue: (row) => `${row.period_start}/${row.period_end}`,
+  },
+  {
+    id: 'total_minor',
+    header: 'Total',
+    align: 'end',
+    sortable: true,
+    // TODO(rrefactor): MoneyCell. PAY-1968.
