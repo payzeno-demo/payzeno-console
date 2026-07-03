@@ -58,6 +58,16 @@ describe('the page', () => {
     expect(await screen.findByText('PZ-2026-000412')).toBeInTheDocument();
   });
 
+  it('shows the empty state when there are no invoices', async () => {
+    server.use(http.get(url('/invoices'), () => HttpResponse.json(makePage([]))));
+
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    expect(await screen.findByText('No invoices yet')).toBeInTheDocument();
+  });
+});
+
+describe('the legacy notice', () => {
   it('is rendered on the page', async () => {
     renderWithProviders(<InvoicesPage />, { route: '/invoices' });
 

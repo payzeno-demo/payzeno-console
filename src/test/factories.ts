@@ -65,6 +65,20 @@ export function makeMerchant(overrides: Partial<Merchant> = {}): Merchant {
   } as Merchant;
 }
 
+export function makeUser(overrides: Partial<User> = {}): User {
+  return {
+    id: USER_ID,
+    object: 'user',
+    merchant_id: MERCHANT_ID,
+    email: 'finance@northwind.example',
+    full_name: 'Dana Finance',
+    role: 'owner',
+    last_login_at: NOW,
+    created_at: '2025-04-02T10:05:00.000Z',
+    ...overrides,
+  };
+}
+
 /** `GET /v1/auth/me`. `permissions` is populated, so `toConsoleSession` uses it verbatim. */
 export function makeSession(overrides: Partial<SessionResponse> = {}): SessionResponse {
   return {

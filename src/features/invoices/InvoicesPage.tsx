@@ -66,3 +66,7 @@ export function InvoicesPage() {
           emptyState={
             <EmptyRows
               title="No invoices yet"
+              body="Your first invoice is issued at the start of the month after you go live."
+            />
+          }
+        />
