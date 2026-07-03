@@ -34,6 +34,17 @@ describe('GET /v1/invoices', () => {
     expect(page.data.map((invoice) => invoice.status)).toEqual(['open', 'paid']);
   });
 
+  it('filters by status', async () => {
+    const recorder = recordRequests();
+    await endpoint().list({ status: 'open', limit: 25 });
+
+    const request = recorder.requests.at(-1);
+    recorder.stop();
+
+    expect(request?.url).toContain('/v1/invoices?');
+    expect(request?.url).toContain('status=open');
+  });
+
   it('listOpen pins the status the outstanding-total column sums over', async () => {
     const recorder = recordRequests();
     await endpoint().listOpen({ limit: 100 });
@@ -67,4 +78,9 @@ describe('isLedgerOwned — the arc-MIG cutover flag', () => {
     expect(endpoint().isLedgerOwned(invoice)).toBe(true);
   });
 
+  it('reads the flag off the invoice rather than guessing from the id prefix', () => {
+    const migrated = makeInvoice({ id: 'inv_legacy_shaped_id', migrated_to_ledger: true });
+
+    expect(endpoint().isLedgerOwned(migrated)).toBe(true);
+  });
 });

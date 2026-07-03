@@ -52,6 +52,31 @@ describe('the page', () => {
     expect(request?.headers.get('Payzeno-Version')).toBeNull();
   });
 
+  it('passes the status filter from the URL', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<InvoicesPage />, { route: '/invoices?status=open' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('status=open'))).toBe(
+        true,
+      );
+    });
+    recorder.stop();
+  });
+});
+
+describe('the table', () => {
+  it('renders a row per invoice', async () => {
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    const table = await screen.findByRole('table', {
+      name: /Invoices, most recent period first/,
+    });
+    await waitFor(() => {
+      expect(table.querySelectorAll('tbody tr')).toHaveLength(2);
+    });
+  });
+
   it('shows the invoice number', async () => {
     renderWithProviders(<InvoicesPage />, { route: '/invoices' });
 
