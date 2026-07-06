@@ -64,3 +64,25 @@ export function TopBar({
         borderBottom: `1px solid ${color.border}`,
         background: color.surface,
         fontFamily: font.family,
+      }}
+    >
+      {onOpenNav ? (
+        <IconButton name="menu" label="Open navigation" variant="ghost" onClick={onOpenNav} />
+      ) : null}
+
+      <span
+        style={{
+          fontSize: font.size.lg,
+          fontWeight: font.weight.semibold,
+          color: color.brand,
+          letterSpacing: '-0.01em',
+        }}
+      >
+        Payzeno
+      </span>
+
+      <MerchantSwitcher
+        current={merchant}
+        available={availableMerchants ?? [merchant]}
+        onSwitch={onSwitchMerchant}
+      />

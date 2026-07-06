@@ -48,3 +48,16 @@ export function Label({
     >
       <span>{children}</span>
       {required ? (
+        <>
+          <span aria-hidden="true" style={{ color: color.danger }}>
+            *
+          </span>
+          <span style={visuallyHidden}>(required)</span>
+        </>
+      ) : null}
+      {hint ? (
+        <span style={{ color: color.textMuted, fontWeight: font.weight.regular }}>{hint}</span>
+      ) : null}
+    </RadixLabel.Root>
+  );
+}

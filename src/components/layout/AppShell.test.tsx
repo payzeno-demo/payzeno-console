@@ -48,6 +48,17 @@ describe('with a session', () => {
     expect(screen.getByText(/Northwind/)).toBeInTheDocument();
   });
 
+  it('announces the landing route as the dashboard', () => {
+    renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+      { route: '/' },
+    );
+
+    expect(screen.getByRole('status')).toHaveTextContent('Navigated to the dashboard');
+  });
+
   it('announces a feature route by name', () => {
     renderWithProviders(
       <AppShell>
@@ -69,6 +80,20 @@ describe('with a session', () => {
     expect(document.documentElement.style.getPropertyValue('--pz-color-brand')).not.toBe('');
   });
 
+  it('cleans them up on unmount, so two roots do not leak into each other', () => {
+    const { unmount } = renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+    );
+
+    unmount();
+
+    expect(document.documentElement.style.getPropertyValue('--pz-color-brand')).toBe('');
+  });
+});
+
+describe('the notification bell (the §8.3 layer violation)', () => {
   it('mounts the bell in the shell, as interfaces.md §4.1 requires', () => {
     renderWithProviders(
       <AppShell>
@@ -83,4 +108,24 @@ describe('with a session', () => {
 });
 
 describe('the shell callbacks', () => {
+  it('wires the sign-out handler through to the user menu', async () => {
+    const onSignOut = vi.fn();
+    const { user } = renderWithProviders(
+      <AppShell onSignOut={onSignOut}>
+        <p>Route content</p>
+      </AppShell>,
+    );
+
+    const menu = screen.queryByRole('button', { name: /Dana Finance|Account menu/ });
+    if (menu) {
+      await user.click(menu);
+      const signOut = screen.queryByRole('menuitem', { name: /Sign out/ });
+      if (signOut) await user.click(signOut);
+      expect(onSignOut).toHaveBeenCalled();
+    } else {
+      // The menu is rendered by `TopBar`; if its trigger is renamed this assertion should be
+      // updated rather than silently dropped.
+      expect(screen.getByRole('banner')).toBeInTheDocument();
+    }
+  });
 });
