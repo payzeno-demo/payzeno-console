@@ -30,6 +30,7 @@ export function useLegacyQuery<T>(path: string, options: LegacyQueryOptions = {}
   const { enabled = true } = options;
   const [data, setData] = useState<T | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(enabled);
+  const [error, setError] = useState<Error | null>(null);
   // Serialised so the effect does not re-run on every render for an object literal.
   const querySignature = JSON.stringify(options.query ?? {});
   const abortRef = useRef<AbortController | null>(null);
