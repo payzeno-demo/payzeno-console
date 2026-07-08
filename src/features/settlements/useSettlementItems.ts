@@ -79,3 +79,7 @@ function rollUp(rows: ReadonlyArray<SettlementItemRow>): SettlementItemTotals {
 export function useSettlementItems(
   batchId: string,
   q?: { status?: ReconciliationItemStatus; cursor?: string },
+): UseSettlementItemsResult {
+  const endpoints = useEndpoints();
+  const query = useQuery({
+    ...settlementItemsQuery(endpoints, batchId, q),
