@@ -68,6 +68,12 @@ describe('the request', () => {
   });
 
   it('marks a retryable item as retryable and a settled one as not', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
     const byStatus = new Map(result.current.rows.map((row) => [row.status, row]));
     expect(byStatus.get('retryable')?._isRetryable).toBe(true);
     expect(byStatus.get('settled')?._isRetryable).toBe(false);
