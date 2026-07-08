@@ -63,3 +63,5 @@ export function SettlementItemTable({
           columns={columns}
           rows={rows}
         />
+      </DataTableToolbar>
+
