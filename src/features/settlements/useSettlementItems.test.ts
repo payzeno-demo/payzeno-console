@@ -68,6 +68,12 @@ describe('the request', () => {
   });
 
   it('marks a retryable item as retryable and a settled one as not', async () => {
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(3);
+    });
+
     const byStatus = new Map(result.current.rows.map((row) => [row.status, row]));
     expect(byStatus.get('retryable')?._isRetryable).toBe(true);
     expect(byStatus.get('settled')?._isRetryable).toBe(false);
@@ -175,6 +181,23 @@ describe('the request', () => {
           ]),
         ),
       ),
+    );
+
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(2);
+    });
+
+    expect(result.current.totals.postedMinor).toBeGreaterThan(
+      result.current.totals.expectedMinor,
+    );
+    expect(result.current.totals.duplicateCount).toBe(2);
+  });
+
+  it('rolls up an empty batch to zeroes rather than to NaN', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId/items'), () => HttpResponse.json(makePage([]))),
     );
 
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));

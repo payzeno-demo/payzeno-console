@@ -202,3 +202,12 @@ export function renderHookWithProviders<TResult, TProps>(
     ...(hookOptions as Omit<RenderHookOptions<TProps>, 'wrapper'>),
     wrapper: ({ children }) => (
       <Providers
+        route={route}
+        path={path}
+        transport={transport}
+        session={session}
+        flags={flags}
+        queryClient={client}
+      >
+        {children}
+      </Providers>

@@ -116,3 +116,12 @@ export function settlementItemColumns(
       id: 'attempts',
       header: 'Attempts',
       align: 'end',
+      cell: (row) => <span>{row.attempt_count}</span>,
+      exportValue: (row) => String(row.attempt_count),
+    },
+    {
+      id: 'last_attempt_at',
+      header: 'Last attempt',
+      cell: (row) =>
+        row.last_attempt_at ? (
+          <DateCell value={row.last_attempt_at} precision="minute" />

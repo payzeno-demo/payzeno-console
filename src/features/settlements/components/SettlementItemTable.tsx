@@ -63,3 +63,9 @@ export function SettlementItemTable({
           columns={columns}
           rows={rows}
         />
+      </DataTableToolbar>
+
+      <DataTable<SettlementItemRow>
+        caption={`Reconciliation items in settlement batch ${batchId}`}
+        columns={columns}
+        rows={rows}

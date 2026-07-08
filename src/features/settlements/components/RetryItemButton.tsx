@@ -41,3 +41,10 @@ export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItem
         aria-label={`Retry settlement item ${itemId}`}
         onClick={() => retry({ batchId, itemId, reason: 'manual retry from console' })}
       >
+        {isPending ? <Spinner size="sm" aria-hidden /> : null}
+        Retry
+      </Button>
+
+      {wasLocked ? (
+        <span role="status" data-tone="neutral">
+          Already being settled

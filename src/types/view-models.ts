@@ -87,3 +87,8 @@ export interface SettlementItemRow extends ReconciliationItem, RowSelection {
    * detail page. PAY-2054's nightly audit checks the same predicate server-side — this is the
    * merchant-visible half, and the two must not drift.
    */
+  _isDuplicateSuspect: boolean;
+}
+
+export interface InvoiceRow extends Invoice, RowSelection {
+  /**
