@@ -116,3 +116,7 @@ export function settlementItemColumns(
       id: 'attempts',
       header: 'Attempts',
       align: 'end',
+      cell: (row) => <span>{row.attempt_count}</span>,
+      exportValue: (row) => String(row.attempt_count),
+    },
+    {

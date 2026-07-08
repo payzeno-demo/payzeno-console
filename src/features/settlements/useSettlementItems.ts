@@ -76,3 +76,6 @@ function rollUp(rows: ReadonlyArray<SettlementItemRow>): SettlementItemTotals {
   return { expectedMinor, postedMinor, feeMinor, varianceMinor, duplicateCount };
 }
 
+export function useSettlementItems(
+  batchId: string,
+  q?: { status?: ReconciliationItemStatus; cursor?: string },
