@@ -36,3 +36,7 @@ export function useSettlement(batchId: string): UseSettlementResult {
     isMissing,
     error: isMissing ? null : ((query.error as Error | null) ?? null),
     refetch: () => {
+      void query.refetch();
+    },
+  };
+}
