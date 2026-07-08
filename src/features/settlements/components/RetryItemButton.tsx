@@ -45,3 +45,6 @@ export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItem
         Retry
       </Button>
 
+      {wasLocked ? (
+        <span role="status" data-tone="neutral">
+          Already being settled
