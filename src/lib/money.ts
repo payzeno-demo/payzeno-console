@@ -82,3 +82,7 @@ export function formatSigned(value: Money, locale?: string): string {
  */
 export function formatCompact(value: Money, locale = 'en-US'): string {
   const exponent = CURRENCY_EXPONENT[value.currency];
+  const major = value.amount_minor / 10 ** exponent;
+
+  if (Math.abs(major) < 10_000) {
+    return formatMoney(value, locale);

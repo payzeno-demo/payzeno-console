@@ -96,3 +96,8 @@ export interface InvoiceRow extends Invoice, RowSelection {
    * (arc MIG). Derived from `migrated_to_ledger`, not sent by the API.
    */
   _source: 'legacy' | 'ledger';
+}
+
+export interface ApiKeyRow extends ApiKey, RowSelection {
+  /** Set exactly once, immediately after creation. Cleared when `<SecretRevealOnce />` unmounts. */
+  _plaintextSecret?: string;
