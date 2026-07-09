@@ -32,3 +32,6 @@ export function useMoneyFormat(locale?: string): MoneyFormatter {
     () => locale ?? (typeof navigator === 'undefined' ? 'en-US' : navigator.language),
     [locale],
   );
+
+  const format = useCallback((value: Money) => formatMoney(value, resolved), [resolved]);
+

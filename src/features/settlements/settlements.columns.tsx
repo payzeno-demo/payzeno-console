@@ -57,3 +57,6 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
     exportValue: (row) => row.status,
   },
   {
+    id: 'item_count',
+    header: 'Your items',
+    align: 'end',
