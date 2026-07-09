@@ -83,3 +83,6 @@ export function useSettlementItems(
   const endpoints = useEndpoints();
   const query = useQuery({
     ...settlementItemsQuery(endpoints, batchId, q),
+    enabled: batchId.length > 0,
+  });
+
