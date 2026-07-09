@@ -37,6 +37,8 @@ import type { ConsoleNotification } from '@features/notifications/notification.t
 
 /** Fixed instant every timestamp below is derived from: 2026-03-14T09:21:07.412Z. */
 export const NOW = '2026-03-14T09:21:07.412Z';
+export const TODAY = '2026-03-14';
+
 export const MERCHANT_ID = 'mch_01HW0RTHERMOSPHERE0001';
 export const USER_ID = 'usr_01HW0RTHERMOSPHERE0002';
 
@@ -63,6 +65,20 @@ export function makeMerchant(overrides: Partial<Merchant> = {}): Merchant {
     created_at: '2025-04-02T10:00:00.000Z',
     ...overrides,
   } as Merchant;
+}
+
+export function makeUser(overrides: Partial<User> = {}): User {
+  return {
+    id: USER_ID,
+    object: 'user',
+    merchant_id: MERCHANT_ID,
+    email: 'finance@northwind.example',
+    full_name: 'Dana Finance',
+    role: 'owner',
+    last_login_at: NOW,
+    created_at: '2025-04-02T10:05:00.000Z',
+    ...overrides,
+  };
 }
 
 /** `GET /v1/auth/me`. `permissions` is populated, so `toConsoleSession` uses it verbatim. */
@@ -316,6 +332,36 @@ export function makeReconciliationItem(
     updated_at: NOW,
     ...overrides,
   } as ReconciliationItem;
+}
+
+export function makeInvoice(overrides: Partial<Invoice> = {}): Invoice {
+  return {
+    id: 'inv_01HW0RTINVOICE00000001',
+    object: 'invoice',
+    merchant_id: MERCHANT_ID,
+    subscription_id: null,
+    number: 'PZ-2026-000412',
+    status: 'open',
+    currency: 'GBP',
+    subtotal_minor: 41_200,
+    tax_minor: 8_240,
+    total_minor: 49_440,
+    amount_paid_minor: 0,
+    lines: [
+      {
+        description: 'Processing fees, February 2026',
+        quantity: 1,
+        unit_amount_minor: 41_200,
+        amount_minor: 41_200,
+      },
+    ],
+    period_start: '2026-02-01',
+    period_end: '2026-02-28',
+    due_at: '2026-03-31T23:59:59.000Z',
+    migrated_to_ledger: false,
+    created_at: '2026-03-01T00:05:00.000Z',
+    ...overrides,
+  };
 }
 
 export function makeBankAccount(overrides: Partial<BankAccount> = {}): BankAccount {

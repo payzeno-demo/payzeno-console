@@ -80,3 +80,7 @@ export function useEnumParam<T extends string>(
     parse: (raw) => (allowed.includes(raw as T) ? (raw as T) : null),
     serialise: (value) => value,
     fallback,
+  });
+}
+
+/** Boolean flag parameter — present means true, absent means false. */

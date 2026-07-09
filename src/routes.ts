@@ -151,3 +151,10 @@ export function featureOf(pathname: string): string {
 /**
  * Strip the id out of a pathname so it can be used as an analytics label.
  * `/charges/ch_01HX…` → `/charges/:id`.
+ *
+ * The prefixes are the ones from domain-model.md §0.2 that can appear in a console URL. They
+ * are spelled out rather than derived from `lib/ids.ts::ID_PREFIXES` because `routes.ts` sits
+ * above `lib/` in the layering and a Sentry breadcrumb must not be able to throw. Keep the two
+ * in step: this list drifted once (`stl`, `ak`, `in` — none of which are real prefixes) and the
+ * only symptom was every settlement issue in Sentry grouping by id.
+ */

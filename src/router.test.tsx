@@ -30,6 +30,11 @@ describe('route helpers', () => {
     expect(featureOf('/')).toBe('reporting');
   });
 
+  it('templatises resource ids, so telemetry does not get one route per charge', () => {
+    expect(routeTemplate('/charges/ch_01HW0RTCHARGE00000001')).toBe('/charges/:id');
+    expect(routeTemplate('/settlements')).toBe('/settlements');
+  });
+
   it('builds detail paths with encoded ids', () => {
     expect(ROUTES.settlements.detail('set/1')).toBe('/settlements/set%2F1');
     expect(ROUTES.developers.apiKey('key_1')).toBe('/developers/api-keys/key_1');
@@ -77,6 +82,16 @@ describe('the signed-in tree', () => {
     renderAt(ROUTES.settlements.index);
 
     expect(await screen.findByRole('heading', { name: 'Settlements' })).toBeInTheDocument();
+  });
+
+  it('renders a settlement detail route', async () => {
+    renderAt(ROUTES.settlements.detail('sb_01HW0RTBATCH000000001'));
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Settlement sb_01HW0RTBATCH000000001',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('redirects the legacy /dashboard bookmark to the landing route', async () => {
