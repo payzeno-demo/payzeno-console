@@ -28,3 +28,7 @@ export interface MoneyFormatter {
  * expects; the currency itself always comes from the data, never from the locale.
  */
 export function useMoneyFormat(locale?: string): MoneyFormatter {
+  const resolved = useMemo(
+    () => locale ?? (typeof navigator === 'undefined' ? 'en-US' : navigator.language),
+    [locale],
+  );

@@ -67,3 +67,7 @@ export function MoneyCell({
       {text}
     </span>
   );
+}
+
+/** Plain-string form for a column's `exportValue`. Same formatter, no markup. */
+export function moneyExportValue(amountMinor: MinorUnits, currency: CurrencyCode): string {
