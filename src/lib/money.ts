@@ -86,3 +86,7 @@ export function formatCompact(value: Money, locale = 'en-US'): string {
 
   if (Math.abs(major) < 10_000) {
     return formatMoney(value, locale);
+  }
+
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
