@@ -69,3 +69,7 @@ export interface RetryItemInput {
  * `POST /v1/settlements/:batchId/items/:itemId/retry`. Carries an `Idempotency-Key` because
  * `ApiClient.post` requires one — a manual retry that the user double-clicks must not become
  * two claims on the same reconciliation item.
+ */
+export function retrySettlementItemMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['settlements', 'retry-item'] as const,
