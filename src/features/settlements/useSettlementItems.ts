@@ -83,3 +83,9 @@ export function useSettlementItems(
   const endpoints = useEndpoints();
   const query = useQuery({
     ...settlementItemsQuery(endpoints, batchId, q),
+    enabled: batchId.length > 0,
+  });
+
+  const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
+  const totals = useMemo(() => rollUp(rows), [rows]);
+
