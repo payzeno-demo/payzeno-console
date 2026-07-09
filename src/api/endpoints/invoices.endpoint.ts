@@ -33,3 +33,6 @@ export class InvoicesEndpoint extends ResourceEndpoint<Invoice, InvoiceListQuery
    * console shows a different notice for each — see `LegacyInvoiceNotice`.
    */
   isLedgerOwned(invoice: Invoice): boolean {
+    return invoice.migrated_to_ledger;
+  }
+}
