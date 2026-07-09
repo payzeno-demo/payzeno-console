@@ -89,6 +89,14 @@ describe('useEnumParam', () => {
   });
 
   it('rejects a value outside the set and falls back', () => {
+    const { result } = renderHookWithProviders(() => useEnumParam('status', STATUSES), {
+      route: '/settlements?status=dropped_by_a_fuzzer',
+    });
+
+    expect(result.current[0]).toBeNull();
+  });
+
+  it('honours an explicit fallback', () => {
     const { result } = renderHookWithProviders(
       () => useEnumParam('window', ['24h', '7d', '30d'] as const, '7d'),
       { route: '/' },
@@ -166,6 +174,16 @@ describe('useNumberParam', () => {
   });
 
   it('falls back for a value below the minimum', () => {
+    const { result } = renderHookWithProviders(() => useNumberParam('limit', 25, 10), {
+      route: '/charges?limit=1',
+    });
+
+    expect(result.current[0]).toBe(25);
+  });
+});
+
+describe('the general form', () => {
+  it('uses the parse and serialise functions it was given', () => {
     const { result } = renderHookWithProviders(
       () =>
         useQueryParamState<string[]>('tags', {

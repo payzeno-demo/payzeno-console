@@ -208,3 +208,32 @@ export function AppRoutes() {
           <Route path={ROUTE_PATTERNS.disputeDetail} element={<DisputeDetailPage />} />
         </Route>
 
+        <Route
+          path={ROUTE_PATTERNS.payouts}
+          element={<FeatureRoute permission="payouts:read" label="payouts" />}
+        >
+          <Route index element={<PayoutsPage />} />
+          <Route path={ROUTE_PATTERNS.payoutDetail} element={<PayoutDetailPage />} />
+        </Route>
+
+        <Route path={ROUTE_PATTERNS.settlements} element={<SettlementsRoute />}>
+          <Route index element={<SettlementsPage />} />
+          <Route path={ROUTE_PATTERNS.settlementDetail} element={<SettlementDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.invoices}
+          element={<FeatureRoute permission="invoices:read" label="invoices" />}
+        >
+          <Route index element={<InvoicesPage />} />
+          <Route path={ROUTE_PATTERNS.invoiceDetail} element={<InvoiceDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.developers}
+          element={<FeatureRoute permission="developers:read" label="developer settings" />}
+        >
+          <Route index element={<DevelopersPage />} />
+          <Route path={ROUTE_PATTERNS.apiKeyDetail} element={<ApiKeyDetailPage />} />
+          <Route path={ROUTE_PATTERNS.webhookEventDetail} element={<WebhookEventDetailPage />} />
+        </Route>
