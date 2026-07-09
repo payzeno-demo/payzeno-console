@@ -237,3 +237,12 @@ export function AppRoutes() {
           <Route path={ROUTE_PATTERNS.apiKeyDetail} element={<ApiKeyDetailPage />} />
           <Route path={ROUTE_PATTERNS.webhookEventDetail} element={<WebhookEventDetailPage />} />
         </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.settings}
+          element={<FeatureRoute permission="settings:read" label="settings" />}
+        >
+          <Route index element={<SettingsPage />} />
+        </Route>
+
+        {/*

@@ -80,3 +80,12 @@ export function useEnumParam<T extends string>(
     parse: (raw) => (allowed.includes(raw as T) ? (raw as T) : null),
     serialise: (value) => value,
     fallback,
+  });
+}
+
+/** Boolean flag parameter — present means true, absent means false. */
+export function useBooleanParam(key: string): [boolean, (next: boolean) => void] {
+  return useQueryParamState<boolean>(key, {
+    parse: (raw) => raw === '1' || raw === 'true',
+    serialise: (value) => (value ? '1' : null),
+    fallback: false,
