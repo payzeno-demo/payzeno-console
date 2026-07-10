@@ -218,3 +218,41 @@ export function AppRoutes() {
 
         <Route path={ROUTE_PATTERNS.settlements} element={<SettlementsRoute />}>
           <Route index element={<SettlementsPage />} />
+          <Route path={ROUTE_PATTERNS.settlementDetail} element={<SettlementDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.invoices}
+          element={<FeatureRoute permission="invoices:read" label="invoices" />}
+        >
+          <Route index element={<InvoicesPage />} />
+          <Route path={ROUTE_PATTERNS.invoiceDetail} element={<InvoiceDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.developers}
+          element={<FeatureRoute permission="developers:read" label="developer settings" />}
+        >
+          <Route index element={<DevelopersPage />} />
+          <Route path={ROUTE_PATTERNS.apiKeyDetail} element={<ApiKeyDetailPage />} />
+          <Route path={ROUTE_PATTERNS.webhookEventDetail} element={<WebhookEventDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.settings}
+          element={<FeatureRoute permission="settings:read" label="settings" />}
+        >
+          <Route index element={<SettingsPage />} />
+        </Route>
+
+        {/*
+          A bare `/dashboard` was the pre-2025 landing path and merchants still have it
+          bookmarked. Cheaper than a support macro.
+        */}
+        <Route path="/dashboard" element={<Navigate to={ROUTES.reporting.index} replace />} />
+      </Route>
+
+      <Route path={ROUTE_PATTERNS.catchAll} element={<NotFound homeTo={ROUTES.reporting.index} />} />
+    </Routes>
+  );
+}
