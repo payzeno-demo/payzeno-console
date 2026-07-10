@@ -89,3 +89,7 @@ export function useBooleanParam(key: string): [boolean, (next: boolean) => void]
     parse: (raw) => raw === '1' || raw === 'true',
     serialise: (value) => (value ? '1' : null),
     fallback: false,
+  });
+}
+
+/** Numeric parameter with a floor, used for page size. */
