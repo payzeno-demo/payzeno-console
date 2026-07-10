@@ -90,3 +90,7 @@ export function formatCompact(value: Money, locale = 'en-US'): string {
 
   return new Intl.NumberFormat(locale, {
     style: 'currency',
+    currency: value.currency,
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(major);

@@ -64,3 +64,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
     exportValue: (row) => String(row.item_count),
     sortable: true,
   },
+  {
+    id: 'net_minor',
+    header: 'Net',
+    align: 'end',
