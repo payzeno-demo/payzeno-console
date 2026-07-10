@@ -77,3 +77,20 @@ export function formatSigned(value: Money, locale?: string): string {
 
 /**
  * Compact form for chart axes and dense cells: `$12.4k`, `¥1.2M`.
+ * Falls back to the full format below 10,000 major units, where compaction loses more than it
+ * saves.
+ */
+export function formatCompact(value: Money, locale = 'en-US'): string {
+  const exponent = CURRENCY_EXPONENT[value.currency];
+  const major = value.amount_minor / 10 ** exponent;
+
+  if (Math.abs(major) < 10_000) {
+    return formatMoney(value, locale);
+  }
+
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: value.currency,
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(major);

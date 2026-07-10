@@ -46,6 +46,14 @@ describe('the re-export surface', () => {
     expect(CURRENCIES).toContain('JPY');
   });
 
+  it('carries the exponent table, with JPY at zero', () => {
+    expect(CURRENCY_EXPONENT.GBP).toBe(2);
+    expect(CURRENCY_EXPONENT.USD).toBe(2);
+    expect(CURRENCY_EXPONENT.JPY).toBe(0);
+  });
+});
+
+describe('money and zero', () => {
   it('builds a zero in the currency asked for', () => {
     expect(zero('JPY')).toEqual({ amount_minor: 0, currency: 'JPY' });
   });
@@ -56,6 +64,18 @@ describe('sumMoney', () => {
     expect(sumMoney([], 'EUR')).toEqual({ amount_minor: 0, currency: 'EUR' });
   });
 
+  it('is its own inverse', () => {
+    expect(negate(negate(money(2_500, 'GBP')))).toEqual(money(2_500, 'GBP'));
+  });
+
+  it('recognises a negative amount', () => {
+    expect(isNegative(money(-1, 'GBP'))).toBe(true);
+    expect(isNegative(money(0, 'GBP'))).toBe(false);
+    expect(isNegative(money(1, 'GBP'))).toBe(false);
+  });
+});
+
+describe('formatSigned', () => {
   it('uses U+2212 MINUS SIGN, not a hyphen', () => {
     const rendered = formatSigned(money(-2_500, 'GBP'), 'en-GB');
 

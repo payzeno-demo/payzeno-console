@@ -57,3 +57,14 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
     exportValue: (row) => row.status,
   },
   {
+    id: 'item_count',
+    header: 'Your items',
+    align: 'end',
+    cell: (row) => <span>{row.item_count.toLocaleString()}</span>,
+    exportValue: (row) => String(row.item_count),
+    sortable: true,
+  },
+  {
+    id: 'net_minor',
+    header: 'Net',
+    align: 'end',

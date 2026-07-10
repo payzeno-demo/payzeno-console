@@ -92,3 +92,12 @@ export interface SettlementItemRow extends ReconciliationItem, RowSelection {
 
 export interface InvoiceRow extends Invoice, RowSelection {
   /**
+   * `legacy` | `ledger`. Added, removed and re-added during the `ledger_owns_invoices` dry-run
+   * (arc MIG). Derived from `migrated_to_ledger`, not sent by the API.
+   */
+  _source: 'legacy' | 'ledger';
+}
+
+export interface ApiKeyRow extends ApiKey, RowSelection {
+  /** Set exactly once, immediately after creation. Cleared when `<SecretRevealOnce />` unmounts. */
+  _plaintextSecret?: string;
