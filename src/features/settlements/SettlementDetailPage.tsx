@@ -72,3 +72,8 @@ export function SettlementDetailPage() {
         currency={batch.currency}
         isLoading={items.isLoading}
       />
+
+      {items.error ? (
+        <ErrorState error={items.error} title="We could not load the items in this batch" />
+      ) : (
+        <SettlementItemTable
