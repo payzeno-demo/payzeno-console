@@ -227,3 +227,22 @@ export function AppRoutes() {
         >
           <Route index element={<InvoicesPage />} />
           <Route path={ROUTE_PATTERNS.invoiceDetail} element={<InvoiceDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.developers}
+          element={<FeatureRoute permission="developers:read" label="developer settings" />}
+        >
+          <Route index element={<DevelopersPage />} />
+          <Route path={ROUTE_PATTERNS.apiKeyDetail} element={<ApiKeyDetailPage />} />
+          <Route path={ROUTE_PATTERNS.webhookEventDetail} element={<WebhookEventDetailPage />} />
+        </Route>
+
+        <Route
+          path={ROUTE_PATTERNS.settings}
+          element={<FeatureRoute permission="settings:read" label="settings" />}
+        >
+          <Route index element={<SettingsPage />} />
+        </Route>
+
+        {/*
