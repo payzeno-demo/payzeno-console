@@ -110,6 +110,14 @@ describe('the signed-out branch', () => {
     ).toBeInTheDocument();
   });
 
+  it('bounces a session-less visitor away from a protected route', async () => {
+    renderAt(ROUTES.payouts.index, { session: null });
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Payouts' })).not.toBeInTheDocument();
+    });
+  });
+
   it('bounces a signed-in visitor away from the login page', async () => {
     renderAt(ROUTES.auth.login);
 
@@ -122,6 +130,14 @@ describe('the signed-out branch', () => {
 });
 
 describe('the role guard', () => {
+  it('renders a permission-denied screen instead of the feature', async () => {
+    renderAt(ROUTES.payouts.index, { session: makeViewerSession() });
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Payouts' })).not.toBeInTheDocument();
+    });
+  });
+
   it('lets a permitted role through', async () => {
     renderAt(ROUTES.payouts.index);
 
