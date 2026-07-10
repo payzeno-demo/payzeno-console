@@ -84,3 +84,17 @@ export function useEnumParam<T extends string>(
 }
 
 /** Boolean flag parameter — present means true, absent means false. */
+export function useBooleanParam(key: string): [boolean, (next: boolean) => void] {
+  return useQueryParamState<boolean>(key, {
+    parse: (raw) => raw === '1' || raw === 'true',
+    serialise: (value) => (value ? '1' : null),
+    fallback: false,
+  });
+}
+
+/** Numeric parameter with a floor, used for page size. */
+export function useNumberParam(
+  key: string,
+  fallback: number,
+  min = 1,
+): [number, (next: number) => void] {
