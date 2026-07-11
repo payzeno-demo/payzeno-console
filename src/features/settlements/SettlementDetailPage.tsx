@@ -77,3 +77,6 @@ export function SettlementDetailPage() {
         <ErrorState error={items.error} title="We could not load the items in this batch" />
       ) : (
         <SettlementItemTable
+          batchId={batch.id}
+          rows={items.rows}
+          isLoading={items.isLoading}
