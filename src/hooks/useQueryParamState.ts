@@ -98,3 +98,7 @@ export function useNumberParam(
   fallback: number,
   min = 1,
 ): [number, (next: number) => void] {
+  return useQueryParamState<number>(key, {
+    parse: (raw) => {
+      const parsed = Number.parseInt(raw, 10);
+      return Number.isFinite(parsed) && parsed >= min ? parsed : null;
