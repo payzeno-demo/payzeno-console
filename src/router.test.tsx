@@ -30,6 +30,11 @@ describe('route helpers', () => {
     expect(featureOf('/')).toBe('reporting');
   });
 
+  it('templatises resource ids, so telemetry does not get one route per charge', () => {
+    expect(routeTemplate('/charges/ch_01HW0RTCHARGE00000001')).toBe('/charges/:id');
+    expect(routeTemplate('/settlements')).toBe('/settlements');
+  });
+
   it('builds detail paths with encoded ids', () => {
     expect(ROUTES.settlements.detail('set/1')).toBe('/settlements/set%2F1');
     expect(ROUTES.developers.apiKey('key_1')).toBe('/developers/api-keys/key_1');
@@ -79,6 +84,16 @@ describe('the signed-in tree', () => {
     expect(await screen.findByRole('heading', { name: 'Settlements' })).toBeInTheDocument();
   });
 
+  it('renders a settlement detail route', async () => {
+    renderAt(ROUTES.settlements.detail('sb_01HW0RTBATCH000000001'));
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Settlement sb_01HW0RTBATCH000000001',
+      }),
+    ).toBeInTheDocument();
+  });
+
   it('redirects the legacy /dashboard bookmark to the landing route', async () => {
     renderAt('/dashboard');
 
@@ -95,6 +110,14 @@ describe('the signed-out branch', () => {
     ).toBeInTheDocument();
   });
 
+  it('bounces a session-less visitor away from a protected route', async () => {
+    renderAt(ROUTES.payouts.index, { session: null });
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Payouts' })).not.toBeInTheDocument();
+    });
+  });
+
   it('bounces a signed-in visitor away from the login page', async () => {
     renderAt(ROUTES.auth.login);
 
@@ -107,6 +130,14 @@ describe('the signed-out branch', () => {
 });
 
 describe('the role guard', () => {
+  it('renders a permission-denied screen instead of the feature', async () => {
+    renderAt(ROUTES.payouts.index, { session: makeViewerSession() });
+
+    await waitFor(() => {
+      expect(screen.queryByRole('heading', { name: 'Payouts' })).not.toBeInTheDocument();
+    });
+  });
+
   it('lets a permitted role through', async () => {
     renderAt(ROUTES.payouts.index);
 

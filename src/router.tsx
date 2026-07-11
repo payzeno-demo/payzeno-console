@@ -246,3 +246,13 @@ export function AppRoutes() {
         </Route>
 
         {/*
+          A bare `/dashboard` was the pre-2025 landing path and merchants still have it
+          bookmarked. Cheaper than a support macro.
+        */}
+        <Route path="/dashboard" element={<Navigate to={ROUTES.reporting.index} replace />} />
+      </Route>
+
+      <Route path={ROUTE_PATTERNS.catchAll} element={<NotFound homeTo={ROUTES.reporting.index} />} />
+    </Routes>
+  );
+}

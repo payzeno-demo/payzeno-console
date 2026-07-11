@@ -123,3 +123,8 @@ export const queryKeys = {
 
   users: {
     all: ['users'] as const,
+    list: (merchantId: string) => ['users', 'list', merchantId] as const,
+  },
+} as const;
+
+export type QueryKeys = typeof queryKeys;

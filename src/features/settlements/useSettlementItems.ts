@@ -89,3 +89,6 @@ export function useSettlementItems(
   const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
   const totals = useMemo(() => rollUp(rows), [rows]);
 
+  return {
+    rows,
+    totals,
