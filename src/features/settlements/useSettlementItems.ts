@@ -86,3 +86,9 @@ export function useSettlementItems(
     enabled: batchId.length > 0,
   });
 
+  const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
+  const totals = useMemo(() => rollUp(rows), [rows]);
+
+  return {
+    rows,
+    totals,
