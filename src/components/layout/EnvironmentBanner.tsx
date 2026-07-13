@@ -47,3 +47,20 @@ const LABELS: Readonly<Record<string, string>> = {
 export function EnvironmentBanner({
   environment = runtimeConfig.environment,
   buildSha = runtimeConfig.buildSha,
+}: EnvironmentBannerProps) {
+  if (environment === 'production') return null;
+
+  const tone = toneForEnvironment(environment);
+  const background = tone === 'warning' ? color.warningSubtle : tone === 'info' ? color.infoSubtle : color.surfaceSunken;
+  const foreground = tone === 'warning' ? color.warning : tone === 'info' ? color.info : color.textSecondary;
+
+  return (
+    <div
+      role="status"
+      className={pz('environment-banner', undefined, environment)}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: space[3],
+        height: layout.bannerHeight,

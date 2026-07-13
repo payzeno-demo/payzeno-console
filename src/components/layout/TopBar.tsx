@@ -86,3 +86,25 @@ export function TopBar({
         available={availableMerchants ?? [merchant]}
         onSwitch={onSwitchMerchant}
       />
+
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: space[3],
+          marginInlineStart: 'auto',
+        }}
+      >
+        <LivemodeToggle
+          livemode={livemode}
+          onChange={onLivemodeChange}
+          canGoLive={merchant.status === 'active'}
+        />
+
+        {notifications}
+
+        <UserMenu user={user} onSignOut={onSignOut} isSigningOut={isSigningOut} />
+      </div>
+    </header>
+  );
+}

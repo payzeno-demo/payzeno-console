@@ -60,3 +60,24 @@ export function LivemodeToggle({ livemode, onChange, canGoLive = true }: Livemod
         onCheckedChange={flip}
         disabled={!canGoLive && !livemode}
         label="Live mode"
+        hideLabel
+      />
+
+      <span
+        aria-hidden="true"
+        style={{
+          fontSize: font.size.sm,
+          fontWeight: font.weight.semibold,
+          color: livemode ? color.textPrimary : color.warning,
+          letterSpacing: '0.04em',
+        }}
+      >
+        {livemode ? 'LIVE' : 'TEST'}
+      </span>
+
+      <span aria-live="polite" style={visuallyHidden as React.CSSProperties}>
+        {livemode ? 'Showing live data' : 'Showing test data'}
+      </span>
+    </div>
+  );
+}
