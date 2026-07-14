@@ -18,3 +18,19 @@ export interface DuplicateBadgeProps {
   attemptCount: number;
 }
 
+export function DuplicateBadge({ attemptCount }: DuplicateBadgeProps) {
+  const label = `Settled after ${attemptCount} attempts`;
+
+  return (
+    <Tooltip
+      content={
+        'This item settled after more than one attempt. If the batch total is above the ' +
+        'expected total, contact support with this item id.'
+      }
+    >
+      <Badge tone="warning" aria-label={label}>
+        Check duplicate
+      </Badge>
+    </Tooltip>
+  );
+}

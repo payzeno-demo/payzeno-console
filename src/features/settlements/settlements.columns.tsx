@@ -68,3 +68,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
     id: 'net_minor',
     header: 'Net',
     align: 'end',
+    cell: (row) => <MoneyCell amountMinor={row.net_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.net_minor),
+    sortable: true,
+  },

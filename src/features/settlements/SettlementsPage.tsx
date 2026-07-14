@@ -66,3 +66,12 @@ export function SettlementsPage() {
           }))}
         />
       </FilterBar>
+
+      {error ? (
+        <ErrorState error={error} title="We could not load your settlements" />
+      ) : (
+        <SettlementTable rows={rows} isLoading={isLoading} />
+      )}
+    </PageContainer>
+  );
+}

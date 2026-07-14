@@ -42,3 +42,12 @@ export function useSettlements(q?: SettlementListQuery): UseSettlementsResult {
 
   const rows = useMemo(() => (query.data?.data ?? []).map(toRow), [query.data]);
 
+  return {
+    rows,
+    nextCursor: query.data?.next_cursor ?? null,
+    hasMore: query.data?.has_more ?? false,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
+    error: (query.error as Error | null) ?? null,
+  };
+}
