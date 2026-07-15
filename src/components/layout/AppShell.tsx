@@ -146,3 +146,10 @@ export function AppShell({
       <EnvironmentBanner />
 
       <TopBar
+        user={currentUser}
+        merchant={currentMerchant}
+        livemode={livemode}
+        onLivemodeChange={onLivemodeChange ?? (() => undefined)}
+        onSwitchMerchant={onSwitchMerchant}
+        onSignOut={onSignOut ?? (() => undefined)}
+        notifications={<NotificationBell />}

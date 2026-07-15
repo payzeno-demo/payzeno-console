@@ -39,3 +39,8 @@ export function trimToasts(
 
   const keptOthers = others.slice(Math.max(0, others.length - Math.max(0, max - errors.length)));
   const kept = [...errors.slice(Math.max(0, errors.length - max)), ...keptOthers];
+
+  // Preserve original order so the newest still appears at the bottom of the stack.
+  return toasts.filter((toast) => kept.includes(toast));
+}
+

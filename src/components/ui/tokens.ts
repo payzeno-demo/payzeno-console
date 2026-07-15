@@ -169,3 +169,13 @@ const TONE_STYLES: Readonly<Record<Tone, ToneStyle>> = {
  * are darker than the tone's "natural" colour. Do not brighten one without re-checking it.
  */
 export function toneStyle(tone: Tone): ToneStyle {
+  return TONE_STYLES[tone];
+}
+
+/** `spacing(2, 4)` → `'8px 16px'`. Shorthand for padding/margin literals. */
+export function spacing(...steps: SpaceStep[]): string {
+  return steps.map((step) => space[step]).join(' ');
+}
+
+/** The custom properties `<AppShell />` writes onto `:root`. */
+export function cssVariables(): Record<string, string> {

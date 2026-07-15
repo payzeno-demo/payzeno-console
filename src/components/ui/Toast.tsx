@@ -66,3 +66,15 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
       <div>
         <RadixToast.Title
           style={{
+            margin: 0,
+            fontSize: font.size.md,
+            fontWeight: font.weight.semibold,
+            color: color.textPrimary,
+          }}
+        >
+          {spec.title}
+        </RadixToast.Title>
+        {spec.description ? (
+          <RadixToast.Description
+            style={{ margin: `${space[1]} 0 0`, fontSize: font.size.sm, color: color.textSecondary }}
+          >

@@ -64,3 +64,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       durationMs: options.durationMs === undefined ? defaultDurationFor(tone) : options.durationMs,
     };
     if (options.description !== undefined) spec.description = options.description;
+    if (options.action !== undefined) spec.action = options.action;
+
+    setToasts((current) => {
+      // Successes collapse: only the newest one is worth screen space.
+      const kept = tone === 'success' ? current.filter((toast) => toast.tone !== 'success') : current;
+      return [...kept, spec];
+    });
+  }, []);
+

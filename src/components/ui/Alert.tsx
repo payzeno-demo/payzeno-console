@@ -76,3 +76,11 @@ export function Alert({ tone, role, title, children, action, onDismiss, classNam
         >
           {title}
         </p>
+        {children ? (
+          <div
+            style={{
+              marginTop: space[1],
+              fontSize: font.size.sm,
+              lineHeight: font.lineHeight.normal,
+              color: color.textSecondary,
+            }}
