@@ -73,3 +73,13 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const api = useMemo<ToastApi>(
+    () => ({
+      success: (title, options) => push('success', title, options),
+      error: (title, options) => push('danger', title, options),
+      info: (title, options) => push('info', title, options),
+      warning: (title, options) => push('warning', title, options),
+      dismiss,
+      clear,
+    }),
+    [push, dismiss, clear],

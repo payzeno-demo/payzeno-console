@@ -78,3 +78,14 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
           <RadixToast.Description
             style={{ margin: `${space[1]} 0 0`, fontSize: font.size.sm, color: color.textSecondary }}
           >
+            {spec.description}
+          </RadixToast.Description>
+        ) : null}
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: space[2] }}>
+        {spec.action ? (
+          <RadixToast.Action
+            altText={spec.action.label}
+            onClick={spec.action.onSelect}
+            style={{

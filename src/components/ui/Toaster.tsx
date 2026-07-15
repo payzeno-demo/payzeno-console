@@ -44,3 +44,8 @@ export function trimToasts(
   return toasts.filter((toast) => kept.includes(toast));
 }
 
+export function Toaster({ toasts, onDismiss }: ToasterProps) {
+  const visible = trimToasts(toasts);
+
+  return (
+    <RadixToast.Provider swipeDirection="right">
