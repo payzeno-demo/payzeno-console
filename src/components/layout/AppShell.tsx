@@ -146,3 +146,17 @@ export function AppShell({
       <EnvironmentBanner />
 
       <TopBar
+        user={currentUser}
+        merchant={currentMerchant}
+        livemode={livemode}
+        onLivemodeChange={onLivemodeChange ?? (() => undefined)}
+        onSwitchMerchant={onSwitchMerchant}
+        onSignOut={onSignOut ?? (() => undefined)}
+        notifications={<NotificationBell />}
+        onOpenNav={() => setNavOpen((open) => !open)}
+      />
+
+      <div style={{ display: 'flex', flex: 1, minHeight: 0 }}>
+        <SideNav
+          badges={badges}
+          collapsed={navOpen}

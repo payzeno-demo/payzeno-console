@@ -66,3 +66,49 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
       <div>
         <RadixToast.Title
           style={{
+            margin: 0,
+            fontSize: font.size.md,
+            fontWeight: font.weight.semibold,
+            color: color.textPrimary,
+          }}
+        >
+          {spec.title}
+        </RadixToast.Title>
+        {spec.description ? (
+          <RadixToast.Description
+            style={{ margin: `${space[1]} 0 0`, fontSize: font.size.sm, color: color.textSecondary }}
+          >
+            {spec.description}
+          </RadixToast.Description>
+        ) : null}
+      </div>
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: space[2] }}>
+        {spec.action ? (
+          <RadixToast.Action
+            altText={spec.action.label}
+            onClick={spec.action.onSelect}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: color.textLink,
+              fontSize: font.size.sm,
+              fontWeight: font.weight.medium,
+              cursor: 'pointer',
+            }}
+          >
+            {spec.action.label}
+          </RadixToast.Action>
+        ) : null}
+        <RadixToast.Close
+          aria-label="Dismiss notification"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: color.textMuted,
+            cursor: 'pointer',
+          }}
+        >
+          ✕
+        </RadixToast.Close>
+      </div>

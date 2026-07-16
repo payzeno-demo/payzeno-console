@@ -169,3 +169,33 @@ const TONE_STYLES: Readonly<Record<Tone, ToneStyle>> = {
  * are darker than the tone's "natural" colour. Do not brighten one without re-checking it.
  */
 export function toneStyle(tone: Tone): ToneStyle {
+  return TONE_STYLES[tone];
+}
+
+/** `spacing(2, 4)` → `'8px 16px'`. Shorthand for padding/margin literals. */
+export function spacing(...steps: SpaceStep[]): string {
+  return steps.map((step) => space[step]).join(' ');
+}
+
+/** The custom properties `<AppShell />` writes onto `:root`. */
+export function cssVariables(): Record<string, string> {
+  const vars: Record<string, string> = {};
+
+  for (const [name, value] of Object.entries(color)) {
+    vars[`--pz-color-${name}`] = value;
+  }
+  for (const [step, value] of Object.entries(space)) {
+    vars[`--pz-space-${step}`] = value;
+  }
+  for (const [name, value] of Object.entries(radius)) {
+    vars[`--pz-radius-${name}`] = value;
+  }
+  vars['--pz-font-family'] = font.family;
+  vars['--pz-font-family-mono'] = font.familyMono;
+  vars['--pz-side-nav-width'] = layout.sideNavWidth;
+  vars['--pz-top-bar-height'] = layout.topBarHeight;
+
+  return vars;
+}
+
+/** Focus ring style object. Every interactive primitive spreads this on `:focus-visible`. */

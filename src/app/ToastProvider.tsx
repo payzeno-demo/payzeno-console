@@ -64,3 +64,31 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       durationMs: options.durationMs === undefined ? defaultDurationFor(tone) : options.durationMs,
     };
     if (options.description !== undefined) spec.description = options.description;
+    if (options.action !== undefined) spec.action = options.action;
+
+    setToasts((current) => {
+      // Successes collapse: only the newest one is worth screen space.
+      const kept = tone === 'success' ? current.filter((toast) => toast.tone !== 'success') : current;
+      return [...kept, spec];
+    });
+  }, []);
+
+  const api = useMemo<ToastApi>(
+    () => ({
+      success: (title, options) => push('success', title, options),
+      error: (title, options) => push('danger', title, options),
+      info: (title, options) => push('info', title, options),
+      warning: (title, options) => push('warning', title, options),
+      dismiss,
+      clear,
+    }),
+    [push, dismiss, clear],
+  );
+
+  return (
+    <ToastContext.Provider value={api}>
+      {children}
+      <Toaster toasts={toasts} onDismiss={dismiss} />
+    </ToastContext.Provider>
+  );
+}
