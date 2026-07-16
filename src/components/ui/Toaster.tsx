@@ -60,3 +60,8 @@ export function Toaster({ toasts, onDismiss }: ToasterProps) {
       ))}
 
       <RadixToast.Viewport
+        className={pz('toaster')}
+        // The viewport is a landmark so keyboard users can jump to it (F6 in most readers).
+        label="Notifications"
+        style={{
+          position: 'fixed',

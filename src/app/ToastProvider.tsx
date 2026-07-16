@@ -83,3 +83,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       clear,
     }),
     [push, dismiss, clear],
+  );
+
+  return (
+    <ToastContext.Provider value={api}>
+      {children}
+      <Toaster toasts={toasts} onDismiss={dismiss} />
+    </ToastContext.Provider>
+  );
+}
