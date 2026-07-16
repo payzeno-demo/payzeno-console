@@ -179,3 +179,13 @@ export function spacing(...steps: SpaceStep[]): string {
 
 /** The custom properties `<AppShell />` writes onto `:root`. */
 export function cssVariables(): Record<string, string> {
+  const vars: Record<string, string> = {};
+
+  for (const [name, value] of Object.entries(color)) {
+    vars[`--pz-color-${name}`] = value;
+  }
+  for (const [step, value] of Object.entries(space)) {
+    vars[`--pz-space-${step}`] = value;
+  }
+  for (const [name, value] of Object.entries(radius)) {
+    vars[`--pz-radius-${name}`] = value;

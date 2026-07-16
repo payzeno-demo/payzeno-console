@@ -84,3 +84,12 @@ export function Alert({ tone, role, title, children, action, onDismiss, classNam
               lineHeight: font.lineHeight.normal,
               color: color.textSecondary,
             }}
+          >
+            {children}
+          </div>
+        ) : null}
+        {action ? <div style={{ marginTop: space[3] }}>{action}</div> : null}
+      </div>
+
+      {onDismiss ? (
+        <button

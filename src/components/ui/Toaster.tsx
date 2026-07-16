@@ -49,3 +49,8 @@ export function Toaster({ toasts, onDismiss }: ToasterProps) {
 
   return (
     <RadixToast.Provider swipeDirection="right">
+      {visible.map((toast) => (
+        <Toast
+          key={toast.id}
+          spec={toast}
+          onOpenChange={(open) => {
