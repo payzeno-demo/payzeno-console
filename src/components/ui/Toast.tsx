@@ -89,3 +89,15 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
             altText={spec.action.label}
             onClick={spec.action.onSelect}
             style={{
+              background: 'transparent',
+              border: 'none',
+              color: color.textLink,
+              fontSize: font.size.sm,
+              fontWeight: font.weight.medium,
+              cursor: 'pointer',
+            }}
+          >
+            {spec.action.label}
+          </RadixToast.Action>
+        ) : null}
+        <RadixToast.Close

@@ -189,3 +189,13 @@ export function cssVariables(): Record<string, string> {
   }
   for (const [name, value] of Object.entries(radius)) {
     vars[`--pz-radius-${name}`] = value;
+  }
+  vars['--pz-font-family'] = font.family;
+  vars['--pz-font-family-mono'] = font.familyMono;
+  vars['--pz-side-nav-width'] = layout.sideNavWidth;
+  vars['--pz-top-bar-height'] = layout.topBarHeight;
+
+  return vars;
+}
+
+/** Focus ring style object. Every interactive primitive spreads this on `:focus-visible`. */
