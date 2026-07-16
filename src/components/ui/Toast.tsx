@@ -101,3 +101,14 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
           </RadixToast.Action>
         ) : null}
         <RadixToast.Close
+          aria-label="Dismiss notification"
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: color.textMuted,
+            cursor: 'pointer',
+          }}
+        >
+          ✕
+        </RadixToast.Close>
+      </div>
