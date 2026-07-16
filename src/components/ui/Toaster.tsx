@@ -54,3 +54,9 @@ export function Toaster({ toasts, onDismiss }: ToasterProps) {
           key={toast.id}
           spec={toast}
           onOpenChange={(open) => {
+            if (!open) onDismiss(toast.id);
+          }}
+        />
+      ))}
+
+      <RadixToast.Viewport
