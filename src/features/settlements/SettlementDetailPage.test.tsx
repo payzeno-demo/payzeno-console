@@ -230,3 +230,16 @@ describe('retrying an item', () => {
   it('does show an alert for a genuine failure', async () => {
     server.use(
       errorHandler(
+        'post',
+        '/settlements/:batchId/items/:itemId/retry',
+        400,
+        'invalid_request',
+        'That item is not retryable.',
+      ),
+    );
+
+    const { user } = renderPage();
+
+    const button = await screen.findByRole('button', {
+      name: 'Retry settlement item ri_01HW0RTITEM00000000001',
+    });
