@@ -218,3 +218,15 @@ describe('retrying an item', () => {
 
     const { user } = renderPage();
 
+    const button = await screen.findByRole('button', {
+      name: 'Retry settlement item ri_01HW0RTITEM00000000001',
+    });
+    await user.click(button);
+
+    expect(await screen.findByText('Already being settled')).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
+  it('does show an alert for a genuine failure', async () => {
+    server.use(
+      errorHandler(

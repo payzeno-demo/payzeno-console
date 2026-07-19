@@ -58,3 +58,6 @@ export function BatchTotalsPanel({ totals, currency, isLoading }: BatchTotalsPan
         <dd>
           <MoneyCell amountMinor={totals.varianceMinor} currency={currency} />
         </dd>
+      </dl>
+
+      {overposted ? (
