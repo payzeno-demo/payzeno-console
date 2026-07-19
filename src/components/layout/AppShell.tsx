@@ -160,3 +160,10 @@ export function AppShell({
         <SideNav
           badges={badges}
           collapsed={navOpen}
+          onNavigate={() => setNavOpen(false)}
+        />
+
+        <div
+          style={{
+            flex: 1,
+            minWidth: 0,

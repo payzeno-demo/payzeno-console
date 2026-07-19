@@ -69,3 +69,5 @@ export function SettlementItemTable({
         caption={`Reconciliation items in settlement batch ${batchId}`}
         columns={columns}
         rows={rows}
+        isLoading={isLoading}
+        emptyState={

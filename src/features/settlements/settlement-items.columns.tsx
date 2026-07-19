@@ -125,3 +125,8 @@ export function settlementItemColumns(
       cell: (row) =>
         row.last_attempt_at ? (
           <DateCell value={row.last_attempt_at} precision="minute" />
+        ) : (
+          <span>—</span>
+        ),
+      exportValue: (row) => row.last_attempt_at ?? '',
+    },

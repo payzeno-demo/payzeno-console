@@ -101,3 +101,12 @@ export interface InvoiceRow extends Invoice, RowSelection {
 export interface ApiKeyRow extends ApiKey, RowSelection {
   /** Set exactly once, immediately after creation. Cleared when `<SecretRevealOnce />` unmounts. */
   _plaintextSecret?: string;
+}
+
+export interface WebhookEventRow extends WebhookEvent, RowSelection {
+  /** `delivered` / `failing` / `dead`, collapsed from status + attempt_count for the pill. */
+  _health: 'delivered' | 'pending' | 'failing' | 'dead';
+}
+
+export interface BankAccountRow extends BankAccount, RowSelection {
+  /** Whichever of routing/iban/sort-code applies to this account's scheme, pre-formatted. */

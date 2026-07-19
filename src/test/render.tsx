@@ -211,3 +211,13 @@ export function renderHookWithProviders<TResult, TProps>(
       >
         {children}
       </Providers>
+    ),
+  });
+
+  return { ...result, queryClient: client };
+}
+
+/**
+ * Render a primitive with no providers — for `components/ui/**`, where a provider stack would
+ * only hide a missing prop. The tooltip provider stays because `IconButton` mounts one
+ * unconditionally.

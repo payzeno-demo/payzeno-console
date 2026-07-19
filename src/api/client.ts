@@ -93,3 +93,9 @@ export class ApiClient implements HttpTransport {
   }
 
   /**
+   * `idempotencyKey` is required, not optional: api-surface.md §1.3 requires the header on
+   * every public POST, and an optional parameter means five of the six mutation hooks forget
+   * it. Callers that do not have a key mint one with `newIdempotencyKey()`.
+   */
+  post<TRes, TBody>(path: string, body: TBody, idempotencyKey: string): Promise<TRes> {
+    return this.request<TRes, TBody>({ method: 'POST', path, body, idempotencyKey });
