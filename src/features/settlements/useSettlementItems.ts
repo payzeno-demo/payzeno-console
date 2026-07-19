@@ -92,3 +92,7 @@ export function useSettlementItems(
   return {
     rows,
     totals,
+    nextCursor: query.data?.next_cursor ?? null,
+    hasMore: query.data?.has_more ?? false,
+    isLoading: query.isLoading,
+    isFetching: query.isFetching,
