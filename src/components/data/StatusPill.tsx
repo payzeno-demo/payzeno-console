@@ -96,3 +96,9 @@ export type AnyStatus =
   | PaymentIntentStatus
   | ChargeStatus
   | RefundStatus
+  | DisputeStatus
+  | PayoutStatus
+  | SettlementBatchStatus
+  | ReconciliationItemStatus
+  | WebhookEventStatus
+  | InvoiceStatus;

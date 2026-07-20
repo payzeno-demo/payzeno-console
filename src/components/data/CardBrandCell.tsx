@@ -40,3 +40,9 @@ const BRAND_LABELS: Readonly<Record<CardBrand, string>> = {
  * means a licensing review, and legal said no twice (PAY-1490).
  */
 const BRAND_GLYPHS: Readonly<Record<CardBrand, string>> = {
+  visa: '▮',
+  mastercard: '◎',
+  amex: '▤',
+  discover: '◇',
+};
+

@@ -35,3 +35,10 @@ export interface IdCellProps {
 export function IdCell({
   value,
   head = 8,
+  tail = 4,
+  copyable = true,
+  resourceLabel = 'id',
+}: IdCellProps) {
+  const clipboard = useCopyToClipboard();
+
+  if (!value) {

@@ -60,3 +60,8 @@ export function textColumn<TRow>(
     header,
     cell: (row) => read(row) ?? '—',
     exportValue: (row) => read(row) ?? '',
+    ...options,
+  };
+}
+
+/** Numeric column: right-aligned by default, because a ragged number column is unreadable. */
