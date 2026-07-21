@@ -40,3 +40,16 @@ const BRAND_LABELS: Readonly<Record<CardBrand, string>> = {
  * means a licensing review, and legal said no twice (PAY-1490).
  */
 const BRAND_GLYPHS: Readonly<Record<CardBrand, string>> = {
+  visa: '▮',
+  mastercard: '◎',
+  amex: '▤',
+  discover: '◇',
+};
+
+export function brandLabel(brand: CardBrand): string {
+  return BRAND_LABELS[brand];
+}
+
+export function CardBrandCell({ brand, lastFour, funding, country }: CardBrandCellProps) {
+  const suffixes: string[] = [];
+  if (funding && funding !== 'unknown') suffixes.push(funding);

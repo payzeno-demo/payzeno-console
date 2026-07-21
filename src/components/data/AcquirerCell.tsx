@@ -30,3 +30,14 @@ const ACQUIRER_LABELS: Readonly<Record<Acquirer, string>> = {
  * however much the on-call rota disagrees.
  */
 const ACQUIRER_TONES: Readonly<Record<Acquirer, Tone>> = {
+  worldflow: 'info',
+  nordpay: 'brand',
+};
+
+export function acquirerLabel(acquirer: Acquirer): string {
+  return ACQUIRER_LABELS[acquirer];
+}
+
+export function isAcquirer(value: string): value is Acquirer {
+  return (ACQUIRERS as ReadonlyArray<string>).includes(value);
+}

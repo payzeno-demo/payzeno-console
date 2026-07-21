@@ -96,3 +96,15 @@ export type AnyStatus =
   | PaymentIntentStatus
   | ChargeStatus
   | RefundStatus
+  | DisputeStatus
+  | PayoutStatus
+  | SettlementBatchStatus
+  | ReconciliationItemStatus
+  | WebhookEventStatus
+  | InvoiceStatus;
+
+/** Exported for the chart theme and for `settlement-items.columns.tsx`'s row accent. */
+export function toneForStatus(status: string): Tone {
+  return TONE_BY_STATUS[status] ?? 'neutral';
+}
+

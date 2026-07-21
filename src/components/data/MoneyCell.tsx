@@ -71,3 +71,7 @@ export function MoneyCell({
 
 /** Plain-string form for a column's `exportValue`. Same formatter, no markup. */
 export function moneyExportValue(amountMinor: MinorUnits, currency: CurrencyCode): string {
+  // Exports are consumed by spreadsheets, so they get the raw minor units and the currency
+  // in separate columns rather than a formatted string with a symbol in it.
+  return `${amountMinor} ${currency}`;
+}

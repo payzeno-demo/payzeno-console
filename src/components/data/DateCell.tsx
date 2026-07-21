@@ -48,3 +48,9 @@ export function DateCell({ value, mode = 'instant', absolute = false }: DateCell
       <time
         dateTime={toDateTimeAttr(value)}
         className={pz('date-cell')}
+        style={{
+          fontFamily: font.family,
+          whiteSpace: 'nowrap',
+          borderBottom: `1px dotted ${color.border}`,
+          cursor: 'help',
+        }}
