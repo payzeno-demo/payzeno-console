@@ -60,3 +60,8 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
   },
   {
     id: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <StatusPill
+        status={row.status}
+        label={row.status.replace(/_/g, ' ')}
