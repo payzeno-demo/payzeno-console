@@ -27,3 +27,10 @@ export function PaymentIntentTable({
 }: PaymentIntentTableProps) {
   const navigate = useNavigate();
 
+  return (
+    <>
+      <DataTableToolbar label="Payment actions">
+        <ExportCsvButton filename="payments.csv" columns={paymentIntentColumns} rows={rows} />
+      </DataTableToolbar>
+
+      <DataTable<PaymentIntentRow>

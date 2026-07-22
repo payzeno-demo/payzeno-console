@@ -60,3 +60,13 @@ export function textColumn<TRow>(
     header,
     cell: (row) => read(row) ?? '—',
     exportValue: (row) => read(row) ?? '',
+    ...options,
+  };
+}
+
+/** Numeric column: right-aligned by default, because a ragged number column is unreadable. */
+export function numberColumn<TRow>(
+  id: string,
+  header: string,
+  read: (row: TRow) => number,
+  options: Partial<Pick<ColumnDef<TRow>, 'width' | 'sortable'>> = {},
