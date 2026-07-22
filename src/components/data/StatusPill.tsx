@@ -108,3 +108,10 @@ export function toneForStatus(status: string): Tone {
   return TONE_BY_STATUS[status] ?? 'neutral';
 }
 
+export interface StatusPillProps {
+  status: AnyStatus;
+  /** What the status describes — "Payout status". Announced before the value. */
+  srPrefix?: string;
+  size?: 'sm' | 'md';
+  /**
+   * Display text. Defaults to `labelise(status)`, which is right almost everywhere; the
