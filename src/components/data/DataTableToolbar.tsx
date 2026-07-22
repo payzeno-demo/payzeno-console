@@ -86,3 +86,11 @@ export function DataTableToolbar({
             fontSize: font.size.sm,
             color: color.textPrimary,
           }}
+        >
+          <span>{pluralise(selectedCount, 'row')} selected</span>
+          <div style={{ display: 'flex', gap: space[2], marginLeft: 'auto' }}>
+            {bulkActions}
+            {onClearSelection ? (
+              <Button size="sm" variant="ghost" onClick={onClearSelection}>
+                Clear selection
+              </Button>

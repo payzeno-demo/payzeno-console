@@ -34,3 +34,71 @@ export interface SegmentedControlProps<TValue extends string> {
  * Renders as a real radio group (`role="radiogroup"` + `role="radio"`), not a row of buttons:
  * the semantics are "pick one of these", and arrow-key navigation comes free with the roles.
  */
+export function SegmentedControl<TValue extends string>({
+  segments,
+  value,
+  onValueChange,
+  label,
+  size = 'md',
+  className,
+}: SegmentedControlProps<TValue>) {
+  function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    const enabled = segments.filter((segment) => !segment.disabled);
+    const index = enabled.findIndex((segment) => segment.value === value);
+    if (index === -1) return;
+
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+      event.preventDefault();
+      const next = enabled[(index + 1) % enabled.length];
+      if (next) onValueChange(next.value);
+    }
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+      event.preventDefault();
+      const previous = enabled[(index - 1 + enabled.length) % enabled.length];
+      if (previous) onValueChange(previous.value);
+    }
+  }
+
+  return (
+    <div
+      role="radiogroup"
+      aria-label={label}
+      onKeyDown={onKeyDown}
+      className={cn(pz('segmented'), className)}
+      style={{
+        display: 'inline-flex',
+        padding: '2px',
+        background: color.surfaceSunken,
+        borderRadius: radius.md,
+      }}
+    >
+      {segments.map((segment) => {
+        const active = segment.value === value;
+        return (
+          <button
+            key={segment.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            disabled={segment.disabled}
+            tabIndex={active ? 0 : -1}
+            onClick={() => onValueChange(segment.value)}
+            style={{
+              padding: size === 'sm' ? `2px ${space[2]}` : `${space[1]} ${space[3]}`,
+              fontFamily: font.family,
+              fontSize: size === 'sm' ? font.size.xs : font.size.sm,
+              fontWeight: active ? font.weight.semibold : font.weight.regular,
+              color: segment.disabled ? color.textMuted : active ? color.textPrimary : color.textSecondary,
+              background: active ? color.surface : 'transparent',
+              border: 'none',
+              borderRadius: radius.sm,
+              cursor: segment.disabled ? 'not-allowed' : 'pointer',
+            }}
+          >
+            {segment.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
