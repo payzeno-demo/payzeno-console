@@ -99,3 +99,9 @@ export class ApiClient implements HttpTransport {
    */
   post<TRes, TBody>(path: string, body: TBody, idempotencyKey: string): Promise<TRes> {
     return this.request<TRes, TBody>({ method: 'POST', path, body, idempotencyKey });
+  }
+
+  patch<TRes, TBody>(path: string, body: TBody, idempotencyKey: string): Promise<TRes> {
+    return this.request<TRes, TBody>({ method: 'PATCH', path, body, idempotencyKey });
+  }
+
