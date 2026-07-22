@@ -21,6 +21,23 @@ describe('the page', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders a labelled filter region', async () => {
+    renderWithProviders(<PaymentsPage />, { route: '/payments' });
+
+    expect(await screen.findByRole('search', { name: 'Payment filters' })).toBeInTheDocument();
+  });
+});
+
+describe('the table', () => {
+  it('renders a row per intent', async () => {
+    renderWithProviders(<PaymentsPage />, { route: '/payments' });
+
+    const table = await screen.findByRole('table');
+    await waitFor(() => {
+      expect(table.querySelectorAll('tbody tr')).toHaveLength(2);
+    });
+  });
+
   it('sends the status from the query string', async () => {
     const recorder = recordRequests();
     renderWithProviders(<PaymentsPage />, { route: '/payments?status=requires_capture' });

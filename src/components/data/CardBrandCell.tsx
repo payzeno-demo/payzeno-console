@@ -46,3 +46,17 @@ const BRAND_GLYPHS: Readonly<Record<CardBrand, string>> = {
   discover: '◇',
 };
 
+export function brandLabel(brand: CardBrand): string {
+  return BRAND_LABELS[brand];
+}
+
+export function CardBrandCell({ brand, lastFour, funding, country }: CardBrandCellProps) {
+  const suffixes: string[] = [];
+  if (funding && funding !== 'unknown') suffixes.push(funding);
+  if (country) suffixes.push(country);
+
+  return (
+    <span
+      className={pz('card-brand-cell')}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: space[2] }}
+    >
