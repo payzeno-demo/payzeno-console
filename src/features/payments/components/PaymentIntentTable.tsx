@@ -34,3 +34,18 @@ export function PaymentIntentTable({
       </DataTableToolbar>
 
       <DataTable<PaymentIntentRow>
+        caption="Payment intents, newest first"
+        columns={paymentIntentColumns}
+        rows={rows}
+        isLoading={isLoading}
+        onRowClick={(row) => navigate(ROUTES.payments.detail(row.id))}
+        emptyState={
+          <EmptyRows
+            title="No payments yet"
+            body="Payments appear here as soon as your integration creates its first payment intent."
+          />
+        }
+      />
+
+      <DataTablePagination
+        hasMore={hasMore}

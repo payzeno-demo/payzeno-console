@@ -54,3 +54,8 @@ export function DateCell({ value, mode = 'instant', absolute = false }: DateCell
           borderBottom: `1px dotted ${color.border}`,
           cursor: 'help',
         }}
+      >
+        {label}
+      </time>
+    </Tooltip>
+  );

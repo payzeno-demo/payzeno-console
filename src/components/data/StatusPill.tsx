@@ -121,3 +121,9 @@ export interface StatusPillProps {
   label?: string;
 }
 
+export function StatusPill({ status, srPrefix = 'Status', size = 'md', label }: StatusPillProps) {
+  return (
+    <Badge tone={toneForStatus(status)} size={size} srPrefix={srPrefix} withDot>
+      {label ?? labelise(status)}
+    </Badge>
+  );

@@ -72,3 +72,11 @@ export function IdCell({
           icon={<span aria-hidden="true">⧉</span>}
           onClick={() => {
             void clipboard.copy(value, resourceLabel);
+          }}
+        />
+      ) : null}
+
+      <span aria-live="polite" style={visuallyHidden as React.CSSProperties}>
+        {clipboard.announcement}
+      </span>
+    </span>

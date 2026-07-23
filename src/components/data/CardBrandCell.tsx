@@ -67,3 +67,10 @@ export function CardBrandCell({ brand, lastFour, funding, country }: CardBrandCe
       <span style={{ fontSize: font.size.md, color: color.textPrimary }}>
         {BRAND_LABELS[brand]} {maskLastFour(lastFour)}
       </span>
+
+      {suffixes.length > 0 ? (
+        <span style={{ fontSize: font.size.sm, color: color.textMuted }}>
+          {suffixes.join(' · ')}
+        </span>
+      ) : null}
+    </span>
