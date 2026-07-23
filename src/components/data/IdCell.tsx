@@ -57,3 +57,18 @@ export function IdCell({
         style={{
           fontFamily: font.familyMono,
           fontSize: font.size.sm,
+          color: color.textPrimary,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {shown}
+      </code>
+
+      {copyable ? (
+        <IconButton
+          size="sm"
+          variant="ghost"
+          label={`Copy ${resourceLabel} ${value}`}
+          icon={<span aria-hidden="true">⧉</span>}
+          onClick={() => {
+            void clipboard.copy(value, resourceLabel);

@@ -47,3 +47,14 @@ export function AcquirerCell({ acquirer, plain = false }: AcquirerCellProps) {
     return <span className={pz('acquirer-cell', 'empty')}>—</span>;
   }
 
+  const label = ACQUIRER_LABELS[acquirer];
+
+  if (plain) {
+    return <span className={pz('acquirer-cell')}>{label}</span>;
+  }
+
+  return (
+    <Badge tone={ACQUIRER_TONES[acquirer]} size="sm" subtle srPrefix="Acquirer">
+      {label}
+    </Badge>
+  );
