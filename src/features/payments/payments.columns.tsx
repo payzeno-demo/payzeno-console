@@ -78,3 +78,12 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
   },
   {
     id: 'customer_reference',
+    header: 'Customer',
+    cell: (row) => <span>{row.customer_reference ?? '—'}</span>,
+    exportValue: (row) => row.customer_reference ?? '',
+  },
+  {
+    id: 'description',
+    header: 'Description',
+    cell: (row) => <span>{row.description ?? '—'}</span>,
+    exportValue: (row) => row.description ?? '',
