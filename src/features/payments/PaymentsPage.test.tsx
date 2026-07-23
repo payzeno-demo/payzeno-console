@@ -38,6 +38,13 @@ describe('the table', () => {
     });
   });
 
+  it('renders the status of each intent', async () => {
+    renderWithProviders(<PaymentsPage />, { route: '/payments' });
+
+    expect(await screen.findByText('requires capture')).toBeInTheDocument();
+    expect(screen.getByText('succeeded')).toBeInTheDocument();
+  });
+
   it('sends the status from the query string', async () => {
     const recorder = recordRequests();
     renderWithProviders(<PaymentsPage />, { route: '/payments?status=requires_capture' });
@@ -45,6 +52,18 @@ describe('the table', () => {
     await waitFor(() => {
       expect(
         recorder.requests.some((request) => request.url.includes('status=requires_capture')),
+      ).toBe(true);
+    });
+    recorder.stop();
+  });
+
+  it('sends the customer reference from the query string', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<PaymentsPage />, { route: '/payments?customer=cust-8814' });
+
+    await waitFor(() => {
+      expect(
+        recorder.requests.some((request) => request.url.includes('customer_reference=cust-8814')),
       ).toBe(true);
     });
     recorder.stop();
@@ -62,4 +81,17 @@ describe('the table', () => {
     recorder.stop();
   });
 
+  it('renders the error state instead of the table', async () => {
+    server.use(errorHandler('get', '/payment_intents', 500, 'internal_error'));
+
+    renderWithProviders(<PaymentsPage />, { route: '/payments' });
+
+    expect(
+      await screen.findByRole('heading', { name: 'We could not load your payments' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+  });
+});
+
+describe('a payment awaiting customer action', () => {
 });

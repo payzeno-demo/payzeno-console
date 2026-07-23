@@ -94,3 +94,7 @@ export function isConsoleApiError(err: unknown): err is ConsoleApiError {
 }
 
 export function isApiErrorBody(body: unknown): body is ApiError {
+  if (typeof body !== 'object' || body === null) return false;
+  const candidate = (body as { error?: unknown }).error;
+  return typeof candidate === 'object' && candidate !== null && 'code' in candidate;
+}

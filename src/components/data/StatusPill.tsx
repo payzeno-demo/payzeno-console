@@ -102,3 +102,34 @@ export type AnyStatus =
   | ReconciliationItemStatus
   | WebhookEventStatus
   | InvoiceStatus;
+
+/** Exported for the chart theme and for `settlement-items.columns.tsx`'s row accent. */
+export function toneForStatus(status: string): Tone {
+  return TONE_BY_STATUS[status] ?? 'neutral';
+}
+
+export interface StatusPillProps {
+  status: AnyStatus;
+  /** What the status describes — "Payout status". Announced before the value. */
+  srPrefix?: string;
+  size?: 'sm' | 'md';
+  /**
+   * Display text. Defaults to `labelise(status)`, which is right almost everywhere; the
+   * override exists for the two places that want domain wording rather than the enum
+   * ("Awaiting evidence" for `needs_response`).
+   */
+  label?: string;
+}
+
+export function StatusPill({ status, srPrefix = 'Status', size = 'md', label }: StatusPillProps) {
+  return (
+    <Badge tone={toneForStatus(status)} size={size} srPrefix={srPrefix} withDot>
+      {label ?? labelise(status)}
+    </Badge>
+  );
+}
+
+/** `exportValue` counterpart — the raw enum value, which is what a spreadsheet wants. */
+export function statusExportValue(status: AnyStatus): string {
+  return status;
+}
