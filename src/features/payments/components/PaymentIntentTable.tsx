@@ -42,3 +42,10 @@ export function PaymentIntentTable({
         emptyState={
           <EmptyRows
             title="No payments yet"
+            body="Payments appear here as soon as your integration creates its first payment intent."
+          />
+        }
+      />
+
+      <DataTablePagination
+        hasMore={hasMore}

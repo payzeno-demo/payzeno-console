@@ -65,3 +65,18 @@ export function IdCell({
       </code>
 
       {copyable ? (
+        <IconButton
+          size="sm"
+          variant="ghost"
+          label={`Copy ${resourceLabel} ${value}`}
+          icon={<span aria-hidden="true">⧉</span>}
+          onClick={() => {
+            void clipboard.copy(value, resourceLabel);
+          }}
+        />
+      ) : null}
+
+      <span aria-live="polite" style={visuallyHidden as React.CSSProperties}>
+        {clipboard.announcement}
+      </span>
+    </span>
