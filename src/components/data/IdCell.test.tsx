@@ -41,6 +41,12 @@ describe('rendering', () => {
     expect(screen.getByTitle(CHARGE_ID)).toBeInTheDocument();
   });
 
+  it('honours custom head and tail lengths', () => {
+    renderBare(<IdCell value={CHARGE_ID} head={4} tail={2} />);
+
+    expect(screen.getByText(truncateId(CHARGE_ID, 4, 2))).toBeInTheDocument();
+  });
+
   it('does not truncate an id short enough to fit', () => {
     renderBare(<IdCell value="ch_1" />);
 
@@ -71,6 +77,24 @@ describe('the copy control', () => {
     ).toBeInTheDocument();
   });
 
+  it('copies the untruncated value, not what is on screen', async () => {
+    const { user } = renderBare(<IdCell value={CHARGE_ID} resourceLabel="charge" />);
+
+    await user.click(screen.getByRole('button', { name: /^Copy charge/ }));
+
+    expect(writeText).toHaveBeenCalledWith(CHARGE_ID);
+  });
+
+  it('announces the copy in a live region — the tick alone is not enough', async () => {
+    const { user } = renderBare(<IdCell value={CHARGE_ID} resourceLabel="charge" />);
+
+    await user.click(screen.getByRole('button', { name: /^Copy charge/ }));
+
+    await waitFor(() => {
+      expect(screen.getByText('charge copied to clipboard')).toBeInTheDocument();
+    });
+  });
+
   it('announces a failure rather than pretending it worked', async () => {
     writeText.mockRejectedValueOnce(new Error('denied'));
     const { user } = renderBare(<IdCell value={CHARGE_ID} resourceLabel="charge" />);
@@ -82,4 +106,21 @@ describe('the copy control', () => {
     });
   });
 
+  it('can be turned off for a cell that is already inside a link', () => {
+    renderBare(<IdCell value={CHARGE_ID} copyable={false} />);
+
+    expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    expect(screen.getByTitle(CHARGE_ID)).toBeInTheDocument();
+  });
+});
+
+describe('idExportValue', () => {
+  it('exports the full id, never the truncated one', () => {
+    expect(idExportValue(CHARGE_ID)).toBe(CHARGE_ID);
+  });
+
+  it('exports an empty cell for a missing id', () => {
+    expect(idExportValue(null)).toBe('');
+    expect(idExportValue(undefined)).toBe('');
+  });
 });
