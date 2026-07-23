@@ -115,3 +115,9 @@ export interface StatusPillProps {
   size?: 'sm' | 'md';
   /**
    * Display text. Defaults to `labelise(status)`, which is right almost everywhere; the
+   * override exists for the two places that want domain wording rather than the enum
+   * ("Awaiting evidence" for `needs_response`).
+   */
+  label?: string;
+}
+

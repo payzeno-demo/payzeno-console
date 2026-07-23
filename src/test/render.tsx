@@ -221,3 +221,32 @@ export function renderHookWithProviders<TResult, TProps>(
  * Render a primitive with no providers — for `components/ui/**`, where a provider stack would
  * only hide a missing prop. The tooltip provider stays because `IconButton` mounts one
  * unconditionally.
+ */
+export function renderBare(ui: ReactElement, options: Omit<RenderOptions, 'wrapper'> = {}) {
+  return {
+    ...render(<TooltipProvider>{ui}</TooltipProvider>, options),
+    user: userEvent.setup(),
+  };
+}
+
+/** Render inside a router only — for `<Link>`-bearing components that need nothing else. */
+export function renderWithRouter(
+  ui: ReactElement,
+  route = '/',
+  options: Omit<RenderOptions, 'wrapper'> = {},
+) {
+  return {
+    ...render(ui, {
+      ...options,
+      wrapper: ({ children }) => (
+        <MemoryRouter initialEntries={[route]}>
+          <TooltipProvider>{children}</TooltipProvider>
+        </MemoryRouter>
+      ),
+    }),
+    user: userEvent.setup(),
+  };
+}
+
+export * from '@testing-library/react';
+export { userEvent };

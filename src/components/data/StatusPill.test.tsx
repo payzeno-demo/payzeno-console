@@ -89,10 +89,32 @@ describe('rendering', () => {
     expect(screen.getByText('Status:')).toBeInTheDocument();
   });
 
+  it('accepts a custom screen-reader prefix', () => {
+    renderBare(<StatusPill status="settled" srPrefix="Item status" />);
+
+    expect(screen.getByText('Item status:')).toBeInTheDocument();
+  });
+
+  it('accepts an explicit label that overrides the derived one', () => {
+    renderBare(<StatusPill status="needs_response" label="Respond by Friday" />);
+
+    expect(screen.getByText('Respond by Friday')).toBeInTheDocument();
+    expect(screen.queryByText('Needs Response')).not.toBeInTheDocument();
+  });
+
   it('uppercases known acronyms through `labelise`', () => {
     renderBare(<StatusPill status={'sepa_pending' as AnyStatus} />);
 
     expect(screen.getByText('SEPA Pending')).toBeInTheDocument();
+  });
+
+  it('carries a dot as a redundant, decorative cue only', () => {
+    const { container } = renderBare(<StatusPill status="failed" />);
+    const dot = container.querySelector('[aria-hidden="true"]');
+
+    expect(dot).toBeInTheDocument();
+    // The dot repeats the colour; the text is what actually says what happened.
+    expect(screen.getByText('Failed')).toBeInTheDocument();
   });
 
   it('renders a small pill when asked, without changing the text', () => {
