@@ -41,3 +41,9 @@ export function acquirerLabel(acquirer: Acquirer): string {
 export function isAcquirer(value: string): value is Acquirer {
   return (ACQUIRERS as ReadonlyArray<string>).includes(value);
 }
+
+export function AcquirerCell({ acquirer, plain = false }: AcquirerCellProps) {
+  if (!acquirer) {
+    return <span className={pz('acquirer-cell', 'empty')}>—</span>;
+  }
+

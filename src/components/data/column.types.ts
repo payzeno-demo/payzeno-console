@@ -70,3 +70,9 @@ export function numberColumn<TRow>(
   header: string,
   read: (row: TRow) => number,
   options: Partial<Pick<ColumnDef<TRow>, 'width' | 'sortable'>> = {},
+): ColumnDef<TRow> {
+  return {
+    id,
+    header,
+    align: 'end',
+    cell: (row) => read(row).toLocaleString(),
