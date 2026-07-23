@@ -53,3 +53,24 @@ export function brandLabel(brand: CardBrand): string {
 export function CardBrandCell({ brand, lastFour, funding, country }: CardBrandCellProps) {
   const suffixes: string[] = [];
   if (funding && funding !== 'unknown') suffixes.push(funding);
+  if (country) suffixes.push(country);
+
+  return (
+    <span
+      className={pz('card-brand-cell')}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: space[2] }}
+    >
+      <span aria-hidden="true" style={{ color: color.textMuted }}>
+        {BRAND_GLYPHS[brand]}
+      </span>
+
+      <span style={{ fontSize: font.size.md, color: color.textPrimary }}>
+        {BRAND_LABELS[brand]} {maskLastFour(lastFour)}
+      </span>
+
+      {suffixes.length > 0 ? (
+        <span style={{ fontSize: font.size.sm, color: color.textMuted }}>
+          {suffixes.join(' · ')}
+        </span>
+      ) : null}
+    </span>

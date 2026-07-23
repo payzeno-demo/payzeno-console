@@ -89,6 +89,19 @@ describe('rendering', () => {
     expect(screen.getByText('Status:')).toBeInTheDocument();
   });
 
+  it('accepts a custom screen-reader prefix', () => {
+    renderBare(<StatusPill status="settled" srPrefix="Item status" />);
+
+    expect(screen.getByText('Item status:')).toBeInTheDocument();
+  });
+
+  it('accepts an explicit label that overrides the derived one', () => {
+    renderBare(<StatusPill status="needs_response" label="Respond by Friday" />);
+
+    expect(screen.getByText('Respond by Friday')).toBeInTheDocument();
+    expect(screen.queryByText('Needs Response')).not.toBeInTheDocument();
+  });
+
   it('uppercases known acronyms through `labelise`', () => {
     renderBare(<StatusPill status={'sepa_pending' as AnyStatus} />);
 

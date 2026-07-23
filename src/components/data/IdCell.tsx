@@ -50,3 +50,18 @@ export function IdCell({
   return (
     <span
       className={pz('id-cell')}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: space[1] }}
+    >
+      <code
+        title={value}
+        style={{
+          fontFamily: font.familyMono,
+          fontSize: font.size.sm,
+          color: color.textPrimary,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {shown}
+      </code>
+
+      {copyable ? (

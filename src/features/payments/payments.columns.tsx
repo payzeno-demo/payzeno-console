@@ -69,3 +69,12 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
       />
     ),
     exportValue: (row) => row.status,
+  },
+  {
+    id: 'capture_method',
+    header: 'Capture',
+    cell: (row) => <span>{row.capture_method}</span>,
+    exportValue: (row) => row.capture_method,
+  },
+  {
+    id: 'customer_reference',

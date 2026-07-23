@@ -34,3 +34,11 @@ export function PaymentIntentTable({
       </DataTableToolbar>
 
       <DataTable<PaymentIntentRow>
+        caption="Payment intents, newest first"
+        columns={paymentIntentColumns}
+        rows={rows}
+        isLoading={isLoading}
+        onRowClick={(row) => navigate(ROUTES.payments.detail(row.id))}
+        emptyState={
+          <EmptyRows
+            title="No payments yet"
