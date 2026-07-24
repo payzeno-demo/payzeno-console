@@ -69,6 +69,16 @@ describe('accessibility contract', () => {
     expect(table).toBeInTheDocument();
   });
 
+  it('marks every header cell as a column scope', () => {
+    renderTable();
+
+    const headers = screen.getAllByRole('columnheader');
+    expect(headers).toHaveLength(3);
+    for (const header of headers) {
+      expect(header).toHaveAttribute('scope', 'col');
+    }
+  });
+
   it('reports the total row count on the table, not the rendered count', () => {
     renderTable();
 
@@ -207,6 +217,19 @@ describe('sorting', () => {
     );
   });
 
+  it('sorts by the column exportValue, not by the rendered node', async () => {
+    const { user } = renderTable();
+
+    await user.click(screen.getByRole('button', { name: /amount/i }));
+
+    // `exportValue` zero-pads, so a lexicographic sort still orders 100 < 200 < 300.
+    const amounts = screen
+      .getAllByRole('cell')
+      .filter((cell) => cell.cellIndex === 1)
+      .map((cell) => cell.textContent);
+    expect(amounts).toEqual(['100', '200', '300']);
+  });
+
   it('offers no sort control on a column that did not ask for one', () => {
     renderTable();
 
@@ -268,4 +291,9 @@ describe('windowing above the virtualisation threshold', () => {
     ).toBeInTheDocument();
   });
 
+  it('still reports the full count on aria-rowcount', () => {
+    renderTable({ rows: many });
+
+    expect(screen.getByRole('table')).toHaveAttribute('aria-rowcount', String(many.length));
+  });
 });

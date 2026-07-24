@@ -124,3 +124,11 @@ export function DataTable<TRow extends { id: string }>({
           {isLoading ? (
             <RowSkeleton columnCount={columns.length} rowCount={SKELETON_ROW_COUNT} />
           ) : isEmpty ? (
+            <EmptyRows columnCount={columns.length}>{emptyState}</EmptyRows>
+          ) : (
+            visible.map((row) => (
+              <DataTableRow
+                key={defaultRowKey(row)}
+                row={row}
+                columns={columns}
+                onRowClick={onRowClick}

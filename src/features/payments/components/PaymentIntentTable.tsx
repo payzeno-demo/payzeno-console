@@ -49,3 +49,10 @@ export function PaymentIntentTable({
 
       <DataTablePagination
         hasMore={hasMore}
+        onNext={() => onCursorChange(nextCursor)}
+        onReset={() => onCursorChange(null)}
+        isBusy={isLoading}
+      />
+    </>
+  );
+}
