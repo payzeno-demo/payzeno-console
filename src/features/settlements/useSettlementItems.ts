@@ -96,3 +96,6 @@ export function useSettlementItems(
     hasMore: query.data?.has_more ?? false,
     isLoading: query.isLoading,
     isFetching: query.isFetching,
+    error: (query.error as Error | null) ?? null,
+  };
+}
