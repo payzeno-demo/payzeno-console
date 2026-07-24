@@ -48,3 +48,20 @@ export function DateCell({ value, mode = 'instant', absolute = false }: DateCell
       <time
         dateTime={toDateTimeAttr(value)}
         className={pz('date-cell')}
+        style={{
+          fontFamily: font.family,
+          whiteSpace: 'nowrap',
+          borderBottom: `1px dotted ${color.border}`,
+          cursor: 'help',
+        }}
+      >
+        {label}
+      </time>
+    </Tooltip>
+  );
+}
+
+/** `exportValue` counterpart: the raw ISO string, which is what a spreadsheet can parse. */
+export function dateExportValue(value: IsoTimestamp | IsoDate | null | undefined): string {
+  return value ?? '';
+}

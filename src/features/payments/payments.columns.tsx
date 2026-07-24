@@ -65,3 +65,30 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
       <StatusPill
         status={row.status}
         label={row.status.replace(/_/g, ' ')}
+        title={statusHint(row.status)}
+      />
+    ),
+    exportValue: (row) => row.status,
+  },
+  {
+    id: 'capture_method',
+    header: 'Capture',
+    cell: (row) => <span>{row.capture_method}</span>,
+    exportValue: (row) => row.capture_method,
+  },
+  {
+    id: 'customer_reference',
+    header: 'Customer',
+    cell: (row) => <span>{row.customer_reference ?? '—'}</span>,
+    exportValue: (row) => row.customer_reference ?? '',
+  },
+  {
+    id: 'description',
+    header: 'Description',
+    cell: (row) => <span>{row.description ?? '—'}</span>,
+    exportValue: (row) => row.description ?? '',
+  },
+  {
+    id: 'created_at',
+    header: 'Created',
+    cell: (row) => <DateCell value={row.created_at} precision="minute" />,
