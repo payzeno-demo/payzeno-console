@@ -167,3 +167,10 @@ export function AppShell({
           style={{
             flex: 1,
             minWidth: 0,
+            maxWidth: layout.contentMaxWidth === '1280px' ? undefined : layout.contentMaxWidth,
+            background: color.surface,
+          }}
+        >
+          {children}
+        </div>
+      </div>

@@ -199,3 +199,13 @@ export function cssVariables(): Record<string, string> {
 }
 
 /** Focus ring style object. Every interactive primitive spreads this on `:focus-visible`. */
+export const focusRing = {
+  outline: `2px solid ${color.borderFocus}`,
+  outlineOffset: '2px',
+} as const;
+
+/**
+ * Visually hidden but present for screen readers. The design system's one "don't reimplement
+ * this" utility — three different broken versions existed before it was centralised.
+ */
+export const visuallyHidden = {
