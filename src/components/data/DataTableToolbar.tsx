@@ -94,3 +94,10 @@ export function DataTableToolbar({
               <Button size="sm" variant="ghost" onClick={onClearSelection}>
                 Clear selection
               </Button>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}

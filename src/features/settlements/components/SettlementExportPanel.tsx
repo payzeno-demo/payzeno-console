@@ -81,3 +81,13 @@ export function SettlementExportPanel({ batchId, currency, rows }: SettlementExp
       <Checkbox
         id="export-variance"
         label="Include variance"
+        checked={options.includeVariance}
+        onCheckedChange={() => toggle('includeVariance')}
+      />
+
+      <Button type="button" onClick={handleExport} disabled={rows.length === 0}>
+        Download CSV
+      </Button>
+    </Card>
+  );
+}
