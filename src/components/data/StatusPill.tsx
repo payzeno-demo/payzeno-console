@@ -127,3 +127,9 @@ export function StatusPill({ status, srPrefix = 'Status', size = 'md', label }: 
       {label ?? labelise(status)}
     </Badge>
   );
+}
+
+/** `exportValue` counterpart — the raw enum value, which is what a spreadsheet wants. */
+export function statusExportValue(status: AnyStatus): string {
+  return status;
+}

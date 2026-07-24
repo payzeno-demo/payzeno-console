@@ -59,3 +59,9 @@ export function DateCell({ value, mode = 'instant', absolute = false }: DateCell
       </time>
     </Tooltip>
   );
+}
+
+/** `exportValue` counterpart: the raw ISO string, which is what a spreadsheet can parse. */
+export function dateExportValue(value: IsoTimestamp | IsoDate | null | undefined): string {
+  return value ?? '';
+}
