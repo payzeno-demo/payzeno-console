@@ -88,3 +88,9 @@ export function ellipsis(value: string, max = 64): string {
   return value.length <= max ? value : `${value.slice(0, max - 1)}…`;
 }
 
+/** `1536` → `1.5 kB`. Used by the evidence-file uploader. */
+export function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`;
+  const units = ['kB', 'MB', 'GB'];
+  let value = bytes / 1024;
+  let unitIndex = 0;

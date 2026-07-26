@@ -38,3 +38,7 @@ export function useMoneyFormat(locale?: string): MoneyFormatter {
   const formatMinorUnits = useCallback(
     (amount: MinorUnits, currency: CurrencyCode) => formatMoney(money(amount, currency), resolved),
     [resolved],
+  );
+
+  const signed = useCallback((value: Money) => formatSigned(value, resolved), [resolved]);
+
