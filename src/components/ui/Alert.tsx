@@ -93,3 +93,20 @@ export function Alert({ tone, role, title, children, action, onDismiss, classNam
 
       {onDismiss ? (
         <button
+          type="button"
+          onClick={onDismiss}
+          aria-label={`Dismiss: ${title}`}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            color: color.textMuted,
+            cursor: 'pointer',
+            padding: space[1],
+          }}
+        >
+          ✕
+        </button>
+      ) : null}
+    </div>
+  );
+}

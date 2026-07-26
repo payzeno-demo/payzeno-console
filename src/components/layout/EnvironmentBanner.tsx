@@ -64,3 +64,19 @@ export function EnvironmentBanner({
         justifyContent: 'center',
         gap: space[3],
         height: layout.bannerHeight,
+        padding: `0 ${space[4]}`,
+        background,
+        color: foreground,
+        borderBottom: `1px solid ${foreground}`,
+        fontFamily: font.family,
+        fontSize: font.size.sm,
+        fontWeight: font.weight.medium,
+      }}
+    >
+      <span>{LABELS[environment] ?? `${environment} environment`}</span>
+      <span style={{ fontFamily: font.familyMono, fontSize: font.size.xs, opacity: 0.8 }}>
+        build {buildSha}
+      </span>
+    </div>
+  );
+}
