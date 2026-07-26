@@ -94,3 +94,7 @@ export function formatCompact(value: Money, locale = 'en-US'): string {
     notation: 'compact',
     maximumFractionDigits: 1,
   }).format(major);
+}
+
+/**
+ * Minor units → a plain number in major units, for charting libraries that only speak floats.

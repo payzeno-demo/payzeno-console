@@ -74,6 +74,10 @@ describe('formatPercent', () => {
 });
 
 describe('truncateId', () => {
+  it('keeps both ends of a long id', () => {
+    expect(truncateId('ch_01HW0RTCHARGE00000001')).toBe('ch_01HW0…0001');
+  });
+
   it('leaves a short id alone', () => {
     expect(truncateId('ch_1')).toBe('ch_1');
   });
@@ -105,12 +109,22 @@ describe('titleCase', () => {
 });
 
 describe('labelise', () => {
+  it('capitalises every word', () => {
+    expect(labelise('needs_response')).toBe('Needs Response');
+  });
+
   it('uppercases known payment acronyms', () => {
     expect(labelise('sepa_pending')).toBe('SEPA Pending');
     expect(labelise('iban_only')).toBe('IBAN Only');
     expect(labelise('sca_exempt')).toBe('SCA Exempt');
   });
 
+  it('does not uppercase an ordinary word that happens to be short', () => {
+    expect(labelise('open_batch')).toBe('Open Batch');
+  });
+});
+
+describe('maskLastFour', () => {
   it('masks all but the last four', () => {
     expect(maskLastFour('4242')).toBe('•••• 4242');
   });
@@ -127,6 +141,13 @@ describe('ellipsis', () => {
     expect(ellipsis('short', 64)).toBe('short');
   });
 
+  it('truncates a long one to the limit', () => {
+    expect(ellipsis('a'.repeat(80), 10)).toHaveLength(10);
+    expect(ellipsis('a'.repeat(80), 10).endsWith('…')).toBe(true);
+  });
+});
+
+describe('formatBytes', () => {
   it('renders bytes below a kilobyte', () => {
     expect(formatBytes(512)).toBe('512 B');
   });
@@ -141,6 +162,14 @@ describe('ellipsis', () => {
 });
 
 describe('listSentence', () => {
+  it('renders nothing for an empty list', () => {
+    expect(listSentence([])).toBe('');
+  });
+
+  it('renders one item alone', () => {
+    expect(listSentence(['visa'])).toBe('visa');
+  });
+
   it('joins two with "and"', () => {
     expect(listSentence(['visa', 'mastercard'])).toBe('visa and mastercard');
   });
@@ -151,9 +180,17 @@ describe('listSentence', () => {
 });
 
 describe('pluralise', () => {
+  it('uses the singular for one', () => {
+    expect(pluralise(1, 'dispute')).toBe('1 dispute');
+  });
+
   it('uses the plural for anything else', () => {
     expect(pluralise(0, 'dispute')).toBe('0 disputes');
     expect(pluralise(2, 'dispute')).toBe('2 disputes');
+  });
+
+  it('accepts an irregular plural', () => {
+    expect(pluralise(2, 'entry', 'entries')).toBe('2 entries');
   });
 
   it('groups thousands in the count', () => {

@@ -54,6 +54,10 @@ describe('the re-export surface', () => {
 });
 
 describe('money and zero', () => {
+  it('builds a Money value from minor units and a currency', () => {
+    expect(money(12_500, 'GBP')).toEqual({ amount_minor: 12_500, currency: 'GBP' });
+  });
+
   it('builds a zero in the currency asked for', () => {
     expect(zero('JPY')).toEqual({ amount_minor: 0, currency: 'JPY' });
   });
@@ -92,11 +96,25 @@ describe('formatSigned', () => {
 });
 
 describe('formatCompact', () => {
+  it('uses the JPY exponent when deciding what "large" means', () => {
+    // 12 000 JPY is 12 000 major units — over the threshold, unlike 12 000 pence.
+    expect(formatCompact(money(12_000, 'JPY'), 'en-US')).toMatch(/K/);
+    expect(formatCompact(money(12_000, 'GBP'), 'en-US')).not.toMatch(/K/);
+  });
+});
+
+describe('toMajorNumber', () => {
   it('divides by the currency exponent, not by a hundred', () => {
     expect(toMajorNumber(12_500, 'GBP')).toBe(125);
     expect(toMajorNumber(1_200, 'JPY')).toBe(1_200);
   });
 
+  it('handles zero', () => {
+    expect(toMajorNumber(0, 'GBP')).toBe(0);
+  });
+});
+
+describe('shareOf', () => {
   it('returns zero rather than Infinity when the total is zero', () => {
     expect(shareOf(money(2_500, 'GBP'), money(0, 'GBP'))).toBe(0);
   });

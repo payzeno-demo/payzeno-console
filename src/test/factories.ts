@@ -364,6 +364,22 @@ export function makeInvoice(overrides: Partial<Invoice> = {}): Invoice {
   };
 }
 
+export function makeApiKey(overrides: Partial<ApiKey> = {}): ApiKey {
+  return {
+    id: 'key_01HW0RTAPIKEY000000001',
+    object: 'api_key',
+    merchant_id: MERCHANT_ID,
+    name: 'Checkout server',
+    mode: 'live',
+    prefix: 'sk_live_',
+    last_four: '9f2c',
+    scopes: ['payment_intents:read', 'payment_intents:write', 'charges:read'],
+    created_at: '2025-09-01T12:00:00.000Z',
+    revoked_at: null,
+    ...overrides,
+  };
+}
+
 export function makeBankAccount(overrides: Partial<BankAccount> = {}): BankAccount {
   return {
     id: 'ba_01HW0RTBANKACCOUNT0001',
