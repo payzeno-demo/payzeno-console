@@ -102,3 +102,8 @@ export function useNumberParam(
     parse: (raw) => {
       const parsed = Number.parseInt(raw, 10);
       return Number.isFinite(parsed) && parsed >= min ? parsed : null;
+    },
+    serialise: (value) => (value === fallback ? null : String(value)),
+    fallback,
+  });
+}

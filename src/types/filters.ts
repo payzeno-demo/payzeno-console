@@ -98,3 +98,7 @@ export function sameQuery(a: object, b: object): boolean {
   const right = toRequestQuery(b);
   const keys = new Set([...Object.keys(left), ...Object.keys(right)]);
   for (const key of keys) {
+    if (left[key] !== right[key]) return false;
+  }
+  return true;
+}
