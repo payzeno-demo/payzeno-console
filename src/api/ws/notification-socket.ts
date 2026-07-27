@@ -37,3 +37,10 @@ export class NotificationSocket extends SocketClient<ConsoleNotification> {
       decoded = JSON.parse(raw.data);
     } catch {
       // A malformed frame is not worth tearing the socket down for.
+      return null;
+    }
+
+    if (!isConsoleNotification(decoded)) return null;
+    return decoded;
+  }
+}

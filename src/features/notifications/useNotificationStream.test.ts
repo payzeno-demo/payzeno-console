@@ -74,6 +74,7 @@ describe('connecting', () => {
 
 describe('receiving messages', () => {
   it('adds a surfaced notification to the list, newest first', async () => {
+    const { result } = renderHookWithProviders(() => useNotificationStream());
     const socket = openSocket();
 
     act(() => {
@@ -90,6 +91,34 @@ describe('receiving messages', () => {
   });
 
   it('counts unread entries', async () => {
+    const { result } = renderHookWithProviders(() => useNotificationStream());
+    const socket = openSocket();
+
+    act(() => {
+      socket.simulateMessage(makeNotification({ id: 'ntf_1' }));
+    });
+
+    await waitFor(() => {
+      expect(result.current.unreadCount).toBe(1);
+    });
+  });
+
+  it('ignores an event type the console does not surface', async () => {
+    const { result } = renderHookWithProviders(() => useNotificationStream());
+    const socket = openSocket();
+
+    act(() => {
+      socket.simulateMessage(makeNotification({ id: 'ntf_x', type: 'payment.captured' }));
+    });
+
+    await waitFor(() => {
+      expect(result.current.state).toBe('open');
+    });
+    expect(result.current.entries).toEqual([]);
+  });
+
+  it('de-duplicates a redelivered frame by id', async () => {
+    const { result } = renderHookWithProviders(() => useNotificationStream());
     const socket = openSocket();
 
     act(() => {
@@ -120,6 +149,14 @@ describe('receiving messages', () => {
 
 describe('cache invalidation on push', () => {
   it('invalidates payouts and balance on payout.failed', async () => {
+    const { result, queryClient } = renderHookWithProviders(() => useNotificationStream());
+    queryClient.setQueryData(queryKeys.payouts.list({ limit: 25 }), {
+      data: [],
+      next_cursor: null,
+      has_more: false,
+    });
+    queryClient.setQueryData(queryKeys.balance.current('GBP'), { available_minor: 1 });
+
     const socket = openSocket();
     act(() => {
       socket.simulateMessage(makeNotification({ type: 'payout.failed' }));
@@ -136,6 +173,34 @@ describe('cache invalidation on push', () => {
   });
 
   it('invalidates settlements on settlement.completed', async () => {
+    const { result, queryClient } = renderHookWithProviders(() => useNotificationStream());
+    queryClient.setQueryData(queryKeys.settlements.list({}), {
+      data: [],
+      next_cursor: null,
+      has_more: false,
+    });
+
+    const socket = openSocket();
+    act(() => {
+      socket.simulateMessage(
+        makeNotification({ id: 'ntf_s', type: 'settlement.completed' }),
+      );
+    });
+
+    await waitFor(() => {
+      expect(result.current.entries).toHaveLength(1);
+    });
+    expect(queryClient.getQueryState(queryKeys.settlements.list({}))?.isInvalidated).toBe(true);
+  });
+
+  it('invalidates disputes on dispute.opened', async () => {
+    const { result, queryClient } = renderHookWithProviders(() => useNotificationStream());
+    queryClient.setQueryData(queryKeys.disputes.list({}), {
+      data: [],
+      next_cursor: null,
+      has_more: false,
+    });
+
     const socket = openSocket();
     act(() => {
       socket.simulateMessage(makeNotification({ id: 'ntf_d', type: 'dispute.opened' }));
@@ -150,6 +215,7 @@ describe('cache invalidation on push', () => {
 
 describe('read state', () => {
   it('marks one entry read', async () => {
+    const { result } = renderHookWithProviders(() => useNotificationStream());
     const socket = openSocket();
 
     act(() => {
@@ -168,6 +234,7 @@ describe('read state', () => {
   });
 
   it('marks them all read', async () => {
+    const { result } = renderHookWithProviders(() => useNotificationStream());
     const socket = openSocket();
 
     act(() => {
@@ -209,6 +276,19 @@ describe('reconnecting', () => {
   it('goes to reconnecting when the server drops the connection', async () => {
     vi.useFakeTimers();
     const { result } = renderHookWithProviders(() => useNotificationStream());
+    const socket = FakeWebSocket.last();
+
+    act(() => {
+      socket.simulateOpen();
+      socket.simulateClose();
+    });
+
+    expect(result.current.state).toBe('reconnecting');
+  });
+
+  it('dials again after its backoff', async () => {
+    vi.useFakeTimers();
+    renderHookWithProviders(() => useNotificationStream());
     const first = FakeWebSocket.last();
 
     act(() => {
@@ -216,5 +296,25 @@ describe('reconnecting', () => {
       first.simulateClose();
     });
 
+    const before = FakeWebSocket.instances.length;
+    act(() => {
+      vi.advanceTimersByTime(2_000);
+    });
+
+    expect(FakeWebSocket.instances.length).toBeGreaterThan(before);
+  });
+
+  it('does not reconnect after the caller closed it', () => {
+    vi.useFakeTimers();
+    const { unmount } = renderHookWithProviders(() => useNotificationStream());
+
+    unmount();
+    const before = FakeWebSocket.instances.length;
+
+    act(() => {
+      vi.advanceTimersByTime(60_000);
+    });
+
+    expect(FakeWebSocket.instances).toHaveLength(before);
   });
 });

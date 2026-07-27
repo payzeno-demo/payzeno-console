@@ -126,6 +126,10 @@ export function useNotificationStream(
     setEntries((current) => current.map((e) => ({ ...e, read: true })));
   }, []);
 
+  const dismiss = useCallback((id: string) => {
+    setEntries((current) => current.filter((e) => e.id !== id));
+  }, []);
+
   const unreadCount = useMemo(() => entries.filter((e) => !e.read).length, [entries]);
 
   return { entries, unreadCount, state, streamError, markRead, markAllRead, dismiss };

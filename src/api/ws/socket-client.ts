@@ -29,6 +29,9 @@ export abstract class SocketClient<TMessage> {
   private attempts = 0;
   private state: SocketState = 'idle';
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+  private closedByCaller = false;
+
   protected constructor(protected readonly handlers: SocketHandlers<TMessage>) {}
 
   get currentState(): SocketState {
@@ -54,6 +57,14 @@ export abstract class SocketClient<TMessage> {
       // `error` is always followed by `close`; reconnect logic lives there so a single
       // failure does not schedule two timers.
     });
+  }
+
+  close(): void {
+    this.closedByCaller = true;
+    this.clearTimers();
+    this.socket?.close();
+    this.socket = null;
+    this.setState('closed');
   }
 
   /** Overridable so `MockNotificationSocket` can substitute a fake socket. */
@@ -95,6 +106,15 @@ export abstract class SocketClient<TMessage> {
     return Math.round(exponential * (0.5 + Math.random() * 0.5));
   }
 
+  private startHeartbeat(): void {
+    this.stopHeartbeat();
+    this.heartbeatTimer = setInterval(() => {
+      if (this.socket?.readyState === WebSocket.OPEN) {
+        this.socket.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, WS_HEARTBEAT_MS);
+  }
+
   private stopHeartbeat(): void {
     if (this.heartbeatTimer !== null) {
       clearInterval(this.heartbeatTimer);
@@ -110,4 +130,9 @@ export abstract class SocketClient<TMessage> {
     }
   }
 
+  private setState(next: SocketState): void {
+    if (this.state === next) return;
+    this.state = next;
+    this.handlers.onStateChange?.(next);
+  }
 }
