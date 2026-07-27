@@ -33,6 +33,13 @@ describe('toastSpec', () => {
     expect(toastSpec('t1', 'danger', 'Refund failed').durationMs).toBeNull();
   });
 
+  it('omits optional keys rather than setting them undefined', () => {
+    const bare = toastSpec('t1', 'info', 'Hello');
+
+    expect(Object.hasOwn(bare, 'description')).toBe(false);
+    expect(Object.hasOwn(bare, 'action')).toBe(false);
+  });
+
   it('carries a description and an action when given', () => {
     const onSelect = vi.fn();
     const full = toastSpec('t1', 'warning', 'Payout delayed', {
@@ -53,6 +60,12 @@ describe('rendering one toast', () => {
     );
     return { ...result, onDismiss };
   }
+
+  it('shows the title', () => {
+    renderToast();
+
+    expect(screen.getByText('Refund submitted')).toBeInTheDocument();
+  });
 
   it('shows the description underneath', () => {
     renderToast({ description: 'It will reach the customer in 5 days.' });
@@ -84,10 +97,22 @@ describe('rendering one toast', () => {
 });
 
 describe('the Toaster viewport', () => {
+  it('is a labelled region a keyboard user can reach', () => {
+    renderBare(<Toaster toasts={[]} onDismiss={vi.fn()} />);
+
+    expect(screen.getByRole('region', { name: /Notifications/ })).toBeInTheDocument();
+  });
+
   it('leaves a short stack alone', () => {
     const toasts = [spec({ id: 'a' }), spec({ id: 'b' })];
 
     expect(trimToasts(toasts)).toHaveLength(2);
+  });
+
+  it('caps a long stack at the maximum', () => {
+    const toasts = Array.from({ length: 9 }, (_, index) => spec({ id: `t${index}` }));
+
+    expect(trimToasts(toasts)).toHaveLength(MAX_VISIBLE_TOASTS);
   });
 
   it('keeps the errors when it has to drop something', () => {
@@ -100,6 +125,14 @@ describe('the Toaster viewport', () => {
 
     expect(kept.map((toast) => toast.id)).toContain('err');
     expect(kept).toHaveLength(MAX_VISIBLE_TOASTS);
+  });
+
+  it('keeps the newest of the non-errors', () => {
+    const toasts = Array.from({ length: 6 }, (_, index) => spec({ id: `t${index}` }));
+
+    const kept = trimToasts(toasts, 2);
+
+    expect(kept.map((toast) => toast.id)).toEqual(['t4', 't5']);
   });
 
 });

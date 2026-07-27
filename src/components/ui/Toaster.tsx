@@ -65,3 +65,13 @@ export function Toaster({ toasts, onDismiss }: ToasterProps) {
         label="Notifications"
         style={{
           position: 'fixed',
+          bottom: space[6],
+          right: space[6],
+          display: 'flex',
+          flexDirection: 'column',
+          gap: space[2],
+          margin: 0,
+          padding: 0,
+          listStyle: 'none',
+          outline: 'none',
+          zIndex: zIndex.toast,

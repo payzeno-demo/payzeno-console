@@ -112,3 +112,26 @@ export function Toast({ spec, onOpenChange, className }: ToastProps) {
           ✕
         </RadixToast.Close>
       </div>
+    </RadixToast.Root>
+  );
+}
+
+/** Build a toast spec, applying the "errors do not auto-dismiss" rule in one place. */
+export function toastSpec(
+  id: string,
+  tone: ToastTone,
+  title: string,
+  options: { description?: string; durationMs?: number; action?: ToastSpec['action'] } = {},
+): ToastSpec {
+  const spec: ToastSpec = {
+    id,
+    tone,
+    title,
+    durationMs: tone === 'danger' ? null : (options.durationMs ?? 5_000),
+  };
+  if (options.description !== undefined) spec.description = options.description;
+  if (options.action !== undefined) spec.action = options.action;
+  return spec;
+}
+
+export type ToastRenderer = (node: ReactNode) => ReactNode;
