@@ -36,3 +36,13 @@ export class WebhookEventsEndpoint extends ResourceEndpoint<WebhookEvent, Webhoo
     idempotencyKey: string = newIdempotencyKey(),
   ): Promise<WebhookEvent> {
     return this.client.post<WebhookEvent, Record<string, never>>(
+      this.resourcePath(eventId, 'redeliver'),
+      {},
+      idempotencyKey,
+    );
+  }
+
+  listDead(q?: ListQuery) {
+    return this.list({ ...(q ?? {}), status: 'dead' });
+  }
+}

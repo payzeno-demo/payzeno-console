@@ -81,10 +81,80 @@ class PathRecorder implements HttpTransport {
 /** Drives every documented method on every endpoint in the registry, once. */
 async function buildEveryPath(): Promise<Built[]> {
   const recorder = new PathRecorder();
+  const e = createEndpoints(recorder);
+
+  await e.auth.me();
+  await e.auth.login({ email: 'a@b.c', password: 'x' });
+  await e.auth.logout();
+  await e.auth.requestPasswordReset('a@b.c');
+
+  await e.paymentIntents.list();
+  await e.paymentIntents.get(SENTINEL);
+  await e.paymentIntents.capture(SENTINEL, {});
+  await e.paymentIntents.cancel(SENTINEL, {});
+
+  await e.charges.list();
+  await e.charges.get(SENTINEL);
+  await e.charges.ledger(SENTINEL);
+
+  await e.refunds.list();
+  await e.refunds.create({ charge_id: SENTINEL });
+
+  await e.disputes.list();
+  await e.disputes.get(SENTINEL);
+  await e.disputes.submitEvidence(SENTINEL, { evidence: {}, submit: false });
+
+  await e.balance.get('GBP');
+
+  await e.payouts.list();
+  await e.payouts.get(SENTINEL);
+  await e.payouts.create({ currency: 'GBP' });
+  await e.payouts.cancel(SENTINEL);
+
+  await e.settlements.list();
+  await e.settlements.get(SENTINEL);
+  await e.settlements.listItems(SENTINEL);
+  await e.settlements.retryItem(SENTINEL, SENTINEL, {});
+
+  await e.invoices.list();
+  await e.invoices.get(SENTINEL);
+
+  await e.apiKeys.list();
+  await e.apiKeys.get(SENTINEL);
+  await e.apiKeys.create({ name: 'n', mode: 'test' });
+  await e.apiKeys.revoke(SENTINEL);
+
+  await e.bankAccounts.list();
+  await e.bankAccounts.get(SENTINEL);
+  await e.bankAccounts.create({ bank_account_token: 't', currency: 'GBP', country: 'GB' });
+  await e.bankAccounts.makeDefault(SENTINEL);
+
+  await e.webhookEvents.list();
+  await e.webhookEvents.get(SENTINEL);
+  await e.webhookEvents.redeliver(SENTINEL);
+
+  await e.webhookEndpoints.list();
+  await e.webhookEndpoints.create({ url: 'https://x', enabled_events: [] });
+  await e.webhookEndpoints.remove(SENTINEL);
+
+  await e.reporting.summary('7d', 'GBP');
+  await e.reporting.volume({ interval: 'day', from: 'a', to: 'b', currency: 'GBP' });
+  await e.reporting.balanceHistory({ interval: 'day', from: 'a', to: 'b', currency: 'GBP' });
+
+  return recorder.built;
+}
+
+describe('the checked-in OpenAPI document', () => {
   it('is the version the console pins', () => {
     expect((openapi as { info: { version: string } }).info.version).toBe('2026-01-15');
   });
 
+  it('documents a non-trivial number of /v1 routes — a truncated pull is a silent pass', () => {
+    expect(DOCUMENTED.size).toBeGreaterThan(30);
+  });
+});
+
+describe('every endpoint path exists in payzeno-api', () => {
   it('builds at least one path per endpoint method', async () => {
     const built = await buildEveryPath();
 
@@ -150,4 +220,11 @@ describe('the MSW handler set tracks the same routes', () => {
 });
 
 describe('dead code stays dead', () => {
+  it('StatementsEndpoint points at a route the ledger took over — it is not in the document', () => {
+    // blueprint §8.4: `GET /v1/statements` moved to the ledger in MIG step 2 and the class was
+    // never deleted. This assertion is the receipt: if the route ever comes back, delete the
+    // assertion *and* give the class an importer, or delete the class.
+    expect(DOCUMENTED.has('/statements')).toBe(false);
+    expect(StatementsEndpoint.name).toBe('StatementsEndpoint');
+  });
 });
