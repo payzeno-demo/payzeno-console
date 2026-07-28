@@ -42,6 +42,12 @@ describe('route helpers', () => {
 });
 
 describe('the signed-in tree', () => {
+  it('renders the reporting page at the root', async () => {
+    renderAt('/');
+
+    expect(await screen.findByRole('heading', { name: /Hello, Northwind/ })).toBeInTheDocument();
+  });
+
   it('renders the balance page', async () => {
     renderAt(ROUTES.balance.index);
 
