@@ -63,6 +63,18 @@ describe('JPY — the exponent that catches everyone', () => {
 });
 
 describe('missing amounts', () => {
+  it('renders an em dash when there is nothing to show', () => {
+    renderBare(<MoneyCell />);
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
+  it('renders an em dash when a currency is given but no amount', () => {
+    renderBare(<MoneyCell currency="GBP" />);
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
   it('renders zero as a real zero, not as a dash', () => {
     renderBare(<MoneyCell amountMinor={0} currency="GBP" />);
 

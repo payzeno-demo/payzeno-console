@@ -102,3 +102,8 @@ export function formatCompact(value: Money, locale = 'en-US'): string {
  */
 export function toMajorNumber(amount: MinorUnits, currency: CurrencyCode): number {
   return amount / 10 ** CURRENCY_EXPONENT[currency];
+}
+
+/** Percentage of a total, for stacked bars and the balance breakdown. 0 when total is 0. */
+export function shareOf(part: Money, total: Money): number {
+  assertSameCurrency(part, total);
