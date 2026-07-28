@@ -82,3 +82,6 @@ export function SettlementDetailPage() {
           isLoading={items.isLoading}
           status={status}
           onStatusChange={setStatus}
+        />
+      )}
+    </PageContainer>
