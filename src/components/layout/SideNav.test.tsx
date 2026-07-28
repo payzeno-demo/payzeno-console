@@ -35,10 +35,31 @@ describe('NAV_SECTIONS', () => {
     }
   });
 
+  it('marks the detail-bearing features as prefix matches', () => {
+    const byId = new Map(
+      NAV_SECTIONS.flatMap((section) => section.items).map((item) => [item.id, item]),
+    );
+
+    expect(byId.get('settlements')?.matchPrefix).toBe(true);
+    expect(byId.get('payouts')?.matchPrefix).toBe(true);
+    // Refunds has no detail route, so a prefix match would be a lie.
+    expect(byId.get('refunds')?.matchPrefix).toBeUndefined();
+  });
+});
+
+describe('as an owner', () => {
   it('is a labelled primary navigation landmark', () => {
     renderWithProviders(<SideNav />);
 
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
+  });
+
+  it('shows every section heading', () => {
+    renderWithProviders(<SideNav />);
+
+    for (const section of NAV_SECTIONS) {
+      expect(screen.getByText(section.label)).toBeInTheDocument();
+    }
   });
 
   it('links each item at its route constant', () => {
@@ -63,6 +84,17 @@ describe('NAV_SECTIONS', () => {
     );
   });
 
+  it('keeps the parent item current on a detail route, for prefix-matching items', () => {
+    renderWithProviders(<SideNav />, {
+      route: ROUTES.settlements.detail('sb_01HW0RTBATCH000000001'),
+    });
+
+    expect(screen.getByRole('link', { name: /Settlements/ })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  });
+
   it('does not mark a non-prefix item current on a sibling route', () => {
     renderWithProviders(<SideNav />, { route: '/refunds/whatever' });
 
@@ -71,6 +103,13 @@ describe('NAV_SECTIONS', () => {
 });
 
 describe('as a viewer', () => {
+  it('hides the links a viewer cannot use', () => {
+    renderWithProviders(<SideNav />, { session: makeViewerSession() });
+
+    expect(screen.queryByRole('link', { name: 'Payouts' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Settings' })).not.toBeInTheDocument();
+  });
+
   it('drops a section entirely once all its items are hidden', () => {
     renderWithProviders(<SideNav />, { session: makeViewerSession() });
 
@@ -85,10 +124,23 @@ describe('as a viewer', () => {
 });
 
 describe('badges', () => {
+  it('renders a count on the item that declared a badge key', () => {
+    renderWithProviders(<SideNav badges={{ disputes: 4 }} />);
+
+    const link = screen.getByRole('link', { name: /Disputes/ });
+    expect(within(link).getByText('4')).toBeInTheDocument();
+  });
+
   it('announces what the count means', () => {
     renderWithProviders(<SideNav badges={{ disputes: 4 }} />);
 
     expect(screen.getByText('Needing attention:')).toBeInTheDocument();
+  });
+
+  it('renders nothing at zero', () => {
+    renderWithProviders(<SideNav badges={{ disputes: 0 }} />);
+
+    expect(screen.queryByText('Needing attention:')).not.toBeInTheDocument();
   });
 
   it('caps a large count at 99+', () => {
@@ -104,6 +156,14 @@ describe('the collapsed rail', () => {
     renderWithProviders(<SideNav collapsed />);
 
     expect(screen.queryByText('Money in')).not.toBeInTheDocument();
+  });
+
+  it('names each link for a screen reader even without visible text', () => {
+    renderWithProviders(<SideNav collapsed badges={{ disputes: 2 }} />);
+
+    expect(
+      screen.getByRole('link', { name: 'Disputes, 2 needing attention' }),
+    ).toBeInTheDocument();
   });
 
   it('reports navigation so the shell can close the drawer', async () => {

@@ -27,6 +27,16 @@ describe('before a session exists', () => {
 });
 
 describe('with a session', () => {
+  it('renders the route content inside the frame', () => {
+    renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+    );
+
+    expect(screen.getByText('Route content')).toBeInTheDocument();
+  });
+
   it('renders the primary navigation', () => {
     renderWithProviders(
       <AppShell>
@@ -35,6 +45,31 @@ describe('with a session', () => {
     );
 
     expect(screen.getByRole('navigation', { name: 'Primary' })).toBeInTheDocument();
+  });
+
+  it('offers a skip link as the first focusable thing on the page', async () => {
+    const { user } = renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+    );
+
+    await user.tab();
+
+    expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveFocus();
+  });
+
+  it('points the skip link at the main content anchor', () => {
+    renderWithProviders(
+      <AppShell>
+        <main id="main-content">Route content</main>
+      </AppShell>,
+    );
+
+    expect(screen.getByRole('link', { name: 'Skip to content' })).toHaveAttribute(
+      'href',
+      '#main-content',
+    );
   });
 
   it('takes the user and merchant from the session when none are passed', () => {
@@ -48,6 +83,21 @@ describe('with a session', () => {
     expect(screen.getByText(/Northwind/)).toBeInTheDocument();
   });
 
+  it('prefers explicit user and merchant props over the session', () => {
+    renderWithProviders(
+      <AppShell
+        user={makeUser({ full_name: 'Explicit User' })}
+        merchant={makeMerchant({ display_name: 'Explicit Merchant' })}
+      >
+        <p>Route content</p>
+      </AppShell>,
+    );
+
+    expect(screen.getByText(/Explicit Merchant/)).toBeInTheDocument();
+  });
+});
+
+describe('the route announcement', () => {
   it('announces the landing route as the dashboard', () => {
     renderWithProviders(
       <AppShell>
@@ -70,6 +120,29 @@ describe('with a session', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Navigated to settlements');
   });
 
+  it('reads a hyphenated segment as words', () => {
+    renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+      { route: '/bank-accounts' },
+    );
+
+    expect(screen.getByRole('status')).toHaveTextContent('Navigated to bank accounts');
+  });
+
+  it('is polite, not assertive — a route change must not interrupt a reader mid-sentence', () => {
+    renderWithProviders(
+      <AppShell>
+        <p>Route content</p>
+      </AppShell>,
+    );
+
+    expect(screen.getByRole('status')).toHaveAttribute('aria-live', 'polite');
+  });
+});
+
+describe('design tokens', () => {
   it('publishes the token custom properties onto the document root', () => {
     renderWithProviders(
       <AppShell>

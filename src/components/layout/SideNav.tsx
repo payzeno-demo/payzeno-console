@@ -36,6 +36,83 @@ export interface SideNavProps {
  * The one description of the app's shape. `src/routes.ts` owns the paths; this owns the order,
  * the grouping and the permission each entry needs.
  */
+export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
+  {
+    id: 'overview',
+    label: 'Overview',
+    items: [
+      { id: 'reporting', label: 'Home', to: ROUTES.reporting.index, requiredPermission: 'reporting:read' },
+      { id: 'balance', label: 'Balance', to: ROUTES.balance.index, requiredPermission: 'balance:read' },
+    ],
+  },
+  {
+    id: 'money-in',
+    label: 'Money in',
+    items: [
+      {
+        id: 'payments',
+        label: 'Payments',
+        to: ROUTES.payments.index,
+        requiredPermission: 'payments:read',
+        matchPrefix: true,
+      },
+      {
+        id: 'charges',
+        label: 'Charges',
+        to: ROUTES.charges.index,
+        requiredPermission: 'payments:read',
+        matchPrefix: true,
+      },
+      { id: 'refunds', label: 'Refunds', to: ROUTES.refunds.index, requiredPermission: 'payments:read' },
+      {
+        id: 'disputes',
+        label: 'Disputes',
+        to: ROUTES.disputes.index,
+        requiredPermission: 'disputes:read',
+        badgeKey: 'disputes',
+        matchPrefix: true,
+      },
+    ],
+  },
+  {
+    id: 'money-out',
+    label: 'Money out',
+    items: [
+      {
+        id: 'payouts',
+        label: 'Payouts',
+        to: ROUTES.payouts.index,
+        requiredPermission: 'payouts:read',
+        matchPrefix: true,
+      },
+      {
+        id: 'settlements',
+        label: 'Settlements',
+        to: ROUTES.settlements.index,
+        requiredPermission: 'settlements:read',
+        flag: 'settlement_explorer',
+        matchPrefix: true,
+      },
+      { id: 'invoices', label: 'Invoices', to: ROUTES.invoices.index, requiredPermission: 'invoices:read' },
+    ],
+  },
+  {
+    id: 'account',
+    label: 'Account',
+    items: [
+      {
+        id: 'developers',
+        label: 'Developers',
+        to: ROUTES.developers.index,
+        requiredPermission: 'developers:read',
+        badgeKey: 'webhooks',
+        matchPrefix: true,
+      },
+      { id: 'settings', label: 'Settings', to: ROUTES.settings.index, requiredPermission: 'settings:read' },
+    ],
+  },
+];
+
 export function SideNav({ badges = {}, collapsed = false, onNavigate }: SideNavProps) {
   const { can } = usePermissions();
   const sections = visibleSections(NAV_SECTIONS, can, isFlagEnabled);
