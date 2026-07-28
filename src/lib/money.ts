@@ -98,3 +98,7 @@ export function formatCompact(value: Money, locale = 'en-US'): string {
 
 /**
  * Minor units → a plain number in major units, for charting libraries that only speak floats.
+ * Never feed the result back into a posting: this is the one lossy direction.
+ */
+export function toMajorNumber(amount: MinorUnits, currency: CurrencyCode): number {
+  return amount / 10 ** CURRENCY_EXPONENT[currency];

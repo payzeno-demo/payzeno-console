@@ -42,3 +42,6 @@ export function useMoneyFormat(locale?: string): MoneyFormatter {
 
   const signed = useCallback((value: Money) => formatSigned(value, resolved), [resolved]);
 
+  const compact = useCallback((value: Money) => formatCompact(value, resolved), [resolved]);
+
+  return useMemo(
