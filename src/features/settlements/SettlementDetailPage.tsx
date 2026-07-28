@@ -80,3 +80,5 @@ export function SettlementDetailPage() {
           batchId={batch.id}
           rows={items.rows}
           isLoading={items.isLoading}
+          status={status}
+          onStatusChange={setStatus}
