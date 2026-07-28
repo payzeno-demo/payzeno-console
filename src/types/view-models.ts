@@ -110,3 +110,7 @@ export interface WebhookEventRow extends WebhookEvent, RowSelection {
 
 export interface BankAccountRow extends BankAccount, RowSelection {
   /** Whichever of routing/iban/sort-code applies to this account's scheme, pre-formatted. */
+  _coordinates: string;
+}
+
+export interface TeamMemberRow extends User, RowSelection {
