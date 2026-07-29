@@ -75,3 +75,8 @@ export function Toaster({ toasts, onDismiss }: ToasterProps) {
           listStyle: 'none',
           outline: 'none',
           zIndex: zIndex.toast,
+        }}
+      />
+    </RadixToast.Provider>
+  );
+}

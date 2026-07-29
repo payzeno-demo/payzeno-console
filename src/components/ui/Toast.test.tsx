@@ -33,6 +33,14 @@ describe('toastSpec', () => {
     expect(toastSpec('t1', 'danger', 'Refund failed').durationMs).toBeNull();
   });
 
+  it('honours an explicit duration for a non-error tone', () => {
+    expect(toastSpec('t1', 'info', 'Draft saved', { durationMs: 1_500 }).durationMs).toBe(1_500);
+  });
+
+  it('does not let an explicit duration make an error toast disappear', () => {
+    expect(toastSpec('t1', 'danger', 'Boom', { durationMs: 100 }).durationMs).toBeNull();
+  });
+
   it('omits optional keys rather than setting them undefined', () => {
     const bare = toastSpec('t1', 'info', 'Hello');
 
@@ -87,6 +95,17 @@ describe('rendering one toast', () => {
     expect(onDismiss).toHaveBeenCalledWith('toast_1');
   });
 
+  it('renders an action and calls it', async () => {
+    const onSelect = vi.fn();
+    const { user } = renderToast({
+      action: { label: 'View payout', onSelect },
+    });
+
+    await user.click(screen.getByRole('button', { name: 'View payout' }));
+
+    expect(onSelect).toHaveBeenCalledTimes(1);
+  });
+
   it('carries the tone as a modifier class rather than only as a colour', () => {
     const { container } = renderBare(
       <Toaster toasts={[spec({ tone: 'danger', durationMs: null })]} onDismiss={vi.fn()} />,
@@ -103,6 +122,19 @@ describe('the Toaster viewport', () => {
     expect(screen.getByRole('region', { name: /Notifications/ })).toBeInTheDocument();
   });
 
+  it('renders every toast it is given, up to the cap', () => {
+    const toasts = Array.from({ length: 3 }, (_, index) =>
+      spec({ id: `t${index}`, title: `Toast ${index}` }),
+    );
+
+    renderBare(<Toaster toasts={toasts} onDismiss={vi.fn()} />);
+
+    expect(screen.getByText('Toast 0')).toBeInTheDocument();
+    expect(screen.getByText('Toast 2')).toBeInTheDocument();
+  });
+});
+
+describe('trimToasts', () => {
   it('leaves a short stack alone', () => {
     const toasts = [spec({ id: 'a' }), spec({ id: 'b' })];
 
@@ -135,4 +167,13 @@ describe('the Toaster viewport', () => {
     expect(kept.map((toast) => toast.id)).toEqual(['t4', 't5']);
   });
 
+  it('preserves the original order, so the newest is still last', () => {
+    const toasts = [
+      spec({ id: 'a' }),
+      spec({ id: 'b', tone: 'danger', durationMs: null }),
+      spec({ id: 'c' }),
+    ];
+
+    expect(trimToasts(toasts, 3).map((toast) => toast.id)).toEqual(['a', 'b', 'c']);
+  });
 });
