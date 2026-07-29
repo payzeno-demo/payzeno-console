@@ -105,3 +105,9 @@ export class ApiClient implements HttpTransport {
     return this.request<TRes, TBody>({ method: 'PATCH', path, body, idempotencyKey });
   }
 
+  async delete(path: string, idempotencyKey: string): Promise<void> {
+    await this.request<void>({ method: 'DELETE', path, idempotencyKey });
+  }
+
+  /**
+   * Convenience for a mutation that wants one key for the whole attempt (including transport
