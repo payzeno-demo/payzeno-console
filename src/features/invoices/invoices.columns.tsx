@@ -84,3 +84,12 @@ export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
     header: 'Outstanding',
     align: 'end',
     cell: (row) => <span>{formatAmount(outstandingMinor(row), row.currency)}</span>,
+    exportValue: (row) => String(outstandingMinor(row)),
+  },
+  {
+    id: 'due_at',
+    header: 'Due',
+    cell: (row) => <DateCell value={row.due_at} precision="day" />,
+    exportValue: (row) => row.due_at ?? '',
+  },
+];
