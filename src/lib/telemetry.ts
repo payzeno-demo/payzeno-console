@@ -50,6 +50,17 @@ export interface ErrorContext {
  * `context` values are scrubbed on the way in as well as in `beforeSend`; belt and braces,
  * because `beforeSend` only sees what Sentry decided to serialise.
  */
+export function captureError(error: unknown, context: ErrorContext = {}): void {
+  if (!isTelemetryEnabled()) return;
+
+  Sentry.withScope((scope) => {
+    for (const [key, value] of Object.entries(context)) {
+      if (typeof value === 'string') scope.setTag(key, scrubPan(value));
+    }
+    Sentry.captureException(error);
+  });
+}
+
 /** A named user action worth seeing in the trail before a crash. */
 export function trackEvent(name: string, data: Record<string, string | number | boolean> = {}): void {
   if (!isTelemetryEnabled()) return;

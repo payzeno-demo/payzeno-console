@@ -70,6 +70,14 @@ export function isLuhnValid(digits: string): boolean {
   return sum % 10 === 0;
 }
 
+/** Replace anything that is both PAN-shaped and Luhn-valid. Used on every string we send. */
+export function scrubPan(text: string): string {
+  return text.replace(PAN_CANDIDATE, (match) => {
+    const digits = match.replace(/[ -]/g, '');
+    return isLuhnValid(digits) ? REDACTED : match;
+  });
+}
+
 function isDenylisted(key: string): boolean {
   return DENYLISTED_FIELDS.includes(key.toLowerCase());
 }
@@ -133,6 +141,14 @@ export function beforeSend(event: ErrorEvent, _hint: EventHint): ErrorEvent | nu
 
   return event;
 }
+
+/** Errors we never want to see: browser extensions, aborted navigations, benign ResizeObserver. */
+export const IGNORED_ERRORS: ReadonlyArray<string | RegExp> = [
+  'ResizeObserver loop completed with undelivered notifications',
+  'AbortError: The user aborted a request',
+  /^chrome-extension:\/\//,
+  /^moz-extension:\/\//,
+];
 
 /** Options handed to `Sentry.init()` by `lib/telemetry.ts::initTelemetry`. */
 export function sentryOptions(): BrowserOptions {
