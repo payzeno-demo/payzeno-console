@@ -58,3 +58,8 @@ export function AcquirerCell({ acquirer, plain = false }: AcquirerCellProps) {
       {label}
     </Badge>
   );
+}
+
+export function acquirerExportValue(acquirer: Acquirer | null | undefined): string {
+  return acquirer ? ACQUIRER_LABELS[acquirer] : '';
+}

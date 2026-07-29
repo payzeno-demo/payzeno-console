@@ -76,3 +76,8 @@ export function numberColumn<TRow>(
     header,
     align: 'end',
     cell: (row) => read(row).toLocaleString(),
+    exportValue: (row) => String(read(row)),
+    ...options,
+  };
+}
+

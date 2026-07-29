@@ -80,3 +80,10 @@ export function IdCell({
         {clipboard.announcement}
       </span>
     </span>
+  );
+}
+
+/** Plain-text export value. The CSV always carries the full id, never the truncation. */
+export function idExportValue(value: string | null | undefined): string {
+  return value ?? '';
+}

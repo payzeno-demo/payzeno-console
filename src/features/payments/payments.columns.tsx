@@ -92,3 +92,7 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
     id: 'created_at',
     header: 'Created',
     cell: (row) => <DateCell value={row.created_at} precision="minute" />,
+    exportValue: (row) => row.created_at,
+    sortable: true,
+  },
+];

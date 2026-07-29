@@ -53,6 +53,19 @@ describe('the table', () => {
     expect(screen.getByText('succeeded')).toBeInTheDocument();
   });
 
+  it('shows an empty state when the merchant has taken no payments', async () => {
+    server.use(http.get(url('/payment_intents'), () => HttpResponse.json(makePage([]))));
+
+    renderWithProviders(<PaymentsPage />, { route: '/payments' });
+
+    await waitFor(() => {
+      expect(screen.getByRole('table')).toBeInTheDocument();
+    });
+    expect(screen.getByRole('table').querySelectorAll('tbody tr')).toHaveLength(1);
+  });
+});
+
+describe('URL-driven filters', () => {
   it('sends the status from the query string', async () => {
     const recorder = recordRequests();
     renderWithProviders(<PaymentsPage />, { route: '/payments?status=requires_capture' });
@@ -89,6 +102,26 @@ describe('the table', () => {
     recorder.stop();
   });
 
+  it('sends no status parameter for "all"', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<PaymentsPage />, { route: '/payments?status=all' });
+
+    await waitFor(() => {
+      expect(
+        recorder.requests.some((request) => request.url.includes('/payment_intents')),
+      ).toBe(true);
+    });
+
+    const request = recorder.requests.find((candidate) =>
+      candidate.url.includes('/payment_intents'),
+    );
+    recorder.stop();
+
+    expect(request?.url).not.toContain('status=');
+  });
+});
+
+describe('failure', () => {
   it('renders the error state instead of the table', async () => {
     server.use(errorHandler('get', '/payment_intents', 500, 'internal_error'));
 

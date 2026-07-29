@@ -74,3 +74,10 @@ export function CardBrandCell({ brand, lastFour, funding, country }: CardBrandCe
         </span>
       ) : null}
     </span>
+  );
+}
+
+/** CSV value. Same rule: brand and last four only. */
+export function cardExportValue(brand: CardBrand, lastFour: string): string {
+  return `${BRAND_LABELS[brand]} ${lastFour}`;
+}
