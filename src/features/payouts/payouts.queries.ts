@@ -59,3 +59,9 @@ export function createPayoutMutation(e: EndpointRegistry) {
  * return, which takes days.
  */
 export function cancelPayoutMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['payouts', 'cancel'] as const,
+    mutationFn: ({ payoutId }: { payoutId: string }): Promise<Payout> =>
+      e.payouts.cancel(payoutId),
+  };
+}
