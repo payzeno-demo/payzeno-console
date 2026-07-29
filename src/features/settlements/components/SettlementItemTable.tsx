@@ -76,3 +76,5 @@ export function SettlementItemTable({
             body="Clear the status filter to see every line in the batch."
           />
         }
+      />
+    </>
