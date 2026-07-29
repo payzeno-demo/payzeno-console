@@ -52,3 +52,6 @@ export function RetryItemButton({ batchId, itemId, disabled = false }: RetryItem
       ) : null}
 
       {errorMessage ? (
+        <span role="alert" data-tone="critical">
+          {errorMessage}
+        </span>
