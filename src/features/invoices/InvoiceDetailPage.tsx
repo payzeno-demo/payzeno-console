@@ -38,6 +38,8 @@ export function InvoiceDetailPage() {
 
   const { can } = usePermissions();
   const [voidError, setVoidError] = useState<string | null>(null);
+  const [isVoiding, setIsVoiding] = useState(false);
+
   const { data, isLoading, error, refetch } = useLegacyQuery<Invoice>(
     `/invoices/${encodeURIComponent(invoiceId)}`,
     { enabled: invoiceId.length > 0 },
@@ -53,6 +55,7 @@ export function InvoiceDetailPage() {
     return <LoadingPage label="Loading invoice" />;
   }
 
+  const outstanding = Math.max(0, data.total_minor - data.amount_paid_minor);
   const canVoid = can('settings:write') && (data.status === 'draft' || data.status === 'open');
 
   const handleVoid = () => {

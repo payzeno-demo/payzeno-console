@@ -52,3 +52,11 @@ export function fetchInvoice(invoiceId: string): Promise<Invoice> {
  * `POST /v1/invoices/:invoiceId/void` — admin only.
  *
  * There is no mutation wrapper and no invalidation: the caller reloads the list through
+ * `useLegacyQuery`'s `refetch`. That is what the legacy path costs.
+ */
+export function voidInvoice(invoiceId: string): Promise<Invoice> {
+  return fetchJson<Invoice>(`/invoices/${encodeURIComponent(invoiceId)}/void`, {
+    method: 'POST',
+    body: {},
+  });
+}

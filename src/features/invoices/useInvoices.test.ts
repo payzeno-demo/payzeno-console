@@ -46,6 +46,14 @@ describe('the legacy read', () => {
       expect(result.current.isLoading).toBe(false);
     });
 
+    const request = recorder.requests.find((candidate) => candidate.url.includes('/v1/invoices'));
+    recorder.stop();
+
+    expect(request?.url).toContain('status=open');
+    expect(request?.url).toContain('limit=10');
+  });
+
+  it('reports its own loading state, not TanStack’s', async () => {
     const { result } = renderHookWithProviders(() => useInvoices());
 
     expect(result.current.isLoading).toBe(true);
@@ -131,6 +139,16 @@ describe('errors bypass the ConsoleApiError hierarchy', () => {
 
   it('recovers the status through legacyStatus, which is how isUpstreamDown works', async () => {
     server.use(errorHandler('get', '/invoices', 502, 'processor_unavailable', 'Circuit open'));
+
+    const { result } = renderHookWithProviders(() => useInvoices());
+
+    await waitFor(() => {
+      expect(result.current.isUpstreamDown).toBe(true);
+    });
+  });
+
+  it('does not claim the upstream is down for an ordinary 500', async () => {
+    server.use(errorHandler('get', '/invoices', 500, 'internal_error'));
 
     const { result } = renderHookWithProviders(() => useInvoices());
 

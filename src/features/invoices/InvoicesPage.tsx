@@ -63,3 +63,14 @@ export function InvoicesPage() {
           columns={invoiceColumns}
           rows={rows}
           isLoading={isLoading}
+          emptyState={
+            <EmptyRows
+              title="No invoices yet"
+              body="Your first invoice is issued at the start of the month after you go live."
+            />
+          }
+        />
+      )}
+    </PageContainer>
+  );
+}

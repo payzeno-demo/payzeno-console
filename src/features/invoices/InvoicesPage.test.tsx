@@ -32,6 +32,14 @@ describe('the page', () => {
     });
   });
 
+  it('renders a labelled filter region', async () => {
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    expect(await screen.findByRole('search', { name: 'Invoice filters' })).toBeInTheDocument();
+  });
+});
+
+describe('the legacy read', () => {
   it('fetches through the legacy path rather than through InvoicesEndpoint', async () => {
     const recorder = recordRequests();
     renderWithProviders(<InvoicesPage />, { route: '/invoices' });
@@ -52,12 +60,47 @@ describe('the page', () => {
     expect(request?.headers.get('Payzeno-Version')).toBeNull();
   });
 
+  it('passes the status filter from the URL', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<InvoicesPage />, { route: '/invoices?status=open' });
+
+    await waitFor(() => {
+      expect(recorder.requests.some((request) => request.url.includes('status=open'))).toBe(
+        true,
+      );
+    });
+    recorder.stop();
+  });
+});
+
+describe('the table', () => {
+  it('renders a row per invoice', async () => {
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    const table = await screen.findByRole('table', {
+      name: /Invoices, most recent period first/,
+    });
+    await waitFor(() => {
+      expect(table.querySelectorAll('tbody tr')).toHaveLength(2);
+    });
+  });
+
   it('shows the invoice number', async () => {
     renderWithProviders(<InvoicesPage />, { route: '/invoices' });
 
     expect(await screen.findByText('PZ-2026-000412')).toBeInTheDocument();
   });
 
+  it('shows the empty state when there are no invoices', async () => {
+    server.use(http.get(url('/invoices'), () => HttpResponse.json(makePage([]))));
+
+    renderWithProviders(<InvoicesPage />, { route: '/invoices' });
+
+    expect(await screen.findByText('No invoices yet')).toBeInTheDocument();
+  });
+});
+
+describe('the legacy notice', () => {
   it('is rendered on the page', async () => {
     renderWithProviders(<InvoicesPage />, { route: '/invoices' });
 
