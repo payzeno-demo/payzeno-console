@@ -112,6 +112,37 @@ describe('409 settlement_locked — the no-op branch (PAY-2043)', () => {
     const { result } = renderHookWithProviders(() => useRetrySettlementItem());
 
     act(() => {
+      result.current.retry({ batchId: BATCH_ID, itemId: ITEM_ID });
+    });
+
+    await waitFor(() => {
+      expect(result.current.lockedItemId).toBe(ITEM_ID);
+    });
+    expect(result.current.errorMessage).toBeNull();
+  });
+
+  it('refetches the batch anyway, so the sweep result appears', async () => {
+    lockTheBatch();
+    const { result, queryClient } = renderHookWithProviders(() => useRetrySettlementItem());
+
+    queryClient.setQueryData(queryKeys.settlements.detail(BATCH_ID), { id: BATCH_ID });
+
+    act(() => {
+      result.current.retry({ batchId: BATCH_ID, itemId: ITEM_ID });
+    });
+
+    await waitFor(() => {
+      expect(
+        queryClient.getQueryState(queryKeys.settlements.detail(BATCH_ID))?.isInvalidated,
+      ).toBe(true);
+    });
+  });
+
+  it('scopes the locked marker to the item that was pressed', async () => {
+    lockTheBatch();
+    const { result } = renderHookWithProviders(() => useRetrySettlementItem());
+
+    act(() => {
       result.current.retry({ batchId: BATCH_ID, itemId: 'ri_01HW0RTITEM00000000009' });
     });
 
@@ -123,6 +154,16 @@ describe('409 settlement_locked — the no-op branch (PAY-2043)', () => {
   it('does not repeat the request — a lock is an answer', async () => {
     lockTheBatch();
     const recorder = recordRequests();
+    const { result } = renderHookWithProviders(() => useRetrySettlementItem());
+
+    act(() => {
+      result.current.retry({ batchId: BATCH_ID, itemId: ITEM_ID });
+    });
+
+    await waitFor(() => {
+      expect(result.current.lockedItemId).toBe(ITEM_ID);
+    });
+
     const retries = recorder.requests.filter((request) => request.url.includes('/retry'));
     recorder.stop();
 

@@ -44,6 +44,7 @@ export function useRetrySettlementItem(): UseRetrySettlementItemResult {
   const queryClient = useQueryClient();
   const toast = useToast();
 
+  const [lockedItemId, setLockedItemId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const invalidateBatch = useCallback(
@@ -55,6 +56,40 @@ export function useRetrySettlementItem(): UseRetrySettlementItemResult {
     },
     [queryClient],
   );
+
+  const mutation = useMutation({
+    ...retrySettlementItemMutation(endpoints),
+    onMutate: () => {
+      setLockedItemId(null);
+      setErrorMessage(null);
+    },
+    onSuccess: async (item: ReconciliationItem, variables) => {
+      toast.success(`Retry queued for ${item.id}.`);
+      await invalidateBatch(variables.batchId);
+    },
+    onError: async (error: unknown, variables) => {
+      // The no-op branch. Refetch so the row shows whatever the sweep just did to it.
+      if (error instanceof ConflictApiError && error.isSettlementLocked()) {
+        setLockedItemId(variables.itemId);
+        toast.info('This item is already being settled — refreshing.');
+        await invalidateBatch(variables.batchId);
+        return;
+      }
+
+      if (error instanceof ForbiddenError) {
+        setErrorMessage('Retrying a settlement item needs the finance role.');
+        return;
+      }
+
+      if (error instanceof ConsoleApiError) {
+        setErrorMessage(error.message);
+        toast.error(error.message);
+        return;
+      }
+
+      setErrorMessage('The retry could not be sent. Try again in a moment.');
+    },
+  });
 
   const retry = useCallback(
     ({ batchId, itemId, reason }: RetryItemArgs) => {
