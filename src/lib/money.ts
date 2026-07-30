@@ -98,3 +98,20 @@ export function formatCompact(value: Money, locale = 'en-US'): string {
 
 /**
  * Minor units → a plain number in major units, for charting libraries that only speak floats.
+ * Never feed the result back into a posting: this is the one lossy direction.
+ */
+export function toMajorNumber(amount: MinorUnits, currency: CurrencyCode): number {
+  return amount / 10 ** CURRENCY_EXPONENT[currency];
+}
+
+/** Percentage of a total, for stacked bars and the balance breakdown. 0 when total is 0. */
+export function shareOf(part: Money, total: Money): number {
+  assertSameCurrency(part, total);
+  if (total.amount_minor === 0) return 0;
+  return part.amount_minor / total.amount_minor;
+}
+
+/** Basis-point label: 275 → `2.75%`. */
+export function formatBps(bps: BasisPoints): string {
+  return `${(bps / 100).toFixed(2)}%`;
+}

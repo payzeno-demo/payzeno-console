@@ -64,8 +64,25 @@ describe('money and zero', () => {
 });
 
 describe('sumMoney', () => {
+  it('adds a list', () => {
+    const total = sumMoney([money(100, 'GBP'), money(250, 'GBP'), money(50, 'GBP')], 'GBP');
+
+    expect(total.amount_minor).toBe(400);
+    expect(total.currency).toBe('GBP');
+  });
+
   it('returns a typed zero for an empty list rather than undefined', () => {
     expect(sumMoney([], 'EUR')).toEqual({ amount_minor: 0, currency: 'EUR' });
+  });
+
+  it('sums JPY without introducing decimals', () => {
+    expect(sumMoney([money(1_200, 'JPY'), money(800, 'JPY')], 'JPY').amount_minor).toBe(2_000);
+  });
+});
+
+describe('negate and isNegative', () => {
+  it('flips the sign and keeps the currency', () => {
+    expect(negate(money(2_500, 'GBP'))).toEqual({ amount_minor: -2_500, currency: 'GBP' });
   });
 
   it('is its own inverse', () => {
@@ -80,6 +97,10 @@ describe('sumMoney', () => {
 });
 
 describe('formatSigned', () => {
+  it('prefixes a positive amount with a plus', () => {
+    expect(formatSigned(money(2_500, 'GBP'), 'en-GB')).toMatch(/^\+/);
+  });
+
   it('uses U+2212 MINUS SIGN, not a hyphen', () => {
     const rendered = formatSigned(money(-2_500, 'GBP'), 'en-GB');
 
@@ -96,6 +117,16 @@ describe('formatSigned', () => {
 });
 
 describe('formatCompact', () => {
+  it('leaves an amount under ten thousand major units in full', () => {
+    expect(formatCompact(money(12_500, 'GBP'), 'en-GB')).toBe(
+      formatMoney(money(12_500, 'GBP'), 'en-GB'),
+    );
+  });
+
+  it('compacts a large amount', () => {
+    expect(formatCompact(money(481_240_000, 'USD'), 'en-US')).toMatch(/M/);
+  });
+
   it('uses the JPY exponent when deciding what "large" means', () => {
     // 12 000 JPY is 12 000 major units — over the threshold, unlike 12 000 pence.
     expect(formatCompact(money(12_000, 'JPY'), 'en-US')).toMatch(/K/);
@@ -115,6 +146,10 @@ describe('toMajorNumber', () => {
 });
 
 describe('shareOf', () => {
+  it('returns the ratio of one amount to another', () => {
+    expect(shareOf(money(2_500, 'GBP'), money(10_000, 'GBP'))).toBe(0.25);
+  });
+
   it('returns zero rather than Infinity when the total is zero', () => {
     expect(shareOf(money(2_500, 'GBP'), money(0, 'GBP'))).toBe(0);
   });
@@ -125,8 +160,15 @@ describe('shareOf', () => {
 });
 
 describe('formatBps', () => {
+  it('renders basis points as a percentage with two decimals', () => {
+    expect(formatBps(175)).toBe('1.75%');
+  });
+
   it('renders zero', () => {
     expect(formatBps(0)).toBe('0.00%');
   });
 
+  it('renders a whole percent without dropping the decimals', () => {
+    expect(formatBps(100)).toBe('1.00%');
+  });
 });

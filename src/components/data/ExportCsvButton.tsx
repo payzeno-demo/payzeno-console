@@ -76,6 +76,90 @@ function useCachedRows<TRow>(resource: string | undefined, visible: ReadonlyArra
     const unique: TRow[] = [];
     for (const row of collected) {
       const id = (row as { id?: unknown }).id;
+      const key = typeof id === 'string' ? id : JSON.stringify(row);
+      if (seen.has(key)) continue;
+      seen.add(key);
+      unique.push(row);
+    }
+
+    return unique;
+  }, [queryClient, resource, visible]);
+}
+
+export function ExportCsvButton<TRow>({
+  columns,
+  rows,
+  filename,
+  resource,
+  totalMinorOf,
+  currency = 'USD',
+  disabled = false,
+}: ExportCsvButtonProps<TRow>) {
+  const [status, setStatus] = useState<string>('');
+  const [isBusy, setBusy] = useState(false);
+  const collect = useCachedRows(typeof resource === 'string' ? resource : undefined, rows);
+
+  const onExport = useCallback(() => {
+    setBusy(true);
+    try {
+      const all = collect();
+
+      if (all.length > CSV_EXPORT_ROW_LIMIT) {
+        setStatus(
+          `That is ${all.length} rows — more than the ${CSV_EXPORT_ROW_LIMIT} this browser export handles. Narrow the filters first.`,
+        );
+        return;
+      }
+
+      const blob = toCsvBlob(all, columns);
+      const name = filename ?? csvFilename(typeof resource === 'string' ? resource : 'export');
+      downloadBlob(blob, name);
+
+      const total = totalMinorOf ? all.reduce((sum, row) => sum + totalMinorOf(row), 0) : null;
+      setStatus(
+        total === null
+          ? `Exported ${all.length} rows.`
+          : `Exported ${all.length} rows, ${formatAmount(total, currency)}.`,
+      );
+
+      trackEvent('export.csv', { resource: String(resource ?? 'unknown'), rows: all.length });
+    } catch (error) {
+      if (error instanceof CsvExportError) {
+        setStatus(`Could not export: ${error.displayMessage}`);
+      } else {
+        setStatus('Could not export this table.');
+      }
+      captureError(error, { feature: 'export-csv' });
+    } finally {
+      setBusy(false);
+    }
+  }, [collect, columns, currency, filename, resource, totalMinorOf]);
+
+  return (
+    <span
+      className={pz('export-csv')}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: space[2] }}
+    >
+      <Button
+        size="sm"
+        variant="secondary"
+        onClick={onExport}
+        disabled={disabled || rows.length === 0}
+        isLoading={isBusy}
+      >
+        Export CSV
+      </Button>
+
+      <span
+        aria-live="polite"
+        style={
+          status.startsWith('Could not') || status.includes('more than')
+            ? { fontFamily: font.family, fontSize: font.size.sm, color: color.danger }
+            : (visuallyHidden as React.CSSProperties)
+        }
+      >
+        {status}
+      </span>
     </span>
   );
 }

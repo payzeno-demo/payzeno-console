@@ -507,3 +507,52 @@ const bankAccountHandlers = [
         currency: body.currency as 'GBP',
         scheme: body.scheme as 'iban',
         status: 'new',
+        is_default: false,
+      }),
+      201,
+    );
+  }),
+];
+
+/**
+ * The legacy invoices path. `features/invoices` still goes through
+ * `src/api/legacy/fetch-json.ts` rather than `InvoicesEndpoint` (ADR 0004, blueprint §8.1),
+ * and that helper builds its own URL — so the invoice handlers above are registered for both
+ * shapes and the legacy path gets no special treatment. If the migration ever lands, nothing
+ * in this file changes, which is the point.
+ */
+export const handlers = [
+  ...authHandlers,
+  ...paymentIntentHandlers,
+  ...chargeHandlers,
+  ...refundHandlers,
+  ...disputeHandlers,
+  ...balanceHandlers,
+  ...payoutHandlers,
+  ...settlementHandlers,
+  ...invoiceHandlers,
+  ...developerHandlers,
+  ...reportingHandlers,
+  ...bankAccountHandlers,
+];
+
+/**
+ * Convenience overrides for the error paths every feature has to render. Used with
+ * `server.use(...)` inside a single test.
+ */
+export function errorHandler(
+  method: 'get' | 'post',
+  path: string,
+  status: number,
+  code: string,
+  message = 'Synthetic failure',
+  extra: Record<string, unknown> = {},
+): ReturnType<typeof http.get> {
+  const responder = () =>
+    HttpResponse.json(
+      { error: { code, message, request_id: 'req_msw_error', ...extra } },
+      { status, headers: requestIdHeaders },
+    );
+
+  return method === 'get' ? http.get(url(path), responder) : http.post(url(path), responder);
+}

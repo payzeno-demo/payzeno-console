@@ -29,3 +29,82 @@ export function failureHint(code: PayoutFailureCode): string {
       return 'The account details were rejected by the bank.';
     case 'debit_not_authorized':
       return 'Your bank refused the debit. A mandate may be missing.';
+    case 'insufficient_funds':
+      return 'The debit could not be taken — the account was short.';
+    case 'bank_rejected':
+      return 'The receiving bank rejected the transfer without a reason code.';
+  }
+}
+
+/** Statuses where money is still in motion; the row keeps its live accent. */
+export const IN_FLIGHT_STATUSES: ReadonlySet<PayoutStatus> = new Set(['scheduled', 'in_transit']);
+
+export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
+  {
+    id: 'id',
+    header: 'Payout',
+    width: '16rem',
+    cell: (row) => (
+      <Link to={ROUTES.payouts.detail(row.id)}>
+        <IdCell value={row.id} />
+      </Link>
+    ),
+    exportValue: (row) => row.id,
+  },
+  {
+    id: 'status',
+    header: 'Status',
+    cell: (row) => (
+      <StatusPill
+        status={row.status}
+        label={humanise(row.status)}
+        title={row.failure_code ? failureHint(row.failure_code) : undefined}
+      />
+    ),
+    exportValue: (row) => row.status,
+  },
+  {
+    id: 'amount_minor',
+    header: 'Amount',
+    align: 'end',
+    sortable: true,
+    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    exportValue: (row) => String(row.amount_minor),
+  },
+  {
+    id: 'bank',
+    header: 'To',
+    cell: (row) => <span>{row._bankLabel}</span>,
+    exportValue: (row) => row._bankLabel,
+  },
+  {
+    id: 'method',
+    header: 'Method',
+    cell: (row) => <span>{labelise(row.method)}</span>,
+    exportValue: (row) => row.method,
+  },
+  {
+    id: 'available_on',
+    header: 'Available on',
+    sortable: true,
+    cell: (row) => <DateCell value={row.available_on} precision="day" />,
+    exportValue: (row) => row.available_on,
+  },
+  {
+    id: 'arrival_estimate',
+    header: 'Expected arrival',
+    cell: (row) =>
+      row.arrival_estimate ? (
+        <DateCell value={row.arrival_estimate} precision="day" />
+      ) : (
+        <span>—</span>
+      ),
+    exportValue: (row) => row.arrival_estimate ?? '',
+  },
+  {
+    id: 'failure_code',
+    header: 'Failure',
+    cell: (row) => <span>{row.failure_code ? humanise(row.failure_code) : '—'}</span>,
+    exportValue: (row) => row.failure_code ?? '',
+  },
+];

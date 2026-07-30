@@ -63,6 +63,18 @@ describe('JPY — the exponent that catches everyone', () => {
 });
 
 describe('missing amounts', () => {
+  it('renders an em dash when there is nothing to show', () => {
+    renderBare(<MoneyCell />);
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
+  it('renders an em dash when a currency is given but no amount', () => {
+    renderBare(<MoneyCell currency="GBP" />);
+
+    expect(screen.getByText('—')).toBeInTheDocument();
+  });
+
   it('renders zero as a real zero, not as a dash', () => {
     renderBare(<MoneyCell amountMinor={0} currency="GBP" />);
 
@@ -93,6 +105,13 @@ describe('signed amounts', () => {
 });
 
 describe('presentation', () => {
+  it('uses tabular numerals so columns of figures line up', () => {
+    const { container } = renderBare(<MoneyCell amountMinor={1_000} currency="GBP" />);
+    const cell = container.querySelector('span');
+
+    expect(cell).toHaveStyle({ fontVariantNumeric: 'tabular-nums' });
+  });
+
   it('never wraps an amount across two lines', () => {
     const { container } = renderBare(<MoneyCell amountMinor={123_456_789} currency="GBP" />);
 
@@ -101,6 +120,10 @@ describe('presentation', () => {
 });
 
 describe('moneyExportValue', () => {
+  it('exports raw minor units with the currency, for a spreadsheet', () => {
+    expect(moneyExportValue(12_500, 'GBP')).toBe('12500 GBP');
+  });
+
   it('does not scale JPY on the way out either', () => {
     expect(moneyExportValue(1_200, 'JPY')).toBe('1200 JPY');
   });

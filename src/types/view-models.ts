@@ -114,3 +114,12 @@ export interface BankAccountRow extends BankAccount, RowSelection {
 }
 
 export interface TeamMemberRow extends User, RowSelection {
+  /** True for the currently signed-in user — the row that cannot be removed. */
+  _isSelf: boolean;
+}
+
+/** Balance plus the derived view the balance cards actually render. */
+export interface BalanceView extends Balance {
+  _hasNegative: boolean;
+  _byType: ReadonlyMap<BalanceBucket['type'], BalanceBucket>;
+}

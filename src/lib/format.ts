@@ -94,3 +94,21 @@ export function formatBytes(bytes: number): string {
   const units = ['kB', 'MB', 'GB'];
   let value = bytes / 1024;
   let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+  return `${value.toFixed(1)} ${units[unitIndex]}`;
+}
+
+/** Join with commas and a final "and". `['a','b','c']` → `a, b and c`. */
+export function listSentence(items: ReadonlyArray<string>): string {
+  if (items.length === 0) return '';
+  if (items.length === 1) return items[0] ?? '';
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
+}
+
+/** Pluralise on count. `pluralise(1,'item')` → `1 item`, `pluralise(3,'item')` → `3 items`. */
+export function pluralise(count: number, singular: string, plural = `${singular}s`): string {
+  return `${formatCount(count)} ${count === 1 ? singular : plural}`;
+}

@@ -92,3 +92,22 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     </ToastContext.Provider>
   );
 }
+
+/**
+ * The toast API.
+ *
+ * Falls back to a no-op implementation outside a provider rather than throwing: a mutation
+ * hook under test should not have to stand up the toast tree just to assert its return value.
+ */
+export function useToast(): ToastApi {
+  return useContext(ToastContext) ?? NOOP_TOASTS;
+}
+
+const NOOP_TOASTS: ToastApi = {
+  success: () => undefined,
+  error: () => undefined,
+  info: () => undefined,
+  warning: () => undefined,
+  dismiss: () => undefined,
+  clear: () => undefined,
+};
