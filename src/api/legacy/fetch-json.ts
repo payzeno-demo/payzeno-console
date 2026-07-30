@@ -48,3 +48,12 @@ export async function fetchJson<T>(path: string, options: FetchJsonOptions = {})
   const response = await fetch(buildUrl(path, options.query), {
     method,
     headers,
+    credentials: 'include',
+    body: options.body === undefined ? undefined : JSON.stringify(options.body),
+    signal: options.signal,
+  });
+
+  const text = await response.text();
+  if (!response.ok) throwLegacyError(response.status, text);
+  return (text ? JSON.parse(text) : undefined) as T;
+}
