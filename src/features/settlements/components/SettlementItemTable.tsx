@@ -71,3 +71,12 @@ export function SettlementItemTable({
         rows={rows}
         isLoading={isLoading}
         emptyState={
+          <EmptyRows
+            title="No items match this filter"
+            body="Clear the status filter to see every line in the batch."
+          />
+        }
+      />
+    </>
+  );
+}

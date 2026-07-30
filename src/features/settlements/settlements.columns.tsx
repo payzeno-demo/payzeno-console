@@ -72,3 +72,11 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
     exportValue: (row) => String(row.net_minor),
     sortable: true,
   },
+  {
+    id: 'funded_at',
+    header: 'Funded',
+    cell: (row) =>
+      row.funded_at ? <DateCell value={row.funded_at} precision="minute" /> : <span>—</span>,
+    exportValue: (row) => row.funded_at ?? '',
+  },
+];

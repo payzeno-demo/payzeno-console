@@ -60,6 +60,15 @@ describe('the request', () => {
       expect(result.current.rows).toEqual([]);
     });
 
+    const requests = recorder.requests.filter((candidate) => candidate.url.includes('/items'));
+    recorder.stop();
+
+    expect(requests).toHaveLength(0);
+  });
+});
+
+describe('the rows', () => {
+  it('returns every item in the batch', async () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {
@@ -119,6 +128,17 @@ describe('the request', () => {
       ),
     );
 
+    const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
+
+    await waitFor(() => {
+      expect(result.current.rows).toHaveLength(1);
+    });
+    expect(result.current.rows[0]?._isDuplicateSuspect).toBe(false);
+  });
+});
+
+describe('the rollup', () => {
+  it('sums expected across every line, including the unmatched one', async () => {
     const { result } = renderHookWithProviders(() => useSettlementItems(BATCH_ID));
 
     await waitFor(() => {

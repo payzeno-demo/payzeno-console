@@ -130,3 +130,12 @@ export function settlementItemColumns(
         ),
       exportValue: (row) => row.last_attempt_at ?? '',
     },
+    {
+      id: 'retry',
+      header: 'Retry',
+      align: 'end',
+      cell: (row) => <RetryItemButton batchId={batchId} itemId={row.id} disabled={!row._isRetryable} />,
+      exportValue: () => '',
+    },
+  ];
+}

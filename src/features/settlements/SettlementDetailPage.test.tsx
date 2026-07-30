@@ -243,3 +243,27 @@ describe('retrying an item', () => {
     const button = await screen.findByRole('button', {
       name: 'Retry settlement item ri_01HW0RTITEM00000000001',
     });
+    await user.click(button);
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('That item is not retryable.');
+  });
+});
+
+describe('permissions', () => {
+  it('offers no retry control at all to a viewer', async () => {
+    server.use(
+      http.get(url('/settlements/:batchId'), () =>
+        HttpResponse.json(makeSettlementBatch({ id: BATCH_ID })),
+      ),
+    );
+
+    renderWithProviders(<SettlementDetailPage />, {
+      route: ROUTE,
+      path: PATTERN,
+      session: makeViewerSession(),
+    });
+
+    await screen.findByRole('table');
+    expect(screen.queryByRole('button', { name: /^Retry settlement item/ })).not.toBeInTheDocument();
+  });
+});

@@ -61,3 +61,14 @@ export function BatchTotalsPanel({ totals, currency, isLoading }: BatchTotalsPan
       </dl>
 
       {overposted ? (
+        <Alert tone="critical" title="Posted total is above the expected total">
+          More has been posted to your ledger for this batch than the acquirer file expected.
+          {totals.duplicateCount > 0
+            ? ` ${totals.duplicateCount} item(s) settled after more than one attempt.`
+            : ''}{' '}
+          Contact support with this batch id — do not retry further items.
+        </Alert>
+      ) : null}
+    </Card>
+  );
+}
