@@ -100,3 +100,9 @@ export function formatBytes(bytes: number): string {
   }
   return `${value.toFixed(1)} ${units[unitIndex]}`;
 }
+
+/** Join with commas and a final "and". `['a','b','c']` → `a, b and c`. */
+export function listSentence(items: ReadonlyArray<string>): string {
+  if (items.length === 0) return '';
+  if (items.length === 1) return items[0] ?? '';
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
