@@ -81,3 +81,8 @@ export function numberColumn<TRow>(
   };
 }
 
+/** Total declared width, used to decide whether the table needs horizontal scroll. */
+export function totalWidth<TRow>(columns: ReadonlyArray<ColumnDef<TRow>>): string {
+  const declared = columns.map((column) => column.width).filter(Boolean);
+  return declared.length === columns.length ? declared.join(' + ') : 'auto';
+}

@@ -76,3 +76,9 @@ export function DataTableHeader<TRow>({
                 column.header
               )}
             </th>
+          );
+        })}
+      </tr>
+    </thead>
+  );
+}

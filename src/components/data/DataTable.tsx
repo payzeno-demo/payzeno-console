@@ -132,3 +132,11 @@ export function DataTable<TRow extends { id: string }>({
                 row={row}
                 columns={columns}
                 onRowClick={onRowClick}
+              />
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}
