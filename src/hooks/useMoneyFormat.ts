@@ -48,3 +48,7 @@ export function useMoneyFormat(locale?: string): MoneyFormatter {
     () => ({
       format,
       formatMinor: formatMinorUnits,
+      formatSigned: signed,
+      formatCompact: compact,
+      locale: resolved,
+    }),
