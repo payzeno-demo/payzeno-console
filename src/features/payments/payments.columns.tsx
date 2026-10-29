@@ -11,8 +11,9 @@ import { DateCell } from '@components/data/DateCell';
 import { IdCell } from '@components/data/IdCell';
 import { MoneyCell } from '@components/data/MoneyCell';
 import { StatusPill } from '@components/data/StatusPill';
+import { Badge } from '@components/ui/Badge';
 import { ROUTES } from '@/routes';
-import type { PaymentIntentRow } from '@types/view-models';
+import type { PaymentIntentRow } from '@/types/view-models';
 
 /** What a merchant should do next, in the words they use rather than ours. */
 export function statusHint(status: PaymentIntentStatus): string {
@@ -62,11 +63,29 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
     id: 'status',
     header: 'Status',
     cell: (row) => (
-      <StatusPill
-        status={row.status}
-        label={row.status.replace(/_/g, ' ')}
-        title={statusHint(row.status)}
-      />
+      <>
+        <StatusPill
+          status={row.status}
+          label={row.status.replace(/_/g, ' ')}
+          title={statusHint(row.status)}
+        />
+        {row._reviewState === 'held' ? (
+          <>
+            {' '}
+            <Badge tone="warning" size="sm" srPrefix="Risk review">
+              Held for review
+            </Badge>
+          </>
+        ) : null}
+        {row._reviewState === 'reviewed' ? (
+          <>
+            {' '}
+            <Badge tone="neutral" size="sm" srPrefix="Risk review">
+              Reviewed
+            </Badge>
+          </>
+        ) : null}
+      </>
     ),
     exportValue: (row) => row.status,
   },
@@ -79,8 +98,17 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
   {
     id: 'customer_reference',
     header: 'Customer',
-    cell: (row) => <span>{row.customer_reference ?? '—'}</span>,
-    exportValue: (row) => row.customer_reference ?? '',
+    // RFC platform-v2 §5: a payment tied to a `Customer` links to it; the merchant's own
+    // free-text reference is still shown, because that is what their support team searches by.
+    cell: (row) =>
+      row.customer_id ? (
+        <Link to={ROUTES.customers.detail(row.customer_id)}>
+          {row.customer_reference ?? <IdCell value={row.customer_id} />}
+        </Link>
+      ) : (
+        <span>{row.customer_reference ?? '—'}</span>
+      ),
+    exportValue: (row) => row.customer_reference ?? row.customer_id ?? '',
   },
   {
     id: 'description',
@@ -91,7 +119,7 @@ export const paymentIntentColumns: ReadonlyArray<ColumnDef<PaymentIntentRow>> = 
   {
     id: 'created_at',
     header: 'Created',
-    cell: (row) => <DateCell value={row.created_at} precision="minute" />,
+    cell: (row) => <DateCell value={row.created_at} />,
     exportValue: (row) => row.created_at,
     sortable: true,
   },

@@ -98,6 +98,26 @@ export function PayoutDetailPage() {
             <MoneyCell amountMinor={payout.amount_minor} currency={payout.currency} />
           </dd>
 
+          {typeof payout.source_amount_minor === 'number' && payout.source_currency ? (
+            <>
+              <dt>Paid from balance</dt>
+              <dd>
+                <MoneyCell
+                  amountMinor={payout.source_amount_minor}
+                  currency={payout.source_currency}
+                />{' '}
+                ({payout.source_currency} balance, converted to {payout.currency})
+              </dd>
+
+              <dt>Conversion rate</dt>
+              <dd>
+                {payout.fx_rate
+                  ? `1 ${payout.source_currency} = ${payout.fx_rate} ${payout.currency}`
+                  : 'Set when the payout is sent'}
+              </dd>
+            </>
+          ) : null}
+
           <dt>Destination</dt>
           <dd>
             <Link to={ROUTES.settings.index}>
@@ -107,13 +127,13 @@ export function PayoutDetailPage() {
 
           <dt>Available on</dt>
           <dd>
-            <DateCell value={payout.available_on} precision="day" />
+            <DateCell value={payout.available_on} mode="banking" />
           </dd>
 
           <dt>Expected arrival</dt>
           <dd>
             {payout.arrival_estimate ? (
-              <DateCell value={payout.arrival_estimate} precision="day" />
+              <DateCell value={payout.arrival_estimate} mode="banking" />
             ) : (
               '—'
             )}
@@ -121,22 +141,22 @@ export function PayoutDetailPage() {
 
           <dt>Initiated</dt>
           <dd>
-            <DateCell value={payout.initiated_at} precision="minute" />
+            <DateCell value={payout.initiated_at} />
           </dd>
 
           <dt>Paid</dt>
           <dd>
-            <DateCell value={payout.paid_at} precision="minute" />
+            <DateCell value={payout.paid_at} />
           </dd>
 
           <dt>Failed</dt>
           <dd>
-            <DateCell value={payout.failed_at} precision="minute" />
+            <DateCell value={payout.failed_at} />
           </dd>
 
           <dt>Returned</dt>
           <dd>
-            <DateCell value={payout.returned_at} precision="minute" />
+            <DateCell value={payout.returned_at} />
           </dd>
         </dl>
       </Card>

@@ -2,8 +2,9 @@
  * `useCreatePayout`.
  *
  * Two failure codes get their own copy because they are the two a merchant actually hits and
- * neither is self-explanatory from the status alone: `payout_blocked` (negative balance) and
- * `currency_mismatch` (Payzeno does not convert — domain-model.md §8).
+ * neither is self-explanatory from the status alone: `payout_blocked` (negative balance, or —
+ * since RFC platform-v2 §7 — a payout from the same balance already in flight) and
+ * `currency_mismatch` (a pair the ledger cannot convert; before §7 Payzeno never converted).
  */
 import { describe, expect, it } from 'vitest';
 
@@ -53,7 +54,7 @@ describe('creating a payout', () => {
         currency: 'GBP',
         amountMinor: 250_000,
         bankAccountId: 'ba_01HW0RTBANKACCOUNT0001',
-        method: 'instant',
+        method: 'faster_payments',
         statementDescriptor: 'NORTHWIND PAYOUT',
       });
     });
@@ -65,7 +66,7 @@ describe('creating a payout', () => {
       currency: 'GBP',
       amount_minor: 250_000,
       bank_account_id: 'ba_01HW0RTBANKACCOUNT0001',
-      method: 'instant',
+      method: 'faster_payments',
       statement_descriptor: 'NORTHWIND PAYOUT',
     });
   });
@@ -139,7 +140,7 @@ describe('the failure branches', () => {
     });
   });
 
-  it('explains currency_mismatch by saying Payzeno does not convert', async () => {
+  it('explains currency_mismatch as a conversion Payzeno cannot make (RFC platform-v2 §7)', async () => {
     server.use(
       errorHandler('post', '/payouts', 422, 'currency_mismatch', 'Account is EUR.', {
         field_errors: [{ path: 'bank_account_id', message: 'Held in EUR.' }],
@@ -153,9 +154,23 @@ describe('the failure branches', () => {
     });
 
     await waitFor(() => {
-      expect(result.current.errorMessage).toContain('does not convert');
+      expect(result.current.errorMessage).toContain('cannot convert');
     });
     expect(result.current.fieldErrors).toEqual({ bank_account_id: 'Held in EUR.' });
+  });
+
+  it('explains a 422 payout_blocked as a payout already in flight from this balance', async () => {
+    server.use(errorHandler('post', '/payouts', 422, 'payout_blocked', 'In flight.'));
+
+    const { result } = renderHookWithProviders(() => useCreatePayout());
+
+    act(() => {
+      result.current.createPayout({ currency: 'GBP' });
+    });
+
+    await waitFor(() => {
+      expect(result.current.errorMessage).toMatch(/already on its way/);
+    });
   });
 
   it('shows the server message for an ordinary 422', async () => {

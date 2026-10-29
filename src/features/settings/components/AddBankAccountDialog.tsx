@@ -212,7 +212,7 @@ export function AddBankAccountDialog({
           id="bank-default"
           label={`Use as my default ${currency} payout account`}
           checked={makeDefault}
-          onCheckedChange={setMakeDefault}
+          onCheckedChange={(checked) => setMakeDefault(checked === true)}
         />
 
         {vaultError ? <InlineError id="bank-vault-error">{vaultError}</InlineError> : null}

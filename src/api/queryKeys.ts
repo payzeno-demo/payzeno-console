@@ -9,16 +9,31 @@
 import type {
   ChargeListQuery,
   CurrencyCode,
+  CustomerListQuery,
   ListQuery,
   PaymentIntentListQuery,
   ReportingWindow,
+  ReviewListQuery,
+  SubscriptionListQuery,
   TimeseriesInterval,
 } from '@payzeno/contracts';
 
-/** Anything a list route accepts. Stringified into the key so filters bust the cache. */
-export type AnyListQuery = ListQuery & Record<string, unknown>;
+import type { DisputeListQuery } from './endpoints/disputes.endpoint';
+import type { InvoiceListQuery } from './endpoints/invoices.endpoint';
+import type { PayoutListQuery } from './endpoints/payouts.endpoint';
+import type { RefundListQuery } from './endpoints/refunds.endpoint';
+import type {
+  SettlementItemListQuery,
+  SettlementListQuery,
+} from './endpoints/settlements.endpoint';
+import type { WebhookEventListQuery } from './endpoints/webhook-events.endpoint';
 
-function normalize(q?: AnyListQuery): Record<string, unknown> {
+/**
+ * Stringified into the key so filters bust the cache. Each `list` below takes its route's own
+ * `ListQuery` subtype: they are interfaces, so a `ListQuery & Record<string, unknown>`
+ * catch-all rejects every one of them (an interface has no implicit index signature).
+ */
+function normalize(q?: ListQuery): Record<string, unknown> {
   if (!q) return {};
   const entries = Object.entries(q)
     .filter(([, v]) => v !== undefined && v !== null && v !== '')
@@ -47,32 +62,34 @@ export const queryKeys = {
 
   refunds: {
     all: ['refunds'] as const,
-    list: (q?: AnyListQuery) => ['refunds', 'list', normalize(q)] as const,
+    list: (q?: RefundListQuery) => ['refunds', 'list', normalize(q)] as const,
     detail: (id: string) => ['refunds', 'detail', id] as const,
   },
 
   disputes: {
     all: ['disputes'] as const,
-    list: (q?: AnyListQuery) => ['disputes', 'list', normalize(q)] as const,
+    list: (q?: DisputeListQuery) => ['disputes', 'list', normalize(q)] as const,
     detail: (id: string) => ['disputes', 'detail', id] as const,
   },
 
   balance: {
     all: ['balance'] as const,
     current: (currency: CurrencyCode) => ['balance', 'current', currency] as const,
+    /** RFC platform-v2 §7: every currency at once. Under `all`, so payouts invalidate it. */
+    list: () => ['balance', 'list'] as const,
   },
 
   payouts: {
     all: ['payouts'] as const,
-    list: (q?: AnyListQuery) => ['payouts', 'list', normalize(q)] as const,
+    list: (q?: PayoutListQuery) => ['payouts', 'list', normalize(q)] as const,
     detail: (id: string) => ['payouts', 'detail', id] as const,
   },
 
   settlements: {
     all: ['settlements'] as const,
-    list: (q?: AnyListQuery) => ['settlements', 'list', normalize(q)] as const,
+    list: (q?: SettlementListQuery) => ['settlements', 'list', normalize(q)] as const,
     detail: (batchId: string) => ['settlements', 'detail', batchId] as const,
-    items: (batchId: string, q?: AnyListQuery) =>
+    items: (batchId: string, q?: SettlementItemListQuery) =>
       ['settlements', 'items', batchId, normalize(q)] as const,
     item: (batchId: string, itemId: string) =>
       ['settlements', 'items', batchId, 'item', itemId] as const,
@@ -80,7 +97,7 @@ export const queryKeys = {
 
   invoices: {
     all: ['invoices'] as const,
-    list: (q?: AnyListQuery) => ['invoices', 'list', normalize(q)] as const,
+    list: (q?: InvoiceListQuery) => ['invoices', 'list', normalize(q)] as const,
     detail: (id: string) => ['invoices', 'detail', id] as const,
   },
 
@@ -92,7 +109,7 @@ export const queryKeys = {
 
   webhookEvents: {
     all: ['webhook_events'] as const,
-    list: (q?: AnyListQuery) => ['webhook_events', 'list', normalize(q)] as const,
+    list: (q?: WebhookEventListQuery) => ['webhook_events', 'list', normalize(q)] as const,
     detail: (id: string) => ['webhook_events', 'detail', id] as const,
   },
 
@@ -124,6 +141,39 @@ export const queryKeys = {
   users: {
     all: ['users'] as const,
     list: (merchantId: string) => ['users', 'list', merchantId] as const,
+  },
+
+  // -- RFC platform-v2 -------------------------------------------------------------------
+
+  /** A singleton per merchant. Submitting it also invalidates `session` (merchant status). */
+  onboarding: {
+    all: ['onboarding'] as const,
+    current: () => ['onboarding', 'current'] as const,
+  },
+
+  customers: {
+    all: ['customers'] as const,
+    list: (q?: CustomerListQuery) => ['customers', 'list', normalize(q)] as const,
+    detail: (id: string) => ['customers', 'detail', id] as const,
+    paymentMethods: (id: string) => ['customers', 'payment_methods', id] as const,
+  },
+
+  prices: {
+    all: ['prices'] as const,
+    list: (q?: ListQuery) => ['prices', 'list', normalize(q)] as const,
+    detail: (id: string) => ['prices', 'detail', id] as const,
+  },
+
+  subscriptions: {
+    all: ['subscriptions'] as const,
+    list: (q?: SubscriptionListQuery) => ['subscriptions', 'list', normalize(q)] as const,
+    detail: (id: string) => ['subscriptions', 'detail', id] as const,
+  },
+
+  reviews: {
+    all: ['reviews'] as const,
+    list: (q?: ReviewListQuery) => ['reviews', 'list', normalize(q)] as const,
+    detail: (id: string) => ['reviews', 'detail', id] as const,
   },
 } as const;
 

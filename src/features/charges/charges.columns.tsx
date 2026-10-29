@@ -10,7 +10,7 @@ import { IdCell } from '@components/data/IdCell';
 import { MoneyCell } from '@components/data/MoneyCell';
 import { StatusPill } from '@components/data/StatusPill';
 import { ROUTES } from '@/routes';
-import type { ChargeRow } from '@types/view-models';
+import type { ChargeRow } from '@/types/view-models';
 
 /** Plain-English decline reasons. Merchants forward these to their customers verbatim. */
 export function explainDecline(code: DeclineCode): string {
@@ -117,7 +117,7 @@ export const chargeColumns: ReadonlyArray<ColumnDef<ChargeRow>> = [
   {
     id: 'created_at',
     header: 'Created',
-    cell: (row) => <DateCell value={row.created_at} precision="minute" />,
+    cell: (row) => <DateCell value={row.created_at} />,
     exportValue: (row) => row.created_at,
     sortable: true,
   },

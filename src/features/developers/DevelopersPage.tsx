@@ -12,6 +12,7 @@ import { API_KEY_SCOPES } from '@payzeno/contracts';
 import type { ApiKeyMode, ApiKeyScope, PublicEventType } from '@payzeno/contracts';
 
 import { DataTable } from '@components/data/DataTable';
+import type { ColumnDef } from '@components/data/DataTable';
 import { DataTablePagination } from '@components/data/DataTablePagination';
 import { EmptyRows } from '@components/data/EmptyRows';
 import { FilterBar } from '@components/data/FilterBar';
@@ -26,11 +27,13 @@ import { Input } from '@components/ui/Input';
 import { Label } from '@components/ui/Label';
 import { Select } from '@components/ui/Select';
 import { Tabs } from '@components/ui/Tabs';
+import type { TabSpec } from '@components/ui/Tabs';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { usePermissions } from '@hooks/usePermissions';
 import { useStringParam } from '@hooks/useQueryParamState';
 import { allFlags } from '@lib/flags';
 import { pluralise } from '@lib/format';
+import type { ApiKeyRow } from '@/types/view-models';
 
 import { apiKeyColumns } from './api-keys.columns';
 import { SecretRevealOnce } from './components/SecretRevealOnce';
@@ -39,12 +42,6 @@ import { useCreateApiKey } from './useCreateApiKey';
 import { useWebhookEndpoints } from './useWebhookEndpoints';
 import { useWebhookEvents } from './useWebhookEvents';
 import { COMMON_EVENT_TYPES, webhookEventColumns } from './webhook-events.columns';
-
-const TABS = [
-  { value: 'keys', label: 'API keys' },
-  { value: 'webhooks', label: 'Webhooks' },
-  { value: 'build', label: 'Build info' },
-];
 
 export function DevelopersPage() {
   useDocumentTitle('Developers');
@@ -68,16 +65,34 @@ export function DevelopersPage() {
   // Read scopes by default: a key that can move money should be an explicit choice.
   const defaultScopes: ApiKeyScope[] = API_KEY_SCOPES.filter((scope) => scope.endsWith(':read'));
 
-  return (
-    <PageContainer as="main">
-      <PageHeader
-        title="Developers"
-        description="Keys, webhooks and everything you need to integrate."
-      />
+  // `DataTableProps` is frozen, so a per-row action is a column (id `actions`, which every
+  // export skips) — the same shape as the settlement item table's Retry button.
+  const liveKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = canWrite
+    ? [
+        ...apiKeyColumns,
+        {
+          id: 'actions',
+          header: 'Actions',
+          align: 'end',
+          cell: (row) => (
+            <Button
+              type="button"
+              variant="ghost"
+              aria-label={`Revoke ${row.name}`}
+              onClick={() => revoke(row.id)}
+            >
+              Revoke
+            </Button>
+          ),
+        },
+      ]
+    : apiKeyColumns;
 
-      <Tabs value={tab} onValueChange={setTab} label="Developer sections" tabs={TABS} />
-
-      {tab === 'keys' ? (
+  const tabs: ReadonlyArray<TabSpec> = [
+    {
+      id: 'keys',
+      label: 'API keys',
+      content: (
         <>
           {secret && createdKey ? (
             <SecretRevealOnce apiKey={createdKey} secret={secret} onDismiss={clearSecret} />
@@ -127,21 +142,9 @@ export function DevelopersPage() {
 
           <DataTable
             caption="Live API keys"
-            columns={apiKeyColumns}
+            columns={liveKeyColumns}
             rows={liveKeys}
             isLoading={keysLoading}
-            rowActions={(row) =>
-              canWrite ? (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  aria-label={`Revoke ${row.name}`}
-                  onClick={() => revoke(row.id)}
-                >
-                  Revoke
-                </Button>
-              ) : null
-            }
             emptyState={
               <EmptyRows title="No live keys" body="Create one when you are ready to go live." />
             }
@@ -165,9 +168,12 @@ export function DevelopersPage() {
             />
           ) : null}
         </>
-      ) : null}
-
-      {tab === 'webhooks' ? (
+      ),
+    },
+    {
+      id: 'webhooks',
+      label: 'Webhooks',
+      content: (
         <>
           {deadCount > 0 ? (
             <Alert tone="warning" title="Some events were given up on" role="status">
@@ -222,13 +228,23 @@ export function DevelopersPage() {
                   />
                 }
               />
-              <DataTablePagination pagination={pagination} label="Webhook delivery pages" />
+              <DataTablePagination
+                pageNumber={pagination.pageNumber}
+                canGoBack={pagination.canGoBack}
+                canGoForward={pagination.canGoForward}
+                onPrevious={pagination.goBack}
+                onNext={pagination.goNext}
+                resourceLabel="webhook deliveries"
+              />
             </>
           )}
         </>
-      ) : null}
-
-      {tab === 'build' ? (
+      ),
+    },
+    {
+      id: 'build',
+      label: 'Build info',
+      content: (
         <Card as="section" aria-label="Build information">
           <h2>Build info</h2>
           <dl>
@@ -241,7 +257,18 @@ export function DevelopersPage() {
           </dl>
           <p>Flags are baked in at build time. Changing one needs a redeploy.</p>
         </Card>
-      ) : null}
+      ),
+    },
+  ];
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Developers"
+        description="Keys, webhooks and everything you need to integrate."
+      />
+
+      <Tabs value={tab} onValueChange={setTab} label="Developer sections" tabs={tabs} />
     </PageContainer>
   );
 }

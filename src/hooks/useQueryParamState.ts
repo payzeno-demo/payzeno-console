@@ -49,7 +49,9 @@ export function useQueryParamState<T>(
           if (serialised === null || serialised === '') updated.delete(key);
           else updated.set(key, serialised);
           // Any filter change invalidates the cursor — page 3 of the old filter is meaningless.
-          updated.delete('cursor');
+          // Setting the cursor itself is paging, not filtering: deleting it here as well meant
+          // "Next page" wrote the cursor and removed it in the same update, so it never paged.
+          if (key !== 'cursor') updated.delete('cursor');
           return updated;
         },
         { replace },

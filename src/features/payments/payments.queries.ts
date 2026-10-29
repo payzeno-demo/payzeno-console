@@ -7,6 +7,8 @@ import type {
   PaymentIntent,
   PaymentIntentListQuery,
   PaymentIntentResponse,
+  Review,
+  ReviewListQuery,
 } from '@payzeno/contracts';
 
 import type { EndpointRegistry } from '@api/endpoints';
@@ -55,4 +57,24 @@ export function cancelPaymentIntentMutation(e: EndpointRegistry) {
     mutationFn: ({ paymentIntentId, request }: CancelInput): Promise<PaymentIntentResponse> =>
       e.paymentIntents.cancel(paymentIntentId, request),
   };
+}
+
+// -- RFC platform-v2 §8: risk reviews. The ONLY caller of `ReviewsEndpoint`. -----------------
+
+/** Merchants read reviews; only Payzeno staff decide them (`/v1/admin/reviews`). */
+export function reviewsListQuery(e: EndpointRegistry, q?: ReviewListQuery) {
+  const query: ReviewListQuery = { limit: DEFAULT_PAGE_SIZE, ...(q ?? {}) };
+  return queryOptions<Paginated<Review>>({
+    queryKey: queryKeys.reviews.list(query),
+    queryFn: () => e.reviews.list(query),
+    staleTime: 20_000,
+  });
+}
+
+export function reviewQuery(e: EndpointRegistry, id: string) {
+  return queryOptions<Review>({
+    queryKey: queryKeys.reviews.detail(id),
+    queryFn: () => e.reviews.get(id),
+    staleTime: 20_000,
+  });
 }

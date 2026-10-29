@@ -86,14 +86,14 @@ export const webhookEventColumns: ReadonlyArray<ColumnDef<WebhookEventRow>> = [
   {
     id: 'next_attempt_at',
     header: 'Next attempt',
-    cell: (row) => <DateCell value={row.next_attempt_at} precision="minute" />,
+    cell: (row) => <DateCell value={row.next_attempt_at} />,
     exportValue: (row) => row.next_attempt_at ?? '',
   },
   {
     id: 'created_at',
     header: 'Created',
     sortable: true,
-    cell: (row) => <DateCell value={row.created_at} precision="minute" />,
+    cell: (row) => <DateCell value={row.created_at} />,
     exportValue: (row) => row.created_at,
   },
 ];

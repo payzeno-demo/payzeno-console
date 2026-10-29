@@ -4,7 +4,8 @@
  *
  * Layout plus section components only. The one hook it calls is `useSettlements`.
  */
-import type { CurrencyCode, SettlementBatchStatus } from '@payzeno/contracts';
+import { CURRENCIES } from '@payzeno/contracts';
+import type { SettlementBatchStatus } from '@payzeno/contracts';
 
 import { ErrorState } from '@components/feedback/ErrorState';
 import { FilterBar } from '@components/data/FilterBar';
@@ -14,7 +15,7 @@ import { CurrencySelect } from '@components/form/CurrencySelect';
 import { Select } from '@components/ui/Select';
 import { useCurrentMerchant } from '@app/SessionContext';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
-import { useQueryParamState } from '@hooks/useQueryParamState';
+import { useEnumParam } from '@hooks/useQueryParamState';
 
 import { SettlementTable } from './components/SettlementTable';
 import { useSettlements } from './useSettlements';
@@ -34,11 +35,14 @@ export function SettlementsPage() {
   useDocumentTitle('Settlements');
 
   const merchant = useCurrentMerchant();
-  const [status, setStatus] = useQueryParamState<SettlementBatchStatus | 'all'>('status', 'all');
-  const [currency, setCurrency] = useQueryParamState<CurrencyCode>(
+  const [statusParam, setStatus] = useEnumParam('status', STATUS_OPTIONS, 'all');
+  const status = statusParam ?? 'all';
+  const [currencyParam, setCurrency] = useEnumParam(
     'currency',
+    CURRENCIES,
     merchant.default_currency,
   );
+  const currency = currencyParam ?? merchant.default_currency;
 
   const { rows, isLoading, isFetching, error } = useSettlements({
     currency,

@@ -17,7 +17,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { ROUTES } from '@/routes';
+import { ACCOUNT_FLOW_PATHS, ROUTES } from '@/routes';
 import { toConsoleSession, withLivemode } from '@/types/session';
 import type { ConsoleSession } from '@/types/session';
 
@@ -34,7 +34,12 @@ export interface AuthProviderProps {
 }
 
 /** Routes reachable without a session. Anything else redirects. */
-export const PUBLIC_PATHS: ReadonlyArray<string> = ['/login'];
+export const PUBLIC_PATHS: ReadonlyArray<string> = [
+  ROUTES.auth.login,
+  // RFC platform-v2 §3-§4: signup and the emailed-link pages. A 401 from the bootstrap call
+  // is the normal state on all of them and must not bounce the visitor to /login.
+  ...ACCOUNT_FLOW_PATHS,
+];
 
 export function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));

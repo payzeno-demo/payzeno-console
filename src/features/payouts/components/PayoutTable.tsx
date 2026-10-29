@@ -47,7 +47,16 @@ export function PayoutTable({ rows, isLoading, pagination }: PayoutTableProps) {
       {inFlightCount(rows) > 0 ? (
         <p role="status">{inFlightCount(rows)} of these are still on their way to your bank.</p>
       ) : null}
-      {pagination ? <DataTablePagination pagination={pagination} label="Payout pages" /> : null}
+      {pagination ? (
+        <DataTablePagination
+          pageNumber={pagination.pageNumber}
+          canGoBack={pagination.canGoBack}
+          canGoForward={pagination.canGoForward}
+          onPrevious={pagination.goBack}
+          onNext={pagination.goNext}
+          resourceLabel="payouts"
+        />
+      ) : null}
     </>
   );
 }

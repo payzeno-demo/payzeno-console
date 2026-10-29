@@ -1,9 +1,14 @@
 /**
  * Manual payout form.
  *
- * Two constraints are enforced in the UI because the API's error for each is expensive to
- * discover: the destination account must be held in the payout currency (Payzeno does not
- * convert), and the amount cannot exceed the available balance.
+ * The amount cannot exceed the available balance, and that is enforced here because the API's
+ * error for it is expensive to discover.
+ *
+ * RFC platform-v2 §7: the destination account no longer has to be held in the balance's
+ * currency. `currency` on the request is the *balance* being paid out; when the account is in
+ * another currency the ledger converts at payout time (provider rate + 1%) and the payout
+ * records `source_*` and `fx_rate`. The form says so before the merchant commits, and does no
+ * arithmetic of its own — the rate is the ledger's, at the moment it pays.
  *
  * Leaving the amount at the full available balance sends no `amount_minor` at all, which is
  * what "pay out everything" means to the API and avoids racing a settlement that lands
@@ -47,18 +52,29 @@ export function CreatePayoutDialog({
   const [bankAccountId, setBankAccountId] = useState<string>('');
   const [method, setMethod] = useState<PayoutMethod>('standard_ach');
 
-  // Payzeno never converts, so only accounts in this currency are selectable at all.
+  // Any validated account. Same-currency accounts first, because a payout that does not
+  // convert is the cheaper one and the merchant should not have to hunt for it.
   const eligible = useMemo(
-    () => accounts.filter((account) => account.currency === currency && account.status === 'validated'),
+    () =>
+      accounts
+        .filter((account) => account.status === 'validated')
+        .sort(
+          (a, b) => Number(b.currency === currency) - Number(a.currency === currency),
+        ),
     [accounts, currency],
   );
 
   useEffect(() => {
     if (!open) return;
     setAmountMinor(availableMinor);
-    const preferred = eligible.find((account) => account.is_default) ?? eligible[0];
+    const sameCurrency = eligible.filter((account) => account.currency === currency);
+    const preferred =
+      sameCurrency.find((account) => account.is_default) ?? sameCurrency[0] ?? eligible[0];
     setBankAccountId(preferred?.id ?? '');
-  }, [open, availableMinor, eligible]);
+  }, [open, availableMinor, eligible, currency]);
+
+  const target = eligible.find((account) => account.id === bankAccountId);
+  const converts = target !== undefined && target.currency !== currency;
 
   useEffect(() => {
     if (createdPayout) onOpenChange(false);
@@ -88,8 +104,7 @@ export function CreatePayoutDialog({
     >
       {noAccount && !accountsLoading ? (
         <InlineError id="payout-no-account">
-          You have no validated {currency} bank account. Add one in Settings first — Payzeno
-          does not convert between currencies.
+          You have no validated bank account. Add one in Settings first.
         </InlineError>
       ) : null}
 
@@ -110,9 +125,21 @@ export function CreatePayoutDialog({
         onValueChange={setBankAccountId}
         options={eligible.map((account) => ({
           value: account.id,
-          label: `${account.bank_name} ${maskLastFour(account.last_four)}${account.is_default ? ' (default)' : ''}`,
+          label: `${account.bank_name} ${maskLastFour(account.last_four)} · ${account.currency}${account.is_default ? ' (default)' : ''}`,
+          ...(account.currency === currency
+            ? {}
+            : { description: `Converts ${currency} to ${account.currency}` }),
         }))}
       />
+
+      {converts && target ? (
+        <p role="status" data-testid="payout-conversion-note">
+          This account is held in {target.currency}. Payzeno converts your {currency} balance to{' '}
+          {target.currency} when the payout is sent, at the provider rate plus a 1% conversion
+          fee. The exact rate and the {target.currency} amount appear on the payout once it is
+          sent.
+        </p>
+      ) : null}
 
       <Select
         id="payout-method"

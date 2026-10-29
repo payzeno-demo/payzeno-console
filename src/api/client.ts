@@ -49,7 +49,7 @@ export class ApiClient implements HttpTransport {
    * reaches the network through exactly this frame.
    */
   async request<TRes, TBody = unknown>(spec: RequestSpec<TBody>): Promise<TRes> {
-    const built = buildRequest(spec);
+    const built = buildRequest(spec, this.options.baseUrl);
     const timeoutMs = timeoutForPath(spec.path, spec.timeoutMs);
 
     let attempt = 0;

@@ -78,8 +78,7 @@ export function DisputeDetailPage() {
         </Alert>
       ) : (
         <Alert tone="info" title={`Respond ${formatRemaining(hoursRemaining)}`}>
-          Evidence must reach the network before{' '}
-          <DateCell value={dispute.evidence_due_by} precision="minute" />.
+          Evidence must reach the network before <DateCell value={dispute.evidence_due_by} />.
         </Alert>
       )}
 
@@ -114,17 +113,17 @@ export function DisputeDetailPage() {
 
           <dt>Opened</dt>
           <dd>
-            <DateCell value={dispute.created_at} precision="minute" />
+            <DateCell value={dispute.created_at} />
           </dd>
 
           <dt>Submitted</dt>
           <dd>
-            <DateCell value={dispute.submitted_at} precision="minute" />
+            <DateCell value={dispute.submitted_at} />
           </dd>
 
           <dt>Resolved</dt>
           <dd>
-            <DateCell value={dispute.resolved_at} precision="minute" />
+            <DateCell value={dispute.resolved_at} />
           </dd>
         </dl>
       </Card>

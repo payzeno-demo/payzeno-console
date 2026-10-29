@@ -77,6 +77,8 @@ describe('POST /v1/bank-accounts', () => {
       bank_account_token: 'bat_01HW0RTBANKTOKEN00001',
       currency: 'GBP',
       country: 'GB',
+      scheme: 'uk_sort_code',
+      account_holder_name: 'Northwind Trading Ltd',
     });
 
     expect(body.bank_account_token).toBe('bat_01HW0RTBANKTOKEN00001');
@@ -90,6 +92,8 @@ describe('POST /v1/bank-accounts', () => {
       bank_account_token: 'bat_1',
       currency: 'EUR',
       country: 'DE',
+      scheme: 'iban',
+      account_holder_name: 'Northwind Trading GmbH',
     });
 
     expect(account.status).toBe('new');
@@ -98,7 +102,13 @@ describe('POST /v1/bank-accounts', () => {
 
   it('sends an idempotency key on the create', async () => {
     const recorder = recordRequests();
-    await endpoint().create({ bank_account_token: 'bat_1', currency: 'GBP', country: 'GB' });
+    await endpoint().create({
+      bank_account_token: 'bat_1',
+      currency: 'GBP',
+      country: 'GB',
+      scheme: 'uk_sort_code',
+      account_holder_name: 'Northwind Trading Ltd',
+    });
 
     const request = recorder.requests.at(-1);
     recorder.stop();
@@ -112,7 +122,13 @@ describe('POST /v1/bank-accounts', () => {
     );
 
     await expect(
-      endpoint().create({ bank_account_token: 'bat_expired', currency: 'GBP', country: 'GB' }),
+      endpoint().create({
+        bank_account_token: 'bat_expired',
+        currency: 'GBP',
+        country: 'GB',
+        scheme: 'uk_sort_code',
+        account_holder_name: 'Northwind Trading Ltd',
+      }),
     ).rejects.toBeInstanceOf(ValidationApiError);
   });
 });

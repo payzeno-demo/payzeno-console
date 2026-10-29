@@ -11,7 +11,7 @@ import type { ApiKeyScope } from '@payzeno/contracts';
 
 import type { ColumnDef } from '@components/data/DataTable';
 import { DateCell } from '@components/data/DateCell';
-import { StatusPill } from '@components/data/StatusPill';
+import { Badge } from '@components/ui/Badge';
 import { listSentence, pluralise } from '@lib/format';
 import { ROUTES } from '@/routes';
 import type { ApiKeyRow } from '@/types/view-models';
@@ -47,8 +47,11 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
   {
     id: 'mode',
     header: 'Mode',
+    // A mode is a category, not a status, so it is a plain badge rather than a `StatusPill`.
     cell: (row) => (
-      <StatusPill status={row.mode} label={row.mode === 'live' ? 'Live' : 'Test'} />
+      <Badge srPrefix="Mode" withDot>
+        {row.mode === 'live' ? 'Live' : 'Test'}
+      </Badge>
     ),
     exportValue: (row) => row.mode,
   },
@@ -62,14 +65,13 @@ export const apiKeyColumns: ReadonlyArray<ColumnDef<ApiKeyRow>> = [
     id: 'created_at',
     header: 'Created',
     sortable: true,
-    cell: (row) => <DateCell value={row.created_at} precision="day" />,
+    cell: (row) => <DateCell value={row.created_at} absolute />,
     exportValue: (row) => row.created_at,
   },
   {
     id: 'revoked_at',
     header: 'Revoked',
-    cell: (row) =>
-      row.revoked_at ? <DateCell value={row.revoked_at} precision="minute" /> : <span>—</span>,
+    cell: (row) => (row.revoked_at ? <DateCell value={row.revoked_at} /> : <span>—</span>),
     exportValue: (row) => row.revoked_at ?? '',
   },
 ];

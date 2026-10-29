@@ -15,7 +15,7 @@ import { DateCell } from '@components/data/DateCell';
 import { IdCell } from '@components/data/IdCell';
 import { MoneyCell } from '@components/data/MoneyCell';
 import { StatusPill } from '@components/data/StatusPill';
-import type { SettlementItemRow } from '@types/view-models';
+import type { SettlementItemRow } from '@/types/view-models';
 
 import { DuplicateBadge } from './components/DuplicateBadge';
 import { RetryItemButton } from './components/RetryItemButton';
@@ -123,11 +123,7 @@ export function settlementItemColumns(
       id: 'last_attempt_at',
       header: 'Last attempt',
       cell: (row) =>
-        row.last_attempt_at ? (
-          <DateCell value={row.last_attempt_at} precision="minute" />
-        ) : (
-          <span>—</span>
-        ),
+        row.last_attempt_at ? <DateCell value={row.last_attempt_at} /> : <span>—</span>,
       exportValue: (row) => row.last_attempt_at ?? '',
     },
     {

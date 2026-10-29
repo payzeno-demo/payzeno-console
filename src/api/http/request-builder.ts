@@ -50,7 +50,17 @@ export function pathSegment(value: string): string {
   return encodeURIComponent(value);
 }
 
-export function buildRequest<TBody>(spec: RequestSpec<TBody>): BuiltRequest {
+/**
+ * @param baseUrl the versioned API base. Defaults to `VITE_PAYZENO_API_URL`; `ApiClient` passes
+ * its own `options.baseUrl`, which is the build-time value unless a caller overrides it. The
+ * admin entry (`src/admin/`) is the one caller that does: it is served from its own host and
+ * must reach the API through that host's `/v1`, or the staff cookie and `pz_csrf` stop being
+ * first-party.
+ */
+export function buildRequest<TBody>(
+  spec: RequestSpec<TBody>,
+  baseUrl: string = runtime.apiBaseUrl,
+): BuiltRequest {
   const hasBody = spec.body !== undefined && spec.method !== 'GET';
 
   let headers = buildHeaders({
@@ -61,7 +71,7 @@ export function buildRequest<TBody>(spec: RequestSpec<TBody>): BuiltRequest {
   headers = withCsrf(headers, spec.method);
 
   return {
-    url: joinPath(runtime.apiBaseUrl, spec.path) + serialiseQuery(spec.query),
+    url: joinPath(baseUrl, spec.path) + serialiseQuery(spec.query),
     method: spec.method,
     headers,
     body: hasBody ? JSON.stringify(spec.body) : undefined,

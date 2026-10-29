@@ -149,3 +149,54 @@ describe('a payment awaiting customer action', () => {
     expect(await screen.findByText('requires action')).toBeInTheDocument();
   });
 });
+
+// ---------------------------------------------------------------------------
+// RFC platform-v2 §8: the "Reviews" view
+// ---------------------------------------------------------------------------
+
+describe('the reviews view', () => {
+  it('lists open reviews by default, read-only, linked to their payments', async () => {
+    const recorder = recordRequests();
+    renderWithProviders(<PaymentsPage />, { route: '/payments?view=reviews' });
+
+    const table = await screen.findByRole('table', {
+      name: 'Payments held for review by Payzeno risk, newest first',
+    });
+    await waitFor(() => expect(table.querySelectorAll('tbody tr')).toHaveLength(1));
+    expect(table.querySelector('a[href="/payments/pi_01HW0RTPAYMENTINTENT0001"]')).not.toBeNull();
+    expect(recorder.requests.some((request) => request.url.includes('/reviews?') && request.url.includes('status=open'))).toBe(true);
+    // The payments list is not fetched while the reviews view is showing.
+    expect(recorder.requests.some((request) => request.url.includes('/payment_intents'))).toBe(false);
+    recorder.stop();
+  });
+
+  it('switches views from the segmented control', async () => {
+    const { user } = renderWithProviders(<PaymentsPage />, { route: '/payments' });
+
+    await user.click(await screen.findByRole('radio', { name: 'Reviews' }));
+
+    expect(
+      await screen.findByRole(
+        'table',
+        { name: 'Payments held for review by Payzeno risk, newest first' },
+        { timeout: 5_000 },
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('badges a held payment in the main list', async () => {
+    server.use(
+      http.get(url('/payment_intents'), () =>
+        HttpResponse.json(
+          makePage([
+            makePaymentIntent({ status: 'requires_capture', review_id: 'rv_01HW0RTREVIEW0000000001' }),
+          ]),
+        ),
+      ),
+    );
+
+    renderWithProviders(<PaymentsPage />, { route: '/payments' });
+
+    expect(await screen.findByText('Held for review')).toBeInTheDocument();
+  });
+});

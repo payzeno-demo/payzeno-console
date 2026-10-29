@@ -101,7 +101,7 @@ export const disputeColumns: ReadonlyArray<ColumnDef<DisputeRow>> = [
           {formatRemaining(row._hoursRemaining)}
         </span>
       ) : (
-        <DateCell value={row.resolved_at} precision="day" />
+        <DateCell value={row.resolved_at} absolute />
       ),
     exportValue: (row) => row.evidence_due_by ?? '',
   },

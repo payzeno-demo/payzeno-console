@@ -60,7 +60,8 @@ export function useInviteUser(): UseInviteUserResult {
           payload: { email: email.trim(), full_name: fullName.trim(), role },
         });
         setInvitedUser(user);
-        toast.success(`Invitation sent to ${user.email}.`);
+        // RFC platform-v2 §4: the api emails a single-use `team_invite` link (72h).
+        toast.success(`Invitation email sent to ${user.email}.`);
         return user;
       } catch (error: unknown) {
         setErrorMessage(messageFor(error));

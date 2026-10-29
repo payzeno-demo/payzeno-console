@@ -16,10 +16,10 @@ import { NotFound } from '@components/feedback/NotFound';
 import { PageContainer } from '@components/layout/PageContainer';
 import { PageHeader } from '@components/layout/PageHeader';
 import { Alert } from '@components/ui/Alert';
+import { Badge } from '@components/ui/Badge';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { DateCell } from '@components/data/DateCell';
-import { StatusPill } from '@components/data/StatusPill';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { usePermissions } from '@hooks/usePermissions';
 import { listSentence, pluralise } from '@lib/format';
@@ -49,7 +49,9 @@ export function ApiKeyDetailPage() {
   return (
     <PageContainer as="main">
       <PageHeader title={apiKey.name} description={displayLabel}>
-        <StatusPill status={apiKey.mode} label={isLive ? 'Live' : 'Test'} />
+        <Badge srPrefix="Mode" withDot>
+          {isLive ? 'Live' : 'Test'}
+        </Badge>
         {!isRevoked && can('developers:write') ? (
           <Button
             type="button"
@@ -96,12 +98,12 @@ export function ApiKeyDetailPage() {
 
           <dt>Created</dt>
           <dd>
-            <DateCell value={apiKey.created_at} precision="minute" />
+            <DateCell value={apiKey.created_at} />
           </dd>
 
           <dt>Revoked</dt>
           <dd>
-            <DateCell value={apiKey.revoked_at} precision="minute" />
+            <DateCell value={apiKey.revoked_at} />
           </dd>
         </dl>
       </Card>

@@ -66,7 +66,12 @@ export function useCreateBankAccount(): UseCreateBankAccountResult {
       setCreatedAccount(account);
       toast.success('Bank account added. Verification usually takes a day or two.');
       trackEvent('bank_account_added', { scheme: account.scheme, currency: account.currency });
-      await queryClient.invalidateQueries({ queryKey: queryKeys.bankAccounts.all });
+      // A bank account is one of the onboarding requirements (RFC platform-v2 §3), so the
+      // checklist's `requirements_due` is stale the moment one is added.
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: queryKeys.bankAccounts.all }),
+        queryClient.invalidateQueries({ queryKey: queryKeys.onboarding.all }),
+      ]);
     },
     onError: (error: unknown) => {
       if (error instanceof VaultTokenisationError) {

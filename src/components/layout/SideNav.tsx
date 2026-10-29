@@ -72,6 +72,34 @@ export const NAV_SECTIONS: ReadonlyArray<NavSection> = [
         badgeKey: 'disputes',
         matchPrefix: true,
       },
+      {
+        id: 'customers',
+        label: 'Customers',
+        to: ROUTES.customers.index,
+        requiredPermission: 'payments:read',
+        matchPrefix: true,
+      },
+    ],
+  },
+  {
+    // RFC platform-v2 §6: the merchant billing their own customers. Not `Invoices`, which is
+    // Payzeno billing the merchant and stays under "Money out".
+    id: 'billing',
+    label: 'Billing',
+    items: [
+      {
+        id: 'subscriptions',
+        label: 'Subscriptions',
+        to: ROUTES.billing.subscriptions,
+        requiredPermission: 'payments:read',
+        matchPrefix: true,
+      },
+      {
+        id: 'prices',
+        label: 'Prices',
+        to: ROUTES.billing.prices,
+        requiredPermission: 'payments:read',
+      },
     ],
   },
   {

@@ -87,8 +87,8 @@ describe('ConsoleApiError', () => {
         status: 422,
         code: 'validation_failed',
         fieldErrors: [
-          { path: 'amount_minor', message: 'Too large.' },
-          { path: 'evidence.customer_email', message: 'Not an email.' },
+          { path: 'amount_minor', code: 'out_of_range', message: 'Too large.' },
+          { path: 'evidence.customer_email', code: 'invalid_format', message: 'Not an email.' },
         ],
       }),
     );

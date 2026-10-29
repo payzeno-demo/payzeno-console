@@ -115,7 +115,18 @@ export function ChargeDetailPage() {
       <Card as="section" aria-label="Card and authentication">
         <dl>
           <dt>Card</dt>
-          <dd>{card ? <CardBrandCell card={card} /> : '—'}</dd>
+          <dd>
+            {card ? (
+              <CardBrandCell
+                brand={card.brand}
+                lastFour={card.last_four}
+                funding={card.funding}
+                country={card.country}
+              />
+            ) : (
+              '—'
+            )}
+          </dd>
 
           <dt>3-D Secure</dt>
           <dd>
@@ -166,17 +177,17 @@ export function ChargeDetailPage() {
 
           <dt>Authorised at</dt>
           <dd>
-            <DateCell value={charge.authorized_at} precision="minute" />
+            <DateCell value={charge.authorized_at} />
           </dd>
 
           <dt>Captured at</dt>
           <dd>
-            <DateCell value={charge.captured_at} precision="minute" />
+            <DateCell value={charge.captured_at} />
           </dd>
 
           <dt>Settled at</dt>
           <dd>
-            <DateCell value={charge.settled_at} precision="minute" />
+            <DateCell value={charge.settled_at} />
           </dd>
         </dl>
       </Card>

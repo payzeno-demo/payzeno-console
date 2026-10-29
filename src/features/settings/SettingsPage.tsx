@@ -19,6 +19,7 @@ import { PageHeader } from '@components/layout/PageHeader';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Tabs } from '@components/ui/Tabs';
+import type { TabSpec } from '@components/ui/Tabs';
 import { useCurrentMerchant } from '@app/SessionContext';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { usePermissions } from '@hooks/usePermissions';
@@ -34,12 +35,6 @@ import { useBankAccounts } from './useBankAccounts';
 import { useInviteUser } from './useInviteUser';
 import { useUsers } from './useUsers';
 
-const TABS = [
-  { value: 'accounts', label: 'Bank accounts' },
-  { value: 'team', label: 'Team' },
-  { value: 'payouts', label: 'Payout schedule' },
-];
-
 export function SettingsPage() {
   useDocumentTitle('Settings');
 
@@ -54,7 +49,12 @@ export function SettingsPage() {
   const { makeDefault, actionError } = useBankAccount(defaultTarget);
 
   const { members, isLoading: usersLoading, error: usersError, isForbidden, reload } = useUsers();
-  const { inviteUser, isPending: isInviting, errorMessage: inviteError } = useInviteUser();
+  const {
+    inviteUser,
+    isPending: isInviting,
+    errorMessage: inviteError,
+    invitedUser,
+  } = useInviteUser();
 
   const canManageAccounts = can('settings:write');
 
@@ -70,22 +70,11 @@ export function SettingsPage() {
     });
   };
 
-  return (
-    <PageContainer as="main">
-      <PageHeader
-        title="Settings"
-        description={`${merchant.display_name} · ${merchant.country} · ${merchant.default_currency}`}
-      >
-        {tab === 'accounts' ? (
-          <Button type="button" disabled={!canManageAccounts} onClick={() => setAddOpen(true)}>
-            Add bank account
-          </Button>
-        ) : null}
-      </PageHeader>
-
-      <Tabs value={tab} onValueChange={setTab} label="Settings sections" tabs={TABS} />
-
-      {tab === 'accounts' ? (
+  const tabs: ReadonlyArray<TabSpec> = [
+    {
+      id: 'accounts',
+      label: 'Bank accounts',
+      content: (
         <>
           {accountsError ? (
             <ErrorState error={accountsError} title="We could not load your bank accounts" />
@@ -99,9 +88,12 @@ export function SettingsPage() {
           )}
           {actionError ? <ErrorState error={new Error(actionError)} title="Change failed" /> : null}
         </>
-      ) : null}
-
-      {tab === 'team' ? (
+      ),
+    },
+    {
+      id: 'team',
+      label: 'Team',
+      content: (
         <>
           {usersError ? (
             <ErrorState
@@ -120,12 +112,16 @@ export function SettingsPage() {
               isInviting={isInviting}
               inviteError={inviteError}
               onInvite={handleInvite}
+              invitedEmail={invitedUser?.email ?? null}
             />
           )}
         </>
-      ) : null}
-
-      {tab === 'payouts' ? (
+      ),
+    },
+    {
+      id: 'payouts',
+      label: 'Payout schedule',
+      content: (
         <Card as="section" aria-label="Payout configuration">
           <h2>Payout schedule</h2>
           <p>
@@ -153,7 +149,24 @@ export function SettingsPage() {
             <dd>{merchant.capture_at_settlement ? 'On' : 'Off'}</dd>
           </dl>
         </Card>
-      ) : null}
+      ),
+    },
+  ];
+
+  return (
+    <PageContainer as="main">
+      <PageHeader
+        title="Settings"
+        description={`${merchant.display_name} · ${merchant.country} · ${merchant.default_currency}`}
+      >
+        {tab === 'accounts' ? (
+          <Button type="button" disabled={!canManageAccounts} onClick={() => setAddOpen(true)}>
+            Add bank account
+          </Button>
+        ) : null}
+      </PageHeader>
+
+      <Tabs value={tab} onValueChange={setTab} label="Settings sections" tabs={tabs} />
 
       <AddBankAccountDialog
         open={addOpen}

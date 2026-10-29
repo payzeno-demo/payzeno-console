@@ -12,7 +12,8 @@ import { useMoneyFormat } from '@hooks/useMoneyFormat';
 import { pz } from '@lib/cn';
 import { money } from '@lib/money';
 
-import { color, font } from '../ui/tokens';
+import { color, font, toneStyle } from '../ui/tokens';
+import type { Tone } from '../ui/tokens';
 
 export interface MoneyCellProps {
   /** Either a `Money`… */
@@ -26,6 +27,12 @@ export interface MoneyCellProps {
   muteZero?: boolean;
   /** Colour negatives in the danger tone. Used for negative balance and reversals. */
   emphasiseNegative?: boolean;
+  /**
+   * Colour the amount in a semantic tone regardless of its sign — reconciliation variance, an
+   * over-posted batch total. Wins over `emphasiseNegative` and `muteZero`. Never the only
+   * signal: the row or panel must say in words why the figure is highlighted.
+   */
+  tone?: Tone;
 }
 
 export function MoneyCell({
@@ -35,6 +42,7 @@ export function MoneyCell({
   signed = false,
   muteZero = true,
   emphasiseNegative = false,
+  tone,
 }: MoneyCellProps) {
   const formatter = useMoneyFormat();
 
@@ -56,8 +64,9 @@ export function MoneyCell({
         fontFamily: font.familyMono,
         fontVariantNumeric: 'tabular-nums',
         whiteSpace: 'nowrap',
-        color:
-          emphasiseNegative && isNegativeAmount
+        color: tone
+          ? toneStyle(tone).fg
+          : emphasiseNegative && isNegativeAmount
             ? color.danger
             : muteZero && isZeroAmount
               ? color.textMuted

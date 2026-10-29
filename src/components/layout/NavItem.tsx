@@ -44,6 +44,10 @@ const GLYPHS: Readonly<Record<string, string>> = {
   invoices: '▤',
   developers: '⌨',
   settings: '⚙',
+  // RFC platform-v2
+  customers: '☺',
+  subscriptions: '↻',
+  prices: '¤',
 };
 
 export function accessibleName(item: NavItemSpec, badgeCount?: number): string {

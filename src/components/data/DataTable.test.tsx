@@ -177,7 +177,9 @@ describe('sorting', () => {
 
     await user.click(screen.getByRole('button', { name: /name/i }));
 
-    const cells = screen.getAllByRole('cell').filter((cell) => cell.cellIndex === 0);
+    const cells = screen
+      .getAllByRole<HTMLTableCellElement>('cell')
+      .filter((cell) => cell.cellIndex === 0);
     expect(cells.map((cell) => cell.textContent)).toEqual(['Alpha', 'Bravo', 'Charlie']);
     expect(screen.getByRole('columnheader', { name: /name/i })).toHaveAttribute(
       'aria-sort',
@@ -192,7 +194,9 @@ describe('sorting', () => {
     await user.click(header);
     await user.click(header);
 
-    const cells = screen.getAllByRole('cell').filter((cell) => cell.cellIndex === 0);
+    const cells = screen
+      .getAllByRole<HTMLTableCellElement>('cell')
+      .filter((cell) => cell.cellIndex === 0);
     expect(cells.map((cell) => cell.textContent)).toEqual(['Charlie', 'Bravo', 'Alpha']);
     expect(screen.getByRole('columnheader', { name: /name/i })).toHaveAttribute(
       'aria-sort',
@@ -224,7 +228,7 @@ describe('sorting', () => {
 
     // `exportValue` zero-pads, so a lexicographic sort still orders 100 < 200 < 300.
     const amounts = screen
-      .getAllByRole('cell')
+      .getAllByRole<HTMLTableCellElement>('cell')
       .filter((cell) => cell.cellIndex === 1)
       .map((cell) => cell.textContent);
     expect(amounts).toEqual(['100', '200', '300']);

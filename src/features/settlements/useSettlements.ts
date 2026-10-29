@@ -12,7 +12,7 @@ import type { MerchantSettlementBatch } from '@payzeno/contracts';
 
 import type { SettlementListQuery } from '@api/endpoints/settlements.endpoint';
 import { useEndpoints } from '@app/ApiContext';
-import type { SettlementRow } from '@types/view-models';
+import type { SettlementRow } from '@/types/view-models';
 
 import { settlementsListQuery } from './settlements.queries';
 

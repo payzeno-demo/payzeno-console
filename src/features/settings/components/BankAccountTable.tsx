@@ -84,7 +84,7 @@ export function BankAccountTable({
     {
       id: 'created_at',
       header: 'Added',
-      cell: (row) => <DateCell value={row.created_at} precision="day" />,
+      cell: (row) => <DateCell value={row.created_at} absolute />,
       exportValue: (row) => row.created_at,
     },
     {

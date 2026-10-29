@@ -64,8 +64,8 @@ export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
     header: 'Period',
     cell: (row) => (
       <span>
-        <DateCell value={row.period_start} precision="day" /> —{' '}
-        <DateCell value={row.period_end} precision="day" />
+        <DateCell value={row.period_start} mode="banking" /> —{' '}
+        <DateCell value={row.period_end} mode="banking" />
       </span>
     ),
     exportValue: (row) => `${row.period_start}/${row.period_end}`,
@@ -89,7 +89,7 @@ export const invoiceColumns: ReadonlyArray<ColumnDef<InvoiceRow>> = [
   {
     id: 'due_at',
     header: 'Due',
-    cell: (row) => <DateCell value={row.due_at} precision="day" />,
+    cell: (row) => <DateCell value={row.due_at} absolute />,
     exportValue: (row) => row.due_at ?? '',
   },
 ];

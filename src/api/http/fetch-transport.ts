@@ -23,7 +23,7 @@ export interface RawResponse {
 export class NetworkError extends Error {
   constructor(
     readonly url: string,
-    readonly cause: unknown,
+    override readonly cause: unknown,
   ) {
     super(`Network request to ${url} failed`);
     this.name = 'NetworkError';

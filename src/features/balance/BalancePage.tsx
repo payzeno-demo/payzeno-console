@@ -2,7 +2,8 @@
  * `BalancePage` — the balance index route. No detail route: a balance has no id.
  *
  * The currency selector is URL state, because a merchant taking EUR and USD lives on this
- * page with two tabs open.
+ * page with two tabs open. Above it, RFC platform-v2 §7's per-currency balances get a summary
+ * row each, so money in a currency nobody selected is still visible.
  */
 import { useNavigate } from 'react-router-dom';
 
@@ -27,7 +28,9 @@ import { labelise } from '@lib/format';
 import { ROUTES } from '@/routes';
 
 import { BalanceCards } from './components/BalanceCards';
+import { CurrencyBalancesSummary } from './components/CurrencyBalancesSummary';
 import { NegativeBalanceAlert } from './components/NegativeBalanceAlert';
+import { useAllBalances } from './useAllBalances';
 import { useBalance } from './useBalance';
 
 export function BalancePage() {
@@ -41,6 +44,8 @@ export function BalancePage() {
   const [currency, setCurrency] = useStringParam('currency', merchant.default_currency);
   const { balance, hasNegative, totalHeldMinor, isLoading, isFetching, error, refetch } =
     useBalance(currency as CurrencyCode);
+  const all = useAllBalances();
+  const summaryRows = all.rows.filter((row) => row._hasActivity || row.currency === currency);
 
   // A ledger read-through failure is its own screen: the balance is unknown, not zero, and
   // rendering four zeroed cards would be a lie about the merchant's money.
@@ -48,7 +53,7 @@ export function BalancePage() {
     return (
       <PageContainer as="main">
         <PageHeader title="Balance" />
-        <UpstreamDown onRetry={refetch} service="the ledger" />
+        <UpstreamDown onRetry={refetch} upstream="the ledger" />
       </PageContainer>
     );
   }
@@ -68,6 +73,14 @@ export function BalancePage() {
           </Button>
         ) : null}
       </PageHeader>
+
+      <CurrencyBalancesSummary
+        rows={summaryRows}
+        selected={currency as CurrencyCode}
+        isLoading={all.isLoading}
+        error={all.error}
+        onSelect={(next) => setCurrency(next)}
+      />
 
       <FilterBar label="Balance currency">
         <CurrencySelect

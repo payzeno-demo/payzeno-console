@@ -35,6 +35,44 @@ import { ReportingPage } from '@features/reporting/ReportingPage';
 const LoginPage = lazy(() =>
   import('@features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
 );
+// RFC platform-v2 §3-§4: the public account pages.
+const SignupPage = lazy(() =>
+  import('@features/signup/SignupPage').then((m) => ({ default: m.SignupPage })),
+);
+const VerifyEmailPage = lazy(() =>
+  import('@features/signup/VerifyEmailPage').then((m) => ({ default: m.VerifyEmailPage })),
+);
+const AcceptInvitePage = lazy(() =>
+  import('@features/auth/AcceptInvitePage').then((m) => ({ default: m.AcceptInvitePage })),
+);
+const ForgotPasswordPage = lazy(() =>
+  import('@features/auth/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })),
+);
+const ResetPasswordPage = lazy(() =>
+  import('@features/auth/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })),
+);
+const OnboardingPage = lazy(() =>
+  import('@features/onboarding/OnboardingPage').then((m) => ({ default: m.OnboardingPage })),
+);
+const CustomersPage = lazy(() =>
+  import('@features/customers/CustomersPage').then((m) => ({ default: m.CustomersPage })),
+);
+const CustomerDetailPage = lazy(() =>
+  import('@features/customers/CustomerDetailPage').then((m) => ({
+    default: m.CustomerDetailPage,
+  })),
+);
+const PricesPage = lazy(() =>
+  import('@features/billing/PricesPage').then((m) => ({ default: m.PricesPage })),
+);
+const SubscriptionsPage = lazy(() =>
+  import('@features/billing/SubscriptionsPage').then((m) => ({ default: m.SubscriptionsPage })),
+);
+const SubscriptionDetailPage = lazy(() =>
+  import('@features/billing/SubscriptionDetailPage').then((m) => ({
+    default: m.SubscriptionDetailPage,
+  })),
+);
 const BalancePage = lazy(() =>
   import('@features/balance/BalancePage').then((m) => ({ default: m.BalancePage })),
 );
@@ -139,6 +177,21 @@ function SettlementsRoute() {
 }
 
 /**
+ * A public account page (RFC platform-v2 §3-§4). No session guard either way: these are opened
+ * from emailed links, by people who may or may not be signed in, and each page's own request
+ * is what decides whether the link still works. `App.tsx` renders them without chrome.
+ */
+function AccountFlowRoute({ label }: { label: string }) {
+  return (
+    <QueryErrorBoundary feature="account">
+      <Suspense fallback={<LoadingPage label={`Loading ${label}`} variant="spinner" />}>
+        <Outlet />
+      </Suspense>
+    </QueryErrorBoundary>
+  );
+}
+
+/**
  * The route table.
  *
  * Rendered inside the `<BrowserRouter>` that `AppProviders` owns — `AppProviders` has to be the
@@ -157,6 +210,15 @@ export function AppRoutes() {
             </Suspense>
           }
         />
+      </Route>
+
+      {/* Public account pages — with or without a session. */}
+      <Route element={<AccountFlowRoute label="your account" />}>
+        <Route path={ROUTE_PATTERNS.signup} element={<SignupPage />} />
+        <Route path={ROUTE_PATTERNS.verifyEmail} element={<VerifyEmailPage />} />
+        <Route path={ROUTE_PATTERNS.acceptInvite} element={<AcceptInvitePage />} />
+        <Route path={ROUTE_PATTERNS.forgotPassword} element={<ForgotPasswordPage />} />
+        <Route path={ROUTE_PATTERNS.resetPassword} element={<ResetPasswordPage />} />
       </Route>
 
       {/* Everything below needs a session. */}
@@ -198,6 +260,34 @@ export function AppRoutes() {
           element={<FeatureRoute permission="payments:read" label="refunds" />}
         >
           <Route index element={<RefundsPage />} />
+        </Route>
+
+        {/* RFC platform-v2 §5. Customers are payment data: same permission as payments. */}
+        <Route
+          path={ROUTE_PATTERNS.customers}
+          element={<FeatureRoute permission="payments:read" label="customers" />}
+        >
+          <Route index element={<CustomersPage />} />
+          <Route path={ROUTE_PATTERNS.customerDetail} element={<CustomerDetailPage />} />
+        </Route>
+
+        {/* RFC platform-v2 §6. One section, two pages; `/billing` lands on subscriptions. */}
+        <Route
+          path={ROUTE_PATTERNS.billing}
+          element={<FeatureRoute permission="payments:read" label="billing" />}
+        >
+          <Route index element={<Navigate to={ROUTES.billing.subscriptions} replace />} />
+          <Route path={ROUTE_PATTERNS.billingPrices} element={<PricesPage />} />
+          <Route path={ROUTE_PATTERNS.billingSubscriptions} element={<SubscriptionsPage />} />
+          <Route path={ROUTE_PATTERNS.subscriptionDetail} element={<SubscriptionDetailPage />} />
+        </Route>
+
+        {/* RFC platform-v2 §3. Everyone may look; editing checks settings:write in the page. */}
+        <Route
+          path={ROUTE_PATTERNS.onboarding}
+          element={<FeatureRoute permission="settings:read" label="account activation" />}
+        >
+          <Route index element={<OnboardingPage />} />
         </Route>
 
         <Route

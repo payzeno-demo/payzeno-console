@@ -95,8 +95,8 @@ export function InvoiceDetailPage() {
         <dl>
           <dt>Period</dt>
           <dd>
-            <DateCell value={data.period_start} precision="day" /> —{' '}
-            <DateCell value={data.period_end} precision="day" />
+            <DateCell value={data.period_start} mode="banking" /> —{' '}
+            <DateCell value={data.period_end} mode="banking" />
           </dd>
 
           <dt>Subtotal</dt>
@@ -116,7 +116,7 @@ export function InvoiceDetailPage() {
 
           <dt>Due</dt>
           <dd>
-            <DateCell value={data.due_at} precision="day" />
+            <DateCell value={data.due_at} absolute />
           </dd>
         </dl>
       </Card>

@@ -16,7 +16,7 @@ import { IdCell } from '@components/data/IdCell';
 import { MoneyCell } from '@components/data/MoneyCell';
 import { StatusPill } from '@components/data/StatusPill';
 import { ROUTES } from '@/routes';
-import type { SettlementRow } from '@types/view-models';
+import type { SettlementRow } from '@/types/view-models';
 
 /** Which statuses read as "money has actually moved". Merchants conflate the rest. */
 const TERMINAL_STATUSES: ReadonlySet<SettlementBatchStatus> = new Set(['funded', 'failed']);
@@ -40,7 +40,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
   {
     id: 'processing_date',
     header: 'Processing date',
-    cell: (row) => <DateCell value={row.processing_date} precision="day" />,
+    cell: (row) => <DateCell value={row.processing_date} mode="banking" />,
     exportValue: (row) => row.processing_date,
     sortable: true,
   },
@@ -75,8 +75,7 @@ export const settlementColumns: ReadonlyArray<ColumnDef<SettlementRow>> = [
   {
     id: 'funded_at',
     header: 'Funded',
-    cell: (row) =>
-      row.funded_at ? <DateCell value={row.funded_at} precision="minute" /> : <span>—</span>,
+    cell: (row) => (row.funded_at ? <DateCell value={row.funded_at} /> : <span>—</span>),
     exportValue: (row) => row.funded_at ?? '',
   },
 ];

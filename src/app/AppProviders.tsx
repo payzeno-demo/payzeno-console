@@ -8,6 +8,7 @@
  *       QueryProvider    owns the cache every hook below uses.
  *         TransportProvider  builds the endpoint registry (ApiClient or MockTransport).
  *           ToastProvider     mutation hooks call useToast(); AuthProvider does not.
+ *             TooltipProvider  the single Radix tooltip provider (components/ui/Tooltip.tsx).
  *             AuthProvider    runs GET /v1/auth/me — needs endpoints AND the query client.
  *               NotificationProvider  opens the socket only once there is a session.
  *
@@ -30,6 +31,7 @@ import { FlagsProvider } from './FlagsProvider';
 import { NotificationProvider } from './NotificationProvider';
 import { QueryProvider } from './QueryProvider';
 import { ToastProvider } from './ToastProvider';
+import { TooltipProvider } from '@components/ui/Tooltip';
 import { TransportProvider } from './TransportProvider';
 
 export interface AppProvidersProps {
@@ -52,9 +54,11 @@ export function AppProviders({
         <QueryProvider>
           <TransportProvider transport={transport}>
             <ToastProvider>
-              <AuthProvider initialSession={initialSession}>
-                <NotificationProvider>{children}</NotificationProvider>
-              </AuthProvider>
+              <TooltipProvider>
+                <AuthProvider initialSession={initialSession}>
+                  <NotificationProvider>{children}</NotificationProvider>
+                </AuthProvider>
+              </TooltipProvider>
             </ToastProvider>
           </TransportProvider>
         </QueryProvider>
@@ -82,9 +86,11 @@ export function AppProvidersWithoutRouter({
       <QueryProvider>
         <TransportProvider transport={transport}>
           <ToastProvider>
-            <AuthProvider initialSession={initialSession}>
-              <NotificationProvider>{children}</NotificationProvider>
-            </AuthProvider>
+            <TooltipProvider>
+              <AuthProvider initialSession={initialSession}>
+                <NotificationProvider>{children}</NotificationProvider>
+              </AuthProvider>
+            </TooltipProvider>
           </ToastProvider>
         </TransportProvider>
       </QueryProvider>

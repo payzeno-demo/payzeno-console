@@ -6,7 +6,24 @@
  * It routes on `(method, path)` exactly the way payzeno-api does, and it fails the same way:
  * an unknown path is a `NotFoundApiError` from `error-mapper.ts`, not a thrown string.
  */
-import type { Paginated } from '@payzeno/contracts';
+import type {
+  AcceptInvitationRequest,
+  CancelSubscriptionRequest,
+  CreateCustomerRequest,
+  CreatePriceRequest,
+  CreateSubscriptionRequest,
+  KycDocument,
+  LoginResponse,
+  Onboarding,
+  Paginated,
+  Price,
+  SignupRequest,
+  SignupResponse,
+  Subscription,
+  UpdateCustomerRequest,
+  UpdateOnboardingRequest,
+  UploadKycDocumentRequest,
+} from '@payzeno/contracts';
 
 import { toConsoleApiError } from '../http/error-mapper';
 import type { HttpTransport, QueryParams, RequestSpec } from '../transport';
@@ -14,17 +31,25 @@ import type { HttpTransport, QueryParams, RequestSpec } from '../transport';
 import {
   mockApiKeys,
   mockBalance,
+  mockBalanceFor,
+  mockBalances,
   mockBankAccounts,
   mockCharges,
+  mockCustomers,
   mockDashboardSummary,
   mockDisputes,
   mockInvoices,
+  mockOnboarding,
   mockPaymentIntents,
+  mockPaymentMethods,
   mockPayouts,
+  mockPrices,
   mockRefunds,
+  mockReviews,
   mockSession,
   mockSettlementItems,
   mockSettlements,
+  mockSubscriptions,
   mockWebhookEndpoints,
   mockWebhookEvents,
 } from './fixtures';
@@ -54,6 +79,26 @@ function byId<T extends { id: string }>(rows: ReadonlyArray<T>, id: string, path
   const found = rows.find((row) => row.id === id);
   if (!found) notFound(path);
   return found;
+}
+
+/** A string query parameter, or undefined. The demo filters on a handful of them. */
+function param(query: QueryParams | undefined, key: string): string | undefined {
+  const value = query?.[key];
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
+/** Keep rows whose `field` equals the query parameter of the same name, when one was sent. */
+function filterBy<T, K extends keyof T & string>(
+  rows: ReadonlyArray<T>,
+  query: QueryParams | undefined,
+  field: K,
+): T[] {
+  const wanted = param(query, field);
+  return wanted === undefined ? [...rows] : rows.filter((row) => row[field] === wanted);
+}
+
+function mockLogin(): LoginResponse {
+  return { object: 'login', user: mockSession.user, merchant: mockSession.merchant };
 }
 
 export class MockTransport implements HttpTransport {
@@ -94,8 +139,11 @@ export class MockTransport implements HttpTransport {
       case 'auth':
         if (first === 'me') return mockSession;
         return notFound(path);
-      case 'balance':
-        return mockBalance;
+      case 'balance': {
+        // RFC platform-v2 §7: no `currency` lists every currency balance.
+        const currency = param(query, 'currency');
+        return currency ? mockBalanceFor(currency) : { data: Object.values(mockBalances) };
+      }
       case 'payment_intents':
         return first ? byId(mockPaymentIntents, first, path) : page(mockPaymentIntents);
       case 'charges':
@@ -124,9 +172,33 @@ export class MockTransport implements HttpTransport {
         return page(mockWebhookEndpoints);
       case 'reporting':
         return this.resolveReporting(first, query);
+      case 'onboarding':
+        return first ? notFound(path) : mockOnboarding;
+      case 'customers':
+        if (first && second === 'payment_methods') {
+          byId(mockCustomers, first, path);
+          return page(mockPaymentMethods.filter((pm) => pm.customer_id === first));
+        }
+        if (first) return byId(mockCustomers, first, path);
+        return page(this.searchCustomers(param(query, 'email')));
+      case 'prices':
+        return first ? byId(mockPrices, first, path) : page(mockPrices);
+      case 'subscriptions':
+        if (first) return byId(mockSubscriptions, first, path);
+        return page(filterBy(filterBy(mockSubscriptions, query, 'status'), query, 'customer_id'));
+      case 'reviews':
+        if (first) return byId(mockReviews, first, path);
+        return page(filterBy(mockReviews, query, 'status'));
       default:
         return notFound(path);
     }
+  }
+
+  /** `?email=` is an exact match on the api; the demo does the same (ignoring case). */
+  private searchCustomers(email: string | undefined) {
+    if (!email) return mockCustomers;
+    const needle = email.toLowerCase();
+    return mockCustomers.filter((customer) => customer.email?.toLowerCase() === needle);
   }
 
   private resolveReporting(kind: string | undefined, query?: QueryParams): unknown {
@@ -165,10 +237,92 @@ export class MockTransport implements HttpTransport {
     const segments = path.split('/').filter(Boolean);
     const [root, first, second, third, fourth] = segments;
 
-    if (root === 'auth' && first === 'login') {
-      return { object: 'login', user: mockSession.user, merchant: mockSession.merchant };
-    }
+    if (root === 'auth' && first === 'login') return mockLogin();
     if (root === 'auth' && first === 'logout') return undefined;
+
+    // RFC platform-v2 §3-§4: the emailed-link flows. Tokens are not checked in the demo.
+    if (root === 'auth' && first === 'invitations' && second === 'accept') {
+      const request = body as AcceptInvitationRequest;
+      return { ...mockLogin(), user: { ...mockSession.user, full_name: request.full_name } };
+    }
+    if (root === 'auth' && first === 'password' && second === 'reset') return undefined;
+    if (root === 'signup' && first === 'verify') return mockLogin();
+    if (root === 'signup' && !first) {
+      const request = body as SignupRequest;
+      const response: SignupResponse = {
+        object: 'signup',
+        merchant_id: `mch_mock_${request.display_name.length}${Date.now()}`,
+        verification_required: true,
+      };
+      return response;
+    }
+
+    if (root === 'onboarding') return this.resolveOnboardingWrite(path, first, body);
+
+    if (root === 'customers' && first && !second) {
+      const request = body as UpdateCustomerRequest;
+      const current = byId(mockCustomers, first, path);
+      return {
+        ...current,
+        ...(request.email !== undefined ? { email: request.email } : {}),
+        ...(request.name !== undefined ? { name: request.name } : {}),
+        ...(request.default_payment_method_id !== undefined
+          ? { default_payment_method_id: request.default_payment_method_id }
+          : {}),
+      };
+    }
+    if (root === 'customers' && !first) {
+      const request = body as CreateCustomerRequest;
+      return {
+        ...mockCustomers[0],
+        id: `cus_mock_${Date.now()}`,
+        email: request.email ?? null,
+        name: request.name ?? null,
+        default_payment_method_id: null,
+        metadata: request.metadata ?? {},
+      };
+    }
+
+    if (root === 'prices' && !first) {
+      const request = body as CreatePriceRequest;
+      const created: Price = {
+        id: `price_mock_${Date.now()}`,
+        object: 'price',
+        merchant_id: mockSession.merchant.id,
+        product_name: request.product_name,
+        unit_amount_minor: request.unit_amount_minor,
+        currency: request.currency,
+        recurring: request.recurring ?? null,
+        active: true,
+        livemode: true,
+        metadata: request.metadata ?? {},
+        created_at: new Date().toISOString(),
+      };
+      return created;
+    }
+
+    if (root === 'subscriptions' && first && second === 'cancel') {
+      const request = body as CancelSubscriptionRequest;
+      const current = byId(mockSubscriptions, first, path);
+      const atPeriodEnd = request.at_period_end ?? true;
+      const updated: Subscription = atPeriodEnd
+        ? { ...current, cancel_at_period_end: true }
+        : { ...current, status: 'canceled', canceled_at: new Date().toISOString(), next_retry_at: null };
+      return updated;
+    }
+    if (root === 'subscriptions' && !first) {
+      const request = body as CreateSubscriptionRequest;
+      const template = mockSubscriptions[0];
+      if (!template) return notFound(path);
+      return {
+        ...template,
+        id: `csub_mock_${Date.now()}`,
+        customer_id: request.customer_id,
+        price_id: request.price_id,
+        default_payment_method_id: request.payment_method_id ?? template.default_payment_method_id,
+        metadata: request.metadata ?? {},
+      };
+    }
 
     if (root === 'refunds') {
       const request = body as { charge_id: string; amount_minor?: number };
@@ -231,6 +385,36 @@ export class MockTransport implements HttpTransport {
       return { ...byId(mockWebhookEvents, first, path), status: 'pending', attempt_count: 0 };
     }
 
+    return notFound(path);
+  }
+
+  /** `PATCH /onboarding`, `POST /onboarding/documents`, `POST /onboarding/submit`. */
+  private resolveOnboardingWrite(path: string, sub: string | undefined, body: unknown): unknown {
+    if (!sub) {
+      const request = body as UpdateOnboardingRequest;
+      const updated: Onboarding = {
+        ...mockOnboarding,
+        business_profile: { ...mockOnboarding.business_profile, ...request.business_profile },
+        representative: { ...mockOnboarding.representative, ...request.representative },
+      };
+      return updated;
+    }
+    if (sub === 'documents') {
+      const request = body as UploadKycDocumentRequest;
+      const document: KycDocument = {
+        id: `kyc_mock_${Date.now()}`,
+        object: 'kyc_document',
+        merchant_id: mockSession.merchant.id,
+        type: request.type,
+        filename: request.filename,
+        content_type: request.content_type,
+        // base64 → decoded length, near enough for a demo label.
+        size_bytes: Math.floor((request.content_base64.length * 3) / 4),
+        uploaded_at: new Date().toISOString(),
+      };
+      return document;
+    }
+    if (sub === 'submit') return mockOnboarding;
     return notFound(path);
   }
 }

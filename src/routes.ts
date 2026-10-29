@@ -26,6 +26,17 @@ export const ROUTES = {
 
   auth: {
     login: '/login',
+    // RFC platform-v2 §3-§4. Public: reachable without a session, and every one but `signup`
+    // and `forgotPassword` is opened from an emailed link carrying `?token=`.
+    signup: '/signup',
+    verifyEmail: '/verify-email',
+    acceptInvite: '/accept-invite',
+    forgotPassword: '/forgot-password',
+    resetPassword: '/reset-password',
+  },
+
+  onboarding: {
+    index: '/onboarding',
   },
 
   reporting: {
@@ -48,6 +59,18 @@ export const ROUTES = {
 
   refunds: {
     index: '/refunds',
+  },
+
+  customers: {
+    index: '/customers',
+    detail: (customerId: string) => `/customers/${seg(customerId)}`,
+  },
+
+  billing: {
+    index: '/billing',
+    prices: '/billing/prices',
+    subscriptions: '/billing/subscriptions',
+    subscription: (subscriptionId: string) => `/billing/subscriptions/${seg(subscriptionId)}`,
   },
 
   disputes: {
@@ -91,8 +114,15 @@ export const ROUTES = {
  */
 export const ROUTE_PATTERNS = {
   login: '/login',
+  signup: '/signup',
+  verifyEmail: '/verify-email',
+  acceptInvite: '/accept-invite',
+  forgotPassword: '/forgot-password',
+  resetPassword: '/reset-password',
+
   reporting: '/',
   balance: '/balance',
+  onboarding: '/onboarding',
 
   payments: '/payments',
   paymentDetail: ':paymentIntentId',
@@ -101,6 +131,14 @@ export const ROUTE_PATTERNS = {
   chargeDetail: ':chargeId',
 
   refunds: '/refunds',
+
+  customers: '/customers',
+  customerDetail: ':customerId',
+
+  billing: '/billing',
+  billingPrices: 'prices',
+  billingSubscriptions: 'subscriptions',
+  subscriptionDetail: 'subscriptions/:subscriptionId',
 
   disputes: '/disputes',
   disputeDetail: ':disputeId',
@@ -130,13 +168,33 @@ export const TOP_LEVEL_PATHS: ReadonlyArray<string> = [
   ROUTES.payments.index,
   ROUTES.charges.index,
   ROUTES.refunds.index,
+  ROUTES.customers.index,
+  ROUTES.billing.index,
   ROUTES.disputes.index,
   ROUTES.payouts.index,
   ROUTES.settlements.index,
   ROUTES.invoices.index,
   ROUTES.developers.index,
   ROUTES.settings.index,
+  ROUTES.onboarding.index,
 ];
+
+/**
+ * The public account pages (signup and the emailed-link flows). Reachable with or without a
+ * session, rendered without the app chrome, and never redirected to `/login` on a 401.
+ * `/login` itself is not here: it is signed-out-only and keeps its own guard.
+ */
+export const ACCOUNT_FLOW_PATHS: ReadonlyArray<string> = [
+  ROUTES.auth.signup,
+  ROUTES.auth.verifyEmail,
+  ROUTES.auth.acceptInvite,
+  ROUTES.auth.forgotPassword,
+  ROUTES.auth.resetPassword,
+];
+
+export function isAccountFlowPath(pathname: string): boolean {
+  return ACCOUNT_FLOW_PATHS.includes(pathname);
+}
 
 /**
  * Which feature a pathname belongs to. Used by the telemetry breadcrumb and by
@@ -161,6 +219,8 @@ export function featureOf(pathname: string): string {
 export function routeTemplate(pathname: string): string {
   return pathname
     .split('/')
-    .map((part) => (/^(pi|ch|re|dp|po|sb|ri|inv|key|evt|ba)_/.test(part) ? ':id' : part))
+    .map((part) =>
+      /^(pi|ch|re|dp|po|sb|ri|inv|key|evt|ba|cus|pm|price|csub|rv)_/.test(part) ? ':id' : part,
+    )
     .join('/');
 }

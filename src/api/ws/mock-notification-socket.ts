@@ -31,7 +31,7 @@ export class MockNotificationSocket extends SocketClient<ConsoleNotification> {
    * A stand-in with just enough of the `WebSocket` surface for `SocketClient` to drive it.
    * `open` fires on the next tick so `connect()` transitions exactly as it does in prod.
    */
-  protected openSocket(): WebSocket {
+  protected override openSocket(): WebSocket {
     const listeners = new Map<string, Array<(ev: Event) => void>>();
 
     const fake = {
