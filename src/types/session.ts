@@ -5,7 +5,7 @@
  * little more around it — a resolved permission set, the livemode toggle position — and none of
  * that belongs on the wire.
  */
-import type { Merchant, SessionResponse, User, UserRole } from '@payzeno/contracts';
+import type { Merchant, MerchantStatus, SessionResponse, User, UserRole } from '@payzeno/contracts';
 
 import { ROLE_PERMISSIONS } from './nav';
 import type { Permission } from './nav';
@@ -22,6 +22,21 @@ function isPermission(value: string): value is Permission {
 }
 
 /**
+ * Merchant statuses that have never been `active`. RFC platform-v2 §3: payzeno-api refuses a
+ * live payment for these with `403 merchant_not_activated`, so the console starts them in test
+ * mode and `LivemodeToggle` keeps them there. `restricted` / `suspended` merchants were active
+ * once and still have live data to look at, so they are deliberately not in this list.
+ */
+export const NOT_YET_ACTIVATED_STATUSES: ReadonlySet<MerchantStatus> = new Set<MerchantStatus>([
+  'pending_review',
+  'rejected',
+]);
+
+export function isNotYetActivated(merchant: Pick<Merchant, 'status'>): boolean {
+  return NOT_YET_ACTIVATED_STATUSES.has(merchant.status);
+}
+
+/**
  * Build the console session from the API response.
  *
  * The API's `permissions` array wins. The role table is only consulted when it comes back
@@ -30,11 +45,12 @@ function isPermission(value: string): value is Permission {
 export function toConsoleSession(response: SessionResponse, livemode?: boolean): ConsoleSession {
   const fromApi = response.permissions.filter(isPermission);
   const resolved = fromApi.length > 0 ? fromApi : ROLE_PERMISSIONS[response.user.role];
+  const defaultLivemode = isNotYetActivated(response.merchant) ? false : response.merchant.livemode;
 
   return {
     ...response,
     _permissions: new Set(resolved),
-    _livemode: livemode ?? response.merchant.livemode,
+    _livemode: livemode ?? defaultLivemode,
   };
 }
 

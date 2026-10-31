@@ -126,7 +126,13 @@ async function buildEveryPath(): Promise<Built[]> {
 
   await e.bankAccounts.list();
   await e.bankAccounts.get(SENTINEL);
-  await e.bankAccounts.create({ bank_account_token: 't', currency: 'GBP', country: 'GB' });
+  await e.bankAccounts.create({
+    bank_account_token: 't',
+    currency: 'GBP',
+    country: 'GB',
+    scheme: 'uk_sort_code',
+    account_holder_name: 'n',
+  });
   await e.bankAccounts.makeDefault(SENTINEL);
 
   await e.webhookEvents.list();

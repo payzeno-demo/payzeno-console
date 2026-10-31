@@ -58,7 +58,9 @@ export class SettlementsEndpoint extends ResourceEndpoint<
     return this.client.request<Paginated<ReconciliationItem>>({
       method: 'GET',
       path: this.resourcePath(batchId, 'items'),
-      query: listQueryToParams(q),
+      // Same widening as `ResourceEndpoint.toParams`: an interface has no implicit index
+      // signature, and `listQueryToParams`' signature is frozen.
+      query: listQueryToParams(q as (ListQuery & Record<string, unknown>) | undefined),
       timeoutMs: LONG_READ_TIMEOUT_MS,
     });
   }

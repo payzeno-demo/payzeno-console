@@ -38,6 +38,8 @@ export interface BadgeProps {
   srPrefix?: string;
   /** Small leading dot. Decorative. */
   withDot?: boolean;
+  /** Native hover hint. Never the only place the information lives. */
+  title?: string;
   className?: string;
 }
 
@@ -48,6 +50,7 @@ export function Badge({
   subtle = false,
   srPrefix,
   withDot = false,
+  title,
   className,
 }: BadgeProps) {
   const resolved = resolveTone(tone);
@@ -56,6 +59,7 @@ export function Badge({
   return (
     <span
       className={cn(pz('badge'), pz('badge', undefined, resolved), className)}
+      title={title}
       style={{
         display: 'inline-flex',
         alignItems: 'center',

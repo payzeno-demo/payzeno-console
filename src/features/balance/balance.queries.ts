@@ -10,6 +10,7 @@ import { queryOptions } from '@tanstack/react-query';
 import type { Balance, CurrencyCode } from '@payzeno/contracts';
 
 import type { EndpointRegistry } from '@api/endpoints';
+import type { BalanceListResponse } from '@api/endpoints/balance.endpoint';
 import { queryKeys } from '@api/queryKeys';
 
 /**
@@ -21,6 +22,19 @@ export function balanceQuery(e: EndpointRegistry, currency: CurrencyCode) {
   return queryOptions<Balance>({
     queryKey: queryKeys.balance.current(currency),
     queryFn: () => e.balance.get(currency),
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
+  });
+}
+
+/**
+ * `GET /v1/balance` without `currency` — every currency balance (RFC platform-v2 §7). Same
+ * stale time and the same invalidation family as the single-currency read.
+ */
+export function allBalancesQuery(e: EndpointRegistry) {
+  return queryOptions<BalanceListResponse>({
+    queryKey: queryKeys.balance.list(),
+    queryFn: () => e.balance.list(),
     staleTime: 30_000,
     refetchOnWindowFocus: true,
   });

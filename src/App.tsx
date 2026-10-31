@@ -12,17 +12,25 @@
  * children bare when there is no user — so `/login` gets no chrome for free.
  */
 import { useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useSessionState } from '@app/SessionContext';
 import { AppShell } from '@components/layout/AppShell';
 import { QueryErrorBoundary } from '@components/feedback/ErrorBoundary';
 import { useLogout } from '@features/auth/useLogout';
+import { ActivationBanner } from '@features/onboarding/components/ActivationBanner';
 
 import { AppRoutes } from '@/router';
+import { isAccountFlowPath } from '@/routes';
 
 export function App() {
   const { setLivemode, refresh } = useSessionState();
   const { logout } = useLogout();
+  const { pathname } = useLocation();
+  // Signup and the emailed-link pages render without chrome, signed in or not (RFC
+  // platform-v2 §4): an invite link opened in a tab where the inviter is signed in must not
+  // look like the inviter's dashboard.
+  const accountFlow = isAccountFlowPath(pathname);
 
   /**
    * Flipping livemode changes what every list query returns, so the session is refreshed as
@@ -53,7 +61,10 @@ export function App() {
         onSignOut={logout}
         onLivemodeChange={handleLivemodeChange}
         onSwitchMerchant={handleSwitchMerchant}
+        bare={accountFlow}
       >
+        {/* RFC platform-v2 §3: "test mode only" until the business is verified. */}
+        {accountFlow ? null : <ActivationBanner />}
         <AppRoutes />
       </AppShell>
     </QueryErrorBoundary>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>Payzeno Admin</title>
+    <meta name="description" content="Payzeno staff back office" />
+
+    <!--
+      The staff back office (RFC platform-v2 §1). Second entry of the console bundle: same
+      design system, same transport, its own router and its own session (pz_staff_session).
+      Served at admin.payzeno.com / http://admin.localhost with /v1 proxied on the same origin.
+      No third-party script tags, and never indexed.
+    -->
+    <meta name="referrer" content="same-origin" />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body>
+    <!-- AdminShell renders the skip link and the landmark roles; #root is deliberately bare. -->
+    <div id="root"></div>
+    <noscript>The Payzeno admin back office requires JavaScript.</noscript>
+    <script type="module" src="/src/admin/main.tsx"></script>
+  </body>
+</html>

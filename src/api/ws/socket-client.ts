@@ -100,10 +100,13 @@ export abstract class SocketClient<TMessage> {
     this.reconnectTimer = setTimeout(() => this.connect(), delay);
   }
 
-  /** Exponential with full jitter, capped at 30s. Every open tab must not retry in lockstep. */
+  /**
+   * Steps through the `WS_BACKOFF_MS` schedule (roughly exponential, its last step is the 30s
+   * cap) with jitter. Every open tab must not retry in lockstep.
+   */
   protected backoffMs(attempt: number): number {
-    const exponential = Math.min(WS_BACKOFF_MS * 2 ** (attempt - 1), 30_000);
-    return Math.round(exponential * (0.5 + Math.random() * 0.5));
+    const step = WS_BACKOFF_MS[Math.min(attempt, WS_BACKOFF_MS.length) - 1] ?? 30_000;
+    return Math.round(step * (0.5 + Math.random() * 0.5));
   }
 
   private startHeartbeat(): void {

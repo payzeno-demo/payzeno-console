@@ -7,6 +7,7 @@
  */
 import type { ReactNode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { MockInstance } from 'vitest';
 
 import {
   BadRequestApiError,
@@ -39,7 +40,7 @@ function Boom({ error }: { error: unknown }): ReactNode {
 }
 
 /** React logs every caught render error; the boundary is the thing under test, not the noise. */
-let consoleError: ReturnType<typeof vi.spyOn>;
+let consoleError: MockInstance<Parameters<typeof console.error>, void>;
 
 beforeEach(() => {
   consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -164,8 +165,12 @@ describe('one branch per ConsoleApiError subclass', () => {
               code: 'validation_failed',
               message: 'Some fields need attention.',
               fieldErrors: [
-                { path: 'amount_minor', message: 'Above the refundable amount.' },
-                { path: 'reason', message: 'Not a known reason.' },
+                {
+                  path: 'amount_minor',
+                  code: 'out_of_range',
+                  message: 'Above the refundable amount.',
+                },
+                { path: 'reason', code: 'invalid_value', message: 'Not a known reason.' },
               ],
             }),
           )

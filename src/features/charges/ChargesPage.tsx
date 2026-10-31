@@ -6,7 +6,7 @@ import { PageContainer } from '@components/layout/PageContainer';
 import { PageHeader } from '@components/layout/PageHeader';
 import { Select } from '@components/ui/Select';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
-import { useQueryParamState } from '@hooks/useQueryParamState';
+import { useEnumParam, useStringParam } from '@hooks/useQueryParamState';
 
 import { ChargeTable } from './components/ChargeTable';
 import { useCharges } from './useCharges';
@@ -26,8 +26,9 @@ const STATUS_OPTIONS: ReadonlyArray<ChargeStatus | 'all'> = [
 export function ChargesPage() {
   useDocumentTitle('Charges');
 
-  const [status, setStatus] = useQueryParamState<ChargeStatus | 'all'>('status', 'all');
-  const [cursor, setCursor] = useQueryParamState<string>('cursor', '');
+  const [statusParam, setStatus] = useEnumParam('status', STATUS_OPTIONS, 'all');
+  const status = statusParam ?? 'all';
+  const [cursor, setCursor] = useStringParam('cursor');
 
   const { rows, isLoading, isFetching, hasMore, nextCursor, error } = useCharges({
     ...(status === 'all' ? {} : { status }),

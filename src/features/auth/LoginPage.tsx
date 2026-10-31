@@ -4,7 +4,7 @@
  *
  * It is outside `RequireSession`, so a signed-out user lands here rather than looping.
  */
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import { PageContainer } from '@components/layout/PageContainer';
 import { EnvironmentBanner } from '@components/layout/EnvironmentBanner';
@@ -38,7 +38,15 @@ export function LoginPage() {
       />
 
       <p>
+        <Link to={ROUTES.auth.forgotPassword}>Forgot your password?</Link>
+      </p>
+
+      <p>
         Trouble signing in? Ask an owner or admin on your account to re-send your invite.
+      </p>
+
+      <p>
+        New to Payzeno? <Link to={ROUTES.auth.signup}>Create an account</Link>.
       </p>
     </PageContainer>
   );

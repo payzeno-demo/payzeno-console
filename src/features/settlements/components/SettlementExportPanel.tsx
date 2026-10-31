@@ -14,12 +14,14 @@ import { useState } from 'react';
 
 import type { CurrencyCode } from '@payzeno/contracts';
 
+import { numberColumn, textColumn } from '@components/data/column.types';
+import type { ColumnDef } from '@components/data/column.types';
 import { Button } from '@components/ui/Button';
 import { Card } from '@components/ui/Card';
 import { Checkbox } from '@components/ui/Checkbox';
-import { downloadBlob } from '@lib/download';
+import { downloadText } from '@lib/download';
 import { toCsv } from '@lib/csv';
-import type { SettlementItemRow } from '@types/view-models';
+import type { SettlementItemRow } from '@/types/view-models';
 
 export interface SettlementExportPanelProps {
   batchId: string;
@@ -46,20 +48,28 @@ export function SettlementExportPanel({ batchId, currency, rows }: SettlementExp
   const handleExport = () => {
     const selected = rows.filter((row) => options.includeUnmatched || row.charge_id !== null);
 
-    const csv = toCsv(
-      selected.map((row) => ({
-        item_id: row.id,
-        charge_id: row.charge_id ?? '',
-        line_type: row.line_type,
-        gross_minor: row.gross_minor,
-        currency,
-        ...(options.includeFees ? { fee_minor: row.fee_minor } : {}),
-        ...(options.includeVariance ? { variance_minor: row.variance_minor } : {}),
-        status: row.status,
-      })),
-    );
+    const columns: ColumnDef<SettlementItemRow>[] = [
+      textColumn('item_id', 'item_id', (row) => row.id),
+      textColumn('charge_id', 'charge_id', (row) => row.charge_id),
+      textColumn('line_type', 'line_type', (row) => row.line_type),
+      numberColumn('gross_minor', 'gross_minor', (row) => row.gross_minor),
+      textColumn('currency', 'currency', () => currency),
+      ...(options.includeFees
+        ? [numberColumn<SettlementItemRow>('fee_minor', 'fee_minor', (row) => row.fee_minor)]
+        : []),
+      ...(options.includeVariance
+        ? [
+            numberColumn<SettlementItemRow>(
+              'variance_minor',
+              'variance_minor',
+              (row) => row.variance_minor,
+            ),
+          ]
+        : []),
+      textColumn('status', 'status', (row) => row.status),
+    ];
 
-    downloadBlob(csv, `settlement-${batchId}-explorer.csv`, 'text/csv');
+    downloadText(toCsv(selected, columns), `settlement-${batchId}-explorer.csv`, 'text/csv');
   };
 
   return (

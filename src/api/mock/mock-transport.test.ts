@@ -15,10 +15,16 @@ import { NotFoundApiError } from '@api/errors';
 import { MockTransport } from '@api/mock/mock-transport';
 import {
   mockCharges,
+  mockCustomers,
+  mockPaymentIntents,
   mockPayouts,
+  mockReviews,
+  mockSession,
   mockSettlementItems,
   mockSettlements,
+  mockSubscriptions,
 } from '@api/mock/fixtures';
+import { toConsoleSession } from '@/types/session';
 import type { HttpTransport } from '@api/transport';
 
 function registry() {
@@ -39,7 +45,9 @@ describe('interface conformance', () => {
   it('can be handed to createEndpoints in place of ApiClient', () => {
     const endpoints = registry();
 
-    expect(Object.keys(endpoints)).toHaveLength(14);
+    // Fourteen original endpoints plus RFC platform-v2's six (signup, onboarding, customers,
+    // prices, subscriptions, reviews).
+    expect(Object.keys(endpoints)).toHaveLength(20);
     expect(endpoints.settlements).toBeDefined();
     expect(endpoints.reporting).toBeDefined();
   });
@@ -156,9 +164,9 @@ describe('writes', () => {
   it('routes `request()` to the right verb handler', async () => {
     const transport = new MockTransport();
 
-    await expect(transport.request({ method: 'GET', path: '/balance' })).resolves.toHaveProperty(
-      'available_minor',
-    );
+    await expect(
+      transport.request({ method: 'GET', path: '/balance', query: { currency: 'GBP' } }),
+    ).resolves.toHaveProperty('available_minor');
     await expect(
       transport.request({ method: 'DELETE', path: '/api-keys/key_1', idempotencyKey: 'k' }),
     ).resolves.toBeUndefined();
@@ -198,5 +206,139 @@ describe('the settlement retry — the arc-INC demo path', () => {
       .catch(() => 'locked');
 
     expect(second).toBe(first);
+  });
+});
+
+describe('RFC platform-v2 — the demo answers every new route', () => {
+  it('sends a session whose permissions survive toConsoleSession, so the demo nav is whole', () => {
+    const session = toConsoleSession(mockSession);
+
+    expect(session._permissions.has('balance:read')).toBe(true);
+    expect(session._permissions.has('settings:read')).toBe(true);
+    expect(session._permissions.size).toBe(mockSession.permissions.length);
+  });
+
+  it('lists every currency balance when no currency is asked for', async () => {
+    const list = await registry().balance.list();
+
+    expect(list.data.map((balance) => balance.currency).sort()).toEqual(
+      ['EUR', 'GBP', 'ILS', 'JPY', 'USD'],
+    );
+  });
+
+  it('answers the balance per currency', async () => {
+    const endpoints = registry();
+
+    await expect(endpoints.balance.get('EUR')).resolves.toMatchObject({ currency: 'EUR' });
+    await expect(endpoints.balance.get('JPY')).resolves.toMatchObject({
+      currency: 'JPY',
+      available_minor: 0,
+    });
+  });
+
+  it('signs up without signing in, then verifies into a login', async () => {
+    const endpoints = registry();
+
+    await expect(
+      endpoints.signup.create({
+        email: 'new@example.com',
+        password: 'correct horse battery',
+        full_name: 'New Owner',
+        legal_name: 'New Co Ltd',
+        display_name: 'New Co',
+        country: 'GB',
+        default_currency: 'GBP',
+      }),
+    ).resolves.toMatchObject({ object: 'signup', verification_required: true });
+    await expect(endpoints.signup.verify({ token: 't' })).resolves.toMatchObject({ object: 'login' });
+  });
+
+  it('accepts an invitation and the two password-reset calls', async () => {
+    const endpoints = registry();
+
+    await expect(
+      endpoints.auth.acceptInvitation({ token: 't', full_name: 'Ida', password: 'pw-1234567' }),
+    ).resolves.toMatchObject({ object: 'login', user: { full_name: 'Ida' } });
+    await expect(endpoints.auth.requestPasswordReset('a@b.c')).resolves.toBeUndefined();
+    await expect(
+      endpoints.auth.confirmPasswordReset({ token: 't', password: 'pw-1234567' }),
+    ).resolves.toBeUndefined();
+  });
+
+  it('answers onboarding reads and writes for the approved demo merchant', async () => {
+    const endpoints = registry();
+
+    await expect(endpoints.onboarding.get()).resolves.toMatchObject({ state: 'approved' });
+    await expect(
+      endpoints.onboarding.update({ business_profile: { website: 'https://x.example' } }),
+    ).resolves.toMatchObject({ business_profile: { website: 'https://x.example' } });
+    await expect(
+      endpoints.onboarding.uploadDocument({
+        type: 'proof_of_address',
+        filename: 'bill.pdf',
+        content_type: 'application/pdf',
+        content_base64: 'AAAA',
+      }),
+    ).resolves.toMatchObject({ object: 'kyc_document', filename: 'bill.pdf', size_bytes: 3 });
+  });
+
+  it('finds a customer by exact email and lists their saved cards', async () => {
+    const endpoints = registry();
+    const first = mockCustomers[0]!;
+
+    const found = await endpoints.customers.list({ email: first.email!.toUpperCase() });
+    expect(found.data.map((customer) => customer.id)).toEqual([first.id]);
+
+    const cards = await endpoints.customers.listPaymentMethods(first.id);
+    expect(cards.data.length).toBeGreaterThan(0);
+    expect(cards.data.every((card) => card.customer_id === first.id)).toBe(true);
+  });
+
+  it('ties some payments to customers, so the customer page has something to show', async () => {
+    const customerIds = new Set(mockCustomers.map((customer) => customer.id));
+    const page = await registry().paymentIntents.list();
+
+    expect(page.data.some((intent) => intent.customer_id && customerIds.has(intent.customer_id))).toBe(
+      true,
+    );
+  });
+
+  it('filters subscriptions by status and cancels at period end by default', async () => {
+    const endpoints = registry();
+
+    const pastDue = await endpoints.subscriptions.list({ status: 'past_due' });
+    expect(pastDue.data.every((subscription) => subscription.status === 'past_due')).toBe(true);
+
+    const target = mockSubscriptions[0]!;
+    await expect(endpoints.subscriptions.cancel(target.id, {})).resolves.toMatchObject({
+      status: 'active',
+      cancel_at_period_end: true,
+    });
+    await expect(
+      endpoints.subscriptions.cancel(target.id, { at_period_end: false }),
+    ).resolves.toMatchObject({ status: 'canceled' });
+  });
+
+  it('creates a recurring price from the request', async () => {
+    const price = await registry().prices.create({
+      product_name: 'Beans',
+      unit_amount_minor: 900,
+      currency: 'EUR',
+      recurring: { interval: 'month', interval_count: 1 },
+    });
+
+    expect(price).toMatchObject({ object: 'price', product_name: 'Beans', currency: 'EUR' });
+  });
+
+  it('keeps every open review attached to a held payment', async () => {
+    const page = await registry().reviews.list({ status: 'open' });
+
+    expect(page.data.length).toBeGreaterThan(0);
+    for (const review of page.data) {
+      const intent = mockPaymentIntents.find((candidate) => candidate.id === review.payment_intent_id);
+      expect(intent?.review_id).toBe(review.id);
+      expect(intent?.status).toBe('requires_capture');
+    }
+    expect(mockReviews.length).toBeGreaterThan(page.data.length);
   });
 });

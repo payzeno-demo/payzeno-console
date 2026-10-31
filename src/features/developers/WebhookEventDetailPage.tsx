@@ -100,12 +100,12 @@ export function WebhookEventDetailPage() {
 
           <dt>Next attempt</dt>
           <dd>
-            <DateCell value={event.next_attempt_at} precision="minute" />
+            <DateCell value={event.next_attempt_at} />
           </dd>
 
           <dt>Delivered</dt>
           <dd>
-            <DateCell value={event.delivered_at} precision="minute" />
+            <DateCell value={event.delivered_at} />
           </dd>
 
           <dt>Signature version</dt>

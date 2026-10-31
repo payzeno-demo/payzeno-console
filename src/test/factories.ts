@@ -15,17 +15,24 @@ import type {
   BankAccount,
   Balance,
   Charge,
+  Customer,
   DashboardSummary,
   Dispute,
   Invoice,
+  KycDocument,
   Merchant,
   MerchantSettlementBatch,
+  Onboarding,
   Paginated,
   PaymentIntent,
+  PaymentMethod,
   Payout,
+  Price,
   ReconciliationItem,
   Refund,
+  Review,
   SessionResponse,
+  Subscription,
   User,
   WebhookEndpoint,
   WebhookEvent,
@@ -143,6 +150,12 @@ export function makePaymentIntent(overrides: Partial<PaymentIntent> = {}): Payme
     updated_at: NOW,
     canceled_at: null,
     cancellation_reason: null,
+    customer_id: null,
+    payment_method_id: null,
+    receipt_email: null,
+    presentment: null,
+    review_id: null,
+    subscription_id: null,
     ...overrides,
   } as PaymentIntent;
 }
@@ -273,6 +286,9 @@ export function makePayout(overrides: Partial<Payout> = {}): Payout {
     failed_at: null,
     returned_at: null,
     created_at: '2026-03-14T05:00:00.000Z',
+    source_amount_minor: null,
+    source_currency: null,
+    fx_rate: null,
     ...overrides,
   } as Payout;
 }
@@ -499,5 +515,149 @@ export function makeApiErrorBody(
       request_id: 'req_01HW0RTREQUEST0000001',
       ...extra,
     },
+  };
+}
+
+// -- RFC platform-v2 -------------------------------------------------------------------------
+
+export const CUSTOMER_ID = 'cus_01HW0RTCUSTOMER00000001';
+export const PRICE_ID = 'price_01HW0RTPRICE000000001';
+export const SUBSCRIPTION_ID = 'csub_01HW0RTSUBSCRIPTION0001';
+export const REVIEW_ID = 'rv_01HW0RTREVIEW0000000001';
+
+export function makeCustomer(overrides: Partial<Customer> = {}): Customer {
+  return {
+    id: CUSTOMER_ID,
+    object: 'customer',
+    merchant_id: MERCHANT_ID,
+    email: 'amara.osei@example.com',
+    name: 'Amara Osei',
+    default_payment_method_id: 'pm_01HW0RTPAYMENTMETHOD0001',
+    livemode: true,
+    metadata: {},
+    created_at: '2026-02-01T10:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function makePaymentMethod(overrides: Partial<PaymentMethod> = {}): PaymentMethod {
+  return {
+    id: 'pm_01HW0RTPAYMENTMETHOD0001',
+    object: 'payment_method',
+    customer_id: CUSTOMER_ID,
+    card: {
+      brand: 'visa',
+      last_four: '4242',
+      exp_month: 12,
+      exp_year: 2028,
+      country: 'GB',
+      funding: 'credit',
+    },
+    livemode: true,
+    created_at: '2026-02-01T10:01:00.000Z',
+    ...overrides,
+  };
+}
+
+export function makePrice(overrides: Partial<Price> = {}): Price {
+  return {
+    id: PRICE_ID,
+    object: 'price',
+    merchant_id: MERCHANT_ID,
+    product_name: 'Coffee Club',
+    unit_amount_minor: 1_500,
+    currency: 'GBP',
+    recurring: { interval: 'month', interval_count: 1 },
+    active: true,
+    livemode: true,
+    metadata: {},
+    created_at: '2026-01-01T10:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function makeSubscription(overrides: Partial<Subscription> = {}): Subscription {
+  return {
+    id: SUBSCRIPTION_ID,
+    object: 'subscription',
+    merchant_id: MERCHANT_ID,
+    customer_id: CUSTOMER_ID,
+    price_id: PRICE_ID,
+    status: 'active',
+    current_period_start: '2026-03-01T10:00:00.000Z',
+    current_period_end: '2026-04-01T10:00:00.000Z',
+    cancel_at_period_end: false,
+    canceled_at: null,
+    default_payment_method_id: 'pm_01HW0RTPAYMENTMETHOD0001',
+    latest_payment_intent_id: 'pi_01HW0RTPAYMENTINTENT0001',
+    next_retry_at: null,
+    failed_attempts: 0,
+    livemode: true,
+    metadata: {},
+    created_at: '2026-02-01T10:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function makeReview(overrides: Partial<Review> = {}): Review {
+  return {
+    id: REVIEW_ID,
+    object: 'review',
+    merchant_id: MERCHANT_ID,
+    payment_intent_id: 'pi_01HW0RTPAYMENTINTENT0001',
+    charge_id: 'ch_01HW0RTCHARGE00000001',
+    status: 'open',
+    rules: ['country_mismatch', 'amount_spike'],
+    risk_score: 71,
+    amount_minor: 12_500,
+    currency: 'GBP',
+    ip_country: 'NG',
+    card_country: 'GB',
+    opened_at: NOW,
+    closed_at: null,
+    closed_by: null,
+    note: null,
+    livemode: true,
+    ...overrides,
+  };
+}
+
+export function makeKycDocument(overrides: Partial<KycDocument> = {}): KycDocument {
+  return {
+    id: 'kyc_01HW0RTKYCDOCUMENT00001',
+    object: 'kyc_document',
+    merchant_id: MERCHANT_ID,
+    type: 'identity_document',
+    filename: 'passport.pdf',
+    content_type: 'application/pdf',
+    size_bytes: 204_800,
+    uploaded_at: NOW,
+    ...overrides,
+  };
+}
+
+/** A fresh signup's onboarding: nothing filled in, everything due. */
+export function makeOnboarding(overrides: Partial<Onboarding> = {}): Onboarding {
+  return {
+    object: 'onboarding',
+    merchant_id: MERCHANT_ID,
+    state: 'collecting',
+    business_profile: {
+      business_type: null,
+      website: null,
+      product_description: null,
+      support_email: null,
+      address_line1: null,
+      city: null,
+      postal_code: null,
+      registration_number: null,
+    },
+    representative: { full_name: null, date_of_birth: null, email: null },
+    documents: [],
+    requirements_due: ['business_profile', 'representative', 'bank_account', 'identity_document'],
+    staff_message: null,
+    submitted_at: null,
+    decided_at: null,
+    ...overrides,
   };
 }

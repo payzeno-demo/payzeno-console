@@ -48,6 +48,14 @@ export default defineConfig(({ mode }) => ({
     target: 'es2022',
     chunkSizeWarningLimit: 700,
     rollupOptions: {
+      // Two entries, one bundle (RFC platform-v2 §1): the merchant console and the staff admin
+      // back office share the design system, the transport and the vendor chunks below. Both
+      // HTML files land at the dist root — payzeno-nginx serves `index.html` on the console
+      // host and `admin.html` on admin.localhost / admin.payzeno.com.
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        admin: fileURLToPath(new URL('./admin.html', import.meta.url)),
+      },
       output: {
         manualChunks: {
           react: ['react', 'react-dom', 'react-router-dom'],

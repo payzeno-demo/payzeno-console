@@ -19,13 +19,18 @@ import type {
 
 import { toMajorNumber } from '@lib/money';
 
-export interface ChartPoint {
+/**
+ * A type alias rather than an interface on purpose: `<LineChart>` takes
+ * `Record<string, unknown>` rows, and only an object type alias gets the implicit index
+ * signature that makes it assignable.
+ */
+export type ChartPoint = {
   /** ISO instant — the chart's x value. */
   bucket: string;
   /** Major units. Display only. */
   value: number;
   count: number;
-}
+};
 
 export function toChartPoints(
   points: ReadonlyArray<TimeseriesPoint>,

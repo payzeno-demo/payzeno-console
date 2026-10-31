@@ -7,7 +7,13 @@
  */
 import { queryOptions } from '@tanstack/react-query';
 
-import type { LoginRequest, LoginResponse, SessionResponse } from '@payzeno/contracts';
+import type {
+  AcceptInvitationRequest,
+  LoginRequest,
+  LoginResponse,
+  PasswordResetConfirmRequest,
+  SessionResponse,
+} from '@payzeno/contracts';
 
 import type { EndpointRegistry } from '@api/endpoints';
 import { UnauthorizedError } from '@api/errors';
@@ -48,5 +54,23 @@ export function passwordResetMutation(e: EndpointRegistry) {
   return {
     mutationKey: ['auth', 'password-reset'] as const,
     mutationFn: (email: string): Promise<void> => e.auth.requestPasswordReset(email),
+  };
+}
+
+/** RFC platform-v2 §4: spends a `team_invite` token and signs the new member in. */
+export function acceptInvitationMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['auth', 'accept-invitation'] as const,
+    mutationFn: (request: AcceptInvitationRequest): Promise<LoginResponse> =>
+      e.auth.acceptInvitation(request),
+  };
+}
+
+/** RFC platform-v2 §4: spends a `password_reset` token. Does not sign in. */
+export function confirmPasswordResetMutation(e: EndpointRegistry) {
+  return {
+    mutationKey: ['auth', 'password-reset-confirm'] as const,
+    mutationFn: (request: PasswordResetConfirmRequest): Promise<void> =>
+      e.auth.confirmPasswordReset(request),
   };
 }

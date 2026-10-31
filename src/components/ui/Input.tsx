@@ -14,7 +14,9 @@ import { cn, pz } from '@lib/cn';
 
 import { color, font, radius, space } from './tokens';
 
-export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> {
+// `prefix` is the RDFa attribute (a string) on the DOM type; here it is a rendered adornment.
+export interface InputProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className' | 'prefix'> {
   id: string;
   invalid?: boolean;
   /** Id of the element holding this field's error message. */

@@ -2,7 +2,7 @@
  * `ColumnDef<PayoutRow>[]`.
  *
  * `available_on` and `arrival_estimate` are `IsoDate` — banking calendar days, not instants.
- * They render through `DateCell precision="day"`, which splits the string instead of parsing
+ * They render through `DateCell mode="banking"`, which splits the string instead of parsing
  * it; PAY-1904 ("payouts show yesterday") was exactly this mistake.
  */
 import { Link } from 'react-router-dom';
@@ -68,7 +68,19 @@ export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
     header: 'Amount',
     align: 'end',
     sortable: true,
-    cell: (row) => <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />,
+    // RFC platform-v2 §7: a converted payout lands in the bank's currency; the balance it came
+    // out of is `source_*`, shown underneath so the two never read as one amount.
+    cell: (row) => (
+      <>
+        <MoneyCell amountMinor={row.amount_minor} currency={row.currency} />
+        {typeof row.source_amount_minor === 'number' && row.source_currency ? (
+          <span style={{ display: 'block' }}>
+            from <MoneyCell amountMinor={row.source_amount_minor} currency={row.source_currency} />
+            {row.fx_rate ? ` at ${row.fx_rate}` : ''}
+          </span>
+        ) : null}
+      </>
+    ),
     exportValue: (row) => String(row.amount_minor),
   },
   {
@@ -87,7 +99,7 @@ export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
     id: 'available_on',
     header: 'Available on',
     sortable: true,
-    cell: (row) => <DateCell value={row.available_on} precision="day" />,
+    cell: (row) => <DateCell value={row.available_on} mode="banking" />,
     exportValue: (row) => row.available_on,
   },
   {
@@ -95,7 +107,7 @@ export const payoutColumns: ReadonlyArray<ColumnDef<PayoutRow>> = [
     header: 'Expected arrival',
     cell: (row) =>
       row.arrival_estimate ? (
-        <DateCell value={row.arrival_estimate} precision="day" />
+        <DateCell value={row.arrival_estimate} mode="banking" />
       ) : (
         <span>—</span>
       ),

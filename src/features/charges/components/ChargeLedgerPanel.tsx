@@ -64,7 +64,7 @@ export function ChargeLedgerPanel({ chargeId, currency }: ChargeLedgerPanelProps
               <article key={transaction.id}>
                 <header>
                   <IdCell value={transaction.id} />
-                  <DateCell value={transaction.posted_at} precision="second" />
+                  <DateCell value={transaction.posted_at} absolute />
                 </header>
 
                 <ul>

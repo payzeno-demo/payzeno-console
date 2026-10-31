@@ -24,9 +24,24 @@ export interface LivemodeToggleProps {
   onChange: (next: boolean) => void;
   /** Merchants that have never taken a live payment cannot leave test mode. */
   canGoLive?: boolean;
+  /**
+   * Why live mode is locked, announced with the switch and shown as a hover hint. Defaults to
+   * the RFC platform-v2 §3 reason: payzeno-api refuses live payments with
+   * `merchant_not_activated` until the business is verified.
+   */
+  lockedReason?: string;
 }
 
-export function LivemodeToggle({ livemode, onChange, canGoLive = true }: LivemodeToggleProps) {
+export const DEFAULT_LIVEMODE_LOCKED_REASON =
+  'Live mode unlocks once Payzeno has verified your business. Test mode works now.';
+
+export function LivemodeToggle({
+  livemode,
+  onChange,
+  canGoLive = true,
+  lockedReason = DEFAULT_LIVEMODE_LOCKED_REASON,
+}: LivemodeToggleProps) {
+  const locked = !canGoLive && !livemode;
   const queryClient = useQueryClient();
 
   const flip = useCallback(
@@ -43,6 +58,7 @@ export function LivemodeToggle({ livemode, onChange, canGoLive = true }: Livemod
   return (
     <div
       className={pz('livemode-toggle')}
+      title={locked ? lockedReason : undefined}
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -58,10 +74,18 @@ export function LivemodeToggle({ livemode, onChange, canGoLive = true }: Livemod
         id="livemode"
         checked={livemode}
         onCheckedChange={flip}
-        disabled={!canGoLive && !livemode}
+        disabled={locked}
         label="Live mode"
         hideLabel
+        description={locked ? lockedReason : undefined}
       />
+
+      {/* `Switch` renders its description only with a visible label; this is its target. */}
+      {locked ? (
+        <span id="livemode-description" style={visuallyHidden as React.CSSProperties}>
+          {lockedReason}
+        </span>
+      ) : null}
 
       <span
         aria-hidden="true"

@@ -40,7 +40,16 @@ export function DisputeTable({ rows, isLoading, pagination }: DisputeTableProps)
           />
         }
       />
-      {pagination ? <DataTablePagination pagination={pagination} label="Dispute pages" /> : null}
+      {pagination ? (
+        <DataTablePagination
+          pageNumber={pagination.pageNumber}
+          canGoBack={pagination.canGoBack}
+          canGoForward={pagination.canGoForward}
+          onPrevious={pagination.goBack}
+          onNext={pagination.goNext}
+          resourceLabel="disputes"
+        />
+      ) : null}
     </>
   );
 }

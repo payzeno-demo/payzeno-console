@@ -10,9 +10,15 @@
  *  - scrub any key in `DENYLISTED_FIELDS`, at any depth;
  *  - scrub anything that *looks* like a PAN, even in free text (Luhn-checked).
  */
-import type { BrowserOptions, ErrorEvent, EventHint } from '@sentry/react';
+import type { BrowserOptions, EventHint } from '@sentry/react';
 
 import { runtimeConfig } from './runtime';
+
+/**
+ * The event `beforeSend` receives. `@sentry/react` 7.x does not re-export `ErrorEvent` from
+ * `@sentry/types`, which is not a direct dependency, so take it from the option it types.
+ */
+type ErrorEvent = Parameters<NonNullable<BrowserOptions['beforeSend']>>[0];
 
 /** Field names that never leave the browser. Mirrors domain-model.md §11.2. */
 export const DENYLISTED_FIELDS: ReadonlyArray<string> = [

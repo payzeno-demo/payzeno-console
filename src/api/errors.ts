@@ -26,7 +26,7 @@ export class ConsoleApiError extends PayzenoError {
   readonly httpStatus: number;
   readonly status: number;
   readonly requestId: string;
-  readonly fieldErrors: FieldError[];
+  override readonly fieldErrors: FieldError[];
   readonly retryAfterSeconds: number | null;
 
   constructor(init: ConsoleApiErrorInit) {

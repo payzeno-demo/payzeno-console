@@ -13,14 +13,19 @@ import type {
   BalanceBucket,
   BankAccount,
   Charge,
+  Customer,
   Dispute,
   Invoice,
   LedgerTransaction,
   MerchantSettlementBatch,
   PaymentIntent,
+  PaymentMethod,
   Payout,
+  Price,
   ReconciliationItem,
   Refund,
+  Review,
+  Subscription,
   User,
   WebhookEvent,
 } from '@payzeno/contracts';
@@ -51,6 +56,12 @@ export interface PaymentIntentRow extends PaymentIntent, RowSelection {
   _isCancelable: boolean;
   /** `status === 'requires_action'` — drives the `<NextActionCallout />` row accent. */
   _needsCustomerAction: boolean;
+  /**
+   * RFC platform-v2 §8, read off the intent without fetching the review: `held` is an
+   * uncaptured authorisation behind a review (Payzeno risk decides, the merchant cannot
+   * capture it); `reviewed` is a review that has been closed either way.
+   */
+  _reviewState: 'held' | 'reviewed' | null;
 }
 
 export interface RefundRow extends Refund, RowSelection {
@@ -116,6 +127,44 @@ export interface BankAccountRow extends BankAccount, RowSelection {
 export interface TeamMemberRow extends User, RowSelection {
   /** True for the currently signed-in user — the row that cannot be removed. */
   _isSelf: boolean;
+}
+
+// -- RFC platform-v2 ---------------------------------------------------------------------------
+
+export interface CustomerRow extends Customer, RowSelection {
+  /** Name, else email, else the id — the one label every customer link shows. */
+  _label: string;
+}
+
+export interface PaymentMethodRow extends PaymentMethod {
+  /** The customer's `default_payment_method_id` points here. */
+  _isDefault: boolean;
+  /** Past its expiry month as of now. Renewals on it will decline. */
+  _isExpired: boolean;
+}
+
+export interface PriceRow extends Price, RowSelection {
+  /** "every month", "every 3 months", "one-off". */
+  _cadence: string;
+}
+
+export interface SubscriptionRow extends Subscription, RowSelection {
+  /** Resolved from `price_id` against the merchant's prices, when they are loaded. */
+  _priceLabel: string | null;
+  /** `active` and `cancel_at_period_end` — it will stop at `current_period_end`. */
+  _isEnding: boolean;
+  /** Not `canceled`: the only shape a cancel button acts on. */
+  _isCancelable: boolean;
+}
+
+export interface ReviewRow extends Review, RowSelection {}
+
+/** One row of the all-currencies summary on the balance page (RFC platform-v2 §7). */
+export interface CurrencyBalanceRow extends Balance {
+  /** The currency code — `DataTable` keys rows by `id`, and a balance has no id of its own. */
+  id: string;
+  /** Anything at all in this currency: available, pending, reserved, disputed or owed. */
+  _hasActivity: boolean;
 }
 
 /** Balance plus the derived view the balance cards actually render. */

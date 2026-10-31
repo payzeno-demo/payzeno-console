@@ -45,6 +45,12 @@ export interface AppShellProps {
   onSwitchMerchant?: (merchantId: string) => void;
   /** Nav badge counts, keyed by `NavItemSpec.badgeKey`. */
   badges?: Partial<Record<'disputes' | 'webhooks', number>>;
+  /**
+   * Render the children with no chrome even when there is a session. `App.tsx` sets it for the
+   * public account pages (signup, verify email, accept invite, password reset), which can be
+   * opened from an email while someone is already signed in. Defaults to false.
+   */
+  bare?: boolean;
 }
 
 /**
@@ -88,6 +94,7 @@ export function AppShell({
   onLivemodeChange,
   onSwitchMerchant,
   badges,
+  bare = false,
 }: AppShellProps) {
   const session = useSessionContext();
   const [navOpen, setNavOpen] = useState(false);
@@ -101,7 +108,7 @@ export function AppShell({
 
   // Before the bootstrap call resolves there is no shell to draw — `RequireSession` is what
   // renders the loading state, so this just gets out of the way.
-  if (!currentUser || !currentMerchant) {
+  if (bare || !currentUser || !currentMerchant) {
     return <>{children}</>;
   }
 

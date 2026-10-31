@@ -101,7 +101,9 @@ export function useNotificationStream(
       onGiveUp: (attempts: number) => {
         const err = new NotificationStreamError(attempts);
         setStreamError(err);
-        captureError(err, { attempts });
+        // The attempt count travels on the error (message and details); `ErrorContext` only
+        // carries string tags.
+        captureError(err);
       },
     };
 

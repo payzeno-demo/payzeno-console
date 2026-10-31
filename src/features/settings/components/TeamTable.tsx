@@ -7,6 +7,10 @@
  *
  * a11y: the invite form is a real `<form>` with labelled inputs, and the success message is a
  * live region so the new member's name is announced.
+ *
+ * RFC platform-v2 §4: an invite now emails a single-use link (`team_invite`, 72h). The wire
+ * `User` carries no status, so "pending" is read off `last_login_at === null` — accepting the
+ * invite logs the new member in, which is what sets it.
  */
 import { useState } from 'react';
 import type { FormEvent } from 'react';
@@ -19,12 +23,18 @@ import type { ColumnDef } from '@components/data/DataTable';
 import { DateCell } from '@components/data/DateCell';
 import { EmptyRows } from '@components/data/EmptyRows';
 import { InlineError } from '@components/feedback/InlineError';
+import { Badge } from '@components/ui/Badge';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Label } from '@components/ui/Label';
 import { Select } from '@components/ui/Select';
 import { humanise } from '@lib/format';
 import type { TeamMemberRow } from '@/types/view-models';
+
+/** Never signed in: the invitation email is out and has not been accepted yet. */
+function isPendingInvite(member: Pick<TeamMemberRow, 'last_login_at'>): boolean {
+  return member.last_login_at === null;
+}
 
 const teamColumns: ReadonlyArray<ColumnDef<TeamMemberRow>> = [
   {
@@ -51,9 +61,24 @@ const teamColumns: ReadonlyArray<ColumnDef<TeamMemberRow>> = [
     exportValue: (row) => row.role,
   },
   {
+    id: 'status',
+    header: 'Status',
+    cell: (row) =>
+      isPendingInvite(row) ? (
+        <Badge tone="warning" srPrefix="Status" title="Invitation email sent, not yet accepted">
+          Invitation pending
+        </Badge>
+      ) : (
+        <Badge tone="success" srPrefix="Status">
+          Active
+        </Badge>
+      ),
+    exportValue: (row) => (isPendingInvite(row) ? 'invited' : 'active'),
+  },
+  {
     id: 'last_login_at',
     header: 'Last signed in',
-    cell: (row) => <DateCell value={row.last_login_at} precision="minute" />,
+    cell: (row) => <DateCell value={row.last_login_at} />,
     exportValue: (row) => row.last_login_at ?? '',
   },
 ];
@@ -65,6 +90,8 @@ export interface TeamTableProps {
   isInviting: boolean;
   inviteError: string | null;
   onInvite: (args: { email: string; fullName: string; role: UserRole }) => void;
+  /** The address the last invitation went to, for the "email sent" confirmation. */
+  invitedEmail?: string | null;
 }
 
 export function TeamTable({
@@ -74,6 +101,7 @@ export function TeamTable({
   isInviting,
   inviteError,
   onInvite,
+  invitedEmail = null,
 }: TeamTableProps) {
   const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
@@ -134,6 +162,12 @@ export function TeamTable({
         />
 
         {inviteError ? <InlineError id="invite-error">{inviteError}</InlineError> : null}
+
+        <p role="status" aria-live="polite" data-testid="invite-sent">
+          {invitedEmail && !inviteError
+            ? `Invitation email sent to ${invitedEmail}. The link in it works once and expires in 72 hours; they show as pending until they accept.`
+            : ''}
+        </p>
 
         <Button
           type="submit"

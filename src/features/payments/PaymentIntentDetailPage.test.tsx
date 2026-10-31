@@ -8,7 +8,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { PaymentIntentDetailPage } from '@features/payments/PaymentIntentDetailPage';
-import { makePaymentIntent } from '@/test/factories';
+import { makePaymentIntent, makeReview } from '@/test/factories';
 import { errorHandler, recordRequests, server, url } from '@/test/msw/server';
 import { renderWithProviders, screen, waitFor } from '@/test/render';
 
@@ -173,5 +173,89 @@ describe('releasing the authorisation', () => {
     expect(
       await screen.findByRole('heading', { name: 'Cancel failed' }),
     ).toBeInTheDocument();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// RFC platform-v2: review (§8), presentment (§7), customer (§5), subscription (§6)
+// ---------------------------------------------------------------------------
+
+describe('a payment held for review', () => {
+  it('says Payzeno is holding it, lists the rules, and offers no capture or release', async () => {
+    intentReturning({ status: 'requires_capture', review_id: 'rv_01HW0RTREVIEW0000000001' });
+
+    renderPage();
+
+    expect(await screen.findByText('Held for review by Payzeno')).toBeInTheDocument();
+    expect(
+      await screen.findByText("The card's country differs from where the shopper is."),
+    ).toBeInTheDocument();
+    expect(screen.getByText('The amount is much larger than your usual payment.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Capture' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Release authorisation' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('shows a closed review as history, not as a hold', async () => {
+    intentReturning({ status: 'succeeded', capture_method: 'automatic', review_id: 'rv_closed' });
+    server.use(
+      http.get(url('/reviews/:reviewId'), ({ params }) =>
+        HttpResponse.json(
+          makeReview({
+            id: String(params.reviewId),
+            status: 'approved',
+            closed_at: '2026-03-14T10:00:00.000Z',
+          }),
+        ),
+      ),
+    );
+
+    renderPage();
+
+    expect(await screen.findByText('Approved by Payzeno risk')).toBeInTheDocument();
+  });
+
+  it('makes no review request for a payment that was never held', async () => {
+    const recorder = recordRequests();
+    renderPage();
+
+    await screen.findByRole('heading', { name: `Payment ${INTENT_ID}` });
+    expect(recorder.requests.some((request) => request.url.includes('/reviews'))).toBe(false);
+    recorder.stop();
+  });
+});
+
+describe('presentment, customer and subscription', () => {
+  it('shows what the shopper paid against what it was priced at', async () => {
+    intentReturning({
+      amount_minor: 1_962,
+      currency: 'EUR',
+      presentment: {
+        original_amount_minor: 2_100,
+        original_currency: 'USD',
+        fx_rate: '0.9342',
+        fx_quote_id: 'fxq_01HW0RTFXQUOTE00000001',
+      },
+    });
+
+    renderPage();
+
+    const line = await screen.findByTestId('presentment');
+    expect(line.textContent).toMatch(/19\.62 · priced at .*21\.00 · rate 0\.9342/);
+  });
+
+  it('links the customer and the subscription', async () => {
+    intentReturning({
+      customer_id: 'cus_01HW0RTCUSTOMER00000001',
+      subscription_id: 'csub_01HW0RTSUBSCRIPTION0001',
+    });
+
+    renderPage();
+
+    await screen.findByRole('heading', { name: `Payment ${INTENT_ID}` });
+    const links = screen.getAllByRole('link').map((link) => link.getAttribute('href'));
+    expect(links).toContain('/customers/cus_01HW0RTCUSTOMER00000001');
+    expect(links).toContain('/billing/subscriptions/csub_01HW0RTSUBSCRIPTION0001');
   });
 });

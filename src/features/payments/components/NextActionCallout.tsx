@@ -17,7 +17,7 @@ export interface NextActionCalloutProps {
 }
 
 export function NextActionCallout({ nextAction, paymentIntentId }: NextActionCalloutProps) {
-  const { copy, copied } = useCopyToClipboard();
+  const { copy, status } = useCopyToClipboard();
 
   if (!nextAction) return null;
 
@@ -30,7 +30,7 @@ export function NextActionCallout({ nextAction, paymentIntentId }: NextActionCal
         </p>
         {nextAction.url ? (
           <button type="button" onClick={() => copy(nextAction.url ?? '')}>
-            {copied ? 'Copied' : 'Copy authentication URL'}
+            {status === 'copied' ? 'Copied' : 'Copy authentication URL'}
           </button>
         ) : null}
       </Alert>

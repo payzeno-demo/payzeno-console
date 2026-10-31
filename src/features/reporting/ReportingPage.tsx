@@ -21,6 +21,7 @@ import { useCurrentMerchant } from '@app/SessionContext';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
 import { useEnumParam, useStringParam } from '@hooks/useQueryParamState';
 import { useMoneyFormat } from '@hooks/useMoneyFormat';
+import { OnboardingChecklist } from '@features/onboarding/components/OnboardingChecklist';
 
 import { SummaryCards } from './components/SummaryCards';
 import { VolumeChart } from './components/VolumeChart';
@@ -56,6 +57,9 @@ export function ReportingPage() {
         description={WINDOW_LABELS[activeWindow]}
         isBusy={summary.isFetching}
       />
+
+      {/* RFC platform-v2 §3: until Payzeno approves the business, Home leads with setup. */}
+      {merchant.status === 'pending_review' ? <OnboardingChecklist /> : null}
 
       {summary.isDegraded ? (
         <Alert tone="warning" title="Reporting is degraded" role="status">
@@ -116,14 +120,12 @@ export function ReportingPage() {
           </p>
         ) : (
           <>
+            {/* Major-unit points, so no `currency` prop — see `VolumeChart`. */}
             <LineChart
               data={balanceHistory.points}
               xKey="bucket"
-              yKey="value"
-              currency={activeCurrency}
-              xLabel={balanceHistory.interval === 'hour' ? 'Hour' : 'Day'}
-              yLabel={`Available balance (${activeCurrency})`}
-              ariaLabel="Available balance over time"
+              series={[{ dataKey: 'value', name: `Available balance (${activeCurrency})` }]}
+              title="Available balance over time"
             />
             <p>
               Available now: {formatMinor(summary.availableMinor, activeCurrency)}

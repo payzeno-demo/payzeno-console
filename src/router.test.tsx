@@ -177,3 +177,61 @@ describe('the catch-all', () => {
     });
   });
 });
+
+describe('RFC platform-v2 routes', () => {
+  it('templatises the new id prefixes', () => {
+    expect(routeTemplate('/customers/cus_01HW0RTCUSTOMER00000001')).toBe('/customers/:id');
+    expect(routeTemplate('/billing/subscriptions/csub_01HW0RTSUBSCRIPTION0001')).toBe(
+      '/billing/subscriptions/:id',
+    );
+  });
+
+  it('renders the customers index and a customer detail', async () => {
+    renderAt(ROUTES.customers.index);
+    expect(await screen.findByRole('heading', { name: 'Customers' })).toBeInTheDocument();
+  });
+
+  it('renders a customer detail route as a child of customers', async () => {
+    renderAt(ROUTES.customers.detail('cus_01HW0RTCUSTOMER00000001'));
+    expect(await screen.findByRole('heading', { name: 'Amara Osei' })).toBeInTheDocument();
+  });
+
+  it('lands /billing on subscriptions', async () => {
+    renderAt(ROUTES.billing.index);
+    expect(await screen.findByRole('heading', { name: 'Subscriptions' })).toBeInTheDocument();
+  });
+
+  it('renders billing prices and a subscription detail', async () => {
+    renderAt(ROUTES.billing.prices);
+    expect(await screen.findByRole('heading', { name: 'Prices' })).toBeInTheDocument();
+  });
+
+  it('renders a subscription detail under billing', async () => {
+    renderAt(ROUTES.billing.subscription('csub_01HW0RTSUBSCRIPTION0001'));
+    expect(
+      await screen.findByRole('heading', { name: 'Subscription csub_01HW0RTSUBSCRIPTION0001' }),
+    ).toBeInTheDocument();
+  });
+
+  it('renders onboarding for a signed-in merchant', async () => {
+    renderAt(ROUTES.onboarding.index);
+    expect(await screen.findByRole('heading', { name: 'Activate your account' })).toBeInTheDocument();
+  });
+
+  it('renders the public signup page without a session', async () => {
+    renderAt(ROUTES.auth.signup, { session: null });
+    expect(
+      await screen.findByRole('heading', { name: 'Create your Payzeno account' }),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the public account pages even with a session — they are opened from email', async () => {
+    renderAt(`${ROUTES.auth.resetPassword}?token=tok`);
+    expect(await screen.findByRole('heading', { name: 'Choose a new password' })).toBeInTheDocument();
+  });
+
+  it('lets a viewer read customers and billing — same permission as payments', async () => {
+    renderAt(ROUTES.customers.index, { session: makeViewerSession() });
+    expect(await screen.findByRole('heading', { name: 'Customers' })).toBeInTheDocument();
+  });
+});

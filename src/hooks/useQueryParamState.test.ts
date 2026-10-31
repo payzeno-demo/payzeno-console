@@ -77,6 +77,20 @@ describe('the cursor rule', () => {
 
     expect(result.current[1][0]).toBe('');
   });
+
+  it('keeps the cursor when the cursor itself is what changed — that is paging', () => {
+    const { result } = renderHookWithProviders(
+      () => [useStringParam('customer'), useStringParam('cursor')] as const,
+      { route: '/payments?customer=a' },
+    );
+
+    act(() => {
+      result.current[1][1]('cur_page_two');
+    });
+
+    expect(result.current[1][0]).toBe('cur_page_two');
+    expect(result.current[0][0]).toBe('a');
+  });
 });
 
 describe('useEnumParam', () => {

@@ -8,18 +8,23 @@
  * makes the announcement read "Status: needs response".
  */
 import type {
+  BankAccountStatus,
   ChargeStatus,
   DisputeStatus,
   InvoiceStatus,
+  OnboardingState,
   PaymentIntentStatus,
   PayoutStatus,
   ReconciliationItemStatus,
   RefundStatus,
+  ReviewStatus,
   SettlementBatchStatus,
+  SubscriptionStatus,
   WebhookEventStatus,
 } from '@payzeno/contracts';
 
 import { labelise } from '@lib/format';
+import type { WebhookEventRow } from '@/types/view-models';
 
 import { Badge } from '../ui/Badge';
 import type { Tone } from '../ui/tokens';
@@ -90,6 +95,21 @@ const TONE_BY_STATUS: Readonly<Record<string, Tone>> = {
   draft: 'neutral',
   uncollectible: 'danger',
   void: 'neutral',
+
+  // subscription (RFC platform-v2 §6) — `canceled` covered above
+  active: 'success',
+  past_due: 'warning',
+
+  // risk review (§8) — `open` is the settlement-batch neutral above; a held payment's own
+  // badge says "Held for review" in words, so the review pill does not need to shout.
+  approved: 'success',
+  declined: 'danger',
+
+  // onboarding (§3) — `approved` covered above
+  collecting: 'neutral',
+  submitted: 'info',
+  needs_info: 'warning',
+  rejected: 'danger',
 };
 
 export type AnyStatus =
@@ -101,7 +121,13 @@ export type AnyStatus =
   | SettlementBatchStatus
   | ReconciliationItemStatus
   | WebhookEventStatus
-  | InvoiceStatus;
+  | InvoiceStatus
+  | BankAccountStatus
+  | SubscriptionStatus
+  | ReviewStatus
+  | OnboardingState
+  /** Console-derived: `WebhookEventStatus` plus `failing`, collapsed for exactly this pill. */
+  | WebhookEventRow['_health'];
 
 /** Exported for the chart theme and for `settlement-items.columns.tsx`'s row accent. */
 export function toneForStatus(status: string): Tone {
@@ -119,11 +145,29 @@ export interface StatusPillProps {
    * ("Awaiting evidence" for `needs_response`).
    */
   label?: string;
+  /**
+   * What the status means, as a native hover hint ("Authorised. Capture to take the money.").
+   * Supplementary only — the same explanation has to be reachable as text somewhere else,
+   * usually the detail page.
+   */
+  title?: string;
 }
 
-export function StatusPill({ status, srPrefix = 'Status', size = 'md', label }: StatusPillProps) {
+export function StatusPill({
+  status,
+  srPrefix = 'Status',
+  size = 'md',
+  label,
+  title,
+}: StatusPillProps) {
   return (
-    <Badge tone={toneForStatus(status)} size={size} srPrefix={srPrefix} withDot>
+    <Badge
+      tone={toneForStatus(status)}
+      size={size}
+      srPrefix={srPrefix}
+      title={title || undefined}
+      withDot
+    >
       {label ?? labelise(status)}
     </Badge>
   );

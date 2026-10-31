@@ -3,9 +3,10 @@
  *
  * The failures that actually happen, in order of frequency:
  *   409 `payout_blocked`     — the merchant's balance is negative, or the account is frozen.
- *   422 `currency_mismatch`  — the chosen bank account is not in the payout currency. Payzeno
- *                              does not convert; this is a real constraint, not a validator
- *                              being fussy.
+ *   422 `currency_mismatch`  — the api cannot pay this balance to that account (a currency
+ *                              pair the FX provider does not quote). Since RFC platform-v2 §7
+ *                              the ledger converts between the five supported currencies, so
+ *                              this is rare; it is still a real constraint.
  *   403                      — `payouts:write` is admin-only.
  *
  * Each gets its own sentence, because "Something went wrong" on a payout form generates a
@@ -88,11 +89,19 @@ export function useCreatePayout(): UseCreatePayoutResult {
         return;
       }
 
+      if (error instanceof ValidationApiError && error.code === 'payout_blocked') {
+        // RFC platform-v2 §7: one payout per balance at a time. 422, not 409, on this route.
+        setErrorMessage(
+          'A payout from this balance is already on its way. Wait for it to arrive before sending another.',
+        );
+        return;
+      }
+
       if (error instanceof ValidationApiError) {
         setFieldErrors(error.fieldErrorMap());
         setErrorMessage(
           error.code === 'currency_mismatch'
-            ? 'That bank account is not held in this currency. Payzeno does not convert.'
+            ? 'Payzeno cannot convert this balance to that bank account’s currency. Choose another account.'
             : error.message,
         );
         return;

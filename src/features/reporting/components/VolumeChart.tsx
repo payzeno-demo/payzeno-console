@@ -62,14 +62,15 @@ export function VolumeChart({
     <Card as="section" aria-labelledby="volume-chart-heading">
       <h2 id="volume-chart-heading">Processed volume</h2>
 
+      {/*
+        No `currency` prop: `<LineChart>` would treat `value` as minor units, and these points
+        are already major units. The currency code is in the series name instead.
+      */}
       <LineChart
         data={points}
         xKey="bucket"
-        yKey="value"
-        currency={currency}
-        xLabel={interval === 'hour' ? 'Hour' : 'Day'}
-        yLabel={`Volume (${currency})`}
-        ariaLabel={`Processed volume by ${interval}`}
+        series={[{ dataKey: 'value', name: `Volume (${currency})` }]}
+        title={`Processed volume by ${interval}`}
       />
 
       {/* The screen-reader path. A chart with no text equivalent is a chart nobody can read. */}

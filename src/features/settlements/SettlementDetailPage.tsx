@@ -9,6 +9,7 @@
  */
 import { useParams } from 'react-router-dom';
 
+import { RECONCILIATION_ITEM_STATUSES } from '@payzeno/contracts';
 import type { ReconciliationItemStatus } from '@payzeno/contracts';
 
 import { ErrorState } from '@components/feedback/ErrorState';
@@ -19,21 +20,25 @@ import { PageHeader } from '@components/layout/PageHeader';
 import { Badge } from '@components/ui/Badge';
 import { DateCell } from '@components/data/DateCell';
 import { useDocumentTitle } from '@hooks/useDocumentTitle';
-import { useQueryParamState } from '@hooks/useQueryParamState';
+import { useEnumParam } from '@hooks/useQueryParamState';
 
 import { BatchTotalsPanel } from './components/BatchTotalsPanel';
 import { SettlementItemTable } from './components/SettlementItemTable';
 import { useSettlement } from './useSettlement';
 import { useSettlementItems } from './useSettlementItems';
 
+/** Every value the `item_status` URL parameter may hold. */
+const ITEM_STATUS_PARAM_VALUES: ReadonlyArray<ReconciliationItemStatus | 'all'> = [
+  'all',
+  ...RECONCILIATION_ITEM_STATUSES,
+];
+
 export function SettlementDetailPage() {
   const { batchId = '' } = useParams<{ batchId: string }>();
   useDocumentTitle(batchId ? `Settlement ${batchId}` : 'Settlement');
 
-  const [status, setStatus] = useQueryParamState<ReconciliationItemStatus | 'all'>(
-    'item_status',
-    'all',
-  );
+  const [statusParam, setStatus] = useEnumParam('item_status', ITEM_STATUS_PARAM_VALUES, 'all');
+  const status = statusParam ?? 'all';
 
   const { batch, isLoading, isMissing, error } = useSettlement(batchId);
   const items = useSettlementItems(batchId, status === 'all' ? undefined : { status });
@@ -60,7 +65,7 @@ export function SettlementDetailPage() {
         </Badge>
         {batch.funded_at ? (
           <span>
-            Funded <DateCell value={batch.funded_at} precision="minute" />
+            Funded <DateCell value={batch.funded_at} />
           </span>
         ) : (
           <span>Not funded yet</span>

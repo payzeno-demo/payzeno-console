@@ -93,7 +93,7 @@ export const refundColumns: ReadonlyArray<ColumnDef<RefundRow>> = [
     id: 'created_at',
     header: 'Created',
     sortable: true,
-    cell: (row) => <DateCell value={row.created_at} precision="minute" />,
+    cell: (row) => <DateCell value={row.created_at} />,
     exportValue: (row) => row.created_at,
   },
 ];

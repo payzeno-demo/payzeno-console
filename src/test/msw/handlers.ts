@@ -18,23 +18,42 @@
  */
 import { HttpResponse, http } from 'msw';
 
-import type { Paginated } from '@payzeno/contracts';
+import type {
+  AcceptInvitationRequest,
+  CancelSubscriptionRequest,
+  CreateCustomerRequest,
+  CreatePriceRequest,
+  CreateSubscriptionRequest,
+  Paginated,
+  SignupRequest,
+  SubscriptionStatus,
+  UpdateCustomerRequest,
+  UpdateOnboardingRequest,
+  UploadKycDocumentRequest,
+} from '@payzeno/contracts';
 
 import {
   makeApiKey,
   makeBalance,
   makeBankAccount,
   makeCharge,
+  makeCustomer,
   makeDashboardSummary,
   makeDispute,
   makeInvoice,
+  makeKycDocument,
+  makeOnboarding,
   makePage,
   makePaymentIntent,
+  makePaymentMethod,
   makePayout,
+  makePrice,
   makeReconciliationItem,
   makeRefund,
+  makeReview,
   makeSession,
   makeSettlementBatch,
+  makeSubscription,
   makeWebhookEndpoint,
   makeWebhookEvent,
 } from '../factories';
@@ -83,6 +102,26 @@ export const HANDLED_PATHS: ReadonlyArray<string> = [
   '/reporting/balance-history',
   '/bank-accounts',
   '/bank-accounts/:bankAccountId',
+  // RFC platform-v2
+  '/signup',
+  '/signup/verify',
+  '/auth/invitations/accept',
+  '/auth/password/reset',
+  '/auth/password/reset/confirm',
+  '/onboarding',
+  '/onboarding/documents',
+  '/onboarding/submit',
+  '/customers',
+  '/customers/:customerId',
+  '/customers/:customerId/payment_methods',
+  '/customers/:customerId/payment_methods/:paymentMethodId',
+  '/prices',
+  '/prices/:priceId',
+  '/subscriptions',
+  '/subscriptions/:subscriptionId',
+  '/subscriptions/:subscriptionId/cancel',
+  '/reviews',
+  '/reviews/:reviewId',
 ];
 
 const requestIdHeaders = { 'X-Request-Id': 'req_msw_0000000000000001' };
@@ -273,7 +312,30 @@ const disputeHandlers = [
 
 const balanceHandlers = [
   http.get(url('/balance'), ({ request }) => {
-    const currency = new URL(request.url).searchParams.get('currency') ?? 'GBP';
+    const currency = new URL(request.url).searchParams.get('currency');
+    // RFC platform-v2 §7: no `currency` lists every currency the merchant holds.
+    if (currency === null) {
+      return ok({
+        data: [
+          makeBalance(),
+          makeBalance({
+            currency: 'EUR',
+            available_minor: 182_440,
+            pending_minor: 0,
+            buckets: [{ type: 'merchant_payable', amount_minor: 182_440 }],
+          }),
+          makeBalance({
+            currency: 'JPY',
+            available_minor: 0,
+            pending_minor: 0,
+            reserved_minor: 0,
+            disputed_minor: 0,
+            negative_balance_minor: 0,
+            buckets: [],
+          }),
+        ],
+      });
+    }
     return ok(makeBalance({ currency: currency as 'GBP' }));
   }),
 ];
@@ -514,6 +576,266 @@ const bankAccountHandlers = [
   }),
 ];
 
+// ---------------------------------------------------------------------------
+// RFC platform-v2 §3-§4: signup, emailed-link flows, onboarding
+// ---------------------------------------------------------------------------
+
+const signupHandlers = [
+  http.post(url('/signup'), async ({ request }) => {
+    const body = (await request.json()) as SignupRequest;
+    return ok(
+      {
+        object: 'signup',
+        merchant_id: 'mch_01HW0RTSIGNUPMERCHANT01',
+        verification_required: true,
+        _echo_email: body.email,
+      },
+      201,
+    );
+  }),
+
+  http.post(url('/signup/verify'), () =>
+    ok({ object: 'login', user: makeSession().user, merchant: makeSession().merchant }),
+  ),
+
+  http.post(url('/auth/invitations/accept'), async ({ request }) => {
+    const body = (await request.json()) as AcceptInvitationRequest;
+    return ok({
+      object: 'login',
+      user: { ...makeSession().user, full_name: body.full_name },
+      merchant: makeSession().merchant,
+    });
+  }),
+
+  http.post(url('/auth/password/reset'), () => new HttpResponse(null, { status: 202 })),
+  http.post(url('/auth/password/reset/confirm'), () => new HttpResponse(null, { status: 204 })),
+];
+
+const onboardingHandlers = [
+  http.get(url('/onboarding'), () => ok(makeOnboarding())),
+
+  http.patch(url('/onboarding'), async ({ request }) => {
+    const body = (await request.json()) as UpdateOnboardingRequest;
+    const current = makeOnboarding();
+    return ok(
+      makeOnboarding({
+        business_profile: { ...current.business_profile, ...body.business_profile },
+        representative: { ...current.representative, ...body.representative },
+        requirements_due: current.requirements_due.filter(
+          (due) =>
+            !(due === 'business_profile' && body.business_profile) &&
+            !(due === 'representative' && body.representative),
+        ),
+      }),
+    );
+  }),
+
+  http.post(url('/onboarding/documents'), async ({ request }) => {
+    const body = (await request.json()) as UploadKycDocumentRequest;
+    return ok(
+      makeKycDocument({
+        type: body.type,
+        filename: body.filename,
+        content_type: body.content_type,
+      }),
+      201,
+    );
+  }),
+
+  http.post(url('/onboarding/submit'), () =>
+    ok(
+      makeOnboarding({
+        state: 'submitted',
+        requirements_due: [],
+        submitted_at: '2026-03-14T09:30:00.000Z',
+      }),
+    ),
+  ),
+];
+
+// ---------------------------------------------------------------------------
+// RFC platform-v2 §5-§6, §8: customers, prices, subscriptions, reviews
+// ---------------------------------------------------------------------------
+
+const customerHandlers = [
+  http.get(url('/customers'), ({ request }) => {
+    const email = new URL(request.url).searchParams.get('email');
+    const rows = [
+      makeCustomer(),
+      makeCustomer({
+        id: 'cus_01HW0RTCUSTOMER00000002',
+        email: 'liam.becker@example.de',
+        name: 'Liam Becker',
+        default_payment_method_id: null,
+      }),
+    ];
+    // payzeno-api matches `?email=` exactly.
+    return ok(makePage(email ? rows.filter((row) => row.email === email) : rows));
+  }),
+
+  http.post(url('/customers'), async ({ request }) => {
+    const body = (await request.json()) as CreateCustomerRequest;
+    return ok(
+      makeCustomer({
+        id: 'cus_01HW0RTCUSTOMERCREATED1',
+        email: body.email ?? null,
+        name: body.name ?? null,
+        default_payment_method_id: null,
+      }),
+      201,
+    );
+  }),
+
+  http.get(url('/customers/:customerId'), ({ params }) =>
+    ok(makeCustomer({ id: String(params.customerId) })),
+  ),
+
+  http.patch(url('/customers/:customerId'), async ({ params, request }) => {
+    const body = (await request.json()) as UpdateCustomerRequest;
+    return ok(
+      makeCustomer({
+        id: String(params.customerId),
+        ...(body.email !== undefined ? { email: body.email } : {}),
+        ...(body.name !== undefined ? { name: body.name } : {}),
+      }),
+    );
+  }),
+
+  http.get(url('/customers/:customerId/payment_methods'), ({ params }) =>
+    ok(
+      makePage([
+        makePaymentMethod({ customer_id: String(params.customerId) }),
+        makePaymentMethod({
+          id: 'pm_01HW0RTPAYMENTMETHOD0002',
+          customer_id: String(params.customerId),
+          card: {
+            brand: 'mastercard',
+            last_four: '5454',
+            exp_month: 6,
+            exp_year: 2027,
+            country: 'DE',
+            funding: 'debit',
+          },
+        }),
+      ]),
+    ),
+  ),
+
+  http.delete(
+    url('/customers/:customerId/payment_methods/:paymentMethodId'),
+    () => new HttpResponse(null, { status: 204 }),
+  ),
+];
+
+const priceHandlers = [
+  http.get(url('/prices'), () =>
+    ok(
+      makePage([
+        makePrice(),
+        makePrice({
+          id: 'price_01HW0RTPRICE000000002',
+          product_name: 'Gift box',
+          unit_amount_minor: 4_500,
+          recurring: null,
+        }),
+      ]),
+    ),
+  ),
+
+  http.get(url('/prices/:priceId'), ({ params }) => ok(makePrice({ id: String(params.priceId) }))),
+
+  http.post(url('/prices'), async ({ request }) => {
+    const body = (await request.json()) as CreatePriceRequest;
+    return ok(
+      makePrice({
+        id: 'price_01HW0RTPRICECREATED001',
+        product_name: body.product_name,
+        unit_amount_minor: body.unit_amount_minor,
+        currency: body.currency,
+        recurring: body.recurring ?? null,
+      }),
+      201,
+    );
+  }),
+];
+
+const subscriptionHandlers = [
+  http.get(url('/subscriptions'), ({ request }) => {
+    const params = new URL(request.url).searchParams;
+    const status = params.get('status') as SubscriptionStatus | null;
+    const customerId = params.get('customer_id');
+    const rows = [
+      makeSubscription(),
+      makeSubscription({
+        id: 'csub_01HW0RTSUBSCRIPTION0002',
+        customer_id: 'cus_01HW0RTCUSTOMER00000002',
+        status: 'past_due',
+        failed_attempts: 1,
+        next_retry_at: '2026-03-15T10:00:00.000Z',
+      }),
+    ];
+    return ok(
+      makePage(
+        rows.filter(
+          (row) =>
+            (status === null || row.status === status) &&
+            (customerId === null || row.customer_id === customerId),
+        ),
+      ),
+    );
+  }),
+
+  http.get(url('/subscriptions/:subscriptionId'), ({ params }) =>
+    ok(makeSubscription({ id: String(params.subscriptionId) })),
+  ),
+
+  http.post(url('/subscriptions'), async ({ request }) => {
+    const body = (await request.json()) as CreateSubscriptionRequest;
+    return ok(
+      makeSubscription({
+        id: 'csub_01HW0RTSUBSCRIPTIONNEW',
+        customer_id: body.customer_id,
+        price_id: body.price_id,
+      }),
+      201,
+    );
+  }),
+
+  http.post(url('/subscriptions/:subscriptionId/cancel'), async ({ params, request }) => {
+    const body = (await request.json()) as CancelSubscriptionRequest;
+    const atPeriodEnd = body.at_period_end ?? true;
+    return ok(
+      makeSubscription({
+        id: String(params.subscriptionId),
+        cancel_at_period_end: atPeriodEnd,
+        ...(atPeriodEnd
+          ? {}
+          : { status: 'canceled' as const, canceled_at: '2026-03-14T09:30:00.000Z' }),
+      }),
+    );
+  }),
+];
+
+const reviewHandlers = [
+  http.get(url('/reviews'), ({ request }) => {
+    const status = new URL(request.url).searchParams.get('status');
+    const rows = [
+      makeReview(),
+      makeReview({
+        id: 'rv_01HW0RTREVIEW0000000002',
+        payment_intent_id: 'pi_01HW0RTPAYMENTINTENT0002',
+        status: 'approved',
+        closed_at: '2026-03-13T12:00:00.000Z',
+      }),
+    ];
+    return ok(makePage(status ? rows.filter((row) => row.status === status) : rows));
+  }),
+
+  http.get(url('/reviews/:reviewId'), ({ params }) =>
+    ok(makeReview({ id: String(params.reviewId) })),
+  ),
+];
+
 /**
  * The legacy invoices path. `features/invoices` still goes through
  * `src/api/legacy/fetch-json.ts` rather than `InvoicesEndpoint` (ADR 0004, blueprint §8.1),
@@ -534,6 +856,12 @@ export const handlers = [
   ...developerHandlers,
   ...reportingHandlers,
   ...bankAccountHandlers,
+  ...signupHandlers,
+  ...onboardingHandlers,
+  ...customerHandlers,
+  ...priceHandlers,
+  ...subscriptionHandlers,
+  ...reviewHandlers,
 ];
 
 /**
@@ -541,7 +869,7 @@ export const handlers = [
  * `server.use(...)` inside a single test.
  */
 export function errorHandler(
-  method: 'get' | 'post',
+  method: 'get' | 'post' | 'patch' | 'delete',
   path: string,
   status: number,
   code: string,
@@ -554,5 +882,14 @@ export function errorHandler(
       { status, headers: requestIdHeaders },
     );
 
-  return method === 'get' ? http.get(url(path), responder) : http.post(url(path), responder);
+  switch (method) {
+    case 'get':
+      return http.get(url(path), responder);
+    case 'patch':
+      return http.patch(url(path), responder);
+    case 'delete':
+      return http.delete(url(path), responder);
+    default:
+      return http.post(url(path), responder);
+  }
 }

@@ -42,6 +42,15 @@ export interface SelectProps<TValue extends string> {
   className?: string;
 }
 
+/**
+ * Radix reserves `''` (it means "no selection, show the placeholder") and throws if an Item
+ * uses it. Every filter's "All statuses" option is `''`, so the wrapper swaps it for a
+ * sentinel on the way in and back on the way out; callers keep using `''`.
+ */
+const EMPTY_VALUE = '__pz_all__';
+const toRadix = (value: string): string => (value === '' ? EMPTY_VALUE : value);
+const fromRadix = (value: string): string => (value === EMPTY_VALUE ? '' : value);
+
 export function Select<TValue extends string>({
   id,
   value,
@@ -57,8 +66,8 @@ export function Select<TValue extends string>({
 }: SelectProps<TValue>) {
   const control = (
     <RadixSelect.Root
-      value={value ?? undefined}
-      onValueChange={(next) => onValueChange(next as TValue)}
+      value={value === null ? undefined : toRadix(value)}
+      onValueChange={(next) => onValueChange(fromRadix(next) as TValue)}
       disabled={disabled}
     >
       <RadixSelect.Trigger
@@ -107,7 +116,7 @@ export function Select<TValue extends string>({
             {options.map((option) => (
               <RadixSelect.Item
                 key={option.value}
-                value={option.value}
+                value={toRadix(option.value)}
                 disabled={option.disabled}
                 className={pz('select', 'item')}
                 style={{
